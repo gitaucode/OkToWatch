@@ -1,0 +1,13 @@
+name                  = "clearview"
+compatibility_date    = "2024-09-23"
+pages_build_output_dir = "public"
+
+# ── D1 Database ───────────────────────────────────────────────────────────
+[[d1_databases]]
+binding       = "DB"
+database_name = "clearview"
+database_id   = "your-database-id"   # Replace after: wrangler d1 create oktowatch
+
+# ── Local dev environment variables ──────────────────────────────────────
+# Production secrets go in Cloudflare Pages dashboard → Settings → Env Vars
+# Local dev: copy .env.example to .dev.vars and fill in values

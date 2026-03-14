@@ -1,0 +1,108 @@
+/**
+ * /api/history
+ * GET    — returns user's history, newest first
+ * POST   — upserts a search entry (bumps searched_at if tmdb_id already exists)
+ * DELETE — ?id= removes one item; no param clears all history
+ */
+
+import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
+
+export async function onRequestGet(context) {
+  const { request, env } = context;
+  const { auth, error } = await requirePro(request, env);
+  if (error) return error;
+
+  const url   = new URL(request.url);
+  const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 500);
+
+  const rows = await env.DB
+    .prepare('SELECT * FROM history WHERE user_id = ? ORDER BY searched_at DESC LIMIT ?')
+    .bind(auth.userId, limit)
+    .all();
+
+  return jsonResponse(rows.results ?? []);
+}
+
+export async function onRequestPost(context) {
+  const { request, env } = context;
+  const { auth, error } = await requirePro(request, env);
+  if (error) return error;
+
+  let body;
+  try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON' }, 400); }
+
+  const { tmdb_id, media_type, title, year, poster, profile_id } = body;
+  if (!tmdb_id)    return jsonResponse({ error: 'tmdb_id is required' }, 400);
+  if (!media_type) return jsonResponse({ error: 'media_type is required' }, 400);
+  if (!title)      return jsonResponse({ error: 'title is required' }, 400);
+
+  // Check if this title is already in history for this user
+  const existing = await env.DB
+    .prepare('SELECT id FROM history WHERE user_id = ? AND tmdb_id = ? AND media_type = ?')
+    .bind(auth.userId, tmdb_id, media_type)
+    .first();
+
+  if (existing) {
+    // Bump searched_at and update profile_id
+    await env.DB
+      .prepare('UPDATE history SET searched_at = datetime(\'now\'), profile_id = ? WHERE id = ?')
+      .bind(profile_id ?? null, existing.id)
+      .run();
+    const updated = await env.DB
+      .prepare('SELECT * FROM history WHERE id = ?')
+      .bind(existing.id)
+      .first();
+    return jsonResponse(updated);
+  }
+
+  // Insert new entry
+  const id = crypto.randomUUID().replace(/-/g, '');
+  await env.DB
+    .prepare('INSERT INTO history (id, user_id, tmdb_id, media_type, title, year, poster, profile_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, auth.userId, tmdb_id, media_type, title, year ?? null, poster ?? null, profile_id ?? null)
+    .run();
+
+  const entry = await env.DB
+    .prepare('SELECT * FROM history WHERE id = ?')
+    .bind(id)
+    .first();
+
+  return jsonResponse(entry, 201);
+}
+
+export async function onRequestDelete(context) {
+  const { request, env } = context;
+  const { auth, error } = await requirePro(request, env);
+  if (error) return error;
+
+  const url = new URL(request.url);
+  const id  = url.searchParams.get('id');
+
+  if (id) {
+    // Delete single entry — verify ownership first
+    const existing = await env.DB
+      .prepare('SELECT id FROM history WHERE id = ? AND user_id = ?')
+      .bind(id, auth.userId)
+      .first();
+    if (!existing) return jsonResponse({ error: 'Entry not found' }, 404);
+
+    await env.DB
+      .prepare('DELETE FROM history WHERE id = ? AND user_id = ?')
+      .bind(id, auth.userId)
+      .run();
+
+    return jsonResponse({ deleted: true, id });
+  }
+
+  // No id param → clear all history for this user
+  await env.DB
+    .prepare('DELETE FROM history WHERE user_id = ?')
+    .bind(auth.userId)
+    .run();
+
+  return jsonResponse({ deleted: true, all: true });
+}
+
+export async function onRequestOptions() {
+  return handleOptions();
+}

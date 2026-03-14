@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2a6b55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="OkToWatch">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<title>My Lists — OkToWatch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --safe: #2a7d52; --safe-bg: #e6f4ec;
+  --warn: #b07a10; --warn-bg: #fef6e4;
+  --danger: #c0392b; --danger-bg: #fdecea;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 16px; --radius-sm: 10px;
+}
+html { overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
+#nav-root { position: relative; z-index: 10; }
+.page-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+
+/* ── Skeleton ── */
+.skel { background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 0.65rem; }
+.skel-line { height: 12px; border-radius: 6px; margin-bottom: 0.6rem; }
+#pageLoader { display: block; }
+#pageLoader.hidden { display: none; }
+#pageContent { display: none; }
+#pageContent.visible { display: block; }
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
+}
+.page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; }
+.page-header p  { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+
+/* ── Tabs ── */
+.tabs-row {
+  display: flex; gap: 0; margin-bottom: 1.25rem;
+  background: var(--surface); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow); padding: 0.3rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
+}
+.tab-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+  background: transparent; border: none; padding: 0.6rem 0.5rem;
+  border-radius: 7px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--accent); color: white; }
+.tab-btn .tab-count {
+  font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.3rem;
+  border-radius: 100px; min-width: 16px; text-align: center;
+  background: rgba(255,255,255,0.25);
+}
+.tab-btn:not(.active) .tab-count { background: var(--surface2); color: var(--muted); }
+
+/* ── Profile filter ── */
+.profile-filter {
+  display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.15s;
+}
+.profile-filter-btn {
+  background: var(--surface); border: 1.5px solid var(--border); color: var(--text2);
+  padding: 0.32rem 0.75rem; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.profile-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.profile-filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ── List ── */
+.list-items { opacity: 0; animation: fadeUp 0.4s ease forwards 0.2s; }
+
+.list-item {
+  background: var(--surface); border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.85rem 1rem; margin-bottom: 0.5rem;
+  cursor: pointer; transition: all 0.15s;
+  border: 1.5px solid transparent; position: relative;
+}
+.list-item:hover { border-color: var(--accent); transform: translateX(2px); }
+.list-poster {
+  width: 40px; min-width: 40px; height: 56px; border-radius: 6px;
+  overflow: hidden; background: var(--surface2);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+}
+.list-poster img { width: 100%; height: 100%; object-fit: cover; }
+.list-info { flex: 1; min-width: 0; }
+.list-title { font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-meta  { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.list-note  { font-size: 0.72rem; color: var(--text2); font-style: italic; margin-top: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-tag {
+  font-size: 0.62rem; font-weight: 600; padding: 0.08rem 0.35rem;
+  border-radius: 100px; white-space: nowrap;
+}
+.tag-movie   { background: #e8f0fe; color: #3367d6; }
+.tag-tv      { background: #fef6e4; color: #b07a10; }
+.tag-profile { background: var(--accent-light); color: var(--accent); }
+
+.list-actions { display: flex; gap: 0.3rem; flex-shrink: 0; }
+.list-action-btn {
+  background: none; border: none; color: var(--muted); font-size: 0.85rem;
+  cursor: pointer; padding: 0.3rem; border-radius: 6px;
+  opacity: 0; transition: all 0.12s;
+}
+.list-item:hover .list-action-btn { opacity: 1; }
+.list-action-btn:hover { background: var(--surface2); color: var(--text); }
+.list-action-btn.delete:hover { color: var(--danger); background: var(--danger-bg); }
+
+/* ── List type badge ── */
+.type-badge {
+  font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem;
+  border-radius: 100px; white-space: nowrap;
+}
+.badge-approved  { background: var(--safe-bg);  color: var(--safe); }
+.badge-blocked   { background: var(--danger-bg); color: var(--danger); }
+.badge-watchlater{ background: #e8f0fe; color: #3367d6; }
+
+/* ── Empty state ── */
+.empty-state { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 3rem 2rem; text-align: center; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.empty-state h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.empty-state p  { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.25rem; }
+.btn-go { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--accent); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
+.btn-go:hover { opacity: 0.88; }
+
+/* ── Toast ── */
+.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Modals ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
+.modal-overlay.visible { display: flex; }
+.modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; max-width: 480px; width: 100%; animation: slideUp 0.28s ease forwards; padding-bottom: env(safe-area-inset-bottom, 1rem); }
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0.75rem auto 0; }
+.modal-header { padding: 1rem 1.5rem 0.85rem; border-bottom: 1px solid var(--border); }
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-header p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+.modal-body  { padding: 1.25rem 1.5rem; }
+.modal-footer { padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.field { margin-bottom: 1rem; }
+.field:last-child { margin-bottom: 0; }
+.field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 0.35rem; }
+.field textarea { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.2s; resize: vertical; min-height: 80px; }
+.field textarea:focus { border-color: var(--accent); background: white; }
+.btn-primary { background: var(--accent); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-ghost-modal { background: var(--surface2); color: var(--text2); border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; width: 100%; }
+.btn-ghost-modal:hover { background: #e8edeb; }
+.btn-danger { background: var(--danger); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
+.btn-danger:hover { opacity: 0.88; }
+
+/* ── Footer ── */
+footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.footer-logo-text { font-size: 0.88rem; color: var(--text); }
+.footer-logo-text strong { font-weight: 700; }
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+@media (max-width: 599px) {
+  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
+  .page-header h1 { font-size: 1.25rem; }
+  .tab-btn { font-size: 0.72rem; padding: 0.55rem 0.3rem; }
+  .profile-filter { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .list-actions { gap: 0.2rem; }
+  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+}
+@media (max-width: 380px) {
+  .page-wrap { padding: 1rem 0.65rem 4rem; }
+  .tab-btn { font-size: 0.65rem; padding: 0.5rem 0.2rem; }
+}
+</style>
+<meta property="og:image" content="https://oktowatch.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+</head>
+<body data-page="lists">
+
+<div id="nav-root"></div>
+
+<div class="page-wrap">
+
+  <!-- Skeleton -->
+  <div id="pageLoader">
+    <div style="margin-bottom:1.25rem;">
+      <div class="skel skel-line" style="width:100px;height:20px;margin-bottom:0.4rem;"></div>
+      <div class="skel skel-line" style="width:160px;height:11px;margin-bottom:0;"></div>
+    </div>
+    <div class="skel-card" style="display:flex;gap:0.3rem;padding:0.3rem;">
+      <div class="skel" style="flex:1;height:38px;border-radius:7px;"></div>
+      <div class="skel" style="flex:1;height:38px;border-radius:7px;"></div>
+      <div class="skel" style="flex:1;height:38px;border-radius:7px;"></div>
+    </div>
+    <div style="margin-bottom:1rem;"></div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;margin-bottom:0.5rem;">
+      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:60%;"></div><div class="skel skel-line" style="width:35%;margin-bottom:0;"></div></div>
+    </div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;margin-bottom:0.5rem;">
+      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:45%;"></div><div class="skel skel-line" style="width:30%;margin-bottom:0;"></div></div>
+    </div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;">
+      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:70%;"></div><div class="skel skel-line" style="width:40%;margin-bottom:0;"></div></div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div id="pageContent">
+
+    <div class="page-header">
+      <h1>My Lists</h1>
+      <p id="listsSubtitle">Loading…</p>
+    </div>
+
+    <div class="tabs-row" id="tabsRow">
+      <button class="tab-btn active" data-tab="approved" onclick="setTab('approved',this)">
+        ✅ Approved <span class="tab-count" id="count-approved">0</span>
+      </button>
+      <button class="tab-btn" data-tab="blocked" onclick="setTab('blocked',this)">
+        🚫 Blocked <span class="tab-count" id="count-blocked">0</span>
+      </button>
+      <button class="tab-btn" data-tab="watchlater" onclick="setTab('watchlater',this)">
+        🕐 Watch Later <span class="tab-count" id="count-watchlater">0</span>
+      </button>
+    </div>
+
+    <div class="profile-filter" id="profileFilter"></div>
+
+    <div class="list-items" id="listItems"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  <a class="footer-logo" href="/index">
+    <div class="footer-logo-mark">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
+  </a>
+  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
+    <a href="/about">About</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/plans">Plans</a>
+  </div>
+  <p>© 2026 OkToWatch</p>
+  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
+    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Note edit modal -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h3>Edit Note</h3>
+      <p id="noteModalTitle"></p>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Note (optional)</label>
+        <textarea id="noteInput" placeholder="e.g. Great for family night, too scary for Emma…" maxlength="300"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="noteSaveBtn" onclick="saveNote()">Save Note</button>
+      <button class="btn-ghost-modal" onclick="closeNoteModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h3>Remove from list?</h3>
+      <p id="deleteModalTitle"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="deleteConfirmBtn" onclick="confirmDelete()">Remove</button>
+      <button class="btn-ghost-modal" onclick="closeDeleteModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let _lists    = [];
+let _profiles = [];
+let _activeTab     = 'approved';
+let _activeProfile = 'all';
+let _editingId  = null;
+let _deletingId = null;
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────
+async function _authHeaders() {
+  const token = await window.Clerk.session.getToken();
+  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+async function apiGet(url)        { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiPost(url, body) { const h = await _authHeaders(); const r = await fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiPut(url, body)  { const h = await _authHeaders(); const r = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiDelete(url)     { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
+
+// ── Auth guard ─────────────────────────────────────────────────────────────
+document.addEventListener('cv:auth', ({ detail }) => {
+  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
+    window.location.href = '/plans?reason=pro';
+    return;
+  }
+  // Check URL tab param
+  const params = new URLSearchParams(window.location.search);
+  const tabParam = params.get('tab');
+  if (['approved','blocked','watchlater'].includes(tabParam)) {
+    _activeTab = tabParam;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === tabParam);
+    });
+  }
+  loadLists();
+});
+
+// ── Load ──────────────────────────────────────────────────────────────────
+async function loadLists() {
+  try {
+    [_lists, _profiles] = await Promise.all([
+      apiGet('/api/lists'),
+      apiGet('/api/profiles'),
+    ]);
+  } catch (e) { console.error('Lists load error:', e); }
+
+  document.getElementById('pageLoader').classList.add('hidden');
+  document.getElementById('pageContent').classList.add('visible');
+
+  updateCounts();
+  renderProfileFilter();
+  renderList();
+}
+
+function updateCounts() {
+  ['approved','blocked','watchlater'].forEach(t => {
+    const count = _lists.filter(l => l.list_type === t).length;
+    document.getElementById('count-' + t).textContent = count;
+  });
+  const total = _lists.length;
+  document.getElementById('listsSubtitle').textContent =
+    total === 0 ? 'No titles saved yet' : `${total} title${total !== 1 ? 's' : ''} across all lists`;
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────
+function setTab(tab, btn) {
+  _activeTab     = tab;
+  _activeProfile = 'all';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProfileFilter();
+  renderList();
+}
+
+// ── Profile filter ────────────────────────────────────────────────────────
+function renderProfileFilter() {
+  const el = document.getElementById('profileFilter');
+  if (!_profiles.length) { el.innerHTML = ''; return; }
+
+  let html = `<button class="profile-filter-btn active" data-pid="all" onclick="setProfileFilter('all',this)">All</button>`;
+  html += _profiles.map(p =>
+    `<button class="profile-filter-btn" data-pid="${p.id}" onclick="setProfileFilter('${p.id}',this)">${p.emoji} ${p.name}</button>`
+  ).join('');
+  el.innerHTML = html;
+}
+
+function setProfileFilter(pid, btn) {
+  _activeProfile = pid;
+  document.querySelectorAll('.profile-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+function renderList() {
+  const el = document.getElementById('listItems');
+  let items = _lists.filter(l => l.list_type === _activeTab);
+  if (_activeProfile !== 'all') {
+    items = items.filter(l => l.profile_id === _activeProfile);
+  }
+
+  if (!items.length) {
+    const emptyConfig = {
+      approved:   { icon: '✅', title: 'No approved titles yet', desc: 'When you mark a title as approved, it appears here.' },
+      blocked:    { icon: '🚫', title: 'No blocked titles yet',  desc: 'When you mark a title as off-limits, it appears here.' },
+      watchlater: { icon: '🕐', title: 'Nothing saved to watch later', desc: 'Save titles you want to revisit later.' },
+    };
+    const cfg = emptyConfig[_activeTab];
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">${cfg.icon}</div>
+        <h3>${cfg.title}</h3>
+        <p>${cfg.desc}</p>
+        <a class="btn-go" href="/index">🔍 Search titles</a>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = items.map(item => {
+    const profile = item.profile_id ? _profiles.find(p => p.id === item.profile_id) : null;
+    const poster  = item.poster
+      ? `<img src="${item.poster}" alt="${item.title}" loading="lazy">` : '🎬';
+    const typeTag = item.media_type === 'tv'
+      ? '<span class="list-tag tag-tv">TV</span>'
+      : '<span class="list-tag tag-movie">Film</span>';
+    const profileTag = profile
+      ? `<span class="list-tag tag-profile">${profile.emoji} ${profile.name}</span>` : '';
+    const noteHtml = item.note
+      ? `<div class="list-note">💬 ${item.note}</div>` : '';
+    return `
+      <div class="list-item" onclick="openTitle('${item.tmdb_id}','${item.media_type}')">
+        <div class="list-poster">${poster}</div>
+        <div class="list-info">
+          <div class="list-title">${item.title}</div>
+          <div class="list-meta">${item.year || ''}${item.year ? ' · ' : ''}${typeTag}${profileTag}</div>
+          ${noteHtml}
+        </div>
+        <div class="list-actions">
+          <button class="list-action-btn" onclick="openNote(event,'${item.id}','${item.title.replace(/'/g,"\\'")}','${(item.note||'').replace(/'/g,"\\'")}')" title="Edit note">✏️</button>
+          <button class="list-action-btn delete" onclick="promptDelete(event,'${item.id}','${item.title.replace(/'/g,"\\'")}')   " title="Remove">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openTitle(id, type) {
+  window.location.href = `/index?id=${id}&type=${type}`;
+}
+
+// ── Note modal ─────────────────────────────────────────────────────────────
+function openNote(e, id, title, existingNote) {
+  e.stopPropagation();
+  _editingId = id;
+  document.getElementById('noteModalTitle').textContent = title;
+  document.getElementById('noteInput').value = existingNote || '';
+  document.getElementById('noteModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('noteInput').focus(), 300);
+}
+
+async function saveNote() {
+  const btn  = document.getElementById('noteSaveBtn');
+  const note = document.getElementById('noteInput').value.trim();
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const updated = await apiPut(`/api/lists?id=${_editingId}`, { note });
+    const idx = _lists.findIndex(l => l.id === _editingId);
+    if (idx !== -1) _lists[idx] = updated;
+    closeNoteModal();
+    renderList();
+    showToast('Note saved ✓');
+  } catch (e) {
+    showToast('Failed to save note');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Note';
+  }
+}
+
+function closeNoteModal() {
+  document.getElementById('noteModal').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// ── Delete modal ──────────────────────────────────────────────────────────
+function promptDelete(e, id, title) {
+  e.stopPropagation();
+  _deletingId = id;
+  document.getElementById('deleteModalTitle').textContent = `"${title}" will be removed from this list.`;
+  document.getElementById('deleteModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+async function confirmDelete() {
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true; btn.textContent = 'Removing…';
+  try {
+    await apiDelete(`/api/lists?id=${_deletingId}`);
+    _lists = _lists.filter(l => l.id !== _deletingId);
+    updateCounts();
+    renderList();
+    closeDeleteModal();
+    showToast('Removed from list');
+  } catch (e) {
+    showToast('Failed to remove');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Remove';
+  }
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// Close modals on backdrop or Escape
+['noteModal','deleteModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target === document.getElementById(id)) {
+      if (id === 'noteModal') closeNoteModal(); else closeDeleteModal();
+    }
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeNoteModal(); closeDeleteModal(); }
+});
+</script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

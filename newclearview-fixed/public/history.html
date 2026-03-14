@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2a6b55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="OkToWatch">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<title>History — OkToWatch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --danger: #c0392b; --danger-bg: #fdecea;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 16px; --radius-sm: 10px;
+}
+html { overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
+#nav-root { position: relative; z-index: 10; }
+.page-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+
+/* ── Skeleton ── */
+.skel { background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 0.65rem; }
+.skel-line { height: 12px; border-radius: 6px; margin-bottom: 0.6rem; }
+#pageLoader { display: block; }
+#pageLoader.hidden { display: none; }
+#pageContent { display: none; }
+#pageContent.visible { display: block; }
+
+/* ── Page header ── */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
+}
+.page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; }
+.page-header p  { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+.btn-clear {
+  background: var(--surface); border: 1.5px solid var(--border); color: var(--danger);
+  padding: 0.45rem 0.9rem; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap; transition: all 0.15s;
+}
+.btn-clear:hover { background: var(--danger-bg); border-color: var(--danger); }
+
+/* ── Filters row ── */
+.filters-row {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
+}
+.filter-pill {
+  background: var(--surface); border: 1.5px solid var(--border); color: var(--text2);
+  padding: 0.38rem 0.85rem; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--accent); color: var(--accent); }
+.filter-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ── History list ── */
+.history-list {
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.15s;
+}
+.history-item {
+  background: var(--surface); border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.85rem 1rem; margin-bottom: 0.5rem;
+  cursor: pointer; transition: all 0.15s; position: relative;
+  border: 1.5px solid transparent;
+}
+.history-item:hover { border-color: var(--accent); transform: translateX(2px); }
+.history-poster {
+  width: 40px; min-width: 40px; height: 56px;
+  border-radius: 6px; overflow: hidden;
+  background: var(--surface2); display: flex; align-items: center;
+  justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+}
+.history-poster img { width: 100%; height: 100%; object-fit: cover; }
+.history-info { flex: 1; min-width: 0; }
+.history-title { font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-meta  { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.history-tag {
+  font-size: 0.62rem; font-weight: 600; padding: 0.08rem 0.35rem;
+  border-radius: 100px; background: var(--accent-light); color: var(--accent);
+  white-space: nowrap;
+}
+.history-tag.movie { background: #e8f0fe; color: #3367d6; }
+.history-tag.tv    { background: #fef6e4; color: #b07a10; }
+.history-delete {
+  background: none; border: none; color: var(--muted); font-size: 1rem;
+  cursor: pointer; padding: 0.3rem; border-radius: 6px;
+  opacity: 0; transition: all 0.12s; flex-shrink: 0;
+}
+.history-item:hover .history-delete { opacity: 1; }
+.history-delete:hover { color: var(--danger); background: var(--danger-bg); }
+
+/* ── Date group label ── */
+.date-group {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  margin: 1.25rem 0 0.5rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.date-group::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.date-group:first-child { margin-top: 0; }
+
+/* ── Empty state ── */
+.empty-state {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 3rem 2rem; text-align: center;
+}
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.empty-state h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.empty-state p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.25rem; }
+.btn-go {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: var(--accent); color: white; border: none;
+  padding: 0.6rem 1.4rem; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; text-decoration: none; transition: opacity 0.15s;
+}
+.btn-go:hover { opacity: 0.88; }
+
+/* ── Load more ── */
+.load-more-wrap { text-align: center; margin-top: 1rem; }
+.btn-load-more {
+  background: var(--surface); border: 1.5px solid var(--border); color: var(--text2);
+  padding: 0.55rem 1.5rem; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-load-more:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Toast ── */
+.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Confirm modal ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
+.modal-overlay.visible { display: flex; }
+.modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; max-width: 480px; width: 100%; animation: slideUp 0.28s ease forwards; padding-bottom: env(safe-area-inset-bottom, 1rem); }
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0.75rem auto 0; }
+.modal-header { padding: 1rem 1.5rem 0.85rem; border-bottom: 1px solid var(--border); }
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-header p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+.modal-footer { padding: 1.25rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.btn-danger { background: var(--danger); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
+.btn-danger:hover { opacity: 0.88; }
+.btn-ghost-modal { background: var(--surface2); color: var(--text2); border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; width: 100%; }
+.btn-ghost-modal:hover { background: #e8edeb; }
+
+/* ── Footer ── */
+footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.footer-logo-text { font-size: 0.88rem; color: var(--text); }
+.footer-logo-text strong { font-weight: 700; }
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+@media (max-width: 599px) {
+  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
+  .page-header h1 { font-size: 1.25rem; }
+  .filters-row { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+}
+@media (max-width: 380px) {
+  .page-wrap { padding: 1rem 0.65rem 4rem; }
+}
+</style>
+<meta property="og:image" content="https://oktowatch.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+</head>
+<body data-page="history">
+
+<div id="nav-root"></div>
+
+<div class="page-wrap">
+
+  <!-- Skeleton -->
+  <div id="pageLoader">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <div>
+        <div class="skel skel-line" style="width:120px;height:20px;margin-bottom:0.4rem;"></div>
+        <div class="skel skel-line" style="width:180px;height:11px;margin-bottom:0;"></div>
+      </div>
+      <div class="skel" style="width:90px;height:34px;border-radius:100px;"></div>
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+      <div class="skel" style="width:60px;height:30px;border-radius:100px;"></div>
+      <div class="skel" style="width:70px;height:30px;border-radius:100px;"></div>
+      <div class="skel" style="width:65px;height:30px;border-radius:100px;"></div>
+    </div>
+    <div class="skel skel-line" style="width:80px;height:10px;margin-bottom:0.6rem;"></div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;margin-bottom:0.5rem;">
+      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:55%;"></div><div class="skel skel-line" style="width:35%;margin-bottom:0;"></div></div>
+    </div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;margin-bottom:0.5rem;">
+      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:65%;"></div><div class="skel skel-line" style="width:40%;margin-bottom:0;"></div></div>
+    </div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;">
+      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:50%;"></div><div class="skel skel-line" style="width:30%;margin-bottom:0;"></div></div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div id="pageContent">
+
+    <div class="page-header">
+      <div>
+        <h1>Search History</h1>
+        <p id="historySubtitle">Loading…</p>
+      </div>
+      <button class="btn-clear" onclick="promptClearAll()">Clear All</button>
+    </div>
+
+    <div class="filters-row" id="filtersRow">
+      <button class="filter-pill active" data-filter="all" onclick="setFilter('all',this)">All</button>
+      <button class="filter-pill" data-filter="movie" onclick="setFilter('movie',this)">Movies</button>
+      <button class="filter-pill" data-filter="tv" onclick="setFilter('tv',this)">TV Shows</button>
+    </div>
+
+    <div class="history-list" id="historyList"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  <a class="footer-logo" href="/index">
+    <div class="footer-logo-mark">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
+  </a>
+  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
+    <a href="/about">About</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/plans">Plans</a>
+  </div>
+  <p>© 2026 OkToWatch</p>
+  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
+    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Clear confirm modal -->
+<div class="modal-overlay" id="clearModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h3 id="clearModalTitle">Clear all history?</h3>
+      <p id="clearModalSub">This can't be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="clearConfirmBtn" onclick="confirmClear()">Clear History</button>
+      <button class="btn-ghost-modal" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let _history  = [];
+let _profiles = [];
+let _activeFilter = 'all';
+let _clearTarget = null; // null = all, string = single id
+const PAGE_SIZE = 30;
+let _page = 1;
+
+// ── Toast ────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── API helpers ──────────────────────────────────────────────────────────
+async function _authHeaders() {
+  const token = await window.Clerk.session.getToken();
+  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+async function apiGet(url)        { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiPost(url, body) { const h = await _authHeaders(); const r = await fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiPut(url, body)  { const h = await _authHeaders(); const r = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiDelete(url)     { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
+
+// ── Auth guard ───────────────────────────────────────────────────────────
+document.addEventListener('cv:auth', ({ detail }) => {
+  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
+    window.location.href = '/plans?reason=pro';
+    return;
+  }
+  loadHistory();
+});
+
+// ── Load ─────────────────────────────────────────────────────────────────
+async function loadHistory() {
+  try {
+    [_history, _profiles] = await Promise.all([
+      apiGet('/api/history?limit=500'),
+      apiGet('/api/profiles'),
+    ]);
+  } catch (e) {
+    console.error('History load error:', e);
+  }
+
+  document.getElementById('pageLoader').classList.add('hidden');
+  document.getElementById('pageContent').classList.add('visible');
+  updateSubtitle();
+  renderHistory();
+}
+
+function updateSubtitle() {
+  const filtered = filtered_history();
+  const total = _history.length;
+  document.getElementById('historySubtitle').textContent =
+    total === 0 ? 'No searches yet'
+    : filtered.length === total ? `${total} title${total !== 1 ? 's' : ''} checked`
+    : `${filtered.length} of ${total} titles`;
+}
+
+function filtered_history() {
+  if (_activeFilter === 'all') return _history;
+  return _history.filter(h => h.media_type === _activeFilter);
+}
+
+// ── Filter pills ─────────────────────────────────────────────────────────
+function setFilter(val, btn) {
+  _activeFilter = val;
+  _page = 1;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  updateSubtitle();
+  renderHistory();
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+function formatDate(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = now - d;
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 7)  return `${days} days ago`;
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function groupByDate(items) {
+  const groups = {};
+  items.forEach(item => {
+    const label = formatDate(item.searched_at);
+    if (!groups[label]) groups[label] = [];
+    groups[label].push(item);
+  });
+  return groups;
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  const items = filtered_history();
+
+  if (!items.length) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>${_activeFilter === 'all' ? 'No history yet' : `No ${_activeFilter === 'tv' ? 'TV shows' : 'movies'} in history`}</h3>
+        <p>${_activeFilter === 'all' ? 'Titles you search will appear here.' : 'Switch to "All" or search more titles.'}</p>
+        <a class="btn-go" href="/index">🔍 Search now</a>
+      </div>`;
+    return;
+  }
+
+  const visible = items.slice(0, _page * PAGE_SIZE);
+  const groups  = groupByDate(visible);
+
+  let html = '';
+  for (const [label, group] of Object.entries(groups)) {
+    html += `<div class="date-group">${label}</div>`;
+    html += group.map(item => {
+      const profile = item.profile_id ? _profiles.find(p => p.id === item.profile_id) : null;
+      const poster  = item.poster
+        ? `<img src="${item.poster}" alt="${item.title}" loading="lazy">`
+        : '🎬';
+      const typeTag = item.media_type === 'tv'
+        ? '<span class="history-tag tv">TV</span>'
+        : '<span class="history-tag movie">Film</span>';
+      const profileTag = profile
+        ? `<span class="history-tag">${profile.emoji} ${profile.name}</span>` : '';
+      return `
+        <div class="history-item" onclick="openTitle('${item.tmdb_id}','${item.media_type}')">
+          <div class="history-poster">${poster}</div>
+          <div class="history-info">
+            <div class="history-title">${item.title}</div>
+            <div class="history-meta">${item.year || ''}${item.year ? ' · ' : ''}${typeTag}${profileTag}</div>
+          </div>
+          <button class="history-delete" onclick="promptDelete(event,'${item.id}')" title="Remove">✕</button>
+        </div>`;
+    }).join('');
+  }
+
+  if (visible.length < items.length) {
+    html += `<div class="load-more-wrap">
+      <button class="btn-load-more" onclick="loadMore()">Load more</button>
+    </div>`;
+  }
+
+  list.innerHTML = html;
+}
+
+function openTitle(id, type) {
+  window.location.href = `/index?id=${id}&type=${type}`;
+}
+
+function loadMore() {
+  _page++;
+  renderHistory();
+}
+
+// ── Delete ────────────────────────────────────────────────────────────────
+function promptDelete(e, id) {
+  e.stopPropagation();
+  _clearTarget = id;
+  document.getElementById('clearModalTitle').textContent = 'Remove this title?';
+  document.getElementById('clearModalSub').textContent = 'It will be removed from your history.';
+  document.getElementById('clearConfirmBtn').textContent = 'Remove';
+  document.getElementById('clearModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function promptClearAll() {
+  if (!_history.length) { showToast('History is already empty'); return; }
+  _clearTarget = null;
+  document.getElementById('clearModalTitle').textContent = 'Clear all history?';
+  document.getElementById('clearModalSub').textContent = `This will remove all ${_history.length} entries. This can't be undone.`;
+  document.getElementById('clearConfirmBtn').textContent = 'Clear All';
+  document.getElementById('clearModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+async function confirmClear() {
+  const btn = document.getElementById('clearConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Removing…';
+
+  try {
+    if (_clearTarget) {
+      await apiDelete(`/api/history?id=${_clearTarget}`);
+      _history = _history.filter(h => h.id !== _clearTarget);
+      showToast('Entry removed');
+    } else {
+      await apiDelete('/api/history');
+      _history = [];
+      showToast('History cleared');
+    }
+    _page = 1;
+    updateSubtitle();
+    renderHistory();
+  } catch (e) {
+    showToast('Failed to remove — try again');
+  } finally {
+    btn.disabled = false;
+    closeModal();
+  }
+}
+
+function closeModal() {
+  document.getElementById('clearModal').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('clearModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('clearModal')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

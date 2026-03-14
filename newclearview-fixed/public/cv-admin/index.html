@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — OkToWatch</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #21262d;
+  --border:   rgba(255,255,255,0.08);
+  --text:     #e6edf3;
+  --text2:    #8b949e;
+  --accent:   #2a6b55;
+  --accent-l: #3fb37a;
+  --red:      #f85149;
+  --yellow:   #d29922;
+  --green:    #3fb37a;
+  --purple:   #a371f7;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+  --radius:   8px;
+}
+html, body { height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; display: flex; flex-direction: column; }
+
+/* ── Top bar ── */
+.topbar {
+  height: 52px; background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem; gap: 1rem;
+  flex-shrink: 0; z-index: 100;
+}
+.topbar-logo {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--sans); font-weight: 700; font-size: 0.9rem; color: var(--text);
+  text-decoration: none;
+}
+.topbar-logo-mark {
+  width: 24px; height: 24px; border-radius: 6px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-badge {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600;
+  background: rgba(243,107,85,0.15); color: #f85149;
+  border: 1px solid rgba(248,81,73,0.3);
+  padding: 0.15rem 0.5rem; border-radius: 4px; letter-spacing: 0.05em;
+}
+.topbar-spacer { flex: 1; }
+.topbar-user { font-size: 0.78rem; color: var(--text2); display: flex; align-items: center; gap: 0.5rem; }
+.topbar-user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+#topbarSignOut {
+  font-size: 0.75rem; background: none; border: 1px solid var(--border);
+  color: var(--text2); padding: 0.3rem 0.7rem; border-radius: var(--radius);
+  cursor: pointer; font-family: var(--sans); transition: all 0.15s;
+}
+#topbarSignOut:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Layout ── */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 200px; flex-shrink: 0;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; padding: 1rem 0.75rem; gap: 0.2rem;
+  overflow-y: auto;
+}
+.sidebar-section {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text2);
+  padding: 0.75rem 0.5rem 0.35rem; margin-top: 0.25rem;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0.65rem; border-radius: 6px;
+  cursor: pointer; color: var(--text2); font-size: 0.83rem; font-weight: 500;
+  transition: all 0.12s; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: rgba(42,107,85,0.2); color: var(--accent-l); font-weight: 600; }
+.nav-item .ni-icon { font-size: 0.95rem; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; font-family: var(--mono); font-size: 0.6rem;
+  background: var(--surface2); color: var(--text2); padding: 0.1rem 0.4rem;
+  border-radius: 10px; min-width: 18px; text-align: center;
+}
+.nav-item.active .nav-badge { background: rgba(42,107,85,0.3); color: var(--accent-l); }
+
+/* ── Main ── */
+.main { flex: 1; overflow-y: auto; padding: 1.5rem; }
+
+/* ── Panel ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.panel-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+.panel-sub { font-size: 0.78rem; color: var(--text2); margin-top: 0.2rem; }
+
+/* ── Stat cards ── */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.1rem 1.25rem;
+}
+.stat-label { font-family: var(--mono); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); margin-bottom: 0.4rem; }
+.stat-value { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.stat-sub { font-size: 0.72rem; color: var(--text2); margin-top: 0.3rem; }
+.stat-card.green .stat-value { color: var(--green); }
+.stat-card.yellow .stat-value { color: var(--yellow); }
+.stat-card.purple .stat-value { color: var(--purple); }
+
+/* ── Table ── */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.table-toolbar {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
+}
+.search-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 0.45rem 0.75rem;
+  font-family: var(--sans); font-size: 0.82rem; color: var(--text);
+  outline: none; transition: border 0.15s; max-width: 280px;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text2); }
+.toolbar-count { font-family: var(--mono); font-size: 0.72rem; color: var(--text2); margin-left: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2);
+  padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+  text-align: left; white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.02); }
+tbody td { padding: 0.7rem 1rem; font-size: 0.82rem; vertical-align: middle; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
+  padding: 0.15rem 0.5rem; border-radius: 4px; white-space: nowrap;
+}
+.badge-pro     { background: rgba(42,107,85,0.15); color: var(--accent-l); border: 1px solid rgba(42,107,85,0.3); }
+.badge-family  { background: rgba(163,113,247,0.15); color: var(--purple); border: 1px solid rgba(163,113,247,0.3); }
+.badge-admin   { background: rgba(248,81,73,0.12); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+.badge-banned  { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+.badge-info    { background: rgba(56,139,253,0.15); color: #58a6ff; border: 1px solid rgba(56,139,253,0.3); }
+.badge-success { background: rgba(63,179,122,0.15); color: var(--green); border: 1px solid rgba(63,179,122,0.3); }
+.badge-warning { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+.badge-inactive{ background: rgba(139,148,158,0.15); color: var(--text2); border: 1px solid var(--border); }
+
+/* ── Action buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.35rem 0.75rem; border-radius: 6px; font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.12s; background: none; color: var(--text2);
+  white-space: nowrap;
+}
+.btn:hover { background: var(--surface2); color: var(--text); }
+.btn-green { color: var(--green); border-color: rgba(63,179,122,0.3); }
+.btn-green:hover { background: rgba(63,179,122,0.1); }
+.btn-red   { color: var(--red);   border-color: rgba(248,81,73,0.3); }
+.btn-red:hover   { background: rgba(248,81,73,0.1); }
+.btn-yellow{ color: var(--yellow); border-color: rgba(210,153,34,0.3); }
+.btn-yellow:hover{ background: rgba(210,153,34,0.1); }
+.btn-solid { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-solid:hover { opacity: 0.88; }
+
+.actions-cell { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+
+/* ── Pagination ── */
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 1rem; border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text2);
+}
+.pagination-btns { display: flex; gap: 0.35rem; }
+.page-btn {
+  padding: 0.3rem 0.65rem; border-radius: 5px; background: none;
+  border: 1px solid var(--border); color: var(--text2); cursor: pointer;
+  font-family: var(--sans); font-size: 0.78rem; transition: all 0.12s;
+}
+.page-btn:hover:not(:disabled) { background: var(--surface2); color: var(--text); }
+.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.page-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* ── Modal ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 440px;
+  animation: modalIn 0.18s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(-8px); } to { opacity: 1; transform: none; } }
+.modal-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
+.modal-sub { font-size: 0.78rem; color: var(--text2); margin-bottom: 1.25rem; }
+.modal-field { margin-bottom: 1rem; }
+.modal-label { font-family: var(--mono); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); margin-bottom: 0.4rem; display: block; }
+.modal-input, .modal-select, .modal-textarea {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 0.55rem 0.75rem; font-family: var(--sans);
+  font-size: 0.85rem; color: var(--text); outline: none; transition: border 0.15s;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--accent); }
+.modal-textarea { resize: vertical; min-height: 80px; }
+.modal-select option { background: var(--surface2); }
+.modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.25rem; }
+
+/* ── Empty / loading states ── */
+.empty-state {
+  padding: 3rem 1rem; text-align: center;
+  color: var(--text2); font-size: 0.82rem;
+}
+.loading-row td { text-align: center; color: var(--text2); font-style: italic; }
+
+/* ── Cache entry ── */
+.cache-id { font-family: var(--mono); font-size: 0.75rem; color: var(--accent-l); }
+.cache-size { font-family: var(--mono); font-size: 0.72rem; color: var(--text2); }
+
+/* ── Announcement ── */
+.ann-message { max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ann-expired { text-decoration: line-through; opacity: 0.5; }
+
+/* ── Log entry ── */
+.log-action { font-family: var(--mono); font-size: 0.72rem; }
+.log-target { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); }
+.log-detail { font-size: 0.72rem; color: var(--text2); }
+.log-time { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); white-space: nowrap; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.65rem 1rem;
+  font-size: 0.82rem; font-weight: 600; color: var(--text);
+  opacity: 0; transform: translateY(8px);
+  transition: all 0.2s; pointer-events: none; z-index: 999;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { border-color: rgba(63,179,122,0.4); color: var(--green); }
+.toast.error   { border-color: rgba(248,81,73,0.4);  color: var(--red); }
+
+/* ── Auth gate ── */
+#authGate {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; flex-direction: column; gap: 0.75rem;
+}
+#authGate h2 { font-size: 1.1rem; font-weight: 700; }
+#authGate p  { font-size: 0.82rem; color: var(--text2); }
+
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+<meta property="og:image" content="https://oktowatch.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+</head>
+<body>
+
+<!-- Auth gate (shown until admin status confirmed) -->
+<div id="authGate">
+  <div style="width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+  </div>
+  <h2>Verifying access…</h2>
+  <p>You must be an admin to view this page.</p>
+</div>
+
+<!-- Top bar -->
+<div class="topbar" style="display:none;" id="appShell">
+  <a class="topbar-logo" href="/index">
+    <div class="topbar-logo-mark">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    OkToWatch
+  </a>
+  <span class="topbar-badge">ADMIN</span>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-user">
+    <div class="topbar-user-dot"></div>
+    <span id="topbarEmail"></span>
+  </div>
+  <button id="topbarSignOut">Sign out</button>
+</div>
+
+<div class="layout" style="display:none;" id="appLayout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-section">Overview</div>
+    <button class="nav-item active" data-panel="stats">
+      <span class="ni-icon">📊</span> Stats
+    </button>
+
+    <div class="sidebar-section">Users</div>
+    <button class="nav-item" data-panel="users">
+      <span class="ni-icon">👥</span> All Users
+      <span class="nav-badge" id="nbUsers">—</span>
+    </button>
+    <button class="nav-item" data-panel="banned">
+      <span class="ni-icon">🚫</span> Banned
+      <span class="nav-badge" id="nbBanned">—</span>
+    </button>
+
+    <div class="sidebar-section">Content</div>
+    <button class="nav-item" data-panel="cache">
+      <span class="ni-icon">⚡</span> Cache
+      <span class="nav-badge" id="nbCache">—</span>
+    </button>
+    <button class="nav-item" data-panel="announcements">
+      <span class="ni-icon">📢</span> Banners
+    </button>
+
+    <div class="sidebar-section">System</div>
+    <button class="nav-item" data-panel="log">
+      <span class="ni-icon">📋</span> Audit Log
+    </button>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── STATS ── -->
+    <div class="panel active" id="panel-stats">
+      <div class="panel-header">
+        <div><div class="panel-title">Overview</div><div class="panel-sub">Live app stats</div></div>
+        <button class="btn" onclick="loadStats()">↻ Refresh</button>
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="s-users">—</div><div class="stat-sub">All time signups</div></div>
+        <div class="stat-card green"><div class="stat-label">New (7d)</div><div class="stat-value" id="s-new">—</div><div class="stat-sub">Recent signups</div></div>
+        <div class="stat-card"><div class="stat-label">Total Searches</div><div class="stat-value" id="s-searches">—</div><div class="stat-sub">All time</div></div>
+        <div class="stat-card yellow"><div class="stat-label">Searches (7d)</div><div class="stat-value" id="s-searches7">—</div><div class="stat-sub">This week</div></div>
+        <div class="stat-card purple"><div class="stat-label">Cache Entries</div><div class="stat-value" id="s-cache">—</div><div class="stat-sub">Saved analyses</div></div>
+        <div class="stat-card"><div class="stat-label">Banned Users</div><div class="stat-value" id="s-banned">—</div><div class="stat-sub">Active bans</div></div>
+      </div>
+    </div>
+
+    <!-- ── USERS ── -->
+    <div class="panel" id="panel-users">
+      <div class="panel-header">
+        <div><div class="panel-title">Users</div><div class="panel-sub">All registered accounts</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input class="search-input" id="userSearch" placeholder="Search by name or email…" oninput="debounceUserSearch()">
+          <span class="toolbar-count" id="userCount"></span>
+        </div>
+        <table>
+          <thead><tr>
+            <th>User</th><th>Email</th><th>Plan</th><th>Joined</th><th>Last active</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="usersTbody"><tr class="loading-row"><td colspan="6">Loading…</td></tr></tbody>
+        </table>
+        <div class="pagination" id="usersPagination" style="display:none">
+          <span id="usersPageInfo"></span>
+          <div class="pagination-btns" id="usersPageBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BANNED ── -->
+    <div class="panel" id="panel-banned">
+      <div class="panel-header">
+        <div><div class="panel-title">Banned Users</div><div class="panel-sub">Active bans</div></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>User ID</th><th>Reason</th><th>Banned</th><th>Actions</th></tr></thead>
+          <tbody id="bannedTbody"><tr class="loading-row"><td colspan="4">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── CACHE ── -->
+    <div class="panel" id="panel-cache">
+      <div class="panel-header">
+        <div><div class="panel-title">Analysis Cache</div><div class="panel-sub">Cached Groq results</div></div>
+        <button class="btn btn-red" onclick="confirmFlushCache()">🗑 Flush all</button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input class="search-input" id="cacheSearch" placeholder="Search by TMDB ID…" oninput="debounceCacheSearch()">
+          <span class="toolbar-count" id="cacheCount"></span>
+        </div>
+        <table>
+          <thead><tr><th>Cache key</th><th>Type</th><th>Season</th><th>Size</th><th>Cached at</th><th>Actions</th></tr></thead>
+          <tbody id="cacheTbody"><tr class="loading-row"><td colspan="6">Loading…</td></tr></tbody>
+        </table>
+        <div class="pagination" id="cachePagination" style="display:none">
+          <span id="cachePageInfo"></span>
+          <div class="pagination-btns" id="cachePageBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ANNOUNCEMENTS ── -->
+    <div class="panel" id="panel-announcements">
+      <div class="panel-header">
+        <div><div class="panel-title">Announcements</div><div class="panel-sub">Sitewide banners</div></div>
+        <button class="btn btn-solid" onclick="openAnnModal()">+ New banner</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Message</th><th>Type</th><th>Status</th><th>Expires</th><th>Created</th><th>Actions</th></tr></thead>
+          <tbody id="annTbody"><tr class="loading-row"><td colspan="6">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── LOG ── -->
+    <div class="panel" id="panel-log">
+      <div class="panel-header">
+        <div><div class="panel-title">Audit Log</div><div class="panel-sub">Admin actions</div></div>
+        <button class="btn" onclick="loadLog(1)">↻ Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Target</th><th>Detail</th><th>Time</th></tr></thead>
+          <tbody id="logTbody"><tr class="loading-row"><td colspan="4">Loading…</td></tr></tbody>
+        </table>
+        <div class="pagination" id="logPagination" style="display:none">
+          <span id="logPageInfo"></span>
+          <div class="pagination-btns" id="logPageBtns"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Plan modal -->
+<div class="modal-overlay" id="planModal">
+  <div class="modal">
+    <div class="modal-title">Set Plan</div>
+    <div class="modal-sub" id="planModalSub">Choose the plan for this user.</div>
+    <div class="modal-field">
+      <label class="modal-label">Plan</label>
+      <select class="modal-select" id="planSelect">
+        <option value="">No plan (free)</option>
+        <option value="pro">Pro</option>
+        <option value="family">Family</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closePlanModal()">Cancel</button>
+      <button class="btn btn-solid" onclick="confirmSetPlan()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ban modal -->
+<div class="modal-overlay" id="banModal">
+  <div class="modal">
+    <div class="modal-title">Ban User</div>
+    <div class="modal-sub" id="banModalSub"></div>
+    <div class="modal-field">
+      <label class="modal-label">Reason (optional)</label>
+      <input class="modal-input" id="banReason" placeholder="e.g. Terms of service violation">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeBanModal()">Cancel</button>
+      <button class="btn btn-red" onclick="confirmBan()">Ban user</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete user modal -->
+<div class="modal-overlay" id="deleteUserModal">
+  <div class="modal">
+    <div class="modal-title">Delete User</div>
+    <div class="modal-sub" id="deleteUserSub">This permanently deletes the account and all data. This cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeDeleteUserModal()">Cancel</button>
+      <button class="btn btn-red" onclick="confirmDeleteUser()">Delete permanently</button>
+    </div>
+  </div>
+</div>
+
+<!-- Announcement modal -->
+<div class="modal-overlay" id="annModal">
+  <div class="modal">
+    <div class="modal-title" id="annModalTitle">New Banner</div>
+    <div class="modal-field">
+      <label class="modal-label">Message</label>
+      <textarea class="modal-textarea" id="annMessage" placeholder="e.g. We're performing maintenance on Sunday…"></textarea>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Type</label>
+      <select class="modal-select" id="annType">
+        <option value="info">ℹ️ Info</option>
+        <option value="warning">⚠️ Warning</option>
+        <option value="success">✅ Success</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Expires at (optional)</label>
+      <input class="modal-input" id="annExpires" type="datetime-local">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAnnModal()">Cancel</button>
+      <button class="btn btn-solid" onclick="saveAnnouncement()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Flush cache confirm -->
+<div class="modal-overlay" id="flushModal">
+  <div class="modal">
+    <div class="modal-title">Flush Entire Cache?</div>
+    <div class="modal-sub">This deletes all cached analyses. Every search will re-hit the Groq API until the cache rebuilds. This cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('flushModal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-red" onclick="doFlushCache()">Yes, flush all</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Clerk setup ───────────────────────────────────────────────────────────
+const CLERK_PK     = 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA';
+const CLERK_SCRIPT = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
+
+// ── State ─────────────────────────────────────────────────────────────────
+let activePanel = 'stats';
+let usersPage = 1, userQuery = '', usersDebounce = null;
+let cachePage = 1, cacheQuery = '', cacheDebounce = null;
+let logPage   = 1;
+let pendingUserId = null, pendingAnnId = null;
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+(async () => {
+  const s = document.createElement('script');
+  s.src = CLERK_SCRIPT;
+  s.setAttribute('data-clerk-publishable-key', CLERK_PK);
+  document.head.appendChild(s);
+  await new Promise((res, rej) => { s.onload = res; s.onerror = rej; });
+  await window.Clerk.load();
+
+  const user = window.Clerk.user;
+  if (!user) { showGate('Not signed in.'); return; }
+  if (!user.publicMetadata?.isAdmin) { showGate('Access denied — not an admin.'); return; }
+
+  // Show app
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('appShell').style.display = 'flex';
+  document.getElementById('appLayout').style.display = 'flex';
+  document.getElementById('topbarEmail').textContent = user.emailAddresses?.[0]?.emailAddress || user.firstName || 'Admin';
+
+  // Sign out
+  document.getElementById('topbarSignOut').onclick = async () => {
+    await window.Clerk.signOut();
+    window.location.href = '/index';
+  };
+
+  // Nav
+  document.querySelectorAll('.nav-item[data-panel]').forEach(btn => {
+    btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
+  });
+
+  // Load initial panel
+  loadStats();
+})();
+
+function showGate(msg) {
+  document.querySelector('#authGate p').textContent = msg;
+}
+
+// ── Auth header ───────────────────────────────────────────────────────────
+async function authHeader() {
+  const token = await window.Clerk.session.getToken();
+  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+async function api(method, path, body) {
+  const headers = await authHeader();
+  const res = await fetch(`/api/admin/${path}`, {
+    method, headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(e.error || 'Request failed');
+  }
+  return res.json();
+}
+
+// ── Panel switching ───────────────────────────────────────────────────────
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById(`panel-${name}`)?.classList.add('active');
+  document.querySelector(`.nav-item[data-panel="${name}"]`)?.classList.add('active');
+  activePanel = name;
+
+  if (name === 'stats')         loadStats();
+  if (name === 'users')         loadUsers(1);
+  if (name === 'banned')        loadBanned();
+  if (name === 'cache')         loadCache(1);
+  if (name === 'announcements') loadAnnouncements();
+  if (name === 'log')           loadLog(1);
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const d = await api('GET', 'stats');
+    document.getElementById('s-users').textContent     = d.users.total;
+    document.getElementById('s-new').textContent       = d.users.recentSignups;
+    document.getElementById('s-searches').textContent  = d.searches.total;
+    document.getElementById('s-searches7').textContent = d.searches.last7days;
+    document.getElementById('s-cache').textContent     = d.cache;
+    document.getElementById('s-banned').textContent    = d.banned;
+    document.getElementById('nbBanned').textContent    = d.banned;
+    document.getElementById('nbCache').textContent     = d.cache;
+    document.getElementById('nbUsers').textContent     = d.users.total;
+  } catch(e) { toast('Failed to load stats', 'error'); }
+}
+
+// ── Users ─────────────────────────────────────────────────────────────────
+async function loadUsers(page = 1) {
+  usersPage = page;
+  setTbody('usersTbody', 6, 'Loading…');
+  try {
+    const d = await api('GET', `users?page=${page}&q=${encodeURIComponent(userQuery)}`);
+    document.getElementById('userCount').textContent = `${d.total} users`;
+    if (!d.users.length) { setTbody('usersTbody', 6, 'No users found'); return; }
+
+    document.getElementById('usersTbody').innerHTML = d.users.map(u => `
+      <tr>
+        <td><div style="font-weight:600;">${esc(u.firstName||'')} ${esc(u.lastName||'')}</div>
+            <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text2);">${u.id.slice(0,16)}…</div></td>
+        <td>${esc(u.email)}</td>
+        <td>${planBadge(u)}</td>
+        <td style="font-size:0.75rem;color:var(--text2);">${fmtDate(u.createdAt)}</td>
+        <td style="font-size:0.75rem;color:var(--text2);">${u.lastSignIn ? fmtDate(u.lastSignIn) : '—'}</td>
+        <td><div class="actions-cell">
+          <button class="btn btn-green" onclick="openPlanModal('${u.id}','${esc(u.email)}','${u.isPro?'pro':u.isFamily?'family':''}')">Plan</button>
+          ${u.isBanned
+            ? `<button class="btn btn-yellow" onclick="doUnban('${u.id}')">Unban</button>`
+            : `<button class="btn btn-yellow" onclick="openBanModal('${u.id}','${esc(u.email)}')">Ban</button>`}
+          <button class="btn btn-red" onclick="openDeleteUserModal('${u.id}','${esc(u.email)}')">Delete</button>
+        </div></td>
+      </tr>`).join('');
+
+    renderPagination('usersPagination', 'usersPageInfo', 'usersPageBtns', page, d.pages, loadUsers);
+  } catch(e) { setTbody('usersTbody', 6, 'Error: ' + e.message); }
+}
+
+function debounceUserSearch() {
+  userQuery = document.getElementById('userSearch').value;
+  clearTimeout(usersDebounce);
+  usersDebounce = setTimeout(() => loadUsers(1), 350);
+}
+
+function planBadge(u) {
+  if (u.isAdmin)  return `<span class="badge badge-admin">ADMIN</span>`;
+  if (u.isFamily) return `<span class="badge badge-family">Family</span>`;
+  if (u.isPro)    return `<span class="badge badge-pro">Pro</span>`;
+  if (u.isBanned) return `<span class="badge badge-banned">Banned</span>`;
+  return `<span style="color:var(--text2);font-size:0.75rem;">—</span>`;
+}
+
+// ── Banned ────────────────────────────────────────────────────────────────
+async function loadBanned() {
+  setTbody('bannedTbody', 4, 'Loading…');
+  try {
+    // Reuse users endpoint with ban filter via full list
+    const d = await api('GET', 'users?page=1&q=');
+    const banned = d.users.filter(u => u.isBanned);
+    if (!banned.length) { setTbody('bannedTbody', 4, 'No banned users'); return; }
+    document.getElementById('bannedTbody').innerHTML = banned.map(u => `
+      <tr>
+        <td><div class="log-target">${u.id}</div><div style="font-size:0.75rem;">${esc(u.email)}</div></td>
+        <td style="font-size:0.75rem;color:var(--text2);">—</td>
+        <td style="font-size:0.72rem;color:var(--text2);">—</td>
+        <td><button class="btn btn-yellow" onclick="doUnban('${u.id}')">Unban</button></td>
+      </tr>`).join('');
+  } catch(e) { setTbody('bannedTbody', 4, 'Error: ' + e.message); }
+}
+
+// ── Cache ─────────────────────────────────────────────────────────────────
+async function loadCache(page = 1) {
+  cachePage = page;
+  setTbody('cacheTbody', 6, 'Loading…');
+  try {
+    const d = await api('GET', `cache?page=${page}&q=${encodeURIComponent(cacheQuery)}`);
+    document.getElementById('cacheCount').textContent = `${d.total} entries`;
+    document.getElementById('nbCache').textContent    = d.total;
+    if (!d.entries.length) { setTbody('cacheTbody', 6, 'Cache is empty'); return; }
+
+    document.getElementById('cacheTbody').innerHTML = d.entries.map(e => `
+      <tr>
+        <td><span class="cache-id">${esc(e.id)}</span></td>
+        <td><span class="badge badge-${e.media_type==='movie'?'info':'success'}">${e.media_type}</span></td>
+        <td style="font-size:0.75rem;">${e.season ?? '—'}</td>
+        <td><span class="cache-size">${fmtBytes(e.size)}</span></td>
+        <td style="font-size:0.72rem;color:var(--text2);">${fmtDate(e.cached_at)}</td>
+        <td><button class="btn btn-red" onclick="doDeleteCache('${esc(e.id)}')">Delete</button></td>
+      </tr>`).join('');
+
+    renderPagination('cachePagination', 'cachePageInfo', 'cachePageBtns', page, d.pages, loadCache);
+  } catch(e) { setTbody('cacheTbody', 6, 'Error: ' + e.message); }
+}
+
+function debounceCacheSearch() {
+  cacheQuery = document.getElementById('cacheSearch').value;
+  clearTimeout(cacheDebounce);
+  cacheDebounce = setTimeout(() => loadCache(1), 350);
+}
+
+async function doDeleteCache(id) {
+  try {
+    await api('DELETE', `cache/${encodeURIComponent(id)}`);
+    toast('Cache entry deleted', 'success');
+    loadCache(cachePage);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function confirmFlushCache() {
+  document.getElementById('flushModal').classList.add('open');
+}
+async function doFlushCache() {
+  document.getElementById('flushModal').classList.remove('open');
+  try {
+    const d = await api('DELETE', 'cache');
+    toast(`Flushed ${d.deleted} entries`, 'success');
+    loadCache(1);
+    loadStats();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── Announcements ─────────────────────────────────────────────────────────
+async function loadAnnouncements() {
+  setTbody('annTbody', 6, 'Loading…');
+  try {
+    const list = await api('GET', 'announcements');
+    if (!list.length) { setTbody('annTbody', 6, 'No announcements'); return; }
+    document.getElementById('annTbody').innerHTML = list.map(a => {
+      const expired = a.expires_at && new Date(a.expires_at) < new Date();
+      return `<tr>
+        <td><div class="ann-message ${expired?'ann-expired':''}" title="${esc(a.message)}">${esc(a.message)}</div></td>
+        <td><span class="badge badge-${a.type}">${a.type}</span></td>
+        <td><span class="badge badge-${a.active&&!expired?'success':'inactive'}">${a.active&&!expired?'Active':'Inactive'}</span></td>
+        <td style="font-size:0.72rem;color:var(--text2);">${a.expires_at?fmtDate(a.expires_at):'Never'}</td>
+        <td style="font-size:0.72rem;color:var(--text2);">${fmtDate(a.created_at)}</td>
+        <td><div class="actions-cell">
+          <button class="btn" onclick="toggleAnn('${a.id}',${a.active?0:1})">${a.active?'Deactivate':'Activate'}</button>
+          <button class="btn btn-red" onclick="deleteAnn('${a.id}')">Delete</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  } catch(e) { setTbody('annTbody', 6, 'Error: ' + e.message); }
+}
+
+function openAnnModal() {
+  pendingAnnId = null;
+  document.getElementById('annModalTitle').textContent = 'New Banner';
+  document.getElementById('annMessage').value = '';
+  document.getElementById('annType').value = 'info';
+  document.getElementById('annExpires').value = '';
+  document.getElementById('annModal').classList.add('open');
+}
+function closeAnnModal() { document.getElementById('annModal').classList.remove('open'); }
+
+async function saveAnnouncement() {
+  const message    = document.getElementById('annMessage').value.trim();
+  const type       = document.getElementById('annType').value;
+  const expires_at = document.getElementById('annExpires').value || null;
+  if (!message) { toast('Message is required', 'error'); return; }
+  try {
+    await api('POST', 'announcements', { message, type, expires_at });
+    toast('Banner created', 'success');
+    closeAnnModal();
+    loadAnnouncements();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function toggleAnn(id, active) {
+  try {
+    await api('PATCH', `announcements/${id}`, { active });
+    toast(active ? 'Banner activated' : 'Banner deactivated', 'success');
+    loadAnnouncements();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deleteAnn(id) {
+  if (!confirm('Delete this announcement?')) return;
+  try {
+    await api('DELETE', `announcements/${id}`);
+    toast('Announcement deleted', 'success');
+    loadAnnouncements();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── Audit log ─────────────────────────────────────────────────────────────
+async function loadLog(page = 1) {
+  logPage = page;
+  setTbody('logTbody', 4, 'Loading…');
+  try {
+    const d = await api('GET', `log?page=${page}`);
+    if (!d.entries.length) { setTbody('logTbody', 4, 'No log entries'); return; }
+    document.getElementById('logTbody').innerHTML = d.entries.map(e => `
+      <tr>
+        <td><span class="log-action">${esc(e.action)}</span></td>
+        <td><span class="log-target">${e.target_id ? e.target_id.slice(0,20)+'…' : '—'}</span></td>
+        <td><span class="log-detail">${e.detail ? esc(e.detail).slice(0,60) : '—'}</span></td>
+        <td><span class="log-time">${fmtDate(e.created_at)}</span></td>
+      </tr>`).join('');
+    renderPagination('logPagination', 'logPageInfo', 'logPageBtns', page, d.pages, loadLog);
+  } catch(e) { setTbody('logTbody', 4, 'Error: ' + e.message); }
+}
+
+// ── Plan modal ────────────────────────────────────────────────────────────
+function openPlanModal(userId, email, currentPlan) {
+  pendingUserId = userId;
+  document.getElementById('planModalSub').textContent = `Editing plan for ${email}`;
+  document.getElementById('planSelect').value = currentPlan || '';
+  document.getElementById('planModal').classList.add('open');
+}
+function closePlanModal() { document.getElementById('planModal').classList.remove('open'); }
+async function confirmSetPlan() {
+  const plan = document.getElementById('planSelect').value || null;
+  try {
+    await api('POST', `users/${pendingUserId}/plan`, { plan });
+    toast('Plan updated', 'success');
+    closePlanModal();
+    loadUsers(usersPage);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── Ban modal ─────────────────────────────────────────────────────────────
+function openBanModal(userId, email) {
+  pendingUserId = userId;
+  document.getElementById('banModalSub').textContent = `Ban ${email}?`;
+  document.getElementById('banReason').value = '';
+  document.getElementById('banModal').classList.add('open');
+}
+function closeBanModal() { document.getElementById('banModal').classList.remove('open'); }
+async function confirmBan() {
+  const reason = document.getElementById('banReason').value.trim();
+  try {
+    await api('POST', `users/${pendingUserId}/ban`, { reason });
+    toast('User banned', 'success');
+    closeBanModal();
+    loadUsers(usersPage);
+    loadStats();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function doUnban(userId) {
+  try {
+    await api('POST', `users/${userId}/unban`, {});
+    toast('User unbanned', 'success');
+    loadUsers(usersPage);
+    loadBanned();
+    loadStats();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── Delete user modal ─────────────────────────────────────────────────────
+function openDeleteUserModal(userId, email) {
+  pendingUserId = userId;
+  document.getElementById('deleteUserSub').textContent = `Permanently delete ${email} and all their data? This cannot be undone.`;
+  document.getElementById('deleteUserModal').classList.add('open');
+}
+function closeDeleteUserModal() { document.getElementById('deleteUserModal').classList.remove('open'); }
+async function confirmDeleteUser() {
+  try {
+    await api('DELETE', `users/${pendingUserId}`);
+    toast('User deleted', 'success');
+    closeDeleteUserModal();
+    loadUsers(usersPage);
+    loadStats();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function setTbody(id, cols, msg) {
+  document.getElementById(id).innerHTML = `<tr class="loading-row"><td colspan="${cols}">${msg}</td></tr>`;
+}
+
+function renderPagination(wrapId, infoId, btnsId, page, pages, loadFn) {
+  const wrap = document.getElementById(wrapId);
+  if (pages <= 1) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'flex';
+  document.getElementById(infoId).textContent = `Page ${page} of ${pages}`;
+  const btns = document.getElementById(btnsId);
+  btns.innerHTML = '';
+  const addBtn = (label, p, active=false, disabled=false) => {
+    const b = document.createElement('button');
+    b.className = 'page-btn' + (active?' active':'');
+    b.textContent = label; b.disabled = disabled;
+    b.onclick = () => loadFn(p);
+    btns.appendChild(b);
+  };
+  addBtn('←', page-1, false, page<=1);
+  const start = Math.max(1, page-2), end = Math.min(pages, page+2);
+  for (let p = start; p <= end; p++) addBtn(p, p, p===page);
+  addBtn('→', page+1, false, page>=pages);
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = new Date(typeof ts === 'number' ? ts : ts);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+}
+function fmtBytes(n) {
+  if (n < 1024) return n + ' B';
+  return (n/1024).toFixed(1) + ' KB';
+}
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast show' + (type?' '+type:'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

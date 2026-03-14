@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2a6b55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="OkToWatch">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<title>Family Profiles — OkToWatch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --danger: #c0392b; --danger-bg: #fdecea;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 16px; --radius-sm: 10px;
+}
+html { overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
+#nav-root { position: relative; z-index: 10; }
+.page-wrap { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+
+/* ── Skeleton ── */
+.skel { background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; }
+.skel-line { height: 12px; border-radius: 6px; margin-bottom: 0.6rem; }
+#pageLoader { display: block; }
+#pageLoader.hidden { display: none; }
+#pageContent { display: none; }
+#pageContent.visible { display: block; }
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 1.5rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
+}
+.page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; }
+.page-header p  { font-size: 0.82rem; color: var(--muted); margin-top: 0.15rem; line-height: 1.55; }
+
+/* ── Profile cards ── */
+.profiles-grid {
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
+}
+
+.profile-card-full {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.25rem 1.5rem;
+  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem;
+  border: 1.5px solid transparent; transition: all 0.15s;
+}
+.profile-card-full:hover { border-color: rgba(42,107,85,0.2); }
+
+.profile-big-emoji {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--accent-light); display: flex; align-items: center;
+  justify-content: center; font-size: 1.75rem; flex-shrink: 0;
+}
+.profile-details { flex: 1; min-width: 0; }
+.profile-details h3 { font-size: 1rem; font-weight: 700; }
+.profile-details p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+.profile-stats { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.profile-stat {
+  font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.5rem;
+  background: var(--surface2); border-radius: 100px; color: var(--text2);
+}
+
+.profile-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.btn-icon {
+  background: var(--surface2); border: none; width: 34px; height: 34px;
+  border-radius: 8px; font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; color: var(--text2);
+}
+.btn-icon:hover { background: var(--accent-light); color: var(--accent); }
+.btn-icon.delete:hover { background: var(--danger-bg); color: var(--danger); }
+
+/* ── Add profile button ── */
+.add-profile-btn {
+  width: 100%; background: var(--surface); border: 2px dashed var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+  cursor: pointer; transition: all 0.15s; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+  margin-bottom: 0.75rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.15s;
+}
+.add-profile-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.add-profile-btn.hidden { display: none; }
+
+/* ── Info card ── */
+.info-card {
+  background: var(--accent-light); border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 0.75rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.2s;
+}
+.info-card-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+.info-card p { font-size: 0.78rem; color: var(--accent); line-height: 1.55; }
+
+/* ── Toast ── */
+.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Modals ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
+.modal-overlay.visible { display: flex; }
+.modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.28s ease forwards; padding-bottom: env(safe-area-inset-bottom, 1rem); }
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0.75rem auto 0; }
+.modal-header { padding: 1rem 1.5rem 0.85rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-header p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+.modal-close { background: var(--surface2); border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; color: var(--text2); }
+.modal-body  { padding: 1.25rem 1.5rem; }
+.modal-footer { padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 0.35rem; }
+.field input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.2s; }
+.field input:focus { border-color: var(--accent); background: white; }
+.field input::placeholder { color: var(--muted); }
+.emoji-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.35rem; }
+.emoji-btn { font-size: 1.4rem; padding: 0.3rem 0.35rem; background: var(--surface2); border: 2px solid transparent; border-radius: 8px; cursor: pointer; line-height: 1; transition: all 0.12s; }
+.emoji-btn:hover { background: var(--accent-light); }
+.emoji-btn.selected { background: var(--accent-light); border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-ghost-modal { background: var(--surface2); color: var(--text2); border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; width: 100%; }
+.btn-ghost-modal:hover { background: #e8edeb; }
+.btn-danger { background: var(--danger); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
+.btn-danger:hover { opacity: 0.88; }
+
+/* ── Footer ── */
+footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.footer-logo-text { font-size: 0.88rem; color: var(--text); }
+.footer-logo-text strong { font-weight: 700; }
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+@media (max-width: 599px) {
+  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
+  .page-header h1 { font-size: 1.25rem; }
+  .profile-card-full { gap: 0.75rem; padding: 1rem; }
+  .profile-big-emoji { width: 46px; height: 46px; font-size: 1.4rem; }
+  .profile-actions { flex-wrap: wrap; }
+  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+}
+@media (max-width: 380px) {
+  .page-wrap { padding: 1rem 0.65rem 4rem; }
+  .profile-card-full { padding: 0.85rem; }
+}
+</style>
+<meta property="og:image" content="https://oktowatch.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+</head>
+<body data-page="profiles">
+
+<div id="nav-root"></div>
+
+<div class="page-wrap">
+
+  <!-- Skeleton -->
+  <div id="pageLoader">
+    <div style="margin-bottom:1.5rem;">
+      <div class="skel skel-line" style="width:160px;height:20px;margin-bottom:0.4rem;"></div>
+      <div class="skel skel-line" style="width:260px;height:11px;margin-bottom:0;"></div>
+    </div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;">
+      <div class="skel" style="width:56px;height:56px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:40%;"></div><div class="skel skel-line" style="width:60%;margin-bottom:0;"></div></div>
+    </div>
+    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;">
+      <div class="skel" style="width:56px;height:56px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;"><div class="skel skel-line" style="width:35%;"></div><div class="skel skel-line" style="width:55%;margin-bottom:0;"></div></div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div id="pageContent">
+
+    <div class="page-header">
+      <h1>Family Profiles</h1>
+      <p>Create a profile for each child so OkToWatch can give age-appropriate verdicts and per-child watchlists.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-icon">💡</div>
+      <p>You can add up to <strong>5 profiles</strong>. When you search with an active profile selected, searches and list entries are tagged to that child.</p>
+    </div>
+
+    <div class="profiles-grid" id="profilesGrid"></div>
+
+    <button class="add-profile-btn" id="addProfileBtn" onclick="openAddModal()">
+      <span style="font-size:1.2rem;">＋</span> Add Child Profile
+    </button>
+
+  </div>
+
+</div>
+
+<footer>
+  <a class="footer-logo" href="/index">
+    <div class="footer-logo-mark">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
+  </a>
+  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
+    <a href="/about">About</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/plans">Plans</a>
+  </div>
+  <p>© 2026 OkToWatch</p>
+  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
+    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Add / Edit profile modal -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div>
+        <h3 id="modalTitle">Add Child Profile</h3>
+      </div>
+      <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Child's name</label>
+        <input type="text" id="profileName" placeholder="e.g. Emma" maxlength="20">
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <input type="number" id="profileAge" placeholder="e.g. 8" min="1" max="17">
+      </div>
+      <div class="field">
+        <label>Pick an emoji</label>
+        <div class="emoji-grid" id="emojiGrid"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="profileSaveBtn" onclick="saveProfile()">Add Profile</button>
+      <button class="btn-ghost-modal" onclick="closeProfileModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h3>Delete profile?</h3>
+      <p id="deleteModalSub">History and list entries tagged to this profile will not be deleted — just untagged.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="deleteConfirmBtn" onclick="confirmDelete()">Delete Profile</button>
+      <button class="btn-ghost-modal" onclick="closeDeleteModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const EMOJIS = ['👧','👦','🧒','👶','🌟','🦁','🐼','🦊','🐸','🐨','🚀','⚽','🎮','🎨','🎵','🦋'];
+
+let _profiles    = [];
+let _lists       = [];
+let _history     = [];
+let _selectedEmoji = '👧';
+let _editingId   = null;
+let _deletingId  = null;
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────
+async function _authHeaders() {
+  const token = await window.Clerk.session.getToken();
+  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+async function apiGet(url)        { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiPost(url, body) { const h = await _authHeaders(); const r = await fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiPut(url, body)  { const h = await _authHeaders(); const r = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiDelete(url)     { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
+
+// ── Auth guard ─────────────────────────────────────────────────────────────
+document.addEventListener('cv:auth', ({ detail }) => {
+  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
+    window.location.href = '/plans?reason=pro';
+    return;
+  }
+  loadProfiles();
+});
+
+// ── Load ──────────────────────────────────────────────────────────────────
+async function loadProfiles() {
+  try {
+    [_profiles, _lists, _history] = await Promise.all([
+      apiGet('/api/profiles'),
+      apiGet('/api/lists'),
+      apiGet('/api/history?limit=500'),
+    ]);
+  } catch (e) { console.error('Profiles load error:', e); }
+
+  document.getElementById('pageLoader').classList.add('hidden');
+  document.getElementById('pageContent').classList.add('visible');
+  renderProfiles();
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+function renderProfiles() {
+  const grid = document.getElementById('profilesGrid');
+  const addBtn = document.getElementById('addProfileBtn');
+
+  if (!_profiles.length) {
+    grid.innerHTML = `
+      <div style="background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;text-align:center;margin-bottom:0.75rem;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">👨‍👩‍👧‍👦</div>
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.35rem;">No profiles yet</h3>
+        <p style="font-size:0.78rem;color:var(--muted);line-height:1.55;">Add your children's profiles to get personalised verdicts and per-child lists.</p>
+      </div>`;
+  } else {
+    grid.innerHTML = _profiles.map(p => {
+      const approvedCount = _lists.filter(l => l.profile_id === p.id && l.list_type === 'approved').length;
+      const blockedCount  = _lists.filter(l => l.profile_id === p.id && l.list_type === 'blocked').length;
+      const searchCount   = _history.filter(h => h.profile_id === p.id).length;
+      return `
+        <div class="profile-card-full">
+          <div class="profile-big-emoji">${p.emoji || '👧'}</div>
+          <div class="profile-details">
+            <h3>${p.name}</h3>
+            <p>Age ${p.age}</p>
+            <div class="profile-stats">
+              <span class="profile-stat">✅ ${approvedCount} approved</span>
+              <span class="profile-stat">🚫 ${blockedCount} blocked</span>
+              <span class="profile-stat">🔍 ${searchCount} searches</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-icon" onclick="openEditModal('${p.id}')" title="Edit">✏️</button>
+            <button class="btn-icon delete" onclick="promptDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')  " title="Delete">🗑</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // Hide add button if at limit
+  if (_profiles.length >= 5) {
+    addBtn.classList.add('hidden');
+  } else {
+    addBtn.classList.remove('hidden');
+    addBtn.textContent = '';
+    addBtn.innerHTML = '<span style="font-size:1.2rem;">＋</span> Add Child Profile';
+  }
+}
+
+// ── Add modal ──────────────────────────────────────────────────────────────
+function openAddModal() {
+  _editingId     = null;
+  _selectedEmoji = '👧';
+  document.getElementById('modalTitle').textContent   = 'Add Child Profile';
+  document.getElementById('profileSaveBtn').textContent = 'Add Profile';
+  document.getElementById('profileName').value = '';
+  document.getElementById('profileAge').value  = '';
+  renderEmojiGrid();
+  document.getElementById('profileModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('profileName').focus(), 300);
+}
+
+function openEditModal(id) {
+  const p = _profiles.find(p => p.id === id);
+  if (!p) return;
+  _editingId     = id;
+  _selectedEmoji = p.emoji || '👧';
+  document.getElementById('modalTitle').textContent     = `Edit ${p.name}`;
+  document.getElementById('profileSaveBtn').textContent = 'Save Changes';
+  document.getElementById('profileName').value = p.name;
+  document.getElementById('profileAge').value  = p.age;
+  renderEmojiGrid();
+  document.getElementById('profileModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderEmojiGrid() {
+  document.getElementById('emojiGrid').innerHTML = EMOJIS.map(e =>
+    `<button class="emoji-btn${e === _selectedEmoji ? ' selected' : ''}" onclick="pickEmoji('${e}',this)">${e}</button>`
+  ).join('');
+}
+
+function pickEmoji(e, btn) {
+  _selectedEmoji = e;
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+async function saveProfile() {
+  const name = document.getElementById('profileName').value.trim();
+  const age  = parseInt(document.getElementById('profileAge').value);
+  if (!name)                       { showToast('Please enter a name'); return; }
+  if (!age || age < 1 || age > 17) { showToast('Age must be between 1 and 17'); return; }
+
+  const btn = document.getElementById('profileSaveBtn');
+  btn.disabled = true;
+  btn.textContent = _editingId ? 'Saving…' : 'Adding…';
+
+  try {
+    if (_editingId) {
+      const updated = await apiPut(`/api/profiles?id=${_editingId}`, { name, age, emoji: _selectedEmoji });
+      const idx = _profiles.findIndex(p => p.id === _editingId);
+      if (idx !== -1) _profiles[idx] = updated;
+      showToast(`${name}'s profile updated ✓`);
+    } else {
+      const p = await apiPost('/api/profiles', { name, age, emoji: _selectedEmoji });
+      _profiles.push(p);
+      showToast(`${name}'s profile added ✓`);
+    }
+    closeProfileModal();
+    renderProfiles();
+  } catch (e) {
+    console.error('saveProfile error:', e);
+    if (e.message === '403') showToast('Max 5 profiles reached or subscription required');
+    else if (e.message === '401') showToast('Session expired — please refresh and try again');
+    else showToast('Failed to save profile (' + e.message + ')');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = _editingId ? 'Save Changes' : 'Add Profile';
+  }
+}
+
+function closeProfileModal() {
+  document.getElementById('profileModal').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// ── Delete modal ──────────────────────────────────────────────────────────
+function promptDelete(id, name) {
+  _deletingId = id;
+  document.getElementById('deleteModalSub').textContent =
+    `"${name}" will be deleted. Their history and list entries will be untagged but not deleted.`;
+  document.getElementById('deleteModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+async function confirmDelete() {
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    await apiDelete(`/api/profiles?id=${_deletingId}`);
+    const p = _profiles.find(p => p.id === _deletingId);
+    _profiles = _profiles.filter(p => p.id !== _deletingId);
+    // Also untag from local lists/history data
+    _lists    = _lists.map(l => l.profile_id === _deletingId ? { ...l, profile_id: null } : l);
+    _history  = _history.map(h => h.profile_id === _deletingId ? { ...h, profile_id: null } : h);
+    // Clear active profile session if it was this one
+    if (sessionStorage.getItem('cv_active_profile') === _deletingId) {
+      sessionStorage.removeItem('cv_active_profile');
+    }
+    closeDeleteModal();
+    renderProfiles();
+    showToast(p ? `${p.name}'s profile deleted` : 'Profile deleted');
+  } catch (e) {
+    showToast('Failed to delete profile');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Delete Profile';
+  }
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// Backdrop / Escape
+['profileModal','deleteModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target === document.getElementById(id)) {
+      if (id === 'profileModal') closeProfileModal(); else closeDeleteModal();
+    }
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeProfileModal(); closeDeleteModal(); }
+});
+</script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

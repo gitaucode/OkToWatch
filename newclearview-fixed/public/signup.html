@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin>
+<link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev">
+<link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin>
+<!-- Start loading Clerk immediately — don't wait for DOMContentLoaded -->
+<script>
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
+  s.setAttribute('data-clerk-publishable-key', 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA');
+  s.async = true;
+  window.__clerkScriptPromise = new Promise(function(res, rej) {
+    s.onload = res; s.onerror = rej;
+  });
+  document.head.appendChild(s);
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2a6b55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="OkToWatch">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<title>Sign Up — OkToWatch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --radius: 16px; --radius-sm: 10px;
+}
+html { overflow-x: hidden; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  min-height: 100vh; display: flex; flex-direction: column;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 80% 20%, rgba(42,107,85,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 40% at 20% 80%, rgba(42,107,85,0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+#nav-root { position: relative; z-index: 10; }
+
+.auth-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2.5rem 1rem 4rem;
+  position: relative; z-index: 1; width: 100%;
+}
+
+.auth-header {
+  width: 100%; max-width: 400px;
+  text-align: center; margin-bottom: 1rem;
+  animation: fadeUp 0.35s ease forwards;
+}
+.auth-brand { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.1rem; }
+.auth-brand-mark {
+  width: 30px; height: 30px; border-radius: 8px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-brand-text { font-size: 1rem; color: var(--text); letter-spacing: -0.01em; }
+.auth-brand-text strong { font-weight: 700; }
+.auth-heading { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 0.35rem; }
+.auth-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 1rem; }
+.feature-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
+.pill {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: var(--accent-light); border-radius: 100px;
+  padding: 0.3rem 0.7rem; font-size: 0.75rem; color: var(--text2); font-weight: 500;
+}
+
+/* ── Skeleton ── */
+.clerk-skeleton {
+  width: 100%; max-width: 400px;
+  background: white; border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+  padding: 1.75rem;
+  animation: fadeUp 0.35s ease forwards 0.05s; opacity: 0;
+}
+.skel {
+  background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skel-btn  { height: 44px; border-radius: 100px; margin-bottom: 0.65rem; }
+.skel-divider { height: 1px; margin: 1rem 0; background: var(--border); }
+.skel-row  { display: flex; gap: 0.65rem; margin-bottom: 0.65rem; }
+.skel-half { height: 42px; border-radius: 10px; flex: 1; }
+.skel-label { height: 11px; width: 40%; border-radius: 6px; margin-bottom: 0.5rem; }
+.skel-input { height: 42px; border-radius: 10px; margin-bottom: 0.65rem; }
+.skel-submit { height: 44px; border-radius: 100px; margin-top: 0.25rem; }
+.skel-footer { height: 11px; width: 55%; border-radius: 6px; margin: 1rem auto 0; }
+
+/* ── Clerk host ── */
+.clerk-host {
+  width: 100%; max-width: 400px; display: none;
+  animation: fadeIn 0.3s ease forwards; opacity: 0;
+}
+.clerk-host.ready { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.auth-extras {
+  width: 100%; max-width: 400px; margin-top: 0.85rem;
+  animation: fadeUp 0.35s ease forwards 0.1s; opacity: 0;
+}
+.pro-nudge {
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.65rem;
+  font-size: 0.79rem; color: var(--text2); background: var(--surface);
+}
+.pro-nudge a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.pro-nudge a:hover { text-decoration: underline; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+footer {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  max-width: 1100px; width: 100%; margin: 0 auto;
+  padding: 1.25rem; border-top: 1px solid rgba(0,0,0,0.08);
+}
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+.footer-logo { display: flex; align-items: center; gap: 0.4rem; text-decoration: none; }
+.footer-logo-mark { width: 20px; height: 20px; border-radius: 5px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.footer-logo-text { font-size: 0.85rem; color: var(--text); }
+.footer-logo-text strong { font-weight: 700; }
+
+@media (max-width: 480px) {
+  .auth-wrap { padding: 1.25rem 0.75rem 3rem; }
+  .auth-heading { font-size: 1.35rem; }
+  .clerk-skeleton { padding: 1.25rem; }
+  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; }
+}
+</style>
+<meta property="og:image" content="https://oktowatch.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+</head>
+<body data-page="signup">
+
+<div id="nav-root"></div>
+
+<div class="auth-wrap">
+
+  <div class="auth-header">
+    <div class="auth-brand">
+      <div class="auth-brand-mark">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="3" fill="white"/>
+          <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <span class="auth-brand-text">Ok<strong>ToWatch</strong></span>
+    </div>
+    <h1 class="auth-heading">Create your account</h1>
+    <p class="auth-sub">Free to search. Upgrade to Pro for the full family suite.</p>
+    <div class="feature-pills">
+      <span class="pill">🔍 Unlimited searches</span>
+      <span class="pill">🤖 Full AI breakdown</span>
+      <span class="pill">🔗 Share reports</span>
+      <span class="pill">✨ Pro available</span>
+    </div>
+  </div>
+
+  <!-- Skeleton shown while Clerk loads -->
+  <div class="clerk-skeleton" id="clerkSkeleton"><p class="slow-msg" style="display:none;text-align:center;font-size:0.78rem;color:var(--muted);margin-top:0.5rem;">Taking longer than usual… check your connection.</p>
+    <div class="skel skel-btn"></div>
+    <div class="skel skel-btn"></div>
+    <div class="skel-divider"></div>
+    <div class="skel-row">
+      <div class="skel skel-half"></div>
+      <div class="skel skel-half"></div>
+    </div>
+    <div class="skel skel-label"></div>
+    <div class="skel skel-input"></div>
+    <div class="skel skel-submit"></div>
+    <div class="skel skel-footer"></div>
+  </div>
+
+  <!-- Clerk mounts here, revealed after load -->
+  <div class="clerk-host" id="clerk-signup"></div>
+
+  <div class="auth-extras">
+    <div class="pro-nudge">
+      <span style="font-size:1.1rem;">🌟</span>
+      <span>Want watchlists, child profiles &amp; more? <a href="/plans">See Pro plans →</a></span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <a class="footer-logo" href="/index">
+    <div class="footer-logo-mark">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
+  </a>
+  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
+    <a href="/about">About</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/plans">Plans</a>
+  </div>
+  <p>© 2026 OkToWatch</p>
+  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
+    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const CLERK_PK     = 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA';
+  const CLERK_SCRIPT = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
+
+  function showClerk() {
+    document.getElementById('clerkSkeleton').style.display = 'none';
+    document.getElementById('clerk-signup').classList.add('ready');
+  }
+
+  async function boot() {
+    // Show "taking longer than usual" after 3s
+    const slowTimer = setTimeout(() => {
+      const sk = document.getElementById('clerkSkeleton');
+      if (sk && sk.style.display !== 'none') {
+        const msg = sk.querySelector('.slow-msg');
+        if (msg) msg.style.display = 'block';
+      }
+    }, 3000);
+    // Script already loading from <head> — just await it
+    await window.__clerkScriptPromise;
+    clearTimeout(slowTimer);
+    await window.Clerk.load();
+
+    if (window.Clerk.user) {
+      window.location.href = '/plans';
+      return;
+    }
+
+    window.Clerk.mountSignUp(document.getElementById('clerk-signup'), {
+      afterSignUpUrl: '/plans',
+      signInUrl: '/signin',
+      appearance: {
+        variables: {
+          colorPrimary:    '#2a6b55',
+          colorBackground: '#ffffff',
+          colorText:       '#1a2420',
+          borderRadius:    '12px',
+          fontFamily:      'DM Sans, sans-serif',
+          fontSize:        '15px',
+        },
+        elements: {
+          card:              { boxShadow: '0 8px 40px rgba(0,0,0,0.10)', borderRadius: '20px' },
+          headerTitle:       { display: 'none' },
+          headerSubtitle:    { display: 'none' },
+          formButtonPrimary: { backgroundColor: '#2a6b55', fontFamily: 'DM Sans, sans-serif', fontWeight: '700', borderRadius: '100px', textTransform: 'none' },
+          footerActionLink:  { color: '#2a6b55', fontWeight: '600' },
+        }
+      }
+    });
+
+    // Poll for Clerk card render, then swap skeleton → real form
+    const poll = setInterval(() => {
+      const card = document.querySelector('#clerk-signup .cl-card, #clerk-signup [data-localization-key]');
+      if (card) { clearInterval(poll); showClerk(); }
+    }, 80);
+
+    // Fallback after 2.5s
+    setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);
+  }
+
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', boot)
+    : boot();
+})();
+</script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

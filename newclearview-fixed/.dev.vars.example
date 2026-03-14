@@ -1,0 +1,7 @@
+# Local dev secrets — copy this to .dev.vars and fill in real values
+# .dev.vars is gitignored; never commit real secrets
+
+CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
+CLERK_PUBLISHABLE_KEY=pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA
+GROQ_API_KEY=your_groq_api_key
+TMDB_API_KEY=your_tmdb_api_key

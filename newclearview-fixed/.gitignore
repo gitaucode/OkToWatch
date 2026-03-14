@@ -1,0 +1,22 @@
+# Secrets — never commit these
+.dev.vars
+.env
+.env.local
+
+# Wrangler
+.wrangler/
+wrangler-*.log
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database backups — commit manually when needed
+# backup.sql
