@@ -209,7 +209,7 @@ footer a:hover { color: var(--accent); }
     <div class="filter-group">
       <label for="ageSlider" class="filter-label">Child's Age</label>
       <div class="age-slider-wrap">
-        <input type="range" id="ageSlider" min="0" max="18" value="8" onchange="updateAge(this.value)">
+        <input type="range" id="ageSlider" min="0" max="18" value="8" oninput="updateAge(this.value)">
         <div class="age-display" id="ageDisplay">8</div>
       </div>
     </div>
@@ -229,7 +229,7 @@ footer a:hover { color: var(--accent); }
 
     <div class="filter-group">
       <div class="checkbox-wrap">
-        <input type="checkbox" id="safeOnly" checked>
+        <input type="checkbox" id="safeOnly">
         <label for="safeOnly" class="checkbox-label">Show only verified safe content</label>
       </div>
     </div>
@@ -370,7 +370,7 @@ async function search() {
 function renderResults(results) {
   const grid = document.getElementById('resultsGrid');
   grid.innerHTML = results.map(item => {
-    const poster = item.poster_path ? `<img src="${TMDB_LOGO}/w200${item.poster_path}" alt="${item.title || item.name}">` : '🎬';
+    const poster = item.poster_path ? `<img src="${TMDB_LOGO}/w342${item.poster_path}" alt="${item.title || item.name}" loading="lazy">` : '🎬';
     const title = item.title || item.name;
     const year = (item.release_date || item.first_air_date || '').slice(0, 4);
     const verdict = item.cached_verdict ? `Safe for ${currentAge}+` : 'Not analyzed';

@@ -104,27 +104,36 @@ function getCertificationsForAge(age, type) {
 async function filterBySafety(items, age, db) {
   if (items.length === 0) return items;
 
-  // Get all cached verdicts for these titles
   const tmdbIds = items.map(i => i.id);
-  const ageKey = `ages_${Math.min(age, 13)}_`;
   
   try {
     const cached = await db
       .prepare(`
-        SELECT DISTINCT tmdb_id
+        SELECT DISTINCT tmdb_id, result_json
         FROM analysis_cache
         WHERE tmdb_id IN (${tmdbIds.map(() => '?').join(',')})
         AND result_json IS NOT NULL
+        AND season IS NULL
       `)
       .bind(...tmdbIds)
       .all();
 
     const safeIds = new Set();
     (cached.results || []).forEach(row => {
-      safeIds.add(row.tmdb_id);
+      try {
+        const verdict = JSON.parse(row.result_json);
+        // Check if verdict for this age is "safe"
+        const ageGroup = age <= 5 ? 'ages_0_2' : age <= 8 ? 'ages_3_5' : age <= 12 ? 'ages_6_8' : age <= 17 ? 'ages_9_12' : 'ages_13_plus';
+        const v = verdict.verdicts[ageGroup];
+        if (v && v.tier === 'safe') {
+          safeIds.add(row.tmdb_id);
+        }
+      } catch (e) {
+        // Skip if JSON parse fails
+      }
     });
 
-    // Return only items that have cached analyses (implies they were analyzed as safe)
+    // Return only items with safe cached verdicts
     return items.filter(item => safeIds.has(item.id));
   } catch (e) {
     console.error('Safety filter error:', e);
