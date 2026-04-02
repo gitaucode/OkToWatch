@@ -8,7 +8,7 @@
   // ── Billing flag ──────────────────────────────────────────────────────────
   // Set to true when Dodo Payments is live and approved.
   // false = all logged-in users get full Pro access (free beta mode).
-  const BILLING_ENABLED = false;
+  const BILLING_ENABLED = true;
   window.BILLING_ENABLED = BILLING_ENABLED;
 
   const CLERK_PK = 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA';
@@ -16,6 +16,23 @@
 
   // ── Page meta ─────────────────────────────────────────────────────────────
   const PAGE = document.body.dataset.page || '';
+
+  // ── Fetch subscription status from API ────────────────────────────────────
+  async function fetchSubscriptionStatus(token) {
+    try {
+      const res = await fetch('/api/subscription-status', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        console.warn('Failed to fetch subscription status:', res.status);
+        return { tier: 'free', status: 'free', isPro: false, isFamily: false };
+      }
+      return await res.json();
+    } catch (err) {
+      console.warn('Error fetching subscription status:', err.message);
+      return { tier: 'free', status: 'free', isPro: false, isFamily: false };
+    }
+  }
 
   // ── Nav configs ───────────────────────────────────────────────────────────
   const NAV_LOGGED_OUT = [
@@ -655,15 +672,32 @@
       }
 
       const meta     = clerkUser?.publicMetadata || {};
-      const isPro    = loggedIn && (meta.isPro === true);
-      const isFamily = loggedIn && (meta.isFamily === true);
+      let isPro    = loggedIn && (meta.isPro === true);
+      let isFamily = loggedIn && (meta.isFamily === true);
+      let tier = 'free';
 
-      dispatchAuth(loggedIn, isPro, isFamily, clerkUser);
+      // In production, fetch actual subscription status from API
+      if (loggedIn && BILLING_ENABLED) {
+        try {
+          const sessionToken = await clerkUser.getToken();
+          if (sessionToken) {
+            const subStatus = await fetchSubscriptionStatus(sessionToken);
+            isPro = subStatus.isPro || false;
+            isFamily = subStatus.isFamily || false;
+            tier = subStatus.tier || 'free';
+          }
+        } catch (err) {
+          console.warn('Failed to fetch subscription status:', err);
+          // Fall back to metadata
+        }
+      }
+
+      dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser);
 
     } catch (err) {
       // Clerk failed to load — treat as logged out so pages can still render
       console.warn('OkToWatch auth: Clerk failed to initialise.', err?.message);
-      dispatchAuth(false, false, false, null);
+      dispatchAuth(false, false, false, 'free', null);
     }
   }
 
