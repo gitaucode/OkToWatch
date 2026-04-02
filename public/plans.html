@@ -545,7 +545,7 @@ function applyBetaMode(loggedIn) {
 
 // ── Auth-aware CTAs ────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
-  const { loggedIn, isPro, isFamily } = detail;
+  const { loggedIn, isPro, isFamily, tier } = detail;
 
   // Beta mode — billing not yet live
   if (!window.BILLING_ENABLED) {
@@ -557,14 +557,17 @@ document.addEventListener('cv:auth', ({ detail }) => {
   const proCta = document.getElementById('proCta');
   const famCta = document.getElementById('familyCta');
 
-  if (isFamily) {
+  // Use tier if available, otherwise fall back to isPro/isFamily
+  const userTier = tier || (isFamily ? 'family' : isPro ? 'pro' : 'free');
+
+  if (userTier === 'family') {
     document.getElementById('familyCurrentBanner').classList.add('visible');
     famCta.textContent = 'Current plan ✓';
     famCta.className   = 'plan-cta plan-cta--current-family';
     famCta.onclick     = null;
     famCta.dataset.state = 'current';
     proCta.textContent = 'Downgrade to Pro';
-  } else if (isPro) {
+  } else if (userTier === 'pro') {
     document.getElementById('proCurrentBanner').classList.add('visible');
     proCta.textContent = 'Current plan ✓';
     proCta.className   = 'plan-cta plan-cta--current';
@@ -572,7 +575,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
     proCta.dataset.state = 'current';
     famCta.textContent = 'Upgrade to Family';
   }
-  // Logged out or no plan — default state shows trial CTAs
+  // Logged out or free tier — default state shows trial CTAs
 });
 </script>
 <script src="/js/auth.js"></script>

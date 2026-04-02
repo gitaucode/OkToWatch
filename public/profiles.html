@@ -339,6 +339,33 @@ document.addEventListener('cv:auth', ({ detail }) => {
     window.location.href = '/signin?redirect=/profiles';
     return;
   }
+  
+  // Check subscription tier if billing enabled
+  if (window.BILLING_ENABLED) {
+    const tier = detail.tier || (detail.isFamily ? 'family' : detail.isPro ? 'pro' : 'free');
+    if (tier === 'free') {
+      // Show upgrade prompt for free users
+      const banner = document.createElement('div');
+      banner.style.cssText = 'background:#e4efe9;border-bottom:2px solid var(--accent);padding:1rem 1.25rem;text-align:center;margin-bottom:1.5rem;border-radius:10px;opacity:0;animation:fadeUp 0.4s ease forwards;';
+      banner.innerHTML = `
+        <p style="font-size:0.9rem;color:var(--text);margin-bottom:0.5rem;font-weight:600;">
+          👧 Child profiles require a Pro subscription
+        </p>
+        <p style="font-size:0.8rem;color:var(--text2);margin-bottom:0.75rem;">
+          Create profiles for your kids to get age-tailored verdicts. Pro supports up to 2 profiles, Family up to 5.
+        </p>
+        <a href="/plans" style="display:inline-block;padding:0.6rem 1.25rem;background:var(--accent);color:white;border-radius:100px;text-decoration:none;font-weight:700;font-size:0.85rem;transition:opacity 0.15s;">
+          Start your free trial
+        </a>
+      `;
+      const pageWrap = document.querySelector('.page-wrap');
+      if (pageWrap) {
+        pageWrap.insertBefore(banner, pageWrap.firstChild);
+      }
+      return;
+    }
+  }
+  
   loadProfiles();
 });
 
