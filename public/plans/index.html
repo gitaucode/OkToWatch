@@ -211,17 +211,17 @@ footer a:hover { color: var(--accent); }
   <!-- Current plan banner (shown when already subscribed) -->
   <div class="current-banner pro-banner" id="proCurrentBanner">
     <h2>✅ You're on Pro</h2>
-    <p>Everything is currently unlocked while OkToWatch is in beta.</p>
+    <p>Enjoy saved lists, up to 2 child profiles, synced history, and more.</p>
   </div>
   <div class="current-banner family-banner" id="familyCurrentBanner">
     <h2>👨‍👩‍👧‍👦 You're on Family</h2>
-    <p>Paid plans will return later, with advance notice for early users.</p>
+    <p>Enjoy family sharing with up to 5 profiles and all Pro features.</p>
   </div>
 
   <div class="hero">
-    <div class="hero-eyebrow">🎉 Free during beta</div>
-    <h1>Everything is free during beta</h1>
-    <p>Create an account to unlock lists, child profiles, synced history, and weekly picks. We will give early users notice before paid plans return.</p>
+    <div class="hero-eyebrow">🎉 Simple pricing</div>
+    <h1>Choose your plan</h1>
+    <p>Free searches for everyone. Paid plans unlock saved lists, multiple profiles, family sharing, and more. Or keep searching free—no limits.</p>
   </div>
 
   <!-- Billing toggle -->
@@ -234,51 +234,67 @@ footer a:hover { color: var(--accent); }
   <!-- Plan cards -->
   <div class="plans-grid">
 
-    <!-- Pro -->
+    <!-- Free -->
+    <div class="plan-card free">
+      <div class="plan-name">Free</div>
+      <div class="plan-price" style="color:var(--muted)">$0</div>
+      <div class="plan-price-alt">Forever free · no card needed</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="feat-icon">✅</span> Unlimited searches (no account needed)</li>
+        <li><span class="feat-icon">✅</span> Full AI content breakdown</li>
+        <li><span class="feat-icon">✅</span> Share report links</li>
+        <li><span class="feat-icon">❌</span> Saved lists</li>
+        <li><span class="feat-icon">❌</span> Child profiles</li>
+        <li><span class="feat-icon">❌</span> Synced history</li>
+        <li><span class="feat-icon">❌</span> Family sharing</li>
+      </ul>
+      <button class="plan-cta" style="background:var(--surface2);color:var(--text);" onclick="handleUpgrade('free')">Start searching free</button>
+    </div>
     <div class="plan-card pro">
       <div class="popular-badge">Available now</div>
       <div class="plan-name">Pro</div>
-      <div id="proTrialBadge" class="trial-badge">🎉 Free beta access</div>
-      <div class="plan-price" id="proPrice"><sup>$</sup>6.99<span id="proPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="proAlt">Everything here is included during beta · no card needed</div>
+      <div class="trial-badge" id="proTrialBadge">🂊 14-day free trial</div>
+      <div class="plan-price" id="proPrice"><sup>$</sup>4.99<span id="proPeriod">/mo</span></div>
+      <div class="plan-price-alt" id="proAlt">Billed monthly · cancel anytime</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="feat-icon">✅</span> Unlimited searches (no account needed too)</li>
         <li><span class="feat-icon">✅</span> Full AI content breakdown</li>
-        <li><span class="feat-icon">✅</span> Child profiles (up to 5)</li>
         <li><span class="feat-icon">✅</span> Approved / Blocked / Watch Later lists</li>
-        <li><span class="feat-icon">✅</span> Unlimited synced history</li>
+        <li><span class="feat-icon">✅</span> Up to 2 child profiles</li>
+        <li><span class="feat-icon">✅</span> Synced search history</li>
         <li><span class="feat-icon">✅</span> Season-level analysis</li>
         <li><span class="feat-icon">✅</span> Compare mode</li>
-        <li><span class="feat-icon">✅</span> Weekly Safe Picks digest</li>
+        <li><span class="feat-icon">❌</span> Family sharing & up to 5 profiles</li>
       </ul>
-      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Join free beta</button>
+      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Start free trial</button>
     </div>
 
     <!-- Family -->
     <div class="plan-card family">
       <div class="plan-name">Family</div>
-      <div id="familyTrialBadge" class="trial-badge">🎉 Free beta access</div>
-      <div class="plan-price" id="familyPrice"><sup>$</sup>11.99<span id="familyPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="familyAlt">Everything here is included during beta · no card needed</div>
+      <div class="trial-badge" id="familyTrialBadge">🂊 14-day free trial</div>
+      <div class="plan-price" id="familyPrice"><sup>$</sup>7.99<span id="familyPeriod">/mo</span></div>
+      <div class="plan-price-alt" id="familyAlt">Billed monthly · cancel anytime</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="feat-icon">✅</span> Everything in Pro</li>
-        <li><span class="feat-icon">✅</span> Up to 10 child profiles</li>
+        <li><span class="feat-icon">✅</span> Up to 5 child profiles</li>
         <li><span class="feat-icon">✅</span> Shared family watchlists</li>
         <li><span class="feat-icon">✅</span> Per-child content thresholds</li>
         <li><span class="feat-icon">✅</span> Up to 5 parent accounts</li>
         <li><span class="feat-icon">✅</span> Family dashboard & digest</li>
         <li><span class="feat-icon">✅</span> Priority support</li>
       </ul>
-      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Join free beta</button>
+      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Start free trial</button>
     </div>
 
   </div>
 
   <!-- Feature comparison -->
   <div class="compare-section">
-    <div class="compare-title">What beta includes today</div>
+    <div class="compare-title">What's included</div>
     <div class="compare-table">
       <div class="compare-row header">
         <span>Feature</span><span>Pro</span><span>Family</span>
@@ -286,12 +302,11 @@ footer a:hover { color: var(--accent); }
       <div class="compare-row"><span class="compare-feat">Unlimited searches (no account)</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
       <div class="compare-row"><span class="compare-feat">Full AI content breakdown</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
       <div class="compare-row"><span class="compare-feat">Share report links</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Unlimited synced history</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
+      <div class="compare-row"><span class="compare-feat">Synced search history</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
       <div class="compare-row"><span class="compare-feat">Approved / Blocked / Watch Later</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
       <div class="compare-row"><span class="compare-feat">Season-level analysis</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
       <div class="compare-row"><span class="compare-feat">Compare mode</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Weekly Safe Picks digest</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Child profiles</span><span class="compare-cell">Up to 5</span><span class="family-extra">Up to 10</span></div>
+      <div class="compare-row"><span class="compare-feat">Child profiles</span><span class="compare-cell">Up to 2</span><span class="family-extra">Up to 5</span></div>
       <div class="compare-row"><span class="compare-feat">Parent accounts</span><span class="compare-cell">1</span><span class="family-extra">Up to 5</span></div>
       <div class="compare-row"><span class="compare-feat">Shared family watchlists</span><span class="compare-cell">—</span><span class="compare-cell">✅</span></div>
       <div class="compare-row"><span class="compare-feat">Per-child content thresholds</span><span class="compare-cell">—</span><span class="compare-cell">✅</span></div>
@@ -301,38 +316,38 @@ footer a:hover { color: var(--accent); }
 
   <!-- FAQ -->
   <div class="faq-section">
-    <div class="faq-title">Beta questions</div>
+    <div class="faq-title">Questions</div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
         Do I need an account to search?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">No — searching is completely free and requires no account. During beta, signed-in users also get saved lists, child profiles, synced history, and more at no cost.</div>
+      <div class="faq-a">No — searching is completely free and requires no account. You'll only pay if you want to save lists, track history, or create child profiles.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        What does beta access include?
+        What can I do for free?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">During beta, all core features are unlocked for signed-in users, including watchlists, child profiles, synced history, and weekly picks. No payment details are required.</div>
+      <div class="faq-a">Search unlimited shows and movies, get full AI breakdowns, and share report links with others—all completely free. No account or credit card required.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        When will paid plans return?
+        Can I try Pro or Family free?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">Pro and Family plans will return after beta. We'll give early users advance notice before anything changes.</div>
+      <div class="faq-a">Yes — both plans include a 14-day free trial. No credit card required to start, and you can cancel anytime.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Do I need a credit card during beta?
+        Do I need a credit card for the free trial?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">No. Beta access is free and does not require payment details.</div>
+      <div class="faq-a">No. You can start either 14-day trial without providing payment details upfront.</div>
     </div>
 
     <div class="faq-item">
@@ -340,7 +355,7 @@ footer a:hover { color: var(--accent); }
         What's the difference between Pro and Family?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">Pro is designed for a single parent or household with one account and up to 5 child profiles. Family adds up to 5 parent accounts, up to 10 child profiles, shared watchlists, per-child content thresholds, and priority support — ideal for larger or blended families.</div>
+      <div class="faq-a">Pro is for a single parent with up to 2 child profiles. Family is designed for larger households — it includes up to 5 child profiles, shared family watchlists, per-child age controls, and priority support.</div>
     </div>
 
     <div class="faq-item">
