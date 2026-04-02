@@ -4,7 +4,7 @@
  * Body: { tmdb_id, season, episode, title }
  */
 
-import { requireAuth, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { requireAuth, jsonResponse, handleOptions } from '../../_shared/clerk.js';
 
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
