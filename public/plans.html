@@ -411,36 +411,47 @@ const PRICES = {
 let isYearly = false;
 
 // ── Billing toggle ────────────────────────────────────────────────────────
-document.getElementById('billingToggle').addEventListener('click', () => {
-  isYearly = !isYearly;
+function initBillingToggle() {
   const toggle = document.getElementById('billingToggle');
-  toggle.className = 'toggle-switch ' + (isYearly ? 'yearly' : 'monthly');
-  document.getElementById('labelMonthly').classList.toggle('active', !isYearly);
-  document.getElementById('labelYearly').classList.toggle('active', isYearly);
+  if (!toggle) return; // Safety check
+  
+  toggle.addEventListener('click', () => {
+    isYearly = !isYearly;
+    toggle.className = 'toggle-switch ' + (isYearly ? 'yearly' : 'monthly');
+    document.getElementById('labelMonthly').classList.toggle('active', !isYearly);
+    document.getElementById('labelYearly').classList.toggle('active', isYearly);
 
-  if (isYearly) {
-    // Yearly pricing
-    document.getElementById('proPrice').innerHTML    = `<sup>$</sup>49.99<span id="proPeriod">/yr</span>`;
-    document.getElementById('proAlt').textContent    = `${PRICES.pro.yearlyTotal}/year · billed once · cancel anytime`;
-    document.getElementById('familyPrice').innerHTML = `<sup>$</sup>79.99<span id="familyPeriod">/yr</span>`;
-    document.getElementById('familyAlt').textContent = `${PRICES.family.yearlyTotal}/year · billed once · cancel anytime`;
-    // Update CTAs if not already on a plan
-    const proCta = document.getElementById('proCta');
-    const famCta = document.getElementById('familyCta');
-    if (proCta.dataset.state !== 'current')    proCta.textContent = 'Start free trial';
-    if (famCta.dataset.state !== 'current')  famCta.textContent = 'Start free trial';
-  } else {
-    // Monthly pricing
-    document.getElementById('proPrice').innerHTML    = `<sup>$</sup>4.99<span id="proPeriod">/mo</span>`;
-    document.getElementById('proAlt').textContent    = 'Billed monthly · cancel anytime';
-    document.getElementById('familyPrice').innerHTML = `<sup>$</sup>7.99<span id="familyPeriod">/mo</span>`;
-    document.getElementById('familyAlt').textContent = 'Billed monthly · cancel anytime';
-    const proCta = document.getElementById('proCta');
-    const famCta = document.getElementById('familyCta');
-    if (proCta.dataset.state !== 'current')    proCta.textContent = 'Start free trial';
-    if (famCta.dataset.state !== 'current')  famCta.textContent = 'Start free trial';
-  }
-});
+    if (isYearly) {
+      // Yearly pricing
+      document.getElementById('proPrice').innerHTML    = `<sup>$</sup>49.99<span id="proPeriod">/yr</span>`;
+      document.getElementById('proAlt').textContent    = `${PRICES.pro.yearlyTotal}/year · billed once · cancel anytime`;
+      document.getElementById('familyPrice').innerHTML = `<sup>$</sup>79.99<span id="familyPeriod">/yr</span>`;
+      document.getElementById('familyAlt').textContent = `${PRICES.family.yearlyTotal}/year · billed once · cancel anytime`;
+      // Update CTAs if not already on a plan
+      const proCta = document.getElementById('proCta');
+      const famCta = document.getElementById('familyCta');
+      if (proCta?.dataset.state !== 'current')    proCta.textContent = 'Start free trial';
+      if (famCta?.dataset.state !== 'current')  famCta.textContent = 'Start free trial';
+    } else {
+      // Monthly pricing
+      document.getElementById('proPrice').innerHTML    = `<sup>$</sup>4.99<span id="proPeriod">/mo</span>`;
+      document.getElementById('proAlt').textContent    = 'Billed monthly · cancel anytime';
+      document.getElementById('familyPrice').innerHTML = `<sup>$</sup>7.99<span id="familyPeriod">/mo</span>`;
+      document.getElementById('familyAlt').textContent = 'Billed monthly · cancel anytime';
+      const proCta = document.getElementById('proCta');
+      const famCta = document.getElementById('familyCta');
+      if (proCta?.dataset.state !== 'current')    proCta.textContent = 'Start free trial';
+      if (famCta?.dataset.state !== 'current')  famCta.textContent = 'Start free trial';
+    }
+  });
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initBillingToggle);
+} else {
+  initBillingToggle();
+}
 
 // ── Upgrade handler ──────────────────────────────────────────────────────
 async function handleUpgrade(plan) {
