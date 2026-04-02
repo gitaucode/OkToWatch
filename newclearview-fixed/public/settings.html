@@ -300,7 +300,7 @@ body {
         <div class="field">
           <label>Plan</label>
           <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.15rem;">
-            <span class="plan-pill" id="planPill">⭐ Pro</span>
+            <span class="plan-pill" id="planPill">Loading…</span>
             <span style="font-size:0.78rem;color:var(--muted);" id="memberSince"></span>
           </div>
         </div>
@@ -512,8 +512,8 @@ async function apiDelete(url)     { const h = await _authHeaders(); const r = aw
 
 // ── Auth guard ─────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', async ({ detail }) => {
-  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
-    window.location.href = '/plans?reason=pro';
+  if (!detail.loggedIn) {
+    window.location.href = '/signin?redirect=/settings';
     return;
   }
   await loadSettings(detail.user);
@@ -524,9 +524,13 @@ async function loadSettings(user) {
   // Populate account fields immediately from Clerk user
   document.getElementById('firstName').value  = user.firstName  || '';
   document.getElementById('lastName').value   = user.lastName   || '';
-  document.getElementById('emailField').value = user.email      || '';
-  if (user.memberSince) {
-    const date = new Date(user.memberSince);
+  // Clerk stores email in emailAddresses array
+  const email = user.emailAddresses?.[0]?.emailAddress || user.email || '';
+  document.getElementById('emailField').value = email;
+  // Clerk stores account creation date in createdAt (Unix ms)
+  const createdAt = user.createdAt || user.memberSince;
+  if (createdAt) {
+    const date = new Date(typeof createdAt === 'number' ? createdAt : createdAt);
     document.getElementById('memberSince').textContent = 'Member since ' + date.toLocaleDateString('en-US', { month:'long', year:'numeric' });
   }
 
@@ -548,8 +552,12 @@ async function loadSettings(user) {
   renderStreamingGrid();
   renderDigestToggle();
 
-  // Populate billing
-  populateBilling(window.CV?.isPro, window.CV?.isFamily);
+  // Populate billing & plan pill
+  const isPro    = window.CV?.isPro    || false;
+  const isFamily = window.CV?.isFamily || false;
+  const planLabel = isFamily ? '👨‍👩‍👧 Family' : isPro ? '⭐ Pro' : '🌱 Free';
+  document.getElementById('planPill').textContent = planLabel;
+  populateBilling(isPro, isFamily);
 
   // Show content, hide skeleton
   document.getElementById('settingsSkeleton').style.display = 'none';

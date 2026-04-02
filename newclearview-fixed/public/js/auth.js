@@ -4,6 +4,12 @@
  */
 
 (function () {
+  // ── Billing flag ──────────────────────────────────────────────────────────
+  // Set to true when Dodo Payments is live and approved.
+  // false = all logged-in users get full Pro access (free beta mode).
+  const BILLING_ENABLED = false;
+  window.BILLING_ENABLED = BILLING_ENABLED;
+
   const CLERK_PK = 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA';
   const CLERK_SCRIPT = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
 
@@ -320,6 +326,11 @@
 
   // ── Dispatch auth event (always fires, even on failure) ───────────────────
   function dispatchAuth(loggedIn, isPro, isFamily, clerkUser) {
+    // Free beta mode — all signed-in users get Pro access until billing is live
+    if (!BILLING_ENABLED && loggedIn) {
+      isPro    = true;
+      isFamily = false;
+    }
     window.CV = { loggedIn, isPro, isFamily, user: clerkUser || null };
     renderNav(loggedIn, isPro, clerkUser || null);
     document.dispatchEvent(new CustomEvent('cv:auth', {
