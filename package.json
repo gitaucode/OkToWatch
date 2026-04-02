@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "node scripts/inject-version.js",
     "dev": "wrangler pages dev public --compatibility-date=2024-09-23",
-    "deploy": "wrangler pages deploy public",
+    "deploy": "npm run build && wrangler pages deploy public",
     "db:create": "wrangler d1 create clearview",
     "db:migrate": "wrangler d1 execute clearview --file=./schema.sql",
     "db:migrate:remote": "wrangler d1 execute clearview --file=./schema.sql --remote"
