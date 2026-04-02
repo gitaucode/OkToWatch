@@ -85,6 +85,23 @@
     </button>
   </div>
 </nav>
+
+<!-- Global search modal (available on all pages) -->
+<div class="cv-search-modal" id="cvSearchModal" onclick="if(event.target===this)cvCloseSearchModal()">
+  <div class="cv-search-modal-content" onclick="event.stopPropagation()">
+    <div class="cv-search-modal-header">
+      <input type="text" id="cvSearchInput" class="cv-search-modal-input" placeholder="Search any movie or TV show..." autocomplete="off"/>
+      <button class="cv-search-modal-close" onclick="cvCloseSearchModal()">✕</button>
+    </div>
+    <div class="cv-search-modal-body">
+      <div class="cv-search-suggestions" id="cvSearchSuggestions"></div>
+    </div>
+    <div class="cv-search-modal-hint">
+      <span>Press <kbd>Esc</kbd> to close</span>
+    </div>
+  </div>
+</div>
+
 <div class="cv-nav-mobile-overlay" id="cvNavOverlay"></div>
 <div class="cv-nav-mobile" id="cvNavMobile">
   <div class="cv-nav-mobile-inner">
@@ -100,6 +117,78 @@
   </div>
 </div>
 <style>
+  /* Search Modal */
+  .cv-search-modal {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: center; padding-top: 80px;
+    animation: fadeIn 0.15s ease;
+  }
+  .cv-search-modal.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .cv-search-modal-content {
+    width: 90%; max-width: 500px;
+    background: white; border-radius: 16px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+    overflow: hidden; animation: slideDown 0.25s ease;
+  }
+  @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .cv-search-modal-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 1rem 1.25rem; border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .cv-search-modal-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem;
+    color: var(--text, #1a2420);
+  }
+  .cv-search-modal-input::placeholder { color: var(--muted, #7a908a); }
+  .cv-search-modal-close {
+    background: none; border: none; font-size: 1.4rem;
+    color: var(--muted, #7a908a); cursor: pointer;
+    padding: 0; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; transition: all 0.12s;
+  }
+  .cv-search-modal-close:hover { background: var(--surface2, #f4f6f5); color: var(--text, #1a2420); }
+  .cv-search-modal-body {
+    max-height: 60vh; overflow-y: auto; padding: 0.5rem 0;
+  }
+  .cv-search-suggestions { display: flex; flex-direction: column; gap: 0; }
+  .cv-search-item {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.85rem 1.25rem; cursor: pointer;
+    transition: background 0.12s; border: none;
+    background: none; font-family: 'DM Sans', sans-serif;
+    width: 100%; text-align: left; font-size: 0.9rem;
+  }
+  .cv-search-item:hover { background: var(--surface2, #f4f6f5); }
+  .cv-search-item-poster {
+    width: 40px; min-width: 40px; height: 56px;
+    border-radius: 6px; overflow: hidden;
+    background: var(--bg, #c8d9d1); display: flex;
+    align-items: center; justify-content: center; font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .cv-search-item-poster img { width: 100%; height: 100%; object-fit: cover; }
+  .cv-search-item-info { flex: 1; min-width: 0; }
+  .cv-search-item-title {
+    font-size: 0.9rem; font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .cv-search-item-meta {
+    font-size: 0.77rem; color: var(--muted, #7a908a); margin-top: 0.2rem;
+  }
+  .cv-search-modal-hint {
+    padding: 0.6rem 1.25rem; font-size: 0.75rem;
+    color: var(--muted, #7a908a); border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  .cv-search-modal-hint kbd {
+    background: var(--surface2, #f4f6f5); padding: 0.15rem 0.4rem;
+    border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+  }
+
   .cv-nav {
     position: sticky; top: 0; z-index: 400;
     background: rgba(200,217,209,0.92);
@@ -319,7 +408,140 @@
         }
       });
     });
+
+    // Set up global search modal
+    const searchModal = document.getElementById('cvSearchModal');
+    const searchInput = document.getElementById('cvSearchInput');
+    const searchSuggestions = document.getElementById('cvSearchSuggestions');
+    let searchTimeout;
+    let searchHistory = [];
+
+    // Load search history from localStorage
+    try {
+      searchHistory = JSON.parse(localStorage.getItem('cvSearchHistory') || '[]').slice(0, 10);
+    } catch (e) {
+      searchHistory = [];
+    }
+
+    // Cmd+K to open search
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchModal.classList.add('open');
+        searchInput.focus();
+      }
+    });
+
+    // Escape to close search
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && searchModal.classList.contains('open')) {
+        cvCloseSearchModal();
+      }
+    });
+
+    // Search input handler
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        clearTimeout(searchTimeout);
+        
+        if (!query) {
+          renderSearchHistory();
+          return;
+        }
+
+        searchSuggestions.innerHTML = '<div style="padding: 1rem; color: var(--muted); font-size: 0.9rem;">Searching...</div>';
+        
+        searchTimeout = setTimeout(() => {
+          performSearch(query);
+        }, 300);
+      });
+
+      // Prevent closing when typing
+      searchInput.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    function renderSearchHistory() {
+      if (searchHistory.length === 0) {
+        searchSuggestions.innerHTML = '<div style="padding: 1rem; color: var(--muted); font-size: 0.9rem;">Start typing to search...</div>';
+        return;
+      }
+      searchSuggestions.innerHTML = '<div style="padding: 0.75rem 1.25rem; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Recent</div>' +
+        searchHistory.map(item => `
+          <button class="cv-search-item" onclick="cvOpenTitle('${item.id}','${item.type}')">
+            <div class="cv-search-item-poster">${item.poster ? `<img src="${item.poster}" alt="">` : '🎬'}</div>
+            <div class="cv-search-item-info">
+              <div class="cv-search-item-title">${item.title}</div>
+              <div class="cv-search-item-meta">${item.year || ''} · ${item.type === 'tv' ? 'TV' : 'Movie'}</div>
+            </div>
+          </button>
+        `).join('');
+    }
+
+    async function performSearch(query) {
+      try {
+        const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        
+        if (data.results && data.results.length > 0) {
+          searchSuggestions.innerHTML = data.results.slice(0, 8).map(r => `
+            <button class="cv-search-item" onclick="cvOpenTitle('${r.tmdb_id}','${r.media_type}')">
+              <div class="cv-search-item-poster">${r.poster ? `<img src="https://image.tmdb.org/t/p/w88${r.poster}" alt="">` : '🎬'}</div>
+              <div class="cv-search-item-info">
+                <div class="cv-search-item-title">${r.title}</div>
+                <div class="cv-search-item-meta">${r.year || ''} · ${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+              </div>
+            </button>
+          `).join('');
+        } else {
+          searchSuggestions.innerHTML = '<div style="padding: 1rem; color: var(--muted); font-size: 0.9rem;">No results found</div>';
+        }
+      } catch (e) {
+        console.error('Search error:', e);
+        searchSuggestions.innerHTML = '<div style="padding: 1rem; color: var(--muted); font-size: 0.9rem;">Search failed — try again</div>';
+      }
+    }
+
+    // Initialize with history on first open
+    if (searchModal) {
+      searchModal.addEventListener('animationend', () => {
+        if (searchModal.classList.contains('open') && !searchInput.value) {
+          renderSearchHistory();
+        }
+      });
+    }
   }
+
+  // Global search modal functions
+  window.cvCloseSearchModal = function() {
+    const modal = document.getElementById('cvSearchModal');
+    const input = document.getElementById('cvSearchInput');
+    if (modal) {
+      modal.classList.remove('open');
+      if (input) input.value = '';
+    }
+  };
+
+  window.cvOpenTitle = function(id, type) {
+    // Save to search history
+    try {
+      let history = JSON.parse(localStorage.getItem('cvSearchHistory') || '[]');
+      // Get title from the clicked element
+      const titleEl = event.target.closest('.cv-search-item').querySelector('.cv-search-item-title');
+      const metaEl = event.target.closest('.cv-search-item').querySelector('.cv-search-item-meta');
+      const title = titleEl.textContent;
+      const year = metaEl.textContent.split(' · ')[0];
+      const poster = event.target.closest('.cv-search-item').querySelector('img')?.src || null;
+      
+      const item = { id, type, title, year, poster };
+      history = [item, ...history.filter(h => h.id !== id)].slice(0, 10);
+      localStorage.setItem('cvSearchHistory', JSON.stringify(history));
+    } catch (e) {
+      console.error('History save failed:', e);
+    }
+    // Navigate
+    window.location.href = `/index?id=${id}&type=${type}`;
+  };
 
   // ── Public guards ─────────────────────────────────────────────────────────
   window.requireAuth = function () {

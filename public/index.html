@@ -1343,7 +1343,19 @@ function renderRecentSearchesCarousel() {
   quick.style.display = 'none';
 }
 function doSearch() { const q=heroInput.value.trim(); if(q) doSearchByTitle(q); }
-function doCollapsedSearch() { const q=collInput.value.trim(); if(q) doSearchByTitle(q); }
+function doCollapsedSearch() {
+  // Open global search modal - if there's text in the collapsed input, search it
+  const q = collInput.value.trim();
+  if (q) {
+    document.getElementById('cvSearchInput').value = q;
+    // Trigger a fake input event to search
+    const event = new Event('input', { bubbles: true });
+    document.getElementById('cvSearchInput').dispatchEvent(event);
+  }
+  // Open the modal
+  document.getElementById('cvSearchModal').classList.add('open');
+  document.getElementById('cvSearchInput').focus();
+}
 function retrySearch() { if(lastId) runAnalysis(lastId,lastType,false); }
 
 async function doSearchByTitle(q) {
