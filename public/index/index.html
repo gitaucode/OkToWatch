@@ -534,7 +534,7 @@ footer a:hover { color: var(--accent); }
     <div class="ob-header">
       <div class="ob-eyebrow">Family setup</div>
       <h2>Set up your family view</h2>
-      <p>Pick a starting preset, then choose the topics you want called out first in each review. You can change this any time.</p>
+      <p>Pick a starting preset, then choose the safety concerns and topics you want called out first in each review. You can change this any time.</p>
       <div class="ob-preview-row">
         <span class="ob-preview-chip">Fast to change</span>
         <span class="ob-preview-chip">Search-first</span>
@@ -564,13 +564,13 @@ footer a:hover { color: var(--accent); }
       <div class="prefs-header-copy">
         <div class="prefs-eyebrow">Review settings</div>
         <h3>Your preferences</h3>
-        <p>Choose which topics should appear first whenever OkToWatch summarizes a title.</p>
+        <p>Choose which safety concerns and notable themes should appear first whenever OkToWatch summarizes a title.</p>
       </div>
       <button class="prefs-close" onclick="closePrefsPanel()">✕</button>
     </div>
     <div class="prefs-body">
-      <div class="prefs-section-label">Highlight these topics first</div>
-      <div class="prefs-helper">Your active topics will be prioritized near the top of each breakdown. You can revisit this at any time.</div>
+      <div class="prefs-section-label">Highlight these first</div>
+      <div class="prefs-helper">Your active safety concerns and notable themes will be prioritized near the top of each breakdown. You can revisit this at any time.</div>
       <div class="prefs-categories" id="prefsCatList"></div>
       <p class="prefs-reorder-hint">Active topics appear at the top of each breakdown in the order shown here.</p>
       <button class="prefs-save-btn" onclick="savePrefsAndClose()">Save preferences</button>
@@ -822,6 +822,7 @@ const ALL_CATEGORIES = [
   { name: 'Horror & Fear',   icon: '👻', desc: 'Scary scenes, jump scares, or disturbing imagery' },
   { name: 'Self-harm',       icon: '⚠️', desc: 'Self-harm, suicide, or eating disorders' },
   { name: 'Bullying & Cruelty', icon: '💬', desc: 'Bullying, humiliation, manipulation, or cruelty' },
+  { name: 'LGBTQ+ Themes',   icon: '🏳️‍🌈', desc: 'Identity, coming out, same-sex relationships, or gender themes' },
   { name: 'Mature Themes',   icon: '🧠', desc: 'Grief, trauma, intense family conflict, or heavy themes' },
 ];
 const DEFAULT_ACTIVE = ['Sex & Nudity','Violence & Gore','Language','Drugs & Alcohol','Horror & Fear','Self-harm'];
@@ -834,9 +835,9 @@ const PRESET_CONFIG = {
   },
   cautious: {
     label: 'More cautious',
-    desc: 'Adds social and emotionally intense topics to the default set.',
-    active: [...DEFAULT_ACTIVE, 'Bullying & Cruelty', 'Mature Themes'],
-    helper: 'Good if you want heavier emotional or social themes called out earlier too.'
+    desc: 'Adds social, identity, and emotionally intense topics to the default set.',
+    active: [...DEFAULT_ACTIVE, 'Bullying & Cruelty', 'LGBTQ+ Themes', 'Mature Themes'],
+    helper: 'Good if you want social, identity, or emotionally heavier themes called out earlier too.'
   },
   custom: {
     label: 'Custom',
@@ -1017,7 +1018,7 @@ const levelClass={none:'level-none',mild:'level-mild',moderate:'level-moderate',
 const levelLabel={none:'None',mild:'Mild',moderate:'Moderate',strong:'Strong'};
 const dotClass={none:'dot-none',mild:'dot-mild',moderate:'dot-moderate',strong:'dot-strong'};
 const dotColor={none:'#2a7d52',mild:'#b07a10',moderate:'#b85c1a',strong:'#c0392b'};
-const shortNames={'Sex & Nudity':'Sex','Violence & Gore':'Violence','Language':'Language','Drugs & Alcohol':'Drugs','Horror & Fear':'Horror','Self-harm':'Self-harm','Bullying & Cruelty':'Bullying','Mature Themes':'Themes'};
+const shortNames={'Sex & Nudity':'Sex','Violence & Gore':'Violence','Language':'Language','Drugs & Alcohol':'Drugs','Horror & Fear':'Horror','Self-harm':'Self-harm','Bullying & Cruelty':'Bullying','LGBTQ+ Themes':'LGBTQ+','Mature Themes':'Themes'};
 const RATING_INFO={'G':'General Audiences — suitable for all ages','PG':'Parental Guidance — some material may not suit young children','PG-13':'Parents Strongly Cautioned — some material may be inappropriate for children under 13','R':'Restricted — children under 17 require accompanying adult','NC-17':'Adults only — no one 17 and under admitted','TV-Y':'All children','TV-Y7':'Directed to older children (7+)','TV-G':'General audience','TV-PG':'Parental guidance suggested','TV-14':'Parents strongly cautioned — not suitable for under 14','TV-MA':'Mature audiences only — not suitable for under 17','NR':'Not yet rated'};
 
 let currentAudience='young', currentBreakdown=null, lastId=null, lastType=null, lastSearchQuery='';
