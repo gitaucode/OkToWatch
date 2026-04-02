@@ -875,7 +875,6 @@ function showSplash() {
     });
   }, 410);
   setTimeout(() => { document.getElementById('splashCta').classList.add('in'); }, 640);
-  splashAutoTimer = setTimeout(() => splashNext(true), 2800);
 }
 function splashNext(fromAuto) {
   if (splashAutoTimer) { clearTimeout(splashAutoTimer); splashAutoTimer = null; }
