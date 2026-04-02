@@ -379,31 +379,37 @@ footer a:hover { color: var(--accent); }
 .cat-item.compare-better { background: rgba(42,125,82,0.04); border-radius: var(--radius-sm); padding-left: 0.5rem; margin-left: -0.5rem; }
 
 /* Splash */
-#splashScreen { display: none; position: fixed; inset: 0; z-index: 700; background: #1a2420; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; }
+#splashScreen { display: none; position: fixed; inset: 0; z-index: 700; background: radial-gradient(circle at 20% 18%, rgba(93,186,151,0.12), transparent 28%), radial-gradient(circle at 80% 12%, rgba(255,255,255,0.08), transparent 24%), radial-gradient(circle at 50% 78%, rgba(42,107,85,0.18), transparent 38%), linear-gradient(180deg, #18221f 0%, #101715 100%); flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; overflow: hidden; }
 #splashScreen.visible { display: flex; }
-.splash-logo-wrap { opacity: 0; transform: scale(0.85); transition: opacity 0.5s ease, transform 0.5s ease; }
-.splash-logo-wrap.in { opacity: 1; transform: scale(1); }
-.splash-mark { width: 72px; height: 72px; background: var(--accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 0 0 0 rgba(42,107,85,0.4); }
-.splash-mark.pulse { animation: splashPulse 1.8s ease-out forwards; }
-@keyframes splashPulse { 0%{box-shadow:0 0 0 0 rgba(42,107,85,0.5)} 50%{box-shadow:0 0 0 18px rgba(42,107,85,0.15)} 100%{box-shadow:0 0 0 32px rgba(42,107,85,0)} }
-.splash-wordmark { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; color: white; }
+#splashScreen::before, #splashScreen::after { content: ''; position: absolute; border-radius: 50%; filter: blur(18px); pointer-events: none; }
+#splashScreen::before { width: 260px; height: 260px; background: rgba(93,186,151,0.09); top: -60px; left: -50px; animation: splashFloatA 7s ease-in-out infinite; }
+#splashScreen::after { width: 320px; height: 320px; background: rgba(255,255,255,0.05); bottom: -120px; right: -70px; animation: splashFloatB 9s ease-in-out infinite; }
+.splash-logo-wrap { opacity: 0; transform: scale(0.92) translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; position: relative; z-index: 1; }
+.splash-logo-wrap.in { opacity: 1; transform: scale(1) translateY(0); }
+.splash-mark { width: 76px; height: 76px; background: linear-gradient(145deg, #2f7a61 0%, #215543 100%); border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 18px 40px rgba(17,31,26,0.35), inset 0 1px 0 rgba(255,255,255,0.18); position: relative; overflow: hidden; }
+.splash-mark::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0)); }
+.splash-mark.pulse { animation: splashPulse 1.1s ease-out forwards; }
+@keyframes splashPulse { 0%{ transform: scale(0.96); box-shadow: 0 12px 28px rgba(17,31,26,0.26), 0 0 0 0 rgba(93,186,151,0.28); } 55%{ transform: scale(1); box-shadow: 0 18px 40px rgba(17,31,26,0.35), 0 0 0 16px rgba(93,186,151,0.1); } 100%{ transform: scale(1); box-shadow: 0 18px 40px rgba(17,31,26,0.35), 0 0 0 26px rgba(93,186,151,0); } }
+@keyframes splashFloatA { 0%,100%{ transform: translate3d(0,0,0); } 50%{ transform: translate3d(18px,10px,0); } }
+@keyframes splashFloatB { 0%,100%{ transform: translate3d(0,0,0); } 50%{ transform: translate3d(-14px,-12px,0); } }
+.splash-wordmark { font-size: 1.62rem; font-weight: 700; letter-spacing: -0.03em; color: white; text-shadow: 0 4px 18px rgba(0,0,0,0.18); }
 .splash-wordmark span { color: #5dba97; }
-.splash-headline { margin-top: 3rem; opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s; max-width: 320px; }
+.splash-headline { margin-top: 2.35rem; opacity: 0; transform: translateY(12px); transition: opacity 0.42s ease 0.16s, transform 0.42s ease 0.16s; max-width: 340px; position: relative; z-index: 1; }
 .splash-headline.in { opacity: 1; transform: translateY(0); }
-.splash-headline h2 { font-size: clamp(1.6rem,6vw,2.2rem); font-weight: 700; letter-spacing: -0.03em; color: white; line-height: 1.15; margin-bottom: 0.75rem; }
+.splash-headline h2 { font-size: clamp(1.72rem,6vw,2.28rem); font-weight: 700; letter-spacing: -0.035em; color: white; line-height: 1.08; margin-bottom: 0.8rem; text-wrap: balance; }
 .splash-headline h2 em { color: #5dba97; font-style: normal; }
-.splash-headline p { font-size: 0.9rem; color: rgba(255,255,255,0.55); line-height: 1.65; }
-.splash-dots { display: flex; gap: 0.6rem; justify-content: center; margin-top: 2rem; opacity: 0; transition: opacity 0.4s ease 0.7s; }
+.splash-headline p { font-size: 0.92rem; color: rgba(255,255,255,0.64); line-height: 1.65; }
+.splash-dots { display: flex; gap: 0.65rem; justify-content: center; margin-top: 1.8rem; opacity: 0; transition: opacity 0.3s ease 0.35s; position: relative; z-index: 1; }
 .splash-dots.in { opacity: 1; }
 .splash-cat-dot { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
-.splash-dot-circle { width: 8px; height: 8px; border-radius: 50%; transform: scale(0); transition: transform 0.3s ease; }
+.splash-dot-circle { width: 8px; height: 8px; border-radius: 50%; transform: scale(0); transition: transform 0.22s ease; box-shadow: 0 0 12px currentColor; }
 .splash-dot-circle.in { transform: scale(1); }
-.splash-dot-label { font-size: 0.55rem; font-weight: 700; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.04em; }
-.splash-cta { margin-top: 2.5rem; opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; }
+.splash-dot-label { font-size: 0.54rem; font-weight: 700; color: rgba(255,255,255,0.34); text-transform: uppercase; letter-spacing: 0.05em; }
+.splash-cta { margin-top: 2.15rem; opacity: 0; transform: translateY(8px); transition: opacity 0.32s ease, transform 0.32s ease; position: relative; z-index: 1; }
 .splash-cta.in { opacity: 1; transform: translateY(0); }
-.splash-btn { background: var(--accent); color: white; border: none; border-radius: 100px; padding: 0.9rem 2.5rem; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, opacity 0.15s; box-shadow: 0 4px 20px rgba(42,107,85,0.4); }
-.splash-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-.splash-skip { display: block; margin-top: 0.85rem; font-size: 0.78rem; color: rgba(255,255,255,0.3); cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; transition: color 0.15s; }
+.splash-btn { background: linear-gradient(135deg, #2a6b55 0%, #3b8a6d 100%); color: white; border: none; border-radius: 100px; padding: 0.88rem 2.45rem; font-family: 'DM Sans', sans-serif; font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s; box-shadow: 0 14px 28px rgba(42,107,85,0.28); }
+.splash-btn:hover { opacity: 0.96; transform: translateY(-1px); box-shadow: 0 18px 34px rgba(42,107,85,0.32); }
+.splash-skip { display: block; margin-top: 0.8rem; font-size: 0.76rem; color: rgba(255,255,255,0.34); cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; transition: color 0.15s; }
 .splash-skip:hover { color: rgba(255,255,255,0.55); }
 
 /* Onboarding */
@@ -492,7 +498,7 @@ footer a:hover { color: var(--accent); }
 <body data-page="home">
 
 <!-- Splash screen -->
-<div id="splashScreen" aria-hidden="true" style="display:none;">
+<div id="splashScreen" aria-hidden="true">
   <div class="splash-logo-wrap" id="splashLogoWrap">
     <div class="splash-mark" id="splashMark">
       <svg width="32" height="32" viewBox="0 0 16 16" fill="none">
@@ -509,11 +515,11 @@ footer a:hover { color: var(--accent); }
   <div class="splash-dots" id="splashDots">
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#c0392b" id="sd0"></div><div class="splash-dot-label">Sex</div></div>
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#c0392b" id="sd1"></div><div class="splash-dot-label">Violence</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd2"></div><div class="splash-dot-label">LGBTQ+</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd3"></div><div class="splash-dot-label">Language</div></div>
+    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd2"></div><div class="splash-dot-label">Language</div></div>
+    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd3"></div><div class="splash-dot-label">Bullying</div></div>
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd4"></div><div class="splash-dot-label">Drugs</div></div>
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b85c1a" id="sd5"></div><div class="splash-dot-label">Horror</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd6"></div><div class="splash-dot-label">Self-harm</div></div>
+    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd6"></div><div class="splash-dot-label">Themes</div></div>
   </div>
   <div class="splash-cta" id="splashCta">
     <button class="splash-btn" onclick="splashNext()">Get started →</button>
@@ -773,8 +779,8 @@ footer a:hover { color: var(--accent); }
 
 <!-- Pro nudge -->
 <div class="pro-nudge" id="proNudge">
-  <span id="proNudgeMsg">This is a Pro feature.</span>
-  <a href="/plans" class="pro-nudge-btn">See Pro →</a>
+  <span id="proNudgeMsg">Create a free beta account to unlock this feature.</span>
+  <a href="/plans" class="pro-nudge-btn">See beta access →</a>
   <button class="pro-nudge-close" onclick="document.getElementById('proNudge').classList.remove('show')">✕</button>
 </div>
 
@@ -850,10 +856,52 @@ function markOnboarded() { try { localStorage.setItem(ONBOARD_KEY,'1'); } catch 
 
 let obSelections = new Set(DEFAULT_ACTIVE);
 let obPreset = 'balanced';
+let splashAutoTimer = null;
 
-function initOnboarding() { if (hasOnboarded()) return; showOnboardingSheet(); }
-function splashNext() { showOnboardingSheet(); }
-function splashSkipAll() { obSelections=new Set(DEFAULT_ACTIVE); obFinish(); }
+function initOnboarding() { if (hasOnboarded()) return; showSplash(); }
+function showSplash() {
+  const s = document.getElementById('splashScreen');
+  s.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { document.getElementById('splashLogoWrap').classList.add('in'); document.getElementById('splashMark').classList.add('pulse'); }, 80);
+  setTimeout(() => { document.getElementById('splashHeadline').classList.add('in'); }, 220);
+  setTimeout(() => {
+    document.getElementById('splashDots').classList.add('in');
+    [0,1,2,3,4,5,6].forEach(i => {
+      setTimeout(() => {
+        const d = document.getElementById('sd' + i);
+        if (d) d.classList.add('in');
+      }, i * 48);
+    });
+  }, 410);
+  setTimeout(() => { document.getElementById('splashCta').classList.add('in'); }, 640);
+  splashAutoTimer = setTimeout(() => splashNext(true), 1650);
+}
+function splashNext(fromAuto) {
+  if (splashAutoTimer) { clearTimeout(splashAutoTimer); splashAutoTimer = null; }
+  const s = document.getElementById('splashScreen');
+  s.style.transition = 'opacity 0.28s ease';
+  s.style.opacity = '0';
+  setTimeout(() => {
+    s.classList.remove('visible');
+    s.style.opacity = '';
+    s.style.transition = '';
+    showOnboardingSheet();
+  }, fromAuto ? 240 : 280);
+}
+function splashSkipAll() {
+  if (splashAutoTimer) { clearTimeout(splashAutoTimer); splashAutoTimer = null; }
+  const s = document.getElementById('splashScreen');
+  s.style.transition = 'opacity 0.22s ease';
+  s.style.opacity = '0';
+  setTimeout(() => {
+    s.classList.remove('visible');
+    s.style.opacity = '';
+    s.style.transition = '';
+    obSelections = new Set(DEFAULT_ACTIVE);
+    obFinish();
+  }, 220);
+}
 function renderOnboarding() {
   document.getElementById('obPresetList').innerHTML = Object.entries(PRESET_CONFIG).map(([key, preset]) =>
     `<button class="ob-preset${obPreset===key?' selected':''}" onclick="obSelectPreset('${key}')" type="button">
@@ -1308,7 +1356,7 @@ async function initSeasonSelector(id,details) {
   if(!window.CV?.isPro && !window.CV?.isFamily) {
     pillsEl.innerHTML=`
       <button class="season-pill active" style="cursor:default;">All seasons</button>
-      <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis requires a Pro or Family subscription.')">
+      <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis is included for free during beta once you sign in.')">
         <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" style="opacity:0.7;flex-shrink:0"><path d="M12 7V5A4 4 0 0 0 4 5v2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1zM6 5a2 2 0 1 1 4 0v2H6V5z"/></svg>
         ${seasons.length} seasons — Pro
       </button>`;
@@ -1431,7 +1479,7 @@ async function shareImage() {
   ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='14px DM Sans,sans-serif'; ctx.fillText(currentYear,28,128);
   if(currentBreakdown){ const v=currentBreakdown.verdicts[currentAudience]; if(v){ const tc={safe:'#2a7d52',warn:'#b07a10',danger:'#c0392b'}[v.tier]; ctx.fillStyle=tc+'33'; roundRect(ctx,24,145,W-48,54,10); ctx.fill(); ctx.strokeStyle=tc; ctx.lineWidth=1.5; roundRect(ctx,24,145,W-48,54,10); ctx.stroke(); ctx.fillStyle=tc; ctx.font='bold 15px DM Sans,sans-serif'; ctx.fillText(v.text,42,168); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='12px DM Sans,sans-serif'; ctx.fillText(v.sub,42,188); } const cats=currentBreakdown.categories; const dotW=(W-48)/cats.length; cats.forEach((c,i)=>{ const x=24+i*dotW+dotW/2,y=240; ctx.beginPath(); ctx.arc(x,y-6,6,0,Math.PI*2); ctx.fillStyle=dotColor[c.level]; ctx.fill(); ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center'; ctx.fillText((shortNames[c.name]||c.name).toUpperCase(),x,y+10); ctx.textAlign='left'; }); }
   ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px DM Sans,sans-serif'; ctx.fillText('oktowatch.app — Know before your kids watch it',28,H-18);
-  canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'clearview.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch — ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
+  canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'oktowatch.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch — ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
 }
 function loadImage(src) { return new Promise((res,rej)=>{ const img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>res(img); img.onerror=rej; img.src=src; }); }
 function roundRect(ctx,x,y,w,h,r) { ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
@@ -1457,7 +1505,7 @@ document.addEventListener('click',e=>{ const tag=e.target.closest('.poster-tag[d
 let compareData=null, compareTimer=null;
 
 function openCompare() {
-  if(!window.CV?.isPro && !window.CV?.isFamily){ showProNudge('Compare mode requires a Pro or Family subscription.'); return; }
+  if(!window.CV?.isPro && !window.CV?.isFamily){ showProNudge('Compare mode is included for free during beta once you sign in.'); return; }
   const sec=document.getElementById('compareSection'), card=document.getElementById('compareSearchCard');
   sec.classList.add('visible'); card.style.display='block';
   document.getElementById('compareResultWrap').style.display='none'; document.getElementById('compareHeader').style.display='none';
