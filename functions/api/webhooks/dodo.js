@@ -294,10 +294,9 @@ export async function onRequest(context) {
 
     let result;
 
-    // Handle different webhook event types
+    // Handle different webhook event types (Dodo event names)
     switch (eventType) {
-      case 'order.confirmed':
-      case 'payment.confirmed':
+      case 'subscription.active':
         result = await handlePaymentConfirmed(body.data, db, clerk);
         break;
       
@@ -305,13 +304,11 @@ export async function onRequest(context) {
         result = await handleSubscriptionRenewed(body.data, db, clerk);
         break;
       
-      case 'payment.failed':
-      case 'payment.declined':
+      case 'subscription.failed':
         result = await handlePaymentFailed(body.data, db);
         break;
       
       case 'subscription.cancelled':
-      case 'customer.deleted':
         result = await handleSubscriptionCancelled(body.data, db);
         break;
       
