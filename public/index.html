@@ -2108,9 +2108,21 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   const params=new URLSearchParams(location.search);
   const paramId=params.get('id'), paramType=params.get('type'), paramQ=params.get('q');
-  if(paramId&&paramType){ showResultState({showNav:false}); runAnalysis(parseInt(paramId),paramType); }
-  else if(paramQ){ heroInput.value=paramQ; doSearch(); }
-  else { initOnboarding(); }
+  
+  // Load from query params if present (e.g., from search redirect)
+  if(paramId&&paramType) { 
+    const id=parseInt(paramId), type=paramType;
+    console.log('Loading from URL params:', {id, type});
+    showResultState({showNav:false}); 
+    setTimeout(()=>runAnalysis(id, type), 100);
+  }
+  else if(paramQ){ 
+    heroInput.value=paramQ; 
+    doSearch(); 
+  }
+  else { 
+    initOnboarding(); 
+  }
 });
 </script>
 <script>
