@@ -509,11 +509,11 @@ footer a:hover { color: var(--accent); }
   <div class="splash-dots" id="splashDots">
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#c0392b" id="sd0"></div><div class="splash-dot-label">Sex</div></div>
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#c0392b" id="sd1"></div><div class="splash-dot-label">Violence</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd2"></div><div class="splash-dot-label">LGBTQ+</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd3"></div><div class="splash-dot-label">Language</div></div>
+    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd2"></div><div class="splash-dot-label">Language</div></div>
+    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd3"></div><div class="splash-dot-label">Bullying</div></div>
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd4"></div><div class="splash-dot-label">Drugs</div></div>
     <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b85c1a" id="sd5"></div><div class="splash-dot-label">Horror</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd6"></div><div class="splash-dot-label">Self-harm</div></div>
+    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd6"></div><div class="splash-dot-label">Themes</div></div>
   </div>
   <div class="splash-cta" id="splashCta">
     <button class="splash-btn" onclick="splashNext()">Get started →</button>
@@ -850,10 +850,52 @@ function markOnboarded() { try { localStorage.setItem(ONBOARD_KEY,'1'); } catch 
 
 let obSelections = new Set(DEFAULT_ACTIVE);
 let obPreset = 'balanced';
+let splashAutoTimer = null;
 
-function initOnboarding() { if (hasOnboarded()) return; showOnboardingSheet(); }
-function splashNext() { showOnboardingSheet(); }
-function splashSkipAll() { obSelections=new Set(DEFAULT_ACTIVE); obFinish(); }
+function initOnboarding() { if (hasOnboarded()) return; showSplash(); }
+function showSplash() {
+  const s = document.getElementById('splashScreen');
+  s.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { document.getElementById('splashLogoWrap').classList.add('in'); document.getElementById('splashMark').classList.add('pulse'); }, 80);
+  setTimeout(() => { document.getElementById('splashHeadline').classList.add('in'); }, 320);
+  setTimeout(() => {
+    document.getElementById('splashDots').classList.add('in');
+    [0,1,2,3,4,5,6].forEach(i => {
+      setTimeout(() => {
+        const d = document.getElementById('sd' + i);
+        if (d) d.classList.add('in');
+      }, i * 70);
+    });
+  }, 560);
+  setTimeout(() => { document.getElementById('splashCta').classList.add('in'); }, 860);
+  splashAutoTimer = setTimeout(() => splashNext(true), 2100);
+}
+function splashNext(fromAuto) {
+  if (splashAutoTimer) { clearTimeout(splashAutoTimer); splashAutoTimer = null; }
+  const s = document.getElementById('splashScreen');
+  s.style.transition = 'opacity 0.28s ease';
+  s.style.opacity = '0';
+  setTimeout(() => {
+    s.classList.remove('visible');
+    s.style.opacity = '';
+    s.style.transition = '';
+    showOnboardingSheet();
+  }, fromAuto ? 240 : 280);
+}
+function splashSkipAll() {
+  if (splashAutoTimer) { clearTimeout(splashAutoTimer); splashAutoTimer = null; }
+  const s = document.getElementById('splashScreen');
+  s.style.transition = 'opacity 0.22s ease';
+  s.style.opacity = '0';
+  setTimeout(() => {
+    s.classList.remove('visible');
+    s.style.opacity = '';
+    s.style.transition = '';
+    obSelections = new Set(DEFAULT_ACTIVE);
+    obFinish();
+  }, 220);
+}
 function renderOnboarding() {
   document.getElementById('obPresetList').innerHTML = Object.entries(PRESET_CONFIG).map(([key, preset]) =>
     `<button class="ob-preset${obPreset===key?' selected':''}" onclick="obSelectPreset('${key}')" type="button">
