@@ -99,7 +99,7 @@ async function handlePaymentConfirmed(event, db, clerk) {
           billing_cycle = excluded.billing_cycle,
           status = 'active',
           price_cents = excluded.price_cents,
-          trial_ends_at = datetime('now', '+30 days'),
+          trial_ends_at = datetime('now', '+14 days'),
           renews_at = excluded.renews_at,
           cancelled_at = NULL,
           updated_at = excluded.updated_at`
@@ -112,7 +112,7 @@ async function handlePaymentConfirmed(event, db, clerk) {
         cycle,
         'trial', // Start in trial status
         cents,
-        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19),
+        new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19),
         sqlRenewal,
         sqlNow,
         sqlNow
