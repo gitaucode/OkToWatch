@@ -15,10 +15,10 @@ const WEBHOOK_SECRET = env.DODO_WEBHOOK_SECRET;
 
 // Map Dodo product IDs to our tier/billing cycle
 const DODO_PRODUCTS = {
-  'pro-monthly': { tier: 'pro', cycle: 'monthly', cents: 499 },
-  'pro-yearly': { tier: 'pro', cycle: 'yearly', cents: 4999 },
-  'family-monthly': { tier: 'family', cycle: 'monthly', cents: 799 },
-  'family-yearly': { tier: 'family', cycle: 'yearly', cents: 7999 },
+  'pdt_0Nbr4kPAG5n9yXCxF7w62': { tier: 'pro', cycle: 'monthly', cents: 499 },
+  'pdt_0Nbr4wkuJCZ2G0JWAetog': { tier: 'pro', cycle: 'yearly', cents: 4999 },
+  'pdt_0Nbr54CnvJt3KBKEBBYeM': { tier: 'family', cycle: 'monthly', cents: 799 },
+  'pdt_0Nbr5tE4vwLj4afwcdvFm': { tier: 'family', cycle: 'yearly', cents: 7999 },
 };
 
 /**

@@ -13,28 +13,28 @@ import { verifyClerkToken } from '../_shared/clerk.js';
 const DODO_API_BASE = 'https://api.dodopayments.com/v1';
 const DODO_API_KEY = env.DODO_API_KEY;
 
-// Map our tiers to Dodo product IDs (you'll need to create these in Dodo dashboard)
+// Map our tiers to Dodo product IDs
 const PRODUCT_MAP = {
   'pro-monthly': {
-    productId: 'pro_monthly_usd',
+    productId: 'pdt_0Nbr4kPAG5n9yXCxF7w62',
     name: 'Pro Monthly',
     price: 499, // $4.99 in cents
     interval: 'month',
   },
   'pro-yearly': {
-    productId: 'pro_yearly_usd',
+    productId: 'pdt_0Nbr4wkuJCZ2G0JWAetog',
     name: 'Pro Yearly',
     price: 4999, // $49.99 in cents
     interval: 'year',
   },
   'family-monthly': {
-    productId: 'family_monthly_usd',
+    productId: 'pdt_0Nbr54CnvJt3KBKEBBYeM',
     name: 'Family Monthly',
     price: 799, // $7.99 in cents
     interval: 'month',
   },
   'family-yearly': {
-    productId: 'family_yearly_usd',
+    productId: 'pdt_0Nbr5tE4vwLj4afwcdvFm',
     name: 'Family Yearly',
     price: 7999, // $79.99 in cents
     interval: 'year',
