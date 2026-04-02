@@ -10,9 +10,6 @@
 
 import { getAuth } from '../../_shared/clerk.js';
 
-// Expected webhook signature header (if Dodo provides one)
-const WEBHOOK_SECRET = env.DODO_WEBHOOK_SECRET;
-
 // Map Dodo product IDs to our tier/billing cycle
 const DODO_PRODUCTS = {
   'pdt_0Nbr4kPAG5n9yXCxF7w62': { tier: 'pro', cycle: 'monthly', cents: 499 },
@@ -25,8 +22,8 @@ const DODO_PRODUCTS = {
  * Verify Dodo webhook signature (if provided)
  * This prevents webhook spoofing
  */
-function verifyWebhookSignature(body, signature) {
-  if (!WEBHOOK_SECRET || !signature) {
+function verifyWebhookSignature(body, signature, webhookSecret) {
+  if (!webhookSecret || !signature) {
     console.warn('Webhook verification skipped: no secret configured');
     return true;
   }
@@ -263,6 +260,7 @@ async function handleSubscriptionCancelled(event, db) {
  */
 export async function onRequest(context) {
   const { request, env } = context;
+  const WEBHOOK_SECRET = env.DODO_WEBHOOK_SECRET;
 
   // Only POST allowed
   if (request.method !== 'POST') {
@@ -275,7 +273,7 @@ export async function onRequest(context) {
     const eventType = body.type;
 
     // Verify webhook signature
-    if (!verifyWebhookSignature(JSON.stringify(body), signature)) {
+    if (!verifyWebhookSignature(JSON.stringify(body), signature, WEBHOOK_SECRET)) {
       console.error('Invalid webhook signature');
       return new Response('Invalid signature', { status: 401 });
     }

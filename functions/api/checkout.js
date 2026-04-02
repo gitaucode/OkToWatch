@@ -11,7 +11,6 @@
 import { getAuth } from '../_shared/clerk.js';
 
 const DODO_API_BASE = 'https://api.dodopayments.com/v1';
-const DODO_API_KEY = env.DODO_API_KEY;
 
 // Map our tiers to Dodo product IDs
 const PRODUCT_MAP = {
@@ -44,7 +43,7 @@ const PRODUCT_MAP = {
 /**
  * Create or get Dodo customer for this user
  */
-async function getOrCreateDodoCustomer(userId, email, name) {
+async function getOrCreateDodoCustomer(userId, email, name, env) {
   try {
     // First, check if we already have a Dodo customer ID stored
     const db = env.DB;
@@ -63,7 +62,7 @@ async function getOrCreateDodoCustomer(userId, email, name) {
     const response = await fetch(`${DODO_API_BASE}/customers`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${DODO_API_KEY}`,
+        'Authorization': `Bearer ${env.DODO_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -93,7 +92,7 @@ async function getOrCreateDodoCustomer(userId, email, name) {
 /**
  * Create checkout session with Dodo
  */
-async function createDodoCheckoutSession(customerId, plan, billingCycle, returnUrl) {
+async function createDodoCheckoutSession(customerId, plan, billingCycle, returnUrl, env) {
   const key = `${plan}-${billingCycle}`;
   const product = PRODUCT_MAP[key];
 
@@ -179,6 +178,9 @@ export async function onRequest(context) {
 
     const userId = auth.userId;
 
+    // Get API key from env
+    const DODO_API_KEY = env.DODO_API_KEY;
+
     // Parse request body
     const { plan, billingCycle, redirectUrl } = await request.json();
 
@@ -213,14 +215,15 @@ export async function onRequest(context) {
     const userName = `User ${userId}`; // Placeholder
 
     // Get or create Dodo customer
-    const customerId = await getOrCreateDodoCustomer(userId, userEmail, userName);
+    const customerId = await getOrCreateDodoCustomer(userId, userEmail, userName, env);
 
     // Create checkout session
     const checkoutUrl = await createDodoCheckoutSession(
       customerId,
       plan,
       billingCycle,
-      returnUrl
+      returnUrl,
+      env
     );
 
     return new Response(
