@@ -294,6 +294,33 @@ footer a:hover { color: var(--accent); }
 .season-spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* Episode list */
+.episodes-section { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: none; }
+.episodes-section.visible { display: block; }
+.episodes-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+.episode-item {
+  display: flex; align-items: flex-start; gap: 0.85rem; padding: 0.65rem; margin-bottom: 0.5rem;
+  background: var(--surface2); border-radius: 10px; cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent;
+}
+.episode-item:hover { border-color: var(--accent); background: white; }
+.episode-num { font-size: 0.78rem; font-weight: 700; color: var(--muted); min-width: 40px; text-align: center; }
+.episode-info { flex: 1; min-width: 0; }
+.episode-name { font-size: 0.82rem; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.episode-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+.episode-indicator { width: 20px; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.episode-indicator.safe { background: var(--safe-bg); color: var(--safe); }
+.episode-indicator.warn { background: var(--warn-bg); color: var(--warn); }
+.episode-indicator.moderate { background: var(--moderate-bg); color: var(--moderate); }
+.episode-indicator.danger { background: var(--danger-bg); color: var(--danger); }
+.episode-modal { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
+.episode-modal.visible { display: flex; }
+.episode-modal-sheet { background: var(--surface); border-radius: 24px 24px 0 0; max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease forwards; padding-bottom: env(safe-area-inset-bottom); }
+.episode-modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0.75rem auto 0; }
+.episode-modal-header { padding: 1.25rem; border-bottom: 1px solid var(--border); }
+.episode-modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.episode-modal-date { font-size: 0.78rem; color: var(--muted); }
+.episode-modal-body { padding: 1.25rem; }
+
 /* Preferences panel */
 #prefsPanel { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
 #prefsPanel.visible { display: flex; }
@@ -578,6 +605,19 @@ footer a:hover { color: var(--accent); }
   </div>
 </div>
 
+<div class="episode-modal" id="episodeModal" onclick="closeEpisodeModal(event)">
+  <div class="episode-modal-sheet" onclick="event.stopPropagation()">
+    <div class="episode-modal-handle"></div>
+    <div class="episode-modal-header">
+      <div class="episode-modal-title" id="episodeModalTitle">Episode 1</div>
+      <div class="episode-modal-date" id="episodeModalDate">—</div>
+    </div>
+    <div class="episode-modal-body">
+      <div id="episodeModalContent"></div>
+    </div>
+  </div>
+</div>
+
 <div id="nav-root"></div>
 
 <div id="navCollapsed">
@@ -654,6 +694,10 @@ footer a:hover { color: var(--accent); }
     <div class="season-refresh" id="seasonRefresh">
       <div class="season-spinner"></div>
       <span id="seasonRefreshMsg">Analysing season…</span>
+    </div>
+    <div class="episodes-section" id="episodesSection">
+      <div class="episodes-label">Episodes</div>
+      <div id="episodesList"></div>
     </div>
     <div class="watch-section" id="watchSection">
       <div class="section-label">Where to Watch</div>
@@ -1503,6 +1547,7 @@ async function selectSeason(seasonNum) {
       const ss=document.getElementById('movieSummaryStrip');
       if(currentBreakdown.summary){ss.textContent=currentBreakdown.summary;ss.style.display='block';}
     }
+    document.getElementById('episodesSection').classList.remove('visible');
     return;
   }
   await analyseSeasonContent(currentShowId,seasonNum);
@@ -1527,10 +1572,114 @@ async function analyseSeasonContent(showId,seasonNum) {
     if(breakdown.summary){ss.textContent=breakdown.summary;ss.style.display='block';}
     currentSeasonBreakdown=breakdown; activeBreakdown=breakdown;
     renderGlanceWithPrefs(breakdown.categories); renderCategoriesWithPrefs(breakdown.categories); renderVerdict();
+    
+    // Fetch and display episode-level analysis
+    await fetchAndDisplayEpisodes(showId, seasonNum);
   } catch(e) {
     refreshEl.classList.remove('visible'); document.querySelectorAll('.season-pill').forEach(p=>p.classList.remove('loading'));
     showToast('Could not analyse that season. Try again.'); console.error(e);
   }
+}
+
+async function fetchAndDisplayEpisodes(showId, seasonNum) {
+  try {
+    const token = await window.Clerk.session.getToken();
+    const res = await fetch(`${API}/api/episodes?tmdb_id=${showId}&season=${seasonNum}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.episodes && data.episodes.length > 0) {
+      renderEpisodeList(data.episodes);
+    } else {
+      document.getElementById('episodesSection').style.display = 'none';
+    }
+  } catch (e) {
+    console.error('Failed to fetch episodes:', e);
+    document.getElementById('episodesSection').style.display = 'none';
+  }
+}
+
+function renderEpisodeList(episodes) {
+  const section = document.getElementById('episodesSection');
+  const list = document.getElementById('episodesList');
+  
+  const htmlItems = episodes.map(ep => {
+    const verdict = ep.verdict;
+    let indicator = '🟢';
+    let indicatorClass = 'safe';
+    
+    // Determine indicator based on verdict
+    if (verdict) {
+      const verdictLower = verdict.toLowerCase();
+      if (verdictLower.includes('not suitable') || verdictLower.includes('not appropriate')) {
+        indicator = '🔴';
+        indicatorClass = 'danger';
+      } else if (verdictLower.includes('caution') || verdictLower.includes('moderate')) {
+        indicator = '🟡';
+        indicatorClass = 'moderate';
+      } else if (verdictLower.includes('exercise caution')) {
+        indicator = '🟠';
+        indicatorClass = 'warn';
+      }
+    }
+    
+    return `
+      <div class="episode-item" onclick="showEpisodeDetail(${ep.episode_number}, '${ep.name.replace(/'/g, "\\'")}', '${ep.air_date || ''}', ${JSON.stringify(ep).replace(/"/g, '&quot;')})">
+        <div class="episode-num">E${ep.episode_number}</div>
+        <div class="episode-info">
+          <div class="episode-name">${ep.name}</div>
+          <div class="episode-meta">${ep.air_date ? new Date(ep.air_date).toLocaleDateString('en-GB', {month:'short',day:'numeric',year:'numeric'}) : 'TBA'}</div>
+        </div>
+        <div class="episode-indicator ${indicatorClass}">${indicator}</div>
+      </div>
+    `;
+  }).join('');
+  
+  list.innerHTML = htmlItems;
+  section.classList.add('visible');
+}
+
+function showEpisodeDetail(episodeNum, episodeName, airDate, episodeData) {
+  const data = JSON.parse(episodeData.replace(/&quot;/g, '"'));
+  const modal = document.getElementById('episodeModal');
+  const title = document.getElementById('episodeModalTitle');
+  const date = document.getElementById('episodeModalDate');
+  const content = document.getElementById('episodeModalContent');
+  
+  title.textContent = `${episodeName}`;
+  date.textContent = airDate ? new Date(airDate).toLocaleDateString('en-GB', {month:'long',day:'numeric',year:'numeric'}) : 'TBA';
+  
+  let verdict = data.verdict ? `<div style="margin-bottom:1rem;"><div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">Verdict</div><div style="font-size:0.95rem;font-weight:600;">${data.verdict}</div></div>` : '';
+  
+  let categories = '';
+  if (data.categories && data.categories.length > 0) {
+    categories = `
+      <div>
+        <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.6rem;">Content Concerns</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          ${data.categories.map(cat => {
+            const levelColor = cat.severity === 'strong' ? 'var(--danger)' : cat.severity === 'moderate' ? 'var(--moderate)' : 'var(--warn)';
+            return `
+              <div style="background:rgba(42,107,85,0.05);border-left:3px solid ${levelColor};padding:0.6rem;border-radius:4px;">
+                <div style="font-weight:600;font-size:0.82rem;">${cat.category}</div>
+                <div style="font-size:0.77rem;color:var(--muted);margin-top:0.2rem;">${cat.note || cat.severity}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  content.innerHTML = verdict + categories;
+  modal.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEpisodeModal(e) {
+  if (e && e.target !== document.getElementById('episodeModal')) return;
+  document.getElementById('episodeModal').classList.remove('visible');
+  document.body.style.overflow = '';
 }
 
 function renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flatrate,rent,buy,voteAverage,voteCount,budget,revenue}) {

@@ -132,6 +132,21 @@ CREATE TABLE IF NOT EXISTS shared_notes (
   updated_at TEXT DEFAULT (datetime('now'))
 );
 
+-- ── Episode Analysis (TV episode-level verdicts) ────────────────────────────
+-- Cache verdicts for individual TV episodes so parents can see which episodes
+-- are risky for their child's age. Keyed on tmdb_id:season:episode format.
+-- Expires after 90 days to keep content warnings reasonably fresh.
+CREATE TABLE IF NOT EXISTS episode_analysis (
+  id         TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  cache_key  TEXT NOT NULL UNIQUE,       -- tv_id:season:episode format (e.g. 1399:1:1)
+  tmdb_id    INTEGER NOT NULL,
+  season_number INTEGER NOT NULL,
+  episode_number INTEGER NOT NULL,
+  result_json TEXT NOT NULL,             -- Full breakdown JSON for this episode
+  cached_at  TEXT DEFAULT (datetime('now')),
+  expires_at TEXT DEFAULT (datetime('now', '+90 days'))
+);
+
 -- ── Indexes ───────────────────────────────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_history_user     ON history(user_id, searched_at DESC);
 CREATE INDEX IF NOT EXISTS idx_history_tmdb     ON history(user_id, tmdb_id);
@@ -146,3 +161,5 @@ CREATE INDEX IF NOT EXISTS idx_issue_reports    ON issue_reports(tmdb_id, media_
 CREATE INDEX IF NOT EXISTS idx_issue_user       ON issue_reports(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_shared_notes     ON shared_notes(family_id, tmdb_id, media_type);
 CREATE INDEX IF NOT EXISTS idx_shared_notes_user ON shared_notes(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_episode_analysis ON episode_analysis(tmdb_id, season_number, episode_number);
+CREATE INDEX IF NOT EXISTS idx_episode_cache_key ON episode_analysis(cache_key);
