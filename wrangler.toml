@@ -1,12 +1,11 @@
-name                  = "clearview"
+name                  = "oktowatch"
 compatibility_date    = "2024-09-23"
 pages_build_output_dir = "public"
 
-# ── D1 Database ───────────────────────────────────────────────────────────
 [[d1_databases]]
 binding       = "DB"
-database_name = "clearview"
-database_id   = "f6f618bf-94ff-4d4a-b651-71d2101f00f4" 
+database_name = "clearviewbeta"
+database_id   = "f6f618bf-94ff-4d4a-b651-71d2101f00f4"
 # ── Local dev environment variables ──────────────────────────────────────
 # Production secrets go in Cloudflare Pages dashboard → Settings → Env Vars
 # Local dev: copy .env.example to .dev.vars and fill in values
