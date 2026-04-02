@@ -671,6 +671,18 @@ footer a:hover { color: var(--accent); }
         <div class="verdict-icon" id="verdictIcon">✓</div>
         <div><div class="verdict-text" id="verdictText">—</div><div class="verdict-sub" id="verdictSub">—</div></div>
       </div>
+      <div id="statsRow" style="display:flex;gap:1rem;margin-top:0.8rem;padding:0.6rem;background:rgba(42,107,85,0.04);border-radius:var(--radius-sm);font-size:0.8rem;">
+        <div id="voteSection" style="display:none;text-align:center;">
+          <div style="color:var(--muted);font-size:0.7rem;text-transform:uppercase;font-weight:700;letter-spacing:0.05em;margin-bottom:0.2rem;">TMDB Rating</div>
+          <div id="voteDisplay" style="font-weight:700;color:var(--text);"></div>
+          <div id="voteCount" style="font-size:0.7rem;color:var(--muted);"></div>
+        </div>
+        <div id="budgetSection" style="display:none;text-align:center;border-left:1px solid rgba(0,0,0,0.1);padding-left:1rem;">
+          <div style="color:var(--muted);font-size:0.7rem;text-transform:uppercase;font-weight:700;letter-spacing:0.05em;margin-bottom:0.2rem;">Budget</div>
+          <div id="budgetDisplay" style="font-weight:700;color:var(--text);"></div>
+          <div id="revenueDisplay" style="font-size:0.7rem;color:var(--muted);"></div>
+        </div>
+      </div>
       <div style="margin-top:0.65rem;">
         <button id="reasoningToggle" onclick="toggleReasoning()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;color:var(--accent);cursor:pointer;padding:0.3rem 0;display:flex;align-items:center;gap:0.4rem;transition:color 0.15s;">
           <span id="reasoningToggleIcon" style="display:inline-block;transform:rotate(0);transition:transform 0.15s;font-size:1rem;">▾</span>
@@ -1371,6 +1383,8 @@ async function runAnalysis(id,type,isRetry=false) {
     const keywords=((details.keywords?.keywords||details.keywords?.results)||[]).map(k=>k.name).slice(0,20).join(', ');
     const backdrop=details.backdrop_path?`${TMDB_W500}${details.backdrop_path}`:null;
     const poster=details.poster_path?`${TMDB_W300}${details.poster_path}`:null;
+    const voteAverage=details.vote_average, voteCount=details.vote_count;
+    const budget=details.budget, revenue=details.revenue;
     const childAge=getChildAge();
 
     currentMovieTitle=title; currentYear=year; currentPosterUrl=backdrop||poster||'';
@@ -1394,7 +1408,7 @@ async function runAnalysis(id,type,isRetry=false) {
     document.getElementById('seasonBadge').classList.remove('visible');
     document.getElementById('seasonRefresh').classList.remove('visible');
 
-    renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flatrate,rent,buy});
+    renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flatrate,rent,buy,voteAverage,voteCount,budget,revenue});
     const activeProfile=sessionStorage.getItem('cv_active_profile')||null;
 
     if(window.CV?.isPro || window.CV?.isFamily) {
@@ -1519,8 +1533,8 @@ async function analyseSeasonContent(showId,seasonNum) {
   }
 }
 
-function renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flatrate,rent,buy}) {
-  currentRenderData={title,year,certRating,genres,breakdown,flatrate,rent,buy};
+function renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flatrate,rent,buy,voteAverage,voteCount,budget,revenue}) {
+  currentRenderData={title,year,certRating,genres,breakdown,flatrate,rent,buy,voteAverage,voteCount,budget,revenue};
   activeBreakdown=breakdown;
   const heroImg=backdrop||poster, heroEl=document.getElementById('posterHero'), fallbackEl=document.getElementById('posterFallback');
   if(heroImg){ const old=heroEl.querySelector('img'); if(old) old.remove(); const img=document.createElement('img'); img.src=heroImg; img.alt=title; heroEl.insertBefore(img,heroEl.firstChild); fallbackEl.style.display='none'; }
@@ -1574,6 +1588,31 @@ function renderVerdict() {
     if (window.CV?.isFamily) {
       fetchNotes(lastId, lastType);
     }
+  }
+
+  // Display vote average and budget stats
+  const voteSection = document.getElementById('voteSection');
+  const budgetSection = document.getElementById('budgetSection');
+  const { voteAverage, voteCount, budget, revenue } = currentRenderData;
+  
+  if (voteAverage) {
+    voteSection.style.display = 'block';
+    document.getElementById('voteDisplay').textContent = voteAverage.toFixed(1);
+    document.getElementById('voteCount').textContent = `${(voteCount / 1000).toFixed(1)}K votes`;
+  } else {
+    voteSection.style.display = 'none';
+  }
+
+  if (budget && budget > 0) {
+    budgetSection.style.display = 'block';
+    document.getElementById('budgetDisplay').textContent = `$${(budget / 1000000).toFixed(1)}M`;
+    if (revenue && revenue > 0) {
+      document.getElementById('revenueDisplay').textContent = `Revenue: $${(revenue / 1000000).toFixed(0)}M`;
+    } else {
+      document.getElementById('revenueDisplay').textContent = '—';
+    }
+  } else {
+    budgetSection.style.display = 'none';
   }
 }
 
