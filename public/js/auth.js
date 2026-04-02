@@ -280,7 +280,7 @@
     background: white; border-radius: 14px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.14);
     border: 1px solid rgba(0,0,0,0.07);
-    min-width: 220px; overflow: hidden; z-index: 500;
+    min-width: 220px; overflow: hidden; z-index: 1001;
   }
   .nav-dropdown.open { display: block; animation: dropIn 0.18s ease; }
   @keyframes dropIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
