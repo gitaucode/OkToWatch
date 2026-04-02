@@ -230,6 +230,29 @@ body {
 .footer-logo-text { font-size: 0.88rem; color: var(--text); display:inline-flex; align-items:center; gap:0.4rem; }
 .footer-beta-badge { display:inline-flex; align-items:center; justify-content:center; padding:0.14rem 0.38rem; border-radius:999px; background:rgba(42,107,85,0.1); border:1px solid rgba(42,107,85,0.16); color:var(--accent); font-size:0.58rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; transform:translateY(-1px); }
 
+/* ── Footer ── */
+footer {
+  max-width: 640px; margin: 0 auto; padding: 3rem 1.25rem 1.5rem;
+  text-align: center; font-size: 0.78rem; color: var(--muted);
+  display: flex; flex-direction: column; gap: 1rem; align-items: center;
+}
+footer a {
+  color: var(--text); text-decoration: none;
+  font-weight: 600; transition: color 0.15s;
+}
+footer a:hover { color: var(--accent); }
+footer .footer-logo {
+  display: flex; align-items: center; gap: 0.5rem; color: var(--text);
+  text-decoration: none;
+}
+footer .footer-logo-mark {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: linear-gradient(135deg, #1f5c47, #2a6b55);
+  display: flex; align-items: center; justify-content: center;
+}
+footer p { margin: 0; }
+
+
 @keyframes fadeUp  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
 
@@ -510,7 +533,15 @@ document.addEventListener('cv:auth', async ({ detail }) => {
     window.location.href = '/signin?redirect=/settings';
     return;
   }
-  await loadSettings(detail.user);
+  try {
+    await loadSettings(detail.user);
+  } catch (err) {
+    console.error('Settings load error:', err);
+    // Show content anyway, in case it's a partial failure
+    document.getElementById('settingsSkeleton').style.display = 'none';
+    document.getElementById('settingsContent').classList.add('ready');
+    showToast('Note: Some settings failed to load. Please refresh.');
+  }
 });
 
 // ── Load all settings data ────────────────────────────────────────────────
