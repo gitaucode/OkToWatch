@@ -400,11 +400,20 @@
     const avatarBtn = document.getElementById('navAvatarBtn');
     const dropdown = document.getElementById('navDropdown');
     if (avatarBtn && dropdown) {
-      avatarBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle('open');
+      // Open on hover
+      avatarBtn.addEventListener('mouseenter', () => {
+        dropdown.classList.add('open');
       });
-      document.addEventListener('click', () => dropdown.classList.remove('open'));
+      dropdown.addEventListener('mouseenter', () => {
+        dropdown.classList.add('open');
+      });
+      // Close when mouse leaves button or dropdown
+      avatarBtn.addEventListener('mouseleave', () => {
+        dropdown.classList.remove('open');
+      });
+      dropdown.addEventListener('mouseleave', () => {
+        dropdown.classList.remove('open');
+      });
     }
 
     // Sign out buttons
