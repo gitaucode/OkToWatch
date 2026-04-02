@@ -517,7 +517,10 @@ footer a:hover { color: var(--accent); }
         <h2 id="welcomeName">Welcome back</h2>
         <p id="welcomeSub">Your family's OkToWatch</p>
       </div>
-      <a class="btn-search" href="/index">🔍 Search</a>
+      <div style="display:flex;gap:0.5rem;flex-shrink:0;">
+        <input type="text" id="dashSearchInput" placeholder="Search..." style="background:rgba(255,255,255,0.7);border:1.5px solid var(--border);border-radius:100px;padding:0.5rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.8rem;width:160px;outline:none;transition:all 0.2s;" onkeypress="if(event.key==='Enter')dashSearch()">
+        <button onclick="dashSearch()" style="background:var(--accent);color:white;border:none;padding:0.5rem 1rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity 0.15s;flex-shrink:0;">🔍</button>
+      </div>
     </div>
 
     <!-- Stats -->
@@ -894,6 +897,13 @@ function switchTrend(type) {
   document.getElementById('tabMovies').classList.toggle('active', type === 'movie');
   document.getElementById('tabTV').classList.toggle('active', type === 'tv');
   loadTrending(type);
+}
+
+function dashSearch() {
+  const q = document.getElementById('dashSearchInput').value.trim();
+  if (q) {
+    window.location.href = `/index?q=${encodeURIComponent(q)}`;
+  }
 }
 
 function checkTitle(tmdbId, type, title) {
