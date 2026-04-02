@@ -2,9 +2,11 @@ name                  = "oktowatch"
 compatibility_date    = "2024-09-23"
 pages_build_output_dir = "public"
 
-# ── Build configuration (injects git hash for cache busting) ──────────────
-[build]
-command = "npm run build"
+# ── Caching ──────────────────────────────────────────────────────────────
+# Cache control headers defined in public/_headers:
+# - HTML pages: 5 min cache (allows frequent updates)
+# - JS files: immutable cache (versioned with git hash)
+# - API endpoints: no cache
 
 # ── Databases ────────────────────────────────────────────────────────────
 [[d1_databases]]
