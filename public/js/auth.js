@@ -27,6 +27,7 @@
     { label: 'Lists',     href: '/lists' },
     { label: 'Discover',  href: '/discover' },
     { label: 'History',   href: '/history' },
+    { label: 'How it works', href: '/how-it-works' },
     { label: 'About',     href: '/about' },
     { label: 'Contact',   href: '/contact' },
   ];
