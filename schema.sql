@@ -15,11 +15,6 @@ CREATE TABLE IF NOT EXISTS profiles (
   created_at          TEXT DEFAULT (datetime('now'))
 );
 
--- Add missing columns if they don't exist (for existing databases)
-ALTER TABLE profiles ADD COLUMN sensitivity_preset TEXT CHECK (sensitivity_preset IN ('balanced', 'cautious', 'sensitive', NULL));
-ALTER TABLE profiles ADD COLUMN blocked_categories TEXT;
-ALTER TABLE profiles ADD COLUMN notes TEXT;
-
 -- ── History ───────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS history (
   id          TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
