@@ -442,54 +442,60 @@ document.getElementById('billingToggle').addEventListener('click', () => {
   }
 });
 
-// ── Upgrade handler (Dodo Payments in production, free in beta) ───────────
-function handleUpgrade(plan) {
+// ── Upgrade handler ──────────────────────────────────────────────────────
+async function handleUpgrade(plan) {
+  const token = localStorage.getItem('clerk_session_token');
+  
   if (plan === 'free') {
+    if (!token) {
+      window.location.href = '/signup';
+    } else {
+      showToast('You're already using the free plan!');
+    }
+    return;
+  }
+
+  // For Pro/Family, need to be logged in
+  if (!token) {
     window.location.href = '/signup';
     return;
   }
 
-  // Beta mode — everything free
-  if (!window.BILLING_ENABLED) {
-    showToast('All plans are free during beta. Create an account to get started.');
-    return;
-  }
+  try {
+    // Get the billing cycle from toggle
+    const billingToggle = document.getElementById('billingToggle');
+    const isYearly = billingToggle?.classList.contains('yearly');
+    const billingCycle = isYearly ? 'yearly' : 'monthly';
 
-  // Production mode — integrate with Dodo Payments
-  if (!window.DODO_API_KEY) {
-    console.error('Dodo API key not configured');
-    showToast('Payment system not yet available.');
-    return;
-  }
+    // Request checkout from backend
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        plan,
+        billingCycle,
+        redirectUrl: window.location.href,
+      }),
+    });
 
-  const product = plan === 'pro' ? 'pro-monthly' : 'family-monthly';
-  if (isYearly) {
-    product = plan === 'pro' ? 'pro-yearly' : 'family-yearly';
-  }
-
-  // Call Dodo Payments API to generate checkout link
-  fetch('/api/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      product,
-      plan,
-      billingCycle: isYearly ? 'yearly' : 'monthly',
-      redirectUrl: window.location.origin + '/dashboard'
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.checkoutUrl) {
-      window.location.href = data.checkoutUrl;
-    } else {
-      showToast('Unable to start checkout. Please try again.');
+    if (!response.ok) {
+      showToast('Error initiating checkout. Please try again.');
+      return;
     }
-  })
-  .catch(err => {
+
+    const { checkoutUrl } = await response.json();
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+    } else {
+      showToast('Could not load checkout. Please try again.');
+    }
+  } catch (err) {
     console.error('Checkout error:', err);
-    showToast('Payment error. Please try again.');
-  });
+    showToast('Something went wrong. Please try again.');
+  }
 }
 
 // ── Toast ──────────────────────────────────────────────────────────────────

@@ -437,9 +437,60 @@ document.getElementById('billingToggle').addEventListener('click', () => {
   }
 });
 
-// ── Upgrade handler (Paddle stub) ─────────────────────────────────────────
-function handleUpgrade(plan) {
-  showToast('Beta access is free right now. Create an account to get started.');
+// ── Upgrade handler ──────────────────────────────────────────────────────
+async function handleUpgrade(plan) {
+  const token = localStorage.getItem('clerk_session_token');
+  
+  if (plan === 'free') {
+    if (!token) {
+      window.location.href = '/signup';
+    } else {
+      showToast('You're already using the free plan!');
+    }
+    return;
+  }
+
+  // For Pro/Family, need to be logged in
+  if (!token) {
+    window.location.href = '/signup';
+    return;
+  }
+
+  try {
+    // Get the billing cycle from toggle
+    const billingToggle = document.getElementById('billingToggle');
+    const isYearly = billingToggle?.classList.contains('yearly');
+    const billingCycle = isYearly ? 'yearly' : 'monthly';
+
+    // Request checkout from backend
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        plan,
+        billingCycle,
+        redirectUrl: window.location.href,
+      }),
+    });
+
+    if (!response.ok) {
+      showToast('Error initiating checkout. Please try again.');
+      return;
+    }
+
+    const { checkoutUrl } = await response.json();
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+    } else {
+      showToast('Could not load checkout. Please try again.');
+    }
+  } catch (err) {
+    console.error('Checkout error:', err);
+    showToast('Something went wrong. Please try again.');
+  }
 }
 
 // ── Toast ──────────────────────────────────────────────────────────────────
