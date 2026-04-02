@@ -168,3 +168,29 @@ CREATE INDEX IF NOT EXISTS idx_shared_notes     ON shared_notes(family_id, tmdb_
 CREATE INDEX IF NOT EXISTS idx_shared_notes_user ON shared_notes(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_episode_analysis ON episode_analysis(tmdb_id, season_number, episode_number);
 CREATE INDEX IF NOT EXISTS idx_episode_cache_key ON episode_analysis(cache_key);
+
+-- ── Subscriptions (billing & feature gating) ──────────────────────────────
+-- Tracks paid subscriptions via Dodo Payments.
+-- Status: active, cancelled, expired
+-- Tier: free (no record), pro, family
+-- Stores payment details for billing and chargeback handling.
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id              TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  user_id         TEXT NOT NULL UNIQUE,
+  dodo_customer_id TEXT,                    -- Dodo Payments customer ID
+  dodo_order_id   TEXT UNIQUE,              -- Dodo Order ID (most recent)
+  tier            TEXT NOT NULL CHECK (tier IN ('pro', 'family')),
+  billing_cycle   TEXT NOT NULL CHECK (billing_cycle IN ('monthly', 'yearly')),
+  status          TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'cancelled', 'expired', 'trial')),
+  price_cents     INTEGER NOT NULL,         -- Price in cents (e.g., 499 = $4.99)
+  trial_ends_at   TEXT,                     -- When 30-day trial expires (NULL if no trial)
+  renews_at       TEXT NOT NULL,            -- Next billing date or expiration date
+  cancelled_at    TEXT,                     -- When user cancelled (remains on subscription until renews_at)
+  created_at      TEXT DEFAULT (datetime('now')),
+  updated_at      TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_dodo ON subscriptions(dodo_order_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status, renews_at);
+
