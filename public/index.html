@@ -779,8 +779,8 @@ footer a:hover { color: var(--accent); }
 
 <!-- Pro nudge -->
 <div class="pro-nudge" id="proNudge">
-  <span id="proNudgeMsg">This is a Pro feature.</span>
-  <a href="/plans" class="pro-nudge-btn">See Pro →</a>
+  <span id="proNudgeMsg">Create a free beta account to unlock this feature.</span>
+  <a href="/plans" class="pro-nudge-btn">See beta access →</a>
   <button class="pro-nudge-close" onclick="document.getElementById('proNudge').classList.remove('show')">✕</button>
 </div>
 
@@ -1356,7 +1356,7 @@ async function initSeasonSelector(id,details) {
   if(!window.CV?.isPro && !window.CV?.isFamily) {
     pillsEl.innerHTML=`
       <button class="season-pill active" style="cursor:default;">All seasons</button>
-      <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis requires a Pro or Family subscription.')">
+      <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis is included for free during beta once you sign in.')">
         <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" style="opacity:0.7;flex-shrink:0"><path d="M12 7V5A4 4 0 0 0 4 5v2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1zM6 5a2 2 0 1 1 4 0v2H6V5z"/></svg>
         ${seasons.length} seasons — Pro
       </button>`;
@@ -1479,7 +1479,7 @@ async function shareImage() {
   ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='14px DM Sans,sans-serif'; ctx.fillText(currentYear,28,128);
   if(currentBreakdown){ const v=currentBreakdown.verdicts[currentAudience]; if(v){ const tc={safe:'#2a7d52',warn:'#b07a10',danger:'#c0392b'}[v.tier]; ctx.fillStyle=tc+'33'; roundRect(ctx,24,145,W-48,54,10); ctx.fill(); ctx.strokeStyle=tc; ctx.lineWidth=1.5; roundRect(ctx,24,145,W-48,54,10); ctx.stroke(); ctx.fillStyle=tc; ctx.font='bold 15px DM Sans,sans-serif'; ctx.fillText(v.text,42,168); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='12px DM Sans,sans-serif'; ctx.fillText(v.sub,42,188); } const cats=currentBreakdown.categories; const dotW=(W-48)/cats.length; cats.forEach((c,i)=>{ const x=24+i*dotW+dotW/2,y=240; ctx.beginPath(); ctx.arc(x,y-6,6,0,Math.PI*2); ctx.fillStyle=dotColor[c.level]; ctx.fill(); ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center'; ctx.fillText((shortNames[c.name]||c.name).toUpperCase(),x,y+10); ctx.textAlign='left'; }); }
   ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px DM Sans,sans-serif'; ctx.fillText('oktowatch.app — Know before your kids watch it',28,H-18);
-  canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'clearview.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch — ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
+  canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'oktowatch.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch — ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
 }
 function loadImage(src) { return new Promise((res,rej)=>{ const img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>res(img); img.onerror=rej; img.src=src; }); }
 function roundRect(ctx,x,y,w,h,r) { ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
@@ -1505,7 +1505,7 @@ document.addEventListener('click',e=>{ const tag=e.target.closest('.poster-tag[d
 let compareData=null, compareTimer=null;
 
 function openCompare() {
-  if(!window.CV?.isPro && !window.CV?.isFamily){ showProNudge('Compare mode requires a Pro or Family subscription.'); return; }
+  if(!window.CV?.isPro && !window.CV?.isFamily){ showProNudge('Compare mode is included for free during beta once you sign in.'); return; }
   const sec=document.getElementById('compareSection'), card=document.getElementById('compareSearchCard');
   sec.classList.add('visible'); card.style.display='block';
   document.getElementById('compareResultWrap').style.display='none'; document.getElementById('compareHeader').style.display='none';

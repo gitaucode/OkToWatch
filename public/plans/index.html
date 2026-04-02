@@ -220,8 +220,8 @@ footer a:hover { color: var(--accent); }
 
   <div class="hero">
     <div class="hero-eyebrow">🎉 Free during beta</div>
-    <h1>Know what your family<br>is watching</h1>
-    <p>Search any title free, and create an account for full beta access. No card needed.</p>
+    <h1>Everything is free during beta</h1>
+    <p>Create an account to unlock lists, child profiles, synced history, and weekly picks. We will give early users notice before paid plans return.</p>
   </div>
 
   <!-- Billing toggle -->
@@ -236,11 +236,11 @@ footer a:hover { color: var(--accent); }
 
     <!-- Pro -->
     <div class="plan-card pro">
-      <div class="popular-badge">Most popular</div>
+      <div class="popular-badge">Available now</div>
       <div class="plan-name">Pro</div>
       <div id="proTrialBadge" class="trial-badge">🎉 Free beta access</div>
       <div class="plan-price" id="proPrice"><sup>$</sup>6.99<span id="proPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="proAlt">Unlocked during beta · no card needed</div>
+      <div class="plan-price-alt" id="proAlt">Everything here is included during beta · no card needed</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="feat-icon">✅</span> Unlimited searches (no account needed too)</li>
@@ -260,7 +260,7 @@ footer a:hover { color: var(--accent); }
       <div class="plan-name">Family</div>
       <div id="familyTrialBadge" class="trial-badge">🎉 Free beta access</div>
       <div class="plan-price" id="familyPrice"><sup>$</sup>11.99<span id="familyPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="familyAlt">Unlocked during beta · no card needed</div>
+      <div class="plan-price-alt" id="familyAlt">Everything here is included during beta · no card needed</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="feat-icon">✅</span> Everything in Pro</li>
@@ -278,7 +278,7 @@ footer a:hover { color: var(--accent); }
 
   <!-- Feature comparison -->
   <div class="compare-section">
-    <div class="compare-title">Full feature comparison</div>
+    <div class="compare-title">What beta includes today</div>
     <div class="compare-table">
       <div class="compare-row header">
         <span>Feature</span><span>Pro</span><span>Family</span>
@@ -301,7 +301,7 @@ footer a:hover { color: var(--accent); }
 
   <!-- FAQ -->
   <div class="faq-section">
-    <div class="faq-title">Common questions</div>
+    <div class="faq-title">Beta questions</div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
@@ -364,7 +364,7 @@ footer a:hover { color: var(--accent); }
   <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
     <a href="/about">About</a>
     <a href="/contact">Contact</a>
-    <a href="/contact">Contact</a>
+    <a href="/plans">Beta access</a>
     <a href="/privacy">Privacy</a>
     <a href="/index">Search</a>
   </div>
@@ -448,8 +448,8 @@ function applyBetaMode(loggedIn) {
   document.getElementById('familyPrice').innerHTML = '<span style="font-size:1.6rem;font-weight:700;color:#7b5ea7">Free</span>';
   document.getElementById('proTrialBadge').style.display = 'none';
   document.getElementById('familyTrialBadge').style.display = 'none';
-  document.getElementById('proAlt').textContent = 'Unlocked during beta · no card needed';
-  document.getElementById('familyAlt').textContent = 'Unlocked during beta · no card needed';
+  document.getElementById('proAlt').textContent = 'Everything here is included during beta · no card needed';
+  document.getElementById('familyAlt').textContent = 'Everything here is included during beta · no card needed';
 
   const proCta = document.getElementById('proCta');
   const famCta = document.getElementById('familyCta');
@@ -499,3 +499,4 @@ document.addEventListener('cv:auth', ({ detail }) => {
 <script src="/js/auth.js"></script>
 </body>
 </html>
+

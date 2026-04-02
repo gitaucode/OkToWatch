@@ -75,7 +75,7 @@
           <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
         </svg>
       </div>
-      <span class="cv-nav-logo-text">Ok<strong>ToWatch</strong></span>
+      <span class="cv-nav-logo-text">Ok<strong>ToWatch</strong><span class="cv-nav-beta-badge">Beta</span></span>
     </a>
     <div class="cv-nav-links" id="cvNavLinks">${linkHTML}</div>
     <div class="cv-nav-right" id="cvNavRight">${rightHTML}</div>
@@ -124,8 +124,22 @@
   .cv-nav-logo-text {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.95rem; color: var(--text, #1a2420); letter-spacing: -0.01em;
+    display: inline-flex; align-items: center; gap: 0.4rem;
   }
   .cv-nav-logo-text strong { font-weight: 700; }
+  .cv-nav-beta-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.14rem 0.4rem;
+    border-radius: 999px;
+    background: rgba(42,107,85,0.1);
+    border: 1px solid rgba(42,107,85,0.16);
+    color: var(--accent, #2a6b55);
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translateY(-1px);
+  }
   .cv-nav-links {
     display: flex; align-items: center; gap: 0.25rem;
     margin-left: auto;

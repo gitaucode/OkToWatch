@@ -528,7 +528,7 @@ footer a:hover { color: var(--accent); }
         <strong id="trialBannerTitle">Free beta access is on</strong>
         <span id="trialBannerSub">Everything in your dashboard is unlocked during beta.</span>
       </div>
-      <a href="/plans" class="trial-banner-btn">Learn more</a>
+      <a href="/plans" class="trial-banner-btn">Beta details</a>
       <button class="trial-banner-close" id="trialBannerClose" aria-label="Dismiss">✕</button>
     </div>
 
@@ -753,8 +753,8 @@ function renderTrialBanner() {
 
   if (dismissed) { banner.style.display = 'none'; return; }
 
-  document.getElementById('trialBannerTitle').textContent = 'Free beta access is on';
-  document.getElementById('trialBannerSub').textContent   = 'Everything in your dashboard is unlocked during beta.';
+  document.getElementById('trialBannerTitle').textContent = 'Your beta access is active';
+  document.getElementById('trialBannerSub').textContent   = 'Lists, profiles, history, and weekly picks are all included during beta.';
   banner.style.display = 'flex';
 
   // Dismiss button — hides for this session only
