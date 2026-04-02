@@ -400,19 +400,26 @@
     const avatarBtn = document.getElementById('navAvatarBtn');
     const dropdown = document.getElementById('navDropdown');
     if (avatarBtn && dropdown) {
+      let closeTimer;
       // Open on hover
       avatarBtn.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
         dropdown.classList.add('open');
       });
       dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
         dropdown.classList.add('open');
       });
-      // Close when mouse leaves button or dropdown
+      // Close with 150ms delay (allows time to move to dropdown)
       avatarBtn.addEventListener('mouseleave', () => {
-        dropdown.classList.remove('open');
+        closeTimer = setTimeout(() => {
+          dropdown.classList.remove('open');
+        }, 150);
       });
       dropdown.addEventListener('mouseleave', () => {
-        dropdown.classList.remove('open');
+        closeTimer = setTimeout(() => {
+          dropdown.classList.remove('open');
+        }, 150);
       });
     }
 
