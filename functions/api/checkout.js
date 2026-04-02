@@ -8,7 +8,7 @@
  * Returns: { checkoutUrl: "https://dodo.payments/checkout/..." }
  */
 
-import { verifyClerkToken } from '../_shared/clerk.js';
+import { getAuth } from '../_shared/clerk.js';
 
 const DODO_API_BASE = 'https://api.dodopayments.com/v1';
 const DODO_API_KEY = env.DODO_API_KEY;
@@ -168,15 +168,16 @@ export async function onRequest(context) {
 
   try {
     // Verify user is authenticated
-    const userToken = request.headers.get('Authorization')?.split(' ')[1];
-    const userId = await verifyClerkToken(userToken);
+    const auth = await getAuth(request, env);
 
-    if (!userId) {
+    if (!auth) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    const userId = auth.userId;
 
     // Parse request body
     const { plan, billingCycle, redirectUrl } = await request.json();

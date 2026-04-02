@@ -8,7 +8,7 @@
  * - D1_DATABASE: D1 database binding for subscriptions table
  */
 
-import { verifyClerkToken } from '../../_shared/clerk.js';
+import { getAuth } from '../../_shared/clerk.js';
 
 // Expected webhook signature header (if Dodo provides one)
 const WEBHOOK_SECRET = env.DODO_WEBHOOK_SECRET;

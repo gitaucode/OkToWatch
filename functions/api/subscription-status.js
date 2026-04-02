@@ -6,7 +6,7 @@
  * Returns: { tier: "free|pro|family", status: "active|trial|cancelled|expired", ... }
  */
 
-import { verifyClerkToken } from '../_shared/clerk.js';
+import { getAuth } from '../_shared/clerk.js';
 
 /**
  * Get subscription status for user
@@ -70,15 +70,16 @@ export async function onRequest(context) {
 
   try {
     // Verify authentication
-    const userToken = request.headers.get('Authorization')?.split(' ')[1];
-    const userId = await verifyClerkToken(userToken);
+    const auth = await getAuth(request, env);
 
-    if (!userId) {
+    if (!auth) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    const userId = auth.userId;
 
     // Get subscription from database
     const db = env.DB;
