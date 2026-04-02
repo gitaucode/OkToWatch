@@ -21,14 +21,14 @@
 <meta property="og:site_name" content="OkToWatch">
 <meta property="og:title" content="OkToWatch — See what's in it before they watch">
 <meta property="og:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
-<meta property="og:image" content="https://oktowatch.app/og-image.png">
+<meta property="og:image" content="https://oktowatch.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="https://oktowatch.app/">
+<meta property="og:url" content="https://oktowatch.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="OkToWatch — See what's in it before they watch">
 <meta name="twitter:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
-<meta name="twitter:image" content="https://oktowatch.app/og-image.png">
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1478,7 +1478,7 @@ async function shareImage() {
   ctx.fillStyle='white'; ctx.font=`bold ${currentMovieTitle.length>20?28:36}px DM Sans,sans-serif`; ctx.fillText(currentMovieTitle,28,105);
   ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='14px DM Sans,sans-serif'; ctx.fillText(currentYear,28,128);
   if(currentBreakdown){ const v=currentBreakdown.verdicts[currentAudience]; if(v){ const tc={safe:'#2a7d52',warn:'#b07a10',danger:'#c0392b'}[v.tier]; ctx.fillStyle=tc+'33'; roundRect(ctx,24,145,W-48,54,10); ctx.fill(); ctx.strokeStyle=tc; ctx.lineWidth=1.5; roundRect(ctx,24,145,W-48,54,10); ctx.stroke(); ctx.fillStyle=tc; ctx.font='bold 15px DM Sans,sans-serif'; ctx.fillText(v.text,42,168); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='12px DM Sans,sans-serif'; ctx.fillText(v.sub,42,188); } const cats=currentBreakdown.categories; const dotW=(W-48)/cats.length; cats.forEach((c,i)=>{ const x=24+i*dotW+dotW/2,y=240; ctx.beginPath(); ctx.arc(x,y-6,6,0,Math.PI*2); ctx.fillStyle=dotColor[c.level]; ctx.fill(); ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center'; ctx.fillText((shortNames[c.name]||c.name).toUpperCase(),x,y+10); ctx.textAlign='left'; }); }
-  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px DM Sans,sans-serif'; ctx.fillText('oktowatch.app — Know before your kids watch it',28,H-18);
+  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px DM Sans,sans-serif'; ctx.fillText('oktowatch.com — Know before your kids watch it',28,H-18);
   canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'oktowatch.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch — ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
 }
 function loadImage(src) { return new Promise((res,rej)=>{ const img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>res(img); img.onerror=rej; img.src=src; }); }
@@ -1626,4 +1626,5 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator
 <script src="/js/auth.js"></script>
 </body>
 </html>
+
 

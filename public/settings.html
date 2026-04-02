@@ -746,7 +746,7 @@ document.getElementById('confirmActionBtn').addEventListener('click', async () =
       window.location.href = '/';
     } catch(e) {
       console.error('Delete account error:', e);
-      showToast('Deletion failed — email support@oktowatch.app to delete your account.');
+      showToast('Deletion failed — email support@oktowatch.com to delete your account.');
       document.getElementById('confirmActionBtn').textContent = 'Yes, delete my account';
       document.getElementById('confirmActionBtn').disabled = false;
     }
@@ -761,4 +761,5 @@ document.getElementById('confirmModal').addEventListener('click', e => {
 <script src="/js/auth.js"></script>
 </body>
 </html>
+
 
