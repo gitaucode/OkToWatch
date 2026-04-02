@@ -6,8 +6,7 @@ pages_build_output_dir = "public"
 [[d1_databases]]
 binding       = "DB"
 database_name = "clearview"
-database_id   = "your-database-id"   # Replace after: wrangler d1 create oktowatch
-
+database_id   = "f6f618bf-94ff-4d4a-b651-71d2101f00f4" 
 # ── Local dev environment variables ──────────────────────────────────────
 # Production secrets go in Cloudflare Pages dashboard → Settings → Env Vars
 # Local dev: copy .env.example to .dev.vars and fill in values
