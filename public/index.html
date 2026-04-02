@@ -369,24 +369,24 @@ footer a:hover { color: var(--accent); }
 #saveListBtn .list-badge.visible { display: block; }
 
 /* Compare mode */
-#compareSection { max-width: 640px; margin: 0 auto 3rem; padding: 0 1.25rem; display: none; }
+#compareSection { max-width: 1400px; margin: 0 auto 3rem; padding: 0 1.25rem; display: none; }
 #compareSection.visible { display: block; }
-.compare-header { position: sticky; top: 52px; z-index: 100; background: rgba(200,217,209,0.97); backdrop-filter: blur(14px); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 0.85rem 1.1rem; margin-bottom: 0.75rem; animation: fadeUp 0.3s ease forwards; }
-.compare-header-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.compare-header { position: sticky; top: 52px; z-index: 100; background: rgba(200,217,209,0.97); backdrop-filter: blur(14px); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 1rem 1.25rem; margin-bottom: 1.5rem; animation: fadeUp 0.3s ease forwards; }
+.compare-header-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
 .compare-header-label::after { content: ''; flex:1; height:1px; background: var(--border); }
-.compare-header-row { display: flex; gap: 0.5rem; align-items: stretch; }
-.compare-title-chip { flex: 1; min-width: 0; background: var(--surface); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; border: 1.5px solid var(--border); position: relative; }
+.compare-header-row { display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.compare-title-chip { flex: 1; min-width: 200px; background: var(--surface); border-radius: var(--radius-sm); padding: 0.75rem 1rem; border: 1.5px solid var(--border); position: relative; }
 .compare-title-chip.winner { border-color: var(--accent); background: var(--accent-light); }
-.compare-chip-name { font-size: 0.78rem; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.3rem; }
-.compare-chip-verdict { font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.5rem; border-radius: 6px; display: inline-block; }
+.compare-chip-name { font-size: 0.9rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.4rem; }
+.compare-chip-verdict { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; display: inline-block; }
 .compare-chip-verdict.safe   { background: var(--safe-bg); color: var(--safe); }
 .compare-chip-verdict.warn   { background: var(--warn-bg); color: var(--warn); }
 .compare-chip-verdict.danger { background: var(--danger-bg); color: var(--danger); }
-.compare-winner-badge { position: absolute; top: -8px; right: 8px; background: var(--accent); color: white; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 100px; }
-.compare-vs { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: var(--muted); letter-spacing: 0.05em; flex-shrink: 0; padding: 0 0.1rem; }
-.compare-close-btn { background: none; border: none; font-size: 0.75rem; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 0.5rem; padding: 0; display: block; width: 100%; text-align: center; }
+.compare-winner-badge { position: absolute; top: -10px; right: 8px; background: var(--accent); color: white; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 100px; }
+.compare-vs { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: var(--muted); letter-spacing: 0.05em; flex-shrink: 0; padding: 0 0.5rem; }
+.compare-close-btn { background: none; border: none; font-size: 0.8rem; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0.5rem 1rem; flex-shrink: 0; }
 .compare-close-btn:hover { color: var(--danger); }
-.compare-search-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem; animation: fadeUp 0.3s ease forwards; margin-bottom: 0.75rem; }
+.compare-search-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem; animation: fadeUp 0.3s ease forwards; margin-bottom: 1.5rem; }
 .compare-search-label { font-size: 0.78rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text2); }
 .compare-search-row { display: flex; gap: 0.5rem; }
 .compare-search-row input { flex: 1; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 100px; padding: 0.65rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.2s; }
@@ -396,14 +396,23 @@ footer a:hover { color: var(--accent); }
 .compare-search-row button:hover { opacity: 0.88; }
 .compare-search-row button:disabled { opacity: 0.5; cursor: not-allowed; }
 .compare-suggestions { position: relative; margin-top: 0.35rem; }
-.compare-drop { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); border: 1px solid var(--border); display: none; overflow: hidden; margin-top: 4px; }
+.compare-drop { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); border: 1px solid var(--border); display: none; overflow: hidden; margin-top: 4px; max-height: 400px; overflow-y: auto; }
 .compare-drop.visible { display: block; }
-.compare-card-wrap { animation: fadeUp 0.35s ease forwards; }
-.compare-card-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; padding: 0 0.1rem; display: flex; align-items: center; gap: 0.5rem; }
+.compare-card-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; animation: fadeUp 0.35s ease forwards; }
+.compare-card-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; padding: 0 0.1rem; display: flex; align-items: center; gap: 0.5rem; grid-column: 1/-1; }
 .compare-card-label::after { content:''; flex:1; height:1px; background: var(--border); }
 .compare-card-label span { color: var(--accent); }
+.compare-single-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
 .cat-item.compare-worse { background: rgba(192,57,43,0.04); border-radius: var(--radius-sm); padding-left: 0.5rem; margin-left: -0.5rem; }
 .cat-item.compare-better { background: rgba(42,125,82,0.04); border-radius: var(--radius-sm); padding-left: 0.5rem; margin-left: -0.5rem; }
+@media (max-width: 899px) {
+  #compareSection { padding: 0 0.85rem; }
+  .compare-header { padding: 0.75rem 0.9rem; margin-bottom: 1rem; }
+  .compare-header-row { flex-direction: column; gap: 0.75rem; }
+  .compare-title-chip { min-width: auto; }
+  .compare-vs { transform: rotate(90deg); padding: 0.25rem 0; }
+  .compare-card-wrap { grid-template-columns: 1fr; gap: 1rem; }
+}
 
 /* Splash */
 #splashScreen { display: none; position: fixed; inset: 0; z-index: 700; background: radial-gradient(circle at 20% 18%, rgba(93,186,151,0.12), transparent 28%), radial-gradient(circle at 80% 12%, rgba(255,255,255,0.08), transparent 24%), radial-gradient(circle at 50% 78%, rgba(42,107,85,0.18), transparent 38%), linear-gradient(180deg, #18221f 0%, #101715 100%); flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; overflow: hidden; }
@@ -1934,20 +1943,51 @@ async function selectCompareTitle(id,type,title) {
   finally { document.getElementById('compareSearchBtn').disabled=false; document.getElementById('compareSearchBtn').textContent='Compare →'; }
 }
 function renderCompareResult() {
-  if(!compareData) return;
-  const {title,year,certRating,genres,backdrop,poster,breakdown}=compareData;
-  const prefs=getPrefs(), {active,inactive}=getSortedCategories(breakdown.categories);
-  const heroImg=backdrop||poster, heroHtml=heroImg?`<img src="${heroImg}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0.85;">`:`<div class="poster-hero-fallback">🎬</div>`;
-  const tags=[year,certRating||'NR',genres.split(',')[0]].filter(Boolean);
-  const tagsHtml=tags.map((t,i)=>{ const tooltip=i===1?(RATING_INFO[t]||null):null; return `<span class="poster-tag"${tooltip?` data-tooltip="${tooltip}"`:''}>${t}</span>`; }).join('');
-  const glanceHtml=active.map(c=>`<div class="glance-item"><div class="glance-dot ${dotClass[c.level]}"></div><div class="glance-label">${shortNames[c.name]||c.name}</div></div>`).join('');
-  const v=breakdown.verdicts[currentAudience]||breakdown.verdicts['young'];
-  const verdictHtml=v?`<div class="verdict-pill verdict-${v.tier}" style="margin:0"><div class="verdict-icon">${v.tier==='safe'?'✓':v.tier==='warn'?'!':'✕'}</div><div><div class="verdict-text">${v.text}</div><div class="verdict-sub">${v.sub}</div></div></div>`:'';
-  let catsHtml=active.map(c=>{ let dc=''; if(currentBreakdown){ const p=currentBreakdown.categories.find(x=>x.name===c.name); if(p){const ls=['none','mild','moderate','strong'],pi=ls.indexOf(p.level),ci=ls.indexOf(c.level); if(ci>pi) dc=' compare-worse'; else if(ci<pi) dc=' compare-better'; } } return `<div class="cat-item${dc}"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`; }).join('');
-  if(inactive.length) catsHtml+=`<div class="hidden-cats-toggle" onclick="toggleHiddenCats(this)"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>${inactive.length} more</div><div class="hidden-cats-section">${inactive.map(c=>`<div class="cat-item deprioritised"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`).join('')}</div>`;
-  const summaryHtml=breakdown.summary?`<div class="movie-summary-strip">${breakdown.summary}</div>`:'';
-  document.getElementById('compareResultWrap').style.display='block';
-  document.getElementById('compareResultWrap').innerHTML=`<div class="compare-card-label"><span>${title}</span></div><div class="compare-card-wrap"><div class="result-card"><div class="poster-hero" style="height:220px">${heroHtml}<div class="poster-overlay"></div><div class="poster-meta"><div class="poster-title">${title}</div><div class="poster-tags">${tagsHtml}</div></div></div>${summaryHtml}<div class="glance-strip">${glanceHtml}</div><div class="verdict-block" style="padding:0.85rem 1.25rem">${verdictHtml}</div><div class="breakdown" style="padding:0.85rem 1.25rem 1.25rem"><div class="breakdown-label">Content Breakdown</div><div>${catsHtml}</div></div></div></div>`;
+  if(!compareData || !currentBreakdown) return;
+  
+  // Helper: render a single card
+  const renderCard = (title, year, certRating, genres, backdrop, poster, breakdown, isCompare = false) => {
+    const prefs = getPrefs(), {active, inactive} = getSortedCategories(breakdown.categories);
+    const heroImg = backdrop || poster;
+    const heroHtml = heroImg ? `<img src="${heroImg}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0.85;">` : `<div class="poster-hero-fallback">🎬</div>`;
+    const tags = [year, certRating || 'NR', genres.split(',')[0]].filter(Boolean);
+    const tagsHtml = tags.map((t, i) => {
+      const tooltip = i === 1 ? (RATING_INFO[t] || null) : null;
+      return `<span class="poster-tag"${tooltip ? ` data-tooltip="${tooltip}"` : ''}>${t}</span>`;
+    }).join('');
+    const glanceHtml = active.map(c => `<div class="glance-item"><div class="glance-dot ${dotClass[c.level]}"></div><div class="glance-label">${shortNames[c.name] || c.name}</div></div>`).join('');
+    const v = breakdown.verdicts[currentAudience] || breakdown.verdicts['young'];
+    const verdictHtml = v ? `<div class="verdict-pill verdict-${v.tier}" style="margin:0"><div class="verdict-icon">${v.tier === 'safe' ? '✓' : v.tier === 'warn' ? '!' : '✕'}</div><div><div class="verdict-text">${v.text}</div><div class="verdict-sub">${v.sub}</div></div></div>` : '';
+    
+    let catsHtml = active.map(c => {
+      let dc = '';
+      if (isCompare && currentBreakdown) {
+        const p = currentBreakdown.categories.find(x => x.name === c.name);
+        if (p) {
+          const ls = ['none', 'mild', 'moderate', 'strong'];
+          const pi = ls.indexOf(p.level), ci = ls.indexOf(c.level);
+          if (ci > pi) dc = ' compare-worse';
+          else if (ci < pi) dc = ' compare-better';
+        }
+      }
+      return `<div class="cat-item${dc}"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`;
+    }).join('');
+    
+    if (inactive.length) {
+      catsHtml += `<div class="hidden-cats-toggle" onclick="toggleHiddenCats(this)"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>${inactive.length} more</div><div class="hidden-cats-section">${inactive.map(c => `<div class="cat-item deprioritised"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`).join('')}</div>`;
+    }
+    
+    const summaryHtml = breakdown.summary ? `<div class="movie-summary-strip">${breakdown.summary}</div>` : '';
+    
+    return `<div class="compare-single-card"><div class="poster-hero" style="height:220px">${heroHtml}<div class="poster-overlay"></div><div class="poster-meta"><div class="poster-title">${title}</div><div class="poster-tags">${tagsHtml}</div></div></div>${summaryHtml}<div class="glance-strip">${glanceHtml}</div><div class="verdict-block" style="padding:0.85rem 1.25rem">${verdictHtml}</div><div class="breakdown" style="padding:0.85rem 1.25rem 1.25rem"><div class="breakdown-label">Content Breakdown</div><div>${catsHtml}</div></div></div>`;
+  };
+  
+  // Render both cards
+  const card1 = renderCard(currentMovieTitle, currentYear, currentCertRating, currentGenres || '', currentBackdrop, currentPosterUrl, currentBreakdown);
+  const card2 = renderCard(compareData.title, compareData.year, compareData.certRating, compareData.genres, compareData.backdrop, compareData.poster, compareData.breakdown, true);
+  
+  document.getElementById('compareResultWrap').style.display = 'block';
+  document.getElementById('compareResultWrap').innerHTML = `<div class="compare-card-label"><span>Side-by-side comparison</span></div><div class="compare-card-wrap">${card1}${card2}</div>`;
 }
 function renderCompareHeader() {
   if(!compareData||!currentBreakdown) return;
