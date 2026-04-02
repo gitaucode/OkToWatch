@@ -258,6 +258,30 @@ footer a:hover { color: var(--accent); }
         <label>Pick an emoji</label>
         <div class="emoji-grid" id="emojiGrid"></div>
       </div>
+      <div class="field">
+        <label>Sensitivity level</label>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="sensitivityPreset" value="balanced" style="width:16px;height:16px;cursor:pointer;">
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Balanced</span>
+            <span style="font-size:0.7rem;color:var(--muted);">Covers main safety topics</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="sensitivityPreset" value="cautious" style="width:16px;height:16px;cursor:pointer;">
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Cautious</span>
+            <span style="font-size:0.7rem;color:var(--muted);">Flags social & identity themes</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="sensitivityPreset" value="sensitive" style="width:16px;height:16px;cursor:pointer;">
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Sensitive</span>
+            <span style="font-size:0.7rem;color:var(--muted);">Flags nearly everything</span>
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="profileNotes">Notes</label>
+        <textarea id="profileNotes" placeholder="e.g. No scary movies, prefers comedies..." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:0.75rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;transition:border-color 0.2s;min-height:70px;resize:none;"></textarea>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-primary" id="profileSaveBtn" onclick="saveProfile()">Add Profile</button>
@@ -388,6 +412,8 @@ function openAddModal() {
   document.getElementById('profileSaveBtn').textContent = 'Add Profile';
   document.getElementById('profileName').value = '';
   document.getElementById('profileAge').value  = '';
+  document.getElementById('profileNotes').value = '';
+  document.querySelector('input[name="sensitivityPreset"][value="balanced"]').checked = true;
   renderEmojiGrid();
   document.getElementById('profileModal').classList.add('visible');
   document.body.style.overflow = 'hidden';
@@ -403,6 +429,9 @@ function openEditModal(id) {
   document.getElementById('profileSaveBtn').textContent = 'Save Changes';
   document.getElementById('profileName').value = p.name;
   document.getElementById('profileAge').value  = p.age;
+  document.getElementById('profileNotes').value = p.notes || '';
+  const preset = p.sensitivity_preset || 'balanced';
+  document.querySelector(`input[name="sensitivityPreset"][value="${preset}"]`).checked = true;
   renderEmojiGrid();
   document.getElementById('profileModal').classList.add('visible');
   document.body.style.overflow = 'hidden';
@@ -423,6 +452,9 @@ function pickEmoji(e, btn) {
 async function saveProfile() {
   const name = document.getElementById('profileName').value.trim();
   const age  = parseInt(document.getElementById('profileAge').value);
+  const sensitivity_preset = document.querySelector('input[name="sensitivityPreset"]:checked').value;
+  const notes = document.getElementById('profileNotes').value.trim();
+
   if (!name)                       { showToast('Please enter a name'); return; }
   if (!age || age < 1 || age > 17) { showToast('Age must be between 1 and 17'); return; }
 
@@ -432,12 +464,12 @@ async function saveProfile() {
 
   try {
     if (_editingId) {
-      const updated = await apiPut(`/api/profiles?id=${_editingId}`, { name, age, emoji: _selectedEmoji });
+      const updated = await apiPut(`/api/profiles?id=${_editingId}`, { name, age, emoji: _selectedEmoji, sensitivity_preset, notes });
       const idx = _profiles.findIndex(p => p.id === _editingId);
       if (idx !== -1) _profiles[idx] = updated;
       showToast(`${name}'s profile updated ✓`);
     } else {
-      const p = await apiPost('/api/profiles', { name, age, emoji: _selectedEmoji });
+      const p = await apiPost('/api/profiles', { name, age, emoji: _selectedEmoji, sensitivity_preset, notes });
       _profiles.push(p);
       showToast(`${name}'s profile added ✓`);
     }

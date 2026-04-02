@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2a6b55">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OkToWatch">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<title>Shared Breakdown — OkToWatch</title>
+<meta name="description" content="A shared parental content breakdown from OkToWatch.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OkToWatch">
+<meta property="og:title" content="Check out this content breakdown">
+<meta property="og:description" content="A shared parental content breakdown from OkToWatch.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --safe: #2a7d52; --safe-bg: #e6f4ec;
+  --warn: #b07a10; --warn-bg: #fef6e4;
+  --moderate: #b85c1a; --moderate-bg: #fef0e6;
+  --danger: #c0392b; --danger-bg: #fdecea;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 16px; --radius-sm: 10px;
+}
+
+html, body { overflow-x: hidden; }
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: 'DM Sans', sans-serif; 
+  min-height: 100vh; 
+  font-size: 15px; 
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* NAV */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(200,217,209,0.95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.nav-left { display: flex; align-items: center; gap: 1rem; }
+.nav-logo { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.nav-logo span { color: var(--accent); }
+.nav-back { display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.6); border: 1.5px solid var(--border); border-radius: 100px; padding: 0.4rem 0.7rem; font-size: 0.78rem; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+.nav-back:hover { background: white; color: var(--accent); border-color: var(--accent); }
+
+.nav-right { display: flex; gap: 0.5rem; align-items: center; }
+.nav-btn { background: rgba(255,255,255,0.6); border: 1.5px solid var(--border); border-radius: 100px; padding: 0.4rem 0.75rem; font-size: 0.78rem; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.nav-btn:hover { background: white; color: var(--accent); border-color: var(--accent); }
+
+/* MAIN */
+.container { max-width: 640px; margin: 0 auto; padding: 0 1.25rem; }
+
+/* STATUS STATES */
+#loadingState, #errorState, #expiredState { display: none; }
+
+.status-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.status-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--surface2);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+}
+
+.status-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.status-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+
+.loader { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* SHARE INFO */
+#shareInfo {
+  background: var(--accent-light);
+  border: 1px solid rgba(42,107,85,0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  margin: 1.25rem 0;
+  font-size: 0.8rem;
+  color: var(--accent);
+  line-height: 1.6;
+}
+
+#shareInfo strong { display: block; margin-bottom: 0.3rem; font-weight: 700; }
+
+/* RESULT CARD */
+#contentSection { display: none; }
+
+.result-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.poster-hero {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: #1a2420;
+  overflow: hidden;
+}
+
+.poster-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.85;
+}
+
+.poster-hero-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  background: linear-gradient(135deg, #2a3d36, #1a2420);
+}
+
+.poster-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.08) 55%, transparent 100%);
+}
+
+.poster-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.poster-title {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.45rem;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+}
+
+.poster-meta-text {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.85);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* GLANCE */
+.glance-strip {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.glance-strip::-webkit-scrollbar { display: none; }
+
+.glance-item {
+  flex: 1;
+  min-width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.75rem 0.25rem;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+
+.glance-item:last-child { border-right: none; }
+
+.glance-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.glance-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.dot-none { background: var(--safe); }
+.dot-mild { background: var(--warn); }
+.dot-moderate { background: var(--moderate); }
+.dot-strong { background: var(--danger); }
+
+/* VERDICT */
+.verdict-block { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+
+.audience-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.audience-tabs::-webkit-scrollbar { display: none; }
+
+.aud-tab {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 0.38rem 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.aud-tab:hover { border-color: var(--muted); color: var(--text2); }
+
+.aud-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.verdict-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.verdict-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  font-weight: 800;
+  margin-top: 1px;
+}
+
+.verdict-text { font-size: 0.9rem; font-weight: 700; line-height: 1.2; }
+.verdict-sub { font-size: 0.78rem; font-weight: 400; opacity: 0.8; margin-top: 0.2rem; }
+
+.verdict-safe { background: var(--safe-bg); color: var(--safe); }
+.verdict-safe .verdict-icon { background: var(--safe); color: white; }
+
+.verdict-warn { background: var(--warn-bg); color: var(--warn); }
+.verdict-warn .verdict-icon { background: var(--warn); color: white; }
+
+.verdict-danger { background: var(--danger-bg); color: var(--danger); }
+.verdict-danger .verdict-icon { background: var(--danger); color: white; }
+
+/* BREAKDOWN */
+.breakdown { padding: 1.1rem 1.25rem 1.25rem; }
+
+.breakdown-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.breakdown-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.cat-item {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cat-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.cat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.3rem;
+}
+
+.cat-name { font-size: 0.875rem; font-weight: 700; color: var(--text); }
+
+.level-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 8px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.level-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+.level-none { background: var(--safe-bg); color: var(--safe); }
+.level-none .level-dot { background: var(--safe); }
+
+.level-mild { background: var(--warn-bg); color: var(--warn); }
+.level-mild .level-dot { background: var(--warn); }
+
+.level-moderate { background: var(--moderate-bg); color: var(--moderate); }
+.level-moderate .level-dot { background: var(--moderate); }
+
+.level-strong { background: var(--danger-bg); color: var(--danger); }
+.level-strong .level-dot { background: var(--danger); }
+
+.cat-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; margin-top: 0.35rem; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+footer p, footer a {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+footer a:hover { color: var(--accent); }
+
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.movie-summary-strip {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.55;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">Ok<span>To</span>Watch</div>
+  </div>
+  <div class="nav-right">
+    <a href="/" class="nav-btn">← Home</a>
+  </div>
+</nav>
+
+<div class="container" style="padding-top: 1.5rem; padding-bottom: 2rem;">
+
+  <!-- LOADING -->
+  <div id="loadingState">
+    <div class="status-card">
+      <div class="status-icon">⏳</div>
+      <h2>Loading breakdown...</h2>
+      <div class="loader" style="margin-top: 1.5rem;"></div>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div id="errorState">
+    <div class="status-card">
+      <div class="status-icon">⚠️</div>
+      <h2>Oops, something went wrong</h2>
+      <p id="errorMsg"></p>
+      <a href="/" class="nav-btn" style="display: inline-block;">← Back Home</a>
+    </div>
+  </div>
+
+  <!-- EXPIRED -->
+  <div id="expiredState">
+    <div class="status-card">
+      <div class="status-icon">⏰</div>
+      <h2>Share link expired</h2>
+      <p>This link is no longer valid (shares expire after 30 days).</p>
+      <a href="/" class="nav-btn" style="display: inline-block;">← Back Home</a>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="contentSection">
+    <div id="shareInfo"></div>
+
+    <div class="result-card">
+      <div class="poster-hero" id="posterHero">
+        <div class="poster-hero-fallback" id="posterFallback">🎬</div>
+        <img id="posterImg" alt="Poster" style="display:none;">
+        <div class="poster-overlay"></div>
+        <div class="poster-meta" id="posterMeta"></div>
+      </div>
+
+      <div class="glance-strip" id="glanceStrip"></div>
+
+      <div class="movie-summary-strip" id="summaryStrip"></div>
+
+      <div class="verdict-block">
+        <div class="audience-tabs" id="audienceTabs"></div>
+        <div class="verdict-pill" id="verdictPill"></div>
+      </div>
+
+      <!-- BREAKDOWN -->
+      <div class="breakdown" id="breakdown"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Shared via <a href="/">OkToWatch</a> — parental content guides.</p>
+</footer>
+
+<script>
+const SHARE_CATEGORIES = [
+  'Sex & Nudity',
+  'Violence & Gore',
+  'Language',
+  'Drugs & Alcohol',
+  'Horror & Fear',
+  'LGBTQ+ Themes',
+];
+
+const LEVEL_COLORS = {
+  none:     { color: '#2a7d52', bg: '#e6f4ec' },
+  mild:     { color: '#b07a10', bg: '#fef6e4' },
+  moderate: { color: '#b85c1a', bg: '#fef0e6' },
+  strong:   { color: '#c0392b', bg: '#fdecea' },
+};
+
+const VERDICT_ICONS = {
+  safe:   { icon: '✓', label: 'Safe' },
+  warn:   { icon: '⚠', label: 'Caution' },
+  danger: { icon: '✕', label: 'Not suitable' },
+};
+
+let currentAudience = 'teens';
+let analysisData = null;
+let shareData = null;
+
+async function init() {
+  const url = new URL(window.location);
+  const token = url.searchParams.get('token');
+
+  if (!token) {
+    showError('No share token provided.');
+    return;
+  }
+
+  showLoading();
+
+  try {
+    const res = await fetch(`/api/share/${token}`);
+
+    if (res.status === 410) {
+      showExpired();
+      return;
+    }
+
+    if (res.status === 404) {
+      showError('This share link doesn't exist.');
+      return;
+    }
+
+    if (!res.ok) {
+      const data = await res.json();
+      showError(data.error || 'Failed to load breakdown.');
+      return;
+    }
+
+    const data = await res.json();
+    shareData = data.share;
+    analysisData = data.analysis;
+
+    if (!analysisData) {
+      showError('Analysis data not yet available for this title.');
+      return;
+    }
+
+    renderContent();
+  } catch (e) {
+    console.error('Fetch error:', e);
+    showError('Network error. Please try again.');
+  }
+}
+
+function showLoading() {
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('expiredState').style.display = 'none';
+  document.getElementById('contentSection').style.display = 'none';
+}
+
+function showError(msg) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorState').style.display = 'block';
+  document.getElementById('expiredState').style.display = 'none';
+  document.getElementById('contentSection').style.display = 'none';
+  document.getElementById('errorMsg').textContent = msg;
+}
+
+function showExpired() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('expiredState').style.display = 'block';
+  document.getElementById('contentSection').style.display = 'none';
+}
+
+async function fetchTmdbData() {
+  try {
+    const endpoint = shareData.media_type === 'tv'
+      ? `multi?query=${shareData.tmdb_id}`
+      : `${shareData.media_type}/${shareData.tmdb_id}`;
+
+    const res = await fetch(`/api/tmdb/${endpoint}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.error('TMDB fetch error:', e);
+    return null;
+  }
+}
+
+function renderContent() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('expiredState').style.display = 'none';
+  document.getElementById('contentSection').style.display = 'block';
+
+  // Share info
+  const shareDate = new Date(shareData.created_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+  document.getElementById('shareInfo').innerHTML =
+    `<strong>Shared on ${shareDate}</strong>`;
+
+  // Poster & meta
+  const posterFallback = document.getElementById('posterFallback');
+  const posterImg = document.getElementById('posterImg');
+  const posterHero = document.getElementById('posterHero');
+
+  if (analysisData.poster_url) {
+    posterImg.src = analysisData.poster_url;
+    posterImg.style.display = 'block';
+    posterFallback.style.display = 'none';
+  } else {
+    posterFallback.style.display = 'flex';
+    posterImg.style.display = 'none';
+  }
+
+  const mediaTypeLabel = shareData.media_type === 'tv' ? 'TV Series' : 'Movie';
+  const seasonLabel = shareData.season ? ` — Season ${shareData.season}` : '';
+  const yearText = analysisData.year ? ` (${analysisData.year})` : '';
+
+  document.getElementById('posterMeta').innerHTML = `
+    <div class="poster-title">${analysisData.title}${seasonLabel}</div>
+    <div class="poster-meta-text">
+      <span>${mediaTypeLabel}${yearText}</span>
+    </div>
+  `;
+
+  // Summary
+  if (analysisData.summary) {
+    document.getElementById('summaryStrip').textContent = analysisData.summary;
+  }
+
+  // Glance (level dots)
+  const glanceStrip = document.getElementById('glanceStrip');
+  glanceStrip.innerHTML = '';
+  if (analysisData.categories) {
+    analysisData.categories.forEach(cat => {
+      const dotClass = `dot-${cat.level}`;
+      glanceStrip.innerHTML += `
+        <div class="glance-item">
+          <div class="glance-dot ${dotClass}"></div>
+          <div class="glance-label">${cat.name.split(' ')[0]}</div>
+        </div>
+      `;
+    });
+  }
+
+  // Audience tabs
+  const audienceTabs = document.getElementById('audienceTabs');
+  audienceTabs.innerHTML = '';
+  const audiences = ['young', 'teens', 'adults'];
+  audiences.forEach(aud => {
+    const label = aud === 'young' ? 'Young' : aud === 'teens' ? 'Teens' : 'Adults';
+    const tab = document.createElement('button');
+    tab.className = `aud-tab ${aud === currentAudience ? 'active' : ''}`;
+    tab.textContent = label;
+    tab.onclick = () => switchAudience(aud);
+    audienceTabs.appendChild(tab);
+  });
+
+  // Verdict
+  renderVerdict();
+
+  // Breakdown
+  renderBreakdown();
+}
+
+function switchAudience(aud) {
+  currentAudience = aud;
+
+  document.querySelectorAll('.aud-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+
+  renderVerdict();
+}
+
+function renderVerdict() {
+  const verdict = analysisData.verdicts[currentAudience];
+  const verdictClass = `verdict-${verdict.tier}`;
+
+  const { icon } = VERDICT_ICONS[verdict.tier] || VERDICT_ICONS.warn;
+
+  const colors = LEVEL_COLORS[verdict.tier] || LEVEL_COLORS.mild;
+  const bg = getVerdictBg(verdict.tier);
+  const color = getVerdictColor(verdict.tier);
+
+  document.getElementById('verdictPill').innerHTML = `
+    <div class="verdict-icon" style="background: ${color}; color: white;">${icon}</div>
+    <div>
+      <div class="verdict-text">${verdict.text}</div>
+      <div class="verdict-sub">${verdict.sub}</div>
+    </div>
+  `;
+  document.getElementById('verdictPill').className = `verdict-pill ${verdictClass}`;
+}
+
+function renderBreakdown() {
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '<div class="breakdown-label">Content Details</div>';
+
+  if (!analysisData.categories) return;
+
+  analysisData.categories.forEach(cat => {
+    const levelColor = LEVEL_COLORS[cat.level];
+    breakdown.innerHTML += `
+      <div class="cat-item">
+        <div class="cat-header">
+          <div class="cat-name">${cat.name}</div>
+          <div class="level-tag" style="background: ${levelColor.bg}; color: ${levelColor.color};">
+            <div class="level-dot" style="background: ${levelColor.color};"></div>
+            ${cat.level.charAt(0).toUpperCase() + cat.level.slice(1)}
+          </div>
+        </div>
+        <div class="cat-desc">${cat.note}</div>
+      </div>
+    `;
+  });
+}
+
+function getVerdictColor(tier) {
+  const map = { safe: '#2a7d52', warn: '#b07a10', danger: '#c0392b' };
+  return map[tier] || '#7a908a';
+}
+
+function getVerdictBg(tier) {
+  const map = { safe: '#e6f4ec', warn: '#fef6e4', danger: '#fdecea' };
+  return map[tier] || '#f4f6f5';
+}
+
+// Init on load
+window.addEventListener('load', init);
+</script>
+
+</body>
+</html>

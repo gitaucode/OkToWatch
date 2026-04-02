@@ -671,10 +671,28 @@ footer a:hover { color: var(--accent); }
         <div class="verdict-icon" id="verdictIcon">✓</div>
         <div><div class="verdict-text" id="verdictText">—</div><div class="verdict-sub" id="verdictSub">—</div></div>
       </div>
+      <div style="margin-top:0.65rem;">
+        <button id="reasoningToggle" onclick="toggleReasoning()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;color:var(--accent);cursor:pointer;padding:0.3rem 0;display:flex;align-items:center;gap:0.4rem;transition:color 0.15s;">
+          <span id="reasoningToggleIcon" style="display:inline-block;transform:rotate(0);transition:transform 0.15s;font-size:1rem;">▾</span>
+          <span>Why this verdict?</span>
+        </button>
+        <div id="reasoningPanel" style="display:none;margin-top:0.6rem;padding:0.75rem;background:rgba(42,107,85,0.06);border:1px solid rgba(42,107,85,0.1);border-radius:var(--radius-sm);">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem;">Contributing factors</div>
+          <div id="reasoningContent"></div>
+        </div>
+      </div>
     </div>
     <div class="breakdown">
       <div class="breakdown-label">Content Breakdown</div>
       <div id="catList"></div>
+    </div>
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:none;" id="notesSection">
+      <div class="breakdown-label" style="margin-bottom:0.75rem;">Family Notes</div>
+      <div id="notesList"></div>
+      <button onclick="openNoteModal()" style="width:100%;background:rgba(42,107,85,0.08);border:1.5px solid rgba(42,107,85,0.15);color:var(--accent);border-radius:var(--radius-sm);padding:0.65rem;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.15s;margin-top:0.75rem;">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline;margin-right:0.4rem;vertical-align:middle;"><path d="M8 2v12M2 8h12"/></svg>
+        Add a note
+      </button>
     </div>
     <div class="share-bar">
       <span class="share-lbl">Share</span>
@@ -698,6 +716,10 @@ footer a:hover { color: var(--accent); }
       <button class="btn-share" onclick="shareWhatsApp()">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.6 0 0 3.6 0 8c0 1.4.4 2.8 1 4L0 16l4.2-1.1C5.4 15.6 6.7 16 8 16c4.4 0 8-3.6 8-8s-3.6-8-8-8zm3.9 11.1c-.2.5-1 1-1.4 1-.4.1-.8.1-2.6-.5-2.2-.8-3.6-3-3.7-3.1-.1-.2-.9-1.2-.9-2.3 0-1.1.6-1.6.8-1.8.2-.2.4-.3.6-.3h.4c.2 0 .3.1.5.5.2.5.6 1.6.7 1.7.1.1.1.3 0 .5s-.1.3-.2.4l-.3.4c-.1.1-.2.3-.1.5.2.3.7 1.1 1.4 1.7.9.8 1.7 1.1 2 1.2.2.1.4 0 .5-.1l.6-.7c.1-.2.3-.2.5-.1l1.5.7c.2.1.3.2.4.3.1.4-.1 1-.3 1.3z"/></svg>
         WhatsApp
+      </button>
+      <button class="btn-share" onclick="openIssueModal()" style="margin-left:auto;border-color:rgba(192,57,43,0.2);color:#c0392b;">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="4" x2="8" y2="8"/><line x1="8" y1="12" x2="8.01" y2="12"/></svg>
+        Report
       </button>
     </div>
   </div>
@@ -804,6 +826,90 @@ footer a:hover { color: var(--accent); }
       <button onclick="saveToList('blocked')" class="list-modal-btn" style="background:var(--danger-bg);color:var(--danger);border:1.5px solid rgba(192,57,43,0.2);">
         <span style="font-size:1.1rem;">🚫</span>
         <div><strong>Blocked</strong><span>Mark as off-limits</span></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Report issue modal -->
+<div id="issueModal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(20,30,26,0.65);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;">
+  <div style="background:var(--surface);border-radius:20px 20px 0 0;max-width:480px;width:100%;padding-bottom:env(safe-area-inset-bottom,1rem);animation:slideUp 0.3s ease forwards;">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0.75rem auto 0;"></div>
+    <div style="padding:1rem 1.5rem 0.85rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Report an issue</h3>
+        <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;">Help us improve by reporting inaccuracies or missing content.</p>
+      </div>
+      <button onclick="closeIssueModal()" style="background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;color:var(--text2);flex-shrink:0;margin-left:0.5rem;">✕</button>
+    </div>
+    <div style="padding:1.1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.85rem;max-height:60vh;overflow-y:auto;">
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Issue type</label>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.65rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="category" value="inaccurate" style="width:16px;height:16px;cursor:pointer;" checked>
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Inaccurate verdict or info</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.65rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="category" value="missing" style="width:16px;height:16px;cursor:pointer;">
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Missing important content</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.65rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="category" value="unclear" style="width:16px;height:16px;cursor:pointer;">
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Unclear explanation</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;padding:0.65rem 0.75rem;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--surface2);transition:all 0.15s;">
+            <input type="radio" name="category" value="other" style="width:16px;height:16px;cursor:pointer;">
+            <span style="flex:1;font-size:0.85rem;font-weight:600;">Other</span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Details</label>
+        <textarea id="issueMessage" placeholder="What should be different? Be specific." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:0.75rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;transition:border-color 0.2s;min-height:100px;resize:none;" onchange="this.style.borderColor=this.value?'var(--accent)':'var(--border)';"></textarea>
+      </div>
+      <button id="issueSubmitBtn" onclick="submitIssueReport()" style="width:100%;background:linear-gradient(135deg,#1f5c47 0%,#2a6b55 100%);color:white;border:none;border-radius:100px;padding:0.85rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.15s;box-shadow:0 10px 24px rgba(42,107,85,0.22);">
+        Submit report
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Shared note modal -->
+<div id="noteModal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(20,30,26,0.65);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;">
+  <div style="background:var(--surface);border-radius:20px 20px 0 0;max-width:480px;width:100%;padding-bottom:env(safe-area-inset-bottom,1rem);animation:slideUp 0.3s ease forwards;">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0.75rem auto 0;"></div>
+    <div style="padding:1rem 1.5rem 0.85rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.25rem;">Add a family note</h3>
+        <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;">Share your thoughts with family members about this title.</p>
+      </div>
+      <button onclick="closeNoteModal()" style="background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;color:var(--text2);flex-shrink:0;margin-left:0.5rem;">✕</button>
+    </div>
+    <div style="padding:1.1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.85rem;">
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Note type</label>
+        <div style="display:flex;gap:0.4rem;">
+          <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.3rem;padding:0.6rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--surface2);font-size:0.78rem;font-weight:600;transition:all 0.15s;">
+            <input type="radio" name="noteType" value="observation" style="width:14px;height:14px;cursor:pointer;" checked>
+            <span>Observation</span>
+          </label>
+          <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.3rem;padding:0.6rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--surface2);font-size:0.78rem;font-weight:600;transition:all 0.15s;">
+            <input type="radio" name="noteType" value="approval" style="width:14px;height:14px;cursor:pointer;">
+            <span>Approval</span>
+          </label>
+          <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.3rem;padding:0.6rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--surface2);font-size:0.78rem;font-weight:600;transition:all 0.15s;">
+            <input type="radio" name="noteType" value="caution" style="width:14px;height:14px;cursor:pointer;">
+            <span>Caution</span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Your note</label>
+        <textarea id="noteMessage" placeholder="e.g., Watched with Emma last week — she loved it but found the scary scene intense." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:0.75rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;transition:border-color 0.2s;min-height:100px;resize:none;"></textarea>
+      </div>
+      <button id="noteSubmitBtn" onclick="submitNote()" style="width:100%;background:linear-gradient(135deg,#1f5c47 0%,#2a6b55 100%);color:white;border:none;border-radius:100px;padding:0.85rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.15s;box-shadow:0 10px 24px rgba(42,107,85,0.22);">
+        Post note
       </button>
     </div>
   </div>
@@ -1440,6 +1546,43 @@ function renderVerdict() {
   const el=document.getElementById('verdictPill'); el.className='verdict-pill verdict-'+v.tier;
   document.getElementById('verdictIcon').textContent=v.tier==='safe'?'✓':v.tier==='warn'?'!':'✕';
   document.getElementById('verdictText').textContent=v.text; document.getElementById('verdictSub').textContent=v.sub;
+  
+  // Populate reasoning with top contributing categories
+  const categories = bd.categories || [];
+  const severityOrder = { strong: 3, moderate: 2, mild: 1, none: 0 };
+  const sorted = [...categories].sort((a,b) => severityOrder[b.level] - severityOrder[a.level]);
+  const topCategories = sorted.slice(0, 3).filter(c => c.level !== 'none');
+  
+  const reasoning = document.getElementById('reasoningContent');
+  if (topCategories.length === 0) {
+    reasoning.innerHTML = '<div style="font-size:0.8rem;color:var(--muted);">No concerning content flagged.</div>';
+  } else {
+    reasoning.innerHTML = topCategories.map(cat => {
+      const colors = { mild: '#b07a10', moderate: '#b85c1a', strong: '#c0392b' };
+      const bgs = { mild: '#fef6e4', moderate: '#fef0e6', strong: '#fdecea' };
+      return `<div style="margin-bottom:0.5rem;padding:0.6rem;background:${bgs[cat.level]};border-radius:8px;border-left:3px solid ${colors[cat.level]};">
+        <div style="font-size:0.78rem;font-weight:700;color:${colors[cat.level]};margin-bottom:0.2rem;">${cat.name}</div>
+        <div style="font-size:0.75rem;color:${colors[cat.level]};opacity:0.85;">${cat.note}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Show/hide notes section based on account type
+  const notesSection = document.getElementById('notesSection');
+  if (notesSection) {
+    notesSection.style.display = window.CV?.isFamily ? 'block' : 'none';
+    if (window.CV?.isFamily) {
+      fetchNotes(lastId, lastType);
+    }
+  }
+}
+
+function toggleReasoning() {
+  const panel = document.getElementById('reasoningPanel');
+  const icon = document.getElementById('reasoningToggleIcon');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  icon.style.transform = isOpen ? 'rotate(0)' : 'rotate(180deg)';
 }
 
 function renderRecentlyViewed(currentId) {
@@ -1486,8 +1629,51 @@ function roundRect(ctx,x,y,w,h,r) { ctx.beginPath(); ctx.moveTo(x+r,y); ctx.line
 
 // ── SHARE ─────────────────────────────────────────────────────────────────
 function getShareUrl() { if(lastId&&lastType){ const base=`${location.origin}/share.html?id=${lastId}&type=${lastType}`; return currentSeason?base+`&season=${currentSeason}`:base; } return `${location.origin}/share.html?q=${encodeURIComponent(currentMovieTitle)}`; }
-function copyShareLink() { navigator.clipboard.writeText(getShareUrl()).then(()=>showToast('Share link copied!')); }
-function shareWhatsApp() { const url=getShareUrl(); window.open(`https://wa.me/?text=${encodeURIComponent(`OkToWatch breakdown for "${currentMovieTitle}": ${url}`)}`,'_blank'); }
+
+async function createShareToken() {
+  if (!lastId || !lastType) { showToast('No content to share'); return null; }
+  try {
+    const res = await fetch('/api/share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tmdb_id: lastId, media_type: lastType, season: currentSeason || null })
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      showToast(err.error || 'Failed to create share');
+      return null;
+    }
+    const data = await res.json();
+    return data.shareUrl;
+  } catch (e) {
+    console.error('Share creation error:', e);
+    showToast('Failed to create share link');
+    return null;
+  }
+}
+
+async function copyShareLink() {
+  if (!window.CV?.loggedIn) {
+    showProNudge('Sign in to create shareable links');
+    return;
+  }
+  showToast('Creating share link…');
+  const url = await createShareToken();
+  if (url) {
+    navigator.clipboard.writeText(url).then(() => showToast('Share link copied!'));
+  }
+}
+
+async function shareWhatsApp() {
+  if (!window.CV?.loggedIn) {
+    showProNudge('Sign in to share');
+    return;
+  }
+  const url = await createShareToken();
+  if (url) {
+    window.open(`https://wa.me/?text=${encodeURIComponent(`OkToWatch breakdown for "${currentMovieTitle}": ${url}`)}`, '_blank');
+  }
+}
 function showToast(msg) { const t=document.getElementById('shareToast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
 let proNudgeTimer=null;
@@ -1601,6 +1787,73 @@ async function saveToList(listType) {
 }
 function updateListBadge() { const badge=document.getElementById('listBadge'); if(!badge||!lastId) return; const inList=getEffectiveLists().some(l=>l.tmdb_id===lastId); badge.classList.toggle('visible',inList); }
 document.getElementById('listModal').addEventListener('click',e=>{ if(e.target===document.getElementById('listModal')) closeListModal(); });
+
+// ── REPORT ISSUE ──────────────────────────────────────────────────────────
+function openIssueModal() {
+  if(!lastId) return;
+  document.getElementById('issueMessage').value='';
+  document.querySelector('input[name="category"]').checked=true;
+  document.getElementById('issueSubmitBtn').disabled=false;
+  document.getElementById('issueSubmitBtn').textContent='Submit report';
+  document.getElementById('issueModal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeIssueModal() { document.getElementById('issueModal').style.display='none'; document.body.style.overflow=''; }
+async function submitIssueReport() {
+  if(!window.CV?.loggedIn) { showProNudge('Sign in to report issues'); closeIssueModal(); return; }
+  const category=document.querySelector('input[name="category"]:checked').value;
+  const message=document.getElementById('issueMessage').value.trim();
+  if(!message) { showToast('Please describe the issue'); return; }
+  const btn=document.getElementById('issueSubmitBtn');
+  btn.disabled=true; btn.textContent='Sending…';
+  try {
+    const res=await fetch('/api/issues',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tmdb_id:lastId,media_type:lastType,season:currentSeason||null,category,message})});
+    if(!res.ok) { showToast('Failed to submit report'); btn.disabled=false; btn.textContent='Submit report'; return; }
+    closeIssueModal(); showToast('Thank you for the feedback — we\'ll review it.');
+  } catch(e) { console.error('Issue report error:',e); showToast('Failed to submit report'); btn.disabled=false; btn.textContent='Submit report'; }
+}
+document.getElementById('issueModal').addEventListener('click',e=>{ if(e.target===document.getElementById('issueModal')) closeIssueModal(); });
+
+// Family notes
+function openNoteModal() { document.getElementById('noteModal').style.display='flex'; document.body.style.overflow='hidden'; }
+function closeNoteModal() { document.getElementById('noteModal').style.display='none'; document.body.style.overflow=''; document.getElementById('noteMessage').value=''; document.querySelector('input[name="noteType"][value="observation"]').checked=true; }
+
+async function submitNote() {
+  if(!window.CV?.loggedIn) { showProNudge('Sign in to add family notes'); closeNoteModal(); return; }
+  if(!window.CV?.isFamily) { showToast('This feature is for family accounts'); closeNoteModal(); return; }
+  const noteType=document.querySelector('input[name="noteType"]:checked')?.value;
+  const message=document.getElementById('noteMessage')?.value?.trim();
+  if(!message) { showToast('Please write a note'); return; }
+  const btn=document.getElementById('noteSubmitBtn');
+  btn.disabled=true; btn.textContent='Posting…';
+  try {
+    const res=await fetch('/api/notes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tmdb_id:lastId,media_type:lastType,note_type:noteType,message})});
+    if(!res.ok) { showToast('Failed to post note'); btn.disabled=false; btn.textContent='Post note'; return; }
+    closeNoteModal(); showToast('Note posted!'); await fetchNotes(lastId,lastType);
+  } catch(e) { console.error('Note error:',e); showToast('Failed to post note'); btn.disabled=false; btn.textContent='Post note'; }
+}
+
+async function fetchNotes(tmdbId,mediaType) {
+  try {
+    const res=await fetch(`/api/notes?tmdb_id=${tmdbId}&media_type=${mediaType}`,{credentials:'include'});
+    if(!res.ok) return;
+    const notes=await res.json();
+    renderNotes(notes||[]);
+  } catch(e) { console.error('Fetch notes error:',e); }
+}
+
+function renderNotes(notes) {
+  const notesList=document.getElementById('notesList');
+  if(!notesList) return;
+  if(!notes||notes.length===0) { notesList.innerHTML='<div style="padding:1rem;text-align:center;color:var(--muted);font-size:0.85rem;">No family notes yet—be the first to add one!</div>'; return; }
+  const typeIcons={'observation':'👁️','approval':'✅','caution':'⚠️'}, typeBgs={'observation':'#dbeafe','approval':'#dcfce7','caution':'#fef3c7'}, typeText={'observation':'#0369a1','approval':'#15803d','caution':'#b45309'};
+  notesList.innerHTML=notes.map(n=>{
+    const d=new Date(n.created_at), now=new Date(), ms=now-d, mins=Math.floor(ms/60000), hrs=Math.floor(ms/3600000), days=Math.floor(ms/86400000);
+    let ts=mins<1?'just now':mins<60?`${mins}m ago`:hrs<24?`${hrs}h ago`:days<7?`${days}d ago`:d.toLocaleDateString();
+    return `<div style="padding:0.85rem;border:1px solid var(--border);border-radius:10px;background:var(--surface2);margin-bottom:0.6rem;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;"><div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1f5c47 0%,#2a6b55 100%);display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700;">${n.user_id.substring(0,2).toUpperCase()}</div><div><div style="font-size:0.8rem;font-weight:600;">Family</div><div style="font-size:0.7rem;color:var(--muted);">${ts}</div></div></div><div style="display:flex;align-items:center;gap:0.3rem;"><span style="background:${typeBgs[n.note_type]||'#e5e7eb'};color:${typeText[n.note_type]||'#666'};padding:0.3rem 0.6rem;border-radius:6px;font-size:0.65rem;font-weight:700;text-transform:uppercase;">${typeIcons[n.note_type]||'•'} ${n.note_type}</span>${n.is_pinned?'<span style="color:var(--accent);font-size:0.9rem;">📌</span>':''}</div></div><p style="font-size:0.85rem;color:var(--text);line-height:1.4;margin-bottom:0.5rem;">${n.message}</p></div>`;
+  }).join('');
+}
+document.getElementById('noteModal')?.addEventListener('click',e=>{ if(e.target===document.getElementById('noteModal')) closeNoteModal(); });
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
