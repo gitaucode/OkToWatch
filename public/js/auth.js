@@ -1,6 +1,7 @@
 /**
  * OkToWatch — /public/js/auth.js
  * Loaded on every page. Initialises Clerk, sets window.CV, renders nav.
+ * v2.1.0 - Secondary nav with dropdown menu
  */
 
 (function () {
