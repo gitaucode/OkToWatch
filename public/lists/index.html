@@ -345,8 +345,8 @@ async function apiDelete(url)     { const h = await _authHeaders(); const r = aw
 
 // ── Auth guard ─────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
-  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
-    window.location.href = '/plans?reason=pro';
+  if (!detail.loggedIn) {
+    window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
     return;
   }
   // Check URL tab param

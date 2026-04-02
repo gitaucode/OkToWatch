@@ -521,14 +521,14 @@ footer a:hover { color: var(--accent); }
     </div>
 
     <!-- Stats -->
-    <!-- Trial upgrade banner — hidden by default, shown for trialing users -->
+    <!-- Beta access banner -->
     <div class="trial-banner" id="trialBanner" style="display:none;">
       <span class="trial-banner-icon">✨</span>
       <div class="trial-banner-text">
-        <strong id="trialBannerTitle">Your free trial is active</strong>
-        <span id="trialBannerSub">Upgrade to keep your watchlists, profiles, and history.</span>
+        <strong id="trialBannerTitle">Free beta access is on</strong>
+        <span id="trialBannerSub">Everything in your dashboard is unlocked during beta.</span>
       </div>
-      <a href="/plans" class="trial-banner-btn">Upgrade →</a>
+      <a href="/plans" class="trial-banner-btn">Learn more</a>
       <button class="trial-banner-close" id="trialBannerClose" aria-label="Dismiss">✕</button>
     </div>
 
@@ -730,8 +730,8 @@ let _authReceived = false;
 
 document.addEventListener("cv:auth", ({ detail }) => {
   _authReceived = true;
-  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
-    window.location.href = "/plans?reason=pro";
+  if (!detail.loggedIn) {
+    window.location.href = "/signin?redirect=/dashboard";
     return;
   }
   loadDashboard(detail.user);
@@ -748,41 +748,13 @@ setTimeout(() => {
 
 // ── Load everything ───────────────────────────────────────────────────────
 function renderTrialBanner() {
-  const meta      = window.CV?.user?.publicMetadata || {};
-  const isPro     = window.CV?.isPro;
-  const isFamily  = window.CV?.isFamily;
-  const status    = meta.subStatus || '';
-  const trialEnd  = meta.trialEnd  || null;
   const banner    = document.getElementById('trialBanner');
   const dismissed = sessionStorage.getItem('trial_banner_dismissed');
 
-  // Hide if paid, cancelled trial, or dismissed this session
-  if ((isPro || isFamily) && status !== 'trialing') { banner.style.display = 'none'; return; }
   if (dismissed) { banner.style.display = 'none'; return; }
 
-  // Calculate days remaining if trialEnd is set
-  let title = '✨ Your free trial is active';
-  let sub   = 'Upgrade to keep your watchlists, profiles, and history after your trial ends.';
-
-  if (trialEnd) {
-    const days = Math.max(0, Math.ceil((new Date(trialEnd) - Date.now()) / 86400000));
-    if (days === 0) {
-      title = '⏰ Your trial ends today';
-      sub   = 'Upgrade now to keep access to all your data.';
-    } else if (days === 1) {
-      title = '⏰ 1 day left in your trial';
-      sub   = 'Upgrade today to avoid losing your watchlists and profiles.';
-    } else if (days <= 3) {
-      title = `⏰ ${days} days left in your trial`;
-      sub   = 'Upgrade soon to keep your watchlists, profiles, and history.';
-    } else {
-      title = `✨ ${days} days left in your free trial`;
-      sub   = 'Enjoying OkToWatch? Upgrade to keep full access after your trial.';
-    }
-  }
-
-  document.getElementById('trialBannerTitle').textContent = title;
-  document.getElementById('trialBannerSub').textContent   = sub;
+  document.getElementById('trialBannerTitle').textContent = 'Free beta access is on';
+  document.getElementById('trialBannerSub').textContent   = 'Everything in your dashboard is unlocked during beta.';
   banner.style.display = 'flex';
 
   // Dismiss button — hides for this session only
@@ -796,10 +768,7 @@ async function loadDashboard(user) {
   // Populate welcome bar immediately from auth data — no waiting
   const name = user?.firstName || user?.displayName || 'there';
   document.getElementById('welcomeName').textContent = 'Welcome back, ' + name;
-  const meta = window.CV?.user?.publicMetadata || {};
-  const isFamily = window.CV?.isFamily;
-  const planLabel = isFamily ? 'Family' : 'Pro';
-  document.getElementById('welcomeSub').textContent = planLabel + ' member · Your family\'s OkToWatch';
+  document.getElementById('welcomeSub').textContent = 'Free beta · Your family\'s OkToWatch';
 
   const avatarEl = document.getElementById('welcomeAvatar');
   if (user?.imageUrl) {

@@ -70,17 +70,12 @@ export async function requireAuth(request, env) {
 }
 
 /**
- * Guard: requires a paid plan (Pro or Family) OR an active trial.
- * Returns 401/403 if not authenticated or not on a paid/trial plan.
+ * Guard: requires a valid session.
+ * Beta is currently free for all signed-in users, so this no longer enforces a paid plan.
  */
 export async function requirePro(request, env) {
   const auth = await getAuth(request, env);
   if (!auth) return { error: json401('Unauthorised') };
-  const meta = auth.user?.public_metadata || {};
-  const isTrial = meta.isTrial === true || meta.subStatus === 'trialing';
-  if (!auth.isPro && !auth.isFamily && !isTrial) {
-    return { error: json403('Subscription required') };
-  }
   return { auth };
 }
 

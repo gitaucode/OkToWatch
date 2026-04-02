@@ -197,7 +197,7 @@ footer a:hover { color: var(--accent); }
   <div class="auth-extras">
     <div class="plans-nudge">
       <span style="font-size:1.1rem;">✨</span>
-      <span>Want the full experience? <strong style="color:var(--accent);">OkToWatch Pro</strong> unlocks watchlists &amp; profiles. <a href="/plans">See plans →</a></span>
+      <span>Everything is free during beta, including watchlists and child profiles. <a href="/plans">See beta access →</a></span>
     </div>
   </div>
 
@@ -233,7 +233,7 @@ footer a:hover { color: var(--accent); }
 
   if (reason === 'pro') {
     const b = document.getElementById('reasonBanner');
-    b.textContent = '🔒 That page is for Pro members. Sign in to continue.';
+    b.textContent = '🔓 That feature is free during beta. Sign in to continue.';
     b.classList.add('visible');
   }
 
@@ -257,8 +257,7 @@ footer a:hover { color: var(--accent); }
     await window.Clerk.load();
 
     if (window.Clerk.user) {
-      const meta = window.Clerk.user.publicMetadata || {};
-      window.location.href = (meta.isPro || meta.isFamily) ? redirect : '/plans';
+      window.location.href = redirect;
       return;
     }
 

@@ -310,8 +310,8 @@ async function apiDelete(url)     { const h = await _authHeaders(); const r = aw
 
 // ── Auth guard ─────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
-  if (!detail.loggedIn || (!detail.isPro && !detail.isFamily)) {
-    window.location.href = '/plans?reason=pro';
+  if (!detail.loggedIn) {
+    window.location.href = '/signin?redirect=/profiles';
     return;
   }
   loadProfiles();

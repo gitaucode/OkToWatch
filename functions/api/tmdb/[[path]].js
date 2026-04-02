@@ -16,7 +16,7 @@ export async function onRequestGet(context) {
 
   const res = await fetch(tmdbUrl, {
     headers: {
-      'Authorization': `Bearer ${env.TMDB_API_KEY}`,
+      'Authorization': `Bearer ${env.TMDB_TOKEN}`,
       'Accept': 'application/json',
     },
   });

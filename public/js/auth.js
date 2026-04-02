@@ -312,14 +312,11 @@
       window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname);
     }
   };
-  // requirePro: must be on any paid plan (Pro or Family)
+  // requirePro: beta is free, so any signed-in user can access these surfaces for now.
   window.requirePro = function () {
     if (!window.CV?.loggedIn) {
       window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname);
       return;
-    }
-    if (!window.CV?.isPro && !window.CV?.isFamily) {
-      window.location.href = '/plans?reason=pro';
     }
   };
 

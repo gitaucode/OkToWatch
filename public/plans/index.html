@@ -211,17 +211,17 @@ footer a:hover { color: var(--accent); }
   <!-- Current plan banner (shown when already subscribed) -->
   <div class="current-banner pro-banner" id="proCurrentBanner">
     <h2>✅ You're on Pro</h2>
-    <p>You already have full access. Manage your subscription in <a href="/settings">Settings</a>.</p>
+    <p>Everything is currently unlocked while OkToWatch is in beta.</p>
   </div>
   <div class="current-banner family-banner" id="familyCurrentBanner">
     <h2>👨‍👩‍👧‍👦 You're on Family</h2>
-    <p>You have full Family access. Manage your subscription in <a href="/settings">Settings</a>.</p>
+    <p>Paid plans will return later, with advance notice for early users.</p>
   </div>
 
   <div class="hero">
-    <div class="hero-eyebrow">✨ Simple pricing</div>
+    <div class="hero-eyebrow">🎉 Free during beta</div>
     <h1>Know what your family<br>is watching</h1>
-    <p>Search any title free — no account needed. Subscribe for child profiles, saved lists, synced history and more.</p>
+    <p>Search any title free, and create an account for full beta access. No card needed.</p>
   </div>
 
   <!-- Billing toggle -->
@@ -238,9 +238,9 @@ footer a:hover { color: var(--accent); }
     <div class="plan-card pro">
       <div class="popular-badge">Most popular</div>
       <div class="plan-name">Pro</div>
-      <div id="proTrialBadge" class="trial-badge">🎉 30-day free trial</div>
+      <div id="proTrialBadge" class="trial-badge">🎉 Free beta access</div>
       <div class="plan-price" id="proPrice"><sup>$</sup>6.99<span id="proPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="proAlt">Free for 30 days · then $6.99/mo · cancel anytime</div>
+      <div class="plan-price-alt" id="proAlt">Unlocked during beta · no card needed</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="feat-icon">✅</span> Unlimited searches (no account needed too)</li>
@@ -252,15 +252,15 @@ footer a:hover { color: var(--accent); }
         <li><span class="feat-icon">✅</span> Compare mode</li>
         <li><span class="feat-icon">✅</span> Weekly Safe Picks digest</li>
       </ul>
-      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Start free trial</button>
+      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Join free beta</button>
     </div>
 
     <!-- Family -->
     <div class="plan-card family">
       <div class="plan-name">Family</div>
-      <div id="familyTrialBadge" class="trial-badge">🎉 30-day free trial</div>
+      <div id="familyTrialBadge" class="trial-badge">🎉 Free beta access</div>
       <div class="plan-price" id="familyPrice"><sup>$</sup>11.99<span id="familyPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="familyAlt">Free for 30 days · then $11.99/mo · cancel anytime</div>
+      <div class="plan-price-alt" id="familyAlt">Unlocked during beta · no card needed</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="feat-icon">✅</span> Everything in Pro</li>
@@ -271,7 +271,7 @@ footer a:hover { color: var(--accent); }
         <li><span class="feat-icon">✅</span> Family dashboard & digest</li>
         <li><span class="feat-icon">✅</span> Priority support</li>
       </ul>
-      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Start free trial</button>
+      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Join free beta</button>
     </div>
 
   </div>
@@ -308,31 +308,31 @@ footer a:hover { color: var(--accent); }
         Do I need an account to search?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">No — searching is completely free and requires no account. Just visit the homepage and search any title. A subscription unlocks saved lists, child profiles, synced history, and more.</div>
+      <div class="faq-a">No — searching is completely free and requires no account. During beta, signed-in users also get saved lists, child profiles, synced history, and more at no cost.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        How does the free trial work?
+        What does beta access include?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">Monthly plans come with a 30-day free trial. You won't be charged until the trial ends. Cancel anytime before then and you won't pay a thing.</div>
+      <div class="faq-a">During beta, all core features are unlocked for signed-in users, including watchlists, child profiles, synced history, and weekly picks. No payment details are required.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        What's the benefit of the yearly plan?
+        When will paid plans return?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">Yearly plans are charged upfront at a discounted rate and include one extra month free — so you get 13 months for the price of 12. There's no free trial on yearly plans, but you can cancel for a prorated refund within 14 days.</div>
+      <div class="faq-a">Pro and Family plans will return after beta. We'll give early users advance notice before anything changes.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Can I cancel anytime?
+        Do I need a credit card during beta?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">Yes. Cancel anytime from your Settings page. On a monthly plan, you keep access until the end of your billing period. On a yearly plan, you can request a prorated refund within 14 days.</div>
+      <div class="faq-a">No. Beta access is free and does not require payment details.</div>
     </div>
 
     <div class="faq-item">
@@ -424,7 +424,7 @@ document.getElementById('billingToggle').addEventListener('click', () => {
 
 // ── Upgrade handler (Paddle stub) ─────────────────────────────────────────
 function handleUpgrade(plan) {
-  showToast('Payments coming soon — check back shortly!');
+  showToast('Beta access is free right now. Create an account to get started.');
 }
 
 // ── Toast ──────────────────────────────────────────────────────────────────
@@ -442,9 +442,39 @@ function toggleFaq(btn) {
   if (!isOpen) item.classList.add('open');
 }
 
+function applyBetaMode(loggedIn) {
+  document.querySelector('.billing-toggle').style.display = 'none';
+  document.getElementById('proPrice').innerHTML = '<span style="font-size:1.6rem;font-weight:700;color:var(--accent)">Free</span>';
+  document.getElementById('familyPrice').innerHTML = '<span style="font-size:1.6rem;font-weight:700;color:#7b5ea7">Free</span>';
+  document.getElementById('proTrialBadge').style.display = 'none';
+  document.getElementById('familyTrialBadge').style.display = 'none';
+  document.getElementById('proAlt').textContent = 'Unlocked during beta · no card needed';
+  document.getElementById('familyAlt').textContent = 'Unlocked during beta · no card needed';
+
+  const proCta = document.getElementById('proCta');
+  const famCta = document.getElementById('familyCta');
+  if (loggedIn) {
+    proCta.textContent = "You're in ✓";
+    proCta.className = 'plan-cta plan-cta--current';
+    proCta.onclick = null;
+    famCta.textContent = "You're in ✓";
+    famCta.className = 'plan-cta plan-cta--current-family';
+    famCta.onclick = null;
+  } else {
+    proCta.textContent = 'Sign up free →';
+    proCta.onclick = () => window.location.href = '/signup';
+    famCta.textContent = 'Sign up free →';
+    famCta.onclick = () => window.location.href = '/signup';
+  }
+}
+
 // ── Auth-aware CTAs ────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   const { loggedIn, isPro, isFamily } = detail;
+  if (!window.BILLING_ENABLED) {
+    applyBetaMode(loggedIn);
+    return;
+  }
   const proCta    = document.getElementById('proCta');
   const famCta    = document.getElementById('familyCta');
 

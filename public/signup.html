@@ -175,12 +175,12 @@ footer a:hover { color: var(--accent); }
       <span class="auth-brand-text">Ok<strong>ToWatch</strong></span>
     </div>
     <h1 class="auth-heading">Create your account</h1>
-    <p class="auth-sub">Free to search. Upgrade to Pro for the full family suite.</p>
+    <p class="auth-sub">Create an account for full beta access. No card needed.</p>
     <div class="feature-pills">
       <span class="pill">🔍 Unlimited searches</span>
       <span class="pill">🤖 Full AI breakdown</span>
       <span class="pill">🔗 Share reports</span>
-      <span class="pill">✨ Pro available</span>
+      <span class="pill">🎉 Free beta access</span>
     </div>
   </div>
 
@@ -205,7 +205,7 @@ footer a:hover { color: var(--accent); }
   <div class="auth-extras">
     <div class="pro-nudge">
       <span style="font-size:1.1rem;">🌟</span>
-      <span>Want watchlists, child profiles &amp; more? <a href="/plans">See Pro plans →</a></span>
+      <span>Watchlists, child profiles, and history are all included during beta. <a href="/plans">See beta access →</a></span>
     </div>
   </div>
 
@@ -255,12 +255,12 @@ footer a:hover { color: var(--accent); }
     await window.Clerk.load();
 
     if (window.Clerk.user) {
-      window.location.href = '/plans';
+      window.location.href = '/dashboard';
       return;
     }
 
     window.Clerk.mountSignUp(document.getElementById('clerk-signup'), {
-      afterSignUpUrl: '/plans',
+      afterSignUpUrl: '/dashboard',
       signInUrl: '/signin',
       appearance: {
         variables: {
