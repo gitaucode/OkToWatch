@@ -274,7 +274,7 @@ footer a:hover { color: var(--accent); }
 <script src="/js/auth.js"></script>
 <script>
 const API = location.hostname === 'localhost' ? 'http://localhost:8787' : '';
-const TMDB_LOGO = 'https://image.tmdb.org/t/p/original';
+const TMDB_BASE = 'https://image.tmdb.org/t/p';
 
 const GENRES = {
   movie: {
@@ -370,7 +370,7 @@ async function search() {
 function renderResults(results) {
   const grid = document.getElementById('resultsGrid');
   grid.innerHTML = results.map(item => {
-    const poster = item.poster_path ? `<img src="${TMDB_LOGO}/w342${item.poster_path}" alt="${item.title || item.name}" loading="lazy">` : '🎬';
+    const poster = item.poster_path ? `<img src="${TMDB_BASE}/w342${item.poster_path}" alt="${item.title || item.name}" loading="lazy">` : '🎬';
     const title = item.title || item.name;
     const year = (item.release_date || item.first_air_date || '').slice(0, 4);
     const verdict = item.cached_verdict ? `Safe for ${currentAge}+` : 'Not analyzed';
