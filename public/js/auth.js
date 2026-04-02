@@ -27,9 +27,11 @@
     { label: 'Lists',     href: '/lists' },
     { label: 'Discover',  href: '/discover' },
     { label: 'History',   href: '/history' },
+  ];
+  const NAV_SECONDARY = [
     { label: 'How it works', href: '/how-it-works' },
-    { label: 'About',     href: '/about' },
-    { label: 'Contact',   href: '/contact' },
+    { label: 'About',        href: '/about' },
+    { label: 'Contact',      href: '/contact' },
   ];
 
   // ── Render nav ────────────────────────────────────────────────────────────
@@ -44,6 +46,23 @@
       const active = currentPath === l.href.replace(/^\//, '');
       return `<a href="${l.href}" class="nav-link${active ? ' active' : ''}">${l.label}</a>`;
     }).join('');
+
+    // Add secondary dropdown for logged-in users
+    let secondaryHTML = '';
+    if (loggedIn) {
+      const secondaryLinks = NAV_SECONDARY.map(l => 
+        `<a href="${l.href}" class="nav-secondary-link">${l.label}</a>`
+      ).join('');
+      secondaryHTML = `
+        <div class="nav-secondary-wrap">
+          <button class="nav-secondary-btn" id="navSecondaryBtn" aria-label="More options">
+            <span>⋯</span>
+          </button>
+          <div class="nav-secondary-menu" id="navSecondaryMenu">
+            ${secondaryLinks}
+          </div>
+        </div>`;
+    }
 
     let rightHTML = '';
     if (!loggedIn) {
@@ -79,7 +98,7 @@
       </div>
       <span class="cv-nav-logo-text">Ok<strong>ToWatch</strong><span class="cv-nav-beta-badge">Beta</span></span>
     </a>
-    <div class="cv-nav-links" id="cvNavLinks">${linkHTML}</div>
+    <div class="cv-nav-links" id="cvNavLinks">${linkHTML}${secondaryHTML}</div>
     <div class="cv-nav-right" id="cvNavRight">${rightHTML}</div>
     <button class="cv-nav-hamburger" id="cvNavHamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -244,6 +263,29 @@
   }
   .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text, #1a2420); }
   .nav-link.active { background: var(--accent, #2a6b55); color: white; font-weight: 600; }
+  .nav-secondary-wrap {
+    position: relative; display: flex; align-items: center;
+  }
+  .nav-secondary-btn {
+    background: none; border: none; font-size: 1.2rem;
+    color: var(--text2, #3d4f49); cursor: pointer;
+    padding: 0.35rem 0.5rem; border-radius: 100px;
+    transition: all 0.15s;
+  }
+  .nav-secondary-btn:hover { color: var(--text, #1a2420); }
+  .nav-secondary-menu {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    border: 1px solid rgba(0,0,0,0.07); min-width: 160px; overflow: hidden;
+    animation: dropIn 0.18s ease;
+  }
+  .nav-secondary-menu.open { display: block; }
+  .nav-secondary-link {
+    display: block; padding: 0.7rem 1rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem; color: var(--text, #1a2420); text-decoration: none;
+    transition: background 0.12s; white-space: nowrap;
+  }
+  .nav-secondary-link:hover { background: rgba(42,107,85,0.08); }
   .cv-nav-right {
     display: flex; align-items: center; gap: 0.5rem;
     flex-shrink: 0; position: relative;
@@ -391,6 +433,30 @@
         dropdown.classList.toggle('open');
       });
       document.addEventListener('click', () => dropdown.classList.remove('open'));
+    }
+
+    // Secondary nav dropdown
+    const secondaryBtn = document.getElementById('navSecondaryBtn');
+    const secondaryMenu = document.getElementById('navSecondaryMenu');
+    if (secondaryBtn && secondaryMenu) {
+      secondaryBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        secondaryMenu.classList.toggle('open');
+      });
+      // Prevent menu from closing when clicking inside it
+      secondaryMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      // Close menu when a link is clicked
+      secondaryMenu.querySelectorAll('.nav-secondary-link').forEach(link => {
+        link.addEventListener('click', () => secondaryMenu.classList.remove('open'));
+      });
+      // Close on click outside
+      document.addEventListener('click', () => secondaryMenu.classList.remove('open'));
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') secondaryMenu.classList.remove('open');
+      });
     }
 
     // Sign out buttons
