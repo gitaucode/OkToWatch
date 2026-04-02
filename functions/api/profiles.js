@@ -1,12 +1,35 @@
 /**
  * /api/profiles
  * GET    — list user's child profiles
- * POST   — create a profile (max 5 enforced)
+ * POST   — create a profile (tier-based limit: Pro=2, Family=5)
  * PUT    — update a profile (?id=)
  * DELETE — delete a profile + cascade nullify history/list entries (?id=)
  */
 
 import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
+
+/**
+ * Get user's subscription tier
+ */
+async function getUserTier(userId, env) {
+  if (!env.DB) return 'free';
+  try {
+    const sub = await env.DB
+      .prepare(`SELECT tier, status, renews_at FROM subscriptions WHERE user_id = ? LIMIT 1`)
+      .bind(userId)
+      .first();
+    
+    if (!sub || !['active', 'trial'].includes(sub.status)) return 'free';
+    
+    const renewalDate = new Date(sub.renews_at);
+    if (new Date() >= renewalDate) return 'free';
+    
+    return sub.tier;
+  } catch (err) {
+    console.error('Error getting tier:', err);
+    return 'free';
+  }
+}
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -26,14 +49,26 @@ export async function onRequestPost(context) {
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
 
-  // Enforce max 5 profiles
+  // Get user tier and enforce profile limits
+  const tier = await getUserTier(auth.userId, env);
+  const maxProfiles = tier === 'family' ? 5 : tier === 'pro' ? 2 : 0;
+
+  if (maxProfiles === 0) {
+    return jsonResponse({ error: 'Child profiles require a Pro or Family subscription' }, 403);
+  }
+
   const { results: existing } = await env.DB
     .prepare('SELECT id FROM profiles WHERE user_id = ?')
     .bind(auth.userId)
     .all();
 
-  if ((existing?.length ?? 0) >= 5) {
-    return jsonResponse({ error: 'Maximum 5 profiles allowed' }, 403);
+  const profileCount = existing?.length ?? 0;
+  if (profileCount >= maxProfiles) {
+    return jsonResponse({ 
+      error: `Maximum ${maxProfiles} profiles allowed for ${tier.toUpperCase()} plan`,
+      currentCount: profileCount,
+      maxAllowed: maxProfiles 
+    }, 403);
   }
 
   let body;
