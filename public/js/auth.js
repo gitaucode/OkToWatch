@@ -25,6 +25,7 @@
   const NAV_LOGGED_IN = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Lists',     href: '/lists' },
+    { label: 'Discover',  href: '/discover' },
     { label: 'History',   href: '/history' },
     { label: 'About',     href: '/about' },
     { label: 'Contact',   href: '/contact' },
