@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<title>OkToWatch — See what's in it before they watch</title>
+<title>Search — OkToWatch</title>
 <meta name="description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
@@ -497,64 +497,7 @@ footer a:hover { color: var(--accent); }
 </head>
 <body data-page="home">
 
-<!-- Splash screen -->
-<div id="splashScreen" aria-hidden="true">
-  <div class="splash-logo-wrap" id="splashLogoWrap">
-    <div class="splash-mark" id="splashMark">
-      <svg width="32" height="32" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="3" fill="white"/>
-        <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
-      </svg>
-    </div>
-    <div class="splash-wordmark">Ok<span>ToWatch</span></div>
-  </div>
-  <div class="splash-headline" id="splashHeadline">
-    <h2>See what's in it<br><em>before they watch.</em></h2>
-    <p>Instant content breakdowns for any movie or TV show — built for parents who want the full picture.</p>
-  </div>
-  <div class="splash-dots" id="splashDots">
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#c0392b" id="sd0"></div><div class="splash-dot-label">Sex</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#c0392b" id="sd1"></div><div class="splash-dot-label">Violence</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd2"></div><div class="splash-dot-label">Language</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#2a7d52" id="sd3"></div><div class="splash-dot-label">Bullying</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd4"></div><div class="splash-dot-label">Drugs</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b85c1a" id="sd5"></div><div class="splash-dot-label">Horror</div></div>
-    <div class="splash-cat-dot"><div class="splash-dot-circle" style="background:#b07a10" id="sd6"></div><div class="splash-dot-label">Themes</div></div>
-  </div>
-  <div class="splash-cta" id="splashCta">
-    <button class="splash-btn" onclick="splashNext()">Get started →</button>
-    <button class="splash-skip" onclick="splashSkipAll()">Skip setup — go straight to search</button>
-  </div>
-</div>
 
-<!-- Onboarding sheet -->
-<div id="onboardingOverlay">
-  <div class="onboarding-card">
-    <div class="ob-handle"></div>
-    <div class="ob-header">
-      <div class="ob-eyebrow">Family setup</div>
-      <h2>Set up your family view</h2>
-      <p>Pick a starting preset, then choose the safety concerns and topics you want called out first in each review. You can change this any time.</p>
-      <div class="ob-preview-row">
-        <span class="ob-preview-chip">Fast to change</span>
-        <span class="ob-preview-chip">Search-first</span>
-        <span class="ob-preview-chip">No wrong answer</span>
-      </div>
-    </div>
-    <div class="ob-step active" id="obStep0">
-      <div class="ob-step-label">Choose a starting point</div>
-      <div class="ob-presets" id="obPresetList"></div>
-      <div class="ob-step-label" style="margin-top:0.2rem;">Topics to highlight first</div>
-      <div class="ob-helper" id="obHelper"></div>
-      <div class="ob-categories" id="obCatList"></div>
-      <div class="ob-summary-card" id="obSummary"></div>
-    </div>
-    <div class="ob-footer">
-      <button class="ob-btn-primary" id="obNextBtn" onclick="obFinish()">Save setup →</button>
-      <button class="ob-btn-skip" onclick="obSkip()">Skip — use defaults</button>
-    </div>
-  </div>
-</div>
 
 <!-- Preferences panel -->
 <div id="prefsPanel" onclick="closePrefsPanelOutside(event)">
@@ -580,43 +523,18 @@ footer a:hover { color: var(--accent); }
 
 <div id="nav-root"></div>
 
-<div id="navCollapsed">
-  <button class="btn-back" onclick="goHome()">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="14" y1="8" x2="2" y2="8"/><polyline points="7 3 2 8 7 13"/></svg>
-    Back
-  </button>
-  <div class="collapsed-search-wrap">
-    <div class="suggestions-wrap">
-      <div class="collapsed-search-box">
-        <input type="text" id="collapsedInput" placeholder="Search another title..." autocomplete="off"/>
-        <button id="collapsedBtn" onclick="doCollapsedSearch()">Check →</button>
-      </div>
-      <div class="suggestions" id="collapsedSuggestions"></div>
-    </div>
-  </div>
-  <button class="cv-nav-toggle" onclick="cvOpenMenu()" aria-label="Menu" style="flex-shrink:0;display:flex;">
-    <span></span><span></span><span></span>
-  </button>
-</div>
 
-<div id="heroSection">
-  <div class="hero">
-    <h1>See what's in it <span>before they watch.</span></h1>
-    <p class="hero-sub">Instant content breakdowns for any movie or TV show. Clear, neutral, built for parents.</p>
-    <div class="search-wrap">
+
+<div id="heroSection" style="padding: 2rem 1.5rem">
+  <div class="hero" style="max-width: 500px; margin: 0 auto; text-align: left;">
+    <h1 style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 1; animation: none;">🔍 Search any title</h1>
+    <div class="search-wrap" style="opacity: 1; animation: none; margin: 0;">
       <div class="suggestions-wrap">
-        <div class="search-box">
+        <div class="search-box" style="border-color: var(--border);">
           <input type="text" id="searchInput" placeholder="Search any movie or TV show..." autocomplete="off"/>
           <button class="search-btn" id="searchBtn" onclick="doSearch()">Check →</button>
         </div>
         <div class="suggestions" id="suggestions"></div>
-      </div>
-
-      <div class="quick-row">
-        <span class="quick-label">Try:</span>
-        <span class="quick-chip" onclick="quickSearch('Deadpool & Wolverine')">Deadpool & Wolverine</span>
-        <span class="quick-chip" onclick="quickSearch('The Notebook')">The Notebook</span>
-        <span class="quick-chip" onclick="quickSearch('Turning Red')">Turning Red</span>
       </div>
     </div>
   </div>
@@ -754,19 +672,7 @@ footer a:hover { color: var(--accent); }
   <div id="compareResultWrap" style="display:none"></div>
 </div>
 
-<div class="features-wrap" id="featuresWrap">
-  <div class="features-card">
-    <div class="card-heading">Everything a parent actually needs.</div>
-    <div class="features-grid">
-      <div class="feat"><div class="feat-title">Clear Breakdown</div><div class="feat-desc">Six categories rated none to strong.</div></div>
-      <div class="feat"><div class="feat-title">Age-Specific</div><div class="feat-desc">Enter your child's exact age for a tailored verdict.</div></div>
-      <div class="feat"><div class="feat-title">Where to Watch</div><div class="feat-desc">Streaming, rent and buy options in one place.</div></div>
-      <div class="feat"><div class="feat-title">Easy Sharing</div><div class="feat-desc">Share a link, image card, or WhatsApp message.</div></div>
-      <div class="feat"><div class="feat-title">Plot Summary</div><div class="feat-desc">Plain-English description of what it's about.</div></div>
-      <div class="feat"><div class="feat-title">AI-Powered</div><div class="feat-desc">Specific, confident analysis — not vague hedging.</div></div>
-    </div>
-  </div>
-</div>
+
 
 <footer id="footerEl">
   <a onclick="goHome()" style="cursor:pointer;display:flex;align-items:center;gap:0.45rem;text-decoration:none;">
@@ -1081,8 +987,12 @@ function getEffectiveRecent() {
 
 // Listen for auth — kick off D1 sync as soon as we know the user is Pro.
 document.addEventListener('cv:auth', ({ detail }) => {
+  if (!detail.loggedIn) {
+    window.location.href = '/signin?redirect=/search';
+    return;
+  }
   renderRecentSearchesCarousel();
-  if (detail.loggedIn && (detail.isPro || detail.isFamily)) {
+  if (detail.isPro || detail.isFamily) {
     syncD1Cache();
   }
 });
@@ -1653,7 +1563,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   const paramId=params.get('id'), paramType=params.get('type'), paramQ=params.get('q');
   if(paramId&&paramType){ showResultState({showNav:false}); runAnalysis(parseInt(paramId),paramType); }
   else if(paramQ){ heroInput.value=paramQ; doSearch(); }
-  else { initOnboarding(); }
+  else { setTimeout(() => { document.getElementById('searchInput')?.focus(); }, 100); }
 });
 </script>
 <script>

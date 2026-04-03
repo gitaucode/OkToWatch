@@ -41,6 +41,7 @@
   ];
   const NAV_LOGGED_IN = [
     { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Search',    href: '/search' },
     { label: 'Lists',     href: '/lists' },
     { label: 'Discover',  href: '/discover' },
     { label: 'History',   href: '/history' },

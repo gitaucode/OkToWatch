@@ -34,6 +34,51 @@ export async function onRequestPost(context) {
 
   if (!title) return jsonError('title is required', 400);
 
+  // ── 0. Guest Rate Limiting ───────────────────────────────────────────────
+  const authHeader = request.headers.get('Authorization');
+  const isGuest = !authHeader || !authHeader.startsWith('Bearer ') || authHeader.length < 20;
+
+  if (isGuest && env.DB) {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (ip !== 'unknown') {
+      const now = Date.now();
+      const WINDOW_MS = 86400000; // 24 hours
+      let overLimit = false;
+      let resetsAt = now + WINDOW_MS;
+
+      try {
+        const resetThreshold = now - WINDOW_MS;
+        const row = await env.DB.prepare('SELECT count, window_start FROM guest_searches WHERE ip = ?').bind(ip).first();
+
+        if (row && row.window_start > resetThreshold) {
+          // Still in the current active window
+          if (row.count >= 3) {
+            overLimit = true;
+            resetsAt = row.window_start + WINDOW_MS;
+          } else {
+            // Under limit: increment
+            env.DB.prepare('UPDATE guest_searches SET count = count + 1 WHERE ip = ?').bind(ip).run().catch(e => console.error('Limit update err:', e));
+          }
+        } else {
+          // Expired window or no previous record: reset to 1
+          env.DB.prepare('INSERT INTO guest_searches (ip, count, window_start) VALUES (?, 1, ?) ON CONFLICT(ip) DO UPDATE SET count = 1, window_start = excluded.window_start')
+            .bind(ip, now)
+            .run()
+            .catch(e => console.error('Limit insert err:', e));
+        }
+
+        if (overLimit) {
+          return new Response(JSON.stringify({ error: 'guest_limit', resetsAt }), {
+            status: 429,
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+      } catch (e) {
+        console.error('Rate limit error:', e);
+      }
+    }
+  }
+
   // ── 1. Cache lookup ──────────────────────────────────────────────────────
   if (env.DB && tmdb_id && media_type) {
     const cacheKey = buildCacheKey(tmdb_id, media_type, season);

@@ -189,3 +189,14 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_dodo ON subscriptions(dodo_order_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status, renews_at);
 
+
+--  Guest search rate limit (unauthenticated visitors) 
+-- Tracks daily search counts per IP for guests (not logged in).
+-- window_start is a Unix ms timestamp of the first search in the current 24h window.
+-- Resets automatically when now - window_start >= 86400000 ms.
+CREATE TABLE IF NOT EXISTS guest_searches (
+  ip           TEXT PRIMARY KEY,
+  count        INTEGER NOT NULL DEFAULT 0,
+  window_start INTEGER NOT NULL  -- Unix ms of first search in current window
+);
+CREATE INDEX IF NOT EXISTS idx_guest_searches ON guest_searches(window_start);
