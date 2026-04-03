@@ -961,6 +961,14 @@ async function loadTrending(type = 'movie') {
   _trendType = type;
   const grid = document.getElementById('trendingGrid');
 
+  const activeId = getActiveProfile();
+  const profile = _profiles.find(p => p.id === activeId);
+
+  const headerLabel = document.querySelector('.trending-header .section-label');
+  if (headerLabel) {
+    headerLabel.innerHTML = profile ? `Top Picks for ${profile.name} ${profile.emoji}` : 'Trending this week';
+  }
+
   // Skeleton
   grid.innerHTML = Array(4).fill(`
     <div class="trend-skel">
@@ -972,13 +980,28 @@ async function loadTrending(type = 'movie') {
     </div>`).join('');
 
   try {
+    let apiUrl = `/api/tmdb/trending/${type}/week`;
+    if (profile) {
+      let certObj = '';
+      if (type === 'movie') {
+        if (profile.age <= 7) certObj = '&certification_country=US&certification.lte=G&with_genres=10751,16';
+        else if (profile.age <= 11) certObj = '&certification_country=US&certification.lte=PG&with_genres=10751';
+        else if (profile.age <= 14) certObj = '&certification_country=US&certification.lte=PG-13';
+      } else {
+        if (profile.age <= 7) certObj = '&with_genres=10762,16';
+        else if (profile.age <= 11) certObj = '&with_genres=10762';
+        else if (profile.age <= 14) certObj = '&with_genres=10759';
+      }
+      apiUrl = `/api/tmdb/discover/${type}?include_adult=false&sort_by=popularity.desc&vote_count.gte=50${certObj}`;
+    }
+
     const [trendRes, cacheRes] = await Promise.all([
-      fetch(`/api/tmdb/trending/${type}/week`),
+      fetch(apiUrl),
       fetch(`/api/tmdb/cache-ids?type=${type}`).catch(() => null),
     ]);
 
     const data = await trendRes.json();
-    const items = (data.results || []).slice(0, 8);
+    const items = (data.results || []).slice(0, 4);
 
     // Build set of cached tmdb IDs
     if (cacheRes?.ok) {
@@ -1107,7 +1130,10 @@ function setActive(id) {
   sessionStorage.setItem('cv_active_profile', id);
   renderProfiles();
   const p = _profiles.find(p => p.id === id);
-  if (p) showToast('Switched to ' + p.name);
+  if (p) {
+    showToast('Switched to ' + p.name);
+    loadTrending(_trendType);
+  }
 }
 
 // ── Render recent searches ────────────────────────────────────────────────
