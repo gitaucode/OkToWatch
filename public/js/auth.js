@@ -537,19 +537,27 @@
 
     async function performSearch(query) {
       try {
-        const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`/api/tmdb/search/multi?query=${encodeURIComponent(query)}`);
         const data = await res.json();
         
-        if (data.results && data.results.length > 0) {
-          searchSuggestions.innerHTML = data.results.slice(0, 8).map(r => `
-            <button class="cv-search-item" onclick="cvOpenTitle('${r.tmdb_id}','${r.media_type}')">
-              <div class="cv-search-item-poster">${r.poster ? `<img src="https://image.tmdb.org/t/p/w88${r.poster}" alt="">` : '🎬'}</div>
+        let results = data.results || [];
+        // Filter out people, keep only movies/tv
+        results = results.filter(r => r.media_type === 'movie' || r.media_type === 'tv');
+
+        if (results.length > 0) {
+          searchSuggestions.innerHTML = results.slice(0, 8).map(r => {
+            const title = r.title || r.name;
+            const dateStr = r.release_date || r.first_air_date || '';
+            const year = dateStr ? dateStr.substring(0, 4) : '';
+            return `
+            <button class="cv-search-item" onclick="cvOpenTitle('${r.id}','${r.media_type}')">
+              <div class="cv-search-item-poster">${r.poster_path ? `<img src="https://image.tmdb.org/t/p/w88${r.poster_path}" alt="">` : '🎬'}</div>
               <div class="cv-search-item-info">
-                <div class="cv-search-item-title">${r.title}</div>
-                <div class="cv-search-item-meta">${r.year || ''} · ${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+                <div class="cv-search-item-title">${title}</div>
+                <div class="cv-search-item-meta">${year}${year ? ' · ' : ''}${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
               </div>
             </button>
-          `).join('');
+          `}).join('');
         } else {
           searchSuggestions.innerHTML = '<div style="padding: 1rem; color: var(--muted); font-size: 0.9rem;">No results found</div>';
         }
