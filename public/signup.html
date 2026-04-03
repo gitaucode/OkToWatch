@@ -252,14 +252,25 @@ footer a:hover { color: var(--accent); }
 
   async function triggerCheckout(plan, billingCycle, attempts = 0) {
     try {
-      const token = localStorage.getItem('clerk_session_token');
-      if (!token) {
-        // Retry up to 15 times (7.5 seconds total)
+      // Use Clerk's session API to get token reliably (works with OAuth too)
+      let token;
+      try {
+        token = await window.Clerk.session?.getToken();
+      } catch (e) {
+        // Retry if session not ready
         if (attempts < 15) {
           setTimeout(() => triggerCheckout(plan, billingCycle, attempts + 1), 500);
           return;
         }
-        // Timeout - just go to dashboard
+        window.location.href = '/dashboard';
+        return;
+      }
+
+      if (!token) {
+        if (attempts < 15) {
+          setTimeout(() => triggerCheckout(plan, billingCycle, attempts + 1), 500);
+          return;
+        }
         window.location.href = '/dashboard';
         return;
       }
