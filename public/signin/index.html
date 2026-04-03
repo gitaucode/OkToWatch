@@ -257,13 +257,21 @@ footer a:hover { color: var(--accent); }
     clearTimeout(slowTimer);
     await window.Clerk.load();
 
+    // If already signed in, redirect based on plan params or to dashboard
     if (window.Clerk.user) {
-      window.location.href = redirect;
+      if (params.get('plan')) {
+        // User has plan selected — go to plans page to trigger checkout
+        const plan = params.get('plan');
+        const cycle = params.get('cycle') || 'monthly';
+        window.location.href = `/plans?autoCheckout=${plan}&cycle=${cycle}`;
+      } else {
+        window.location.href = redirect || '/dashboard';
+      }
       return;
     }
 
     window.Clerk.mountSignIn(document.getElementById('clerk-signin'), {
-      afterSignInUrl: redirect,
+      afterSignInUrl: redirect || '/dashboard',
       signUpUrl: '/signup',
       appearance: {
         variables: {

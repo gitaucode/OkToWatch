@@ -277,6 +277,18 @@ body {
   <!-- Real content -->
   <div class="settings-content" id="settingsContent">
 
+    <!-- UPGRADE NUDGE (free users only) -->
+    <div class="section-card" id="upgradeNudge" style="display:none;background:linear-gradient(135deg,#e4efe9 0%,#f0f7f4 100%);border:1.5px solid rgba(42,107,85,0.15);">
+      <div class="section-body" style="text-align:center;">
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;">🎉 Unlock Pro Features</div>
+        <p style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Save your favorite shows, create child profiles, and get family sharing. Start your 14-day free trial today.</p>
+        <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+          <a href="/plans" class="btn btn-md btn-solid" style="text-decoration:none;">View Plans</a>
+          <button class="btn btn-md btn-ghost" onclick="dismissUpgradeNudge()">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 1. Your account -->
     <div class="section-card">
       <div class="section-head">
@@ -536,14 +548,26 @@ async function loadSettings(user) {
   _digest    = savedDigest;
   _streaming = new Set(savedStreaming);
 
+  // Load subscription status
+  let subscription = null;
+  try {
+    subscription = await apiGet('/api/subscription-status');
+  } catch(e) {
+    console.error('Failed to load subscription:', e);
+  }
+
   // Render everything
   renderProfiles();
   renderPrefGrid();
   renderStreamingGrid();
   renderDigestToggle();
 
-  document.getElementById('planPill').textContent = 'Free';
-  populateBilling();
+  // Populate billing info
+  populateBilling(subscription);
+
+  // Show/hide upgrade nudge based on tier
+  const isFreeTier = !subscription || subscription.tier === 'free';
+  document.getElementById('upgradeNudge').style.display = isFreeTier ? 'block' : 'none';
 
   // Show content, hide skeleton
   document.getElementById('settingsSkeleton').style.display = 'none';
@@ -689,10 +713,39 @@ function toggleStream(s) {
 }
 
 // ── Billing ───────────────────────────────────────────────────────────────
-function populateBilling() {
-  document.getElementById('billingPlan').textContent = 'Free';
-  document.getElementById('billingStatus').textContent = 'Unlocked';
-  document.getElementById('billingCycle').textContent = 'Upgrade to Pro or Family for advanced features.';
+function populateBilling(subscription) {
+  if (!subscription) subscription = { tier: 'free', status: 'free' };
+
+  const tier = subscription.tier || 'free';
+  const status = subscription.status || 'free';
+  const tierDisplay = tier === 'pro' ? '💎 Pro' : tier === 'family' ? '👨‍👩‍👧‍👦 Family' : 'Free';
+  
+  document.getElementById('planPill').textContent = tierDisplay;
+  document.getElementById('billingPlan').textContent = tierDisplay;
+
+  if (tier === 'free') {
+    document.getElementById('billingStatus').textContent = 'No subscription';
+    document.getElementById('billingCycle').innerHTML = '<a href="/plans" style="color:var(--accent);text-decoration:none;font-weight:600;">Upgrade to Pro or Family →</a>';
+  } else if (status === 'trial') {
+    const trialEnd = subscription.trialEndsAt ? new Date(subscription.trialEndsAt) : null;
+    const daysLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd - new Date()) / (1000*60*60*24))) : 0;
+    document.getElementById('billingStatus').textContent = `Trial (${daysLeft} days left)`;
+    document.getElementById('billingCycle').textContent = `Renews ${trialEnd ? trialEnd.toLocaleDateString() : 'soon'}`;
+  } else if (status === 'active') {
+    document.getElementById('billingStatus').textContent = 'Active';
+    const renewDate = subscription.renewsAt ? new Date(subscription.renewsAt) : null;
+    document.getElementById('billingCycle').textContent = `Renews ${renewDate ? renewDate.toLocaleDateString() : 'on renewal date'}`;
+  } else if (status === 'cancelled') {
+    document.getElementById('billingStatus').textContent = 'Cancelled';
+    document.getElementById('billingCycle').textContent = 'Access ends on renewal date';
+  } else {
+    document.getElementById('billingStatus').textContent = 'Expired';
+    document.getElementById('billingCycle').innerHTML = '<a href="/plans" style="color:var(--accent);text-decoration:none;font-weight:600;">Renew subscription →</a>';
+  }
+}
+
+function dismissUpgradeNudge() {
+  document.getElementById('upgradeNudge').style.display = 'none';
 }
 
 // ── Confirm modal ─────────────────────────────────────────────────────────

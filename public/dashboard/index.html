@@ -756,6 +756,17 @@ document.addEventListener("cv:auth", ({ detail }) => {
   // Pass tier info to dashboard
   window.userTier = detail.tier || (detail.isFamily ? 'family' : detail.isPro ? 'pro' : 'free');
   loadDashboard(detail.user);
+  
+  // Check if returning from successful checkout
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('checkout') === 'success') {
+    showToast('🎉 Welcome to ' + (detail.isFamily ? 'Family' : 'Pro') + ' plan!');
+    // Clean up URL
+    window.history.replaceState({}, '', '/dashboard');
+  } else if (params.get('checkout') === 'cancelled') {
+    showToast('Checkout was cancelled. Feel free to try again.');
+    window.history.replaceState({}, '', '/dashboard');
+  }
 });
 
 // Safety net — if cv:auth never fires within 12s show an error

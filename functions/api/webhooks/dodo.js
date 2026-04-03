@@ -83,6 +83,8 @@ async function handlePaymentConfirmed(event, db, clerk) {
 
   try {
     // Insert or update subscription
+    const sqlTrialEnd = new Date(Date.now() + 14*24*60*60*1000).toISOString().replace('T', ' ').slice(0, 19);
+    
     const result = await db
       .prepare(
         `INSERT INTO subscriptions (
@@ -96,7 +98,6 @@ async function handlePaymentConfirmed(event, db, clerk) {
           billing_cycle = excluded.billing_cycle,
           status = 'active',
           price_cents = excluded.price_cents,
-          trial_ends_at = datetime('now', '+14 days'),
           renews_at = excluded.renews_at,
           cancelled_at = NULL,
           updated_at = excluded.updated_at`
@@ -107,9 +108,9 @@ async function handlePaymentConfirmed(event, db, clerk) {
         orderId,
         tier,
         cycle,
-        'active', // Immediate activation, no trial
+        'active',
         cents,
-        null, // No trial period
+        sqlTrialEnd,
         sqlRenewal,
         sqlNow,
         sqlNow
@@ -118,17 +119,28 @@ async function handlePaymentConfirmed(event, db, clerk) {
 
     console.log(`Subscription created/updated for user ${userId}: ${tier} ${cycle}`);
 
-    // Update Clerk user metadata with subscription info
-    if (clerk) {
+    // Update Clerk user metadata with subscription info via Clerk API
+    if (env.CLERK_SECRET_KEY) {
       try {
-        await clerk.users.updateUser(userId, {
-          unsafeMetadata: {
-            subscriptionTier: tier,
-            subscriptionStatus: 'active',
-            subscriptionExpires: renewalDate,
+        const clerkRes = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${env.CLERK_SECRET_KEY}`,
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            public_metadata: {
+              subscriptionTier: tier,
+              subscriptionStatus: 'active',
+              subscriptionExpires: renewalDate,
+            },
+          }),
         });
-        console.log(`Updated Clerk metadata for user ${userId}`);
+        if (clerkRes.ok) {
+          console.log(`Updated Clerk metadata for user ${userId}`);
+        } else {
+          console.error(`Failed to update Clerk metadata: ${clerkRes.status}`);
+        }
       } catch (clerkErr) {
         console.error(`Failed to update Clerk metadata for ${userId}:`, clerkErr);
         // Don't fail the webhook if metadata update fails
@@ -181,15 +193,25 @@ async function handleSubscriptionRenewed(event, db, clerk) {
 
     console.log(`Subscription renewed for customer ${customerId}`);
 
-    // Update Clerk metadata
-    if (clerk && sub.user_id) {
+    // Update Clerk metadata via Clerk API
+    if (env.CLERK_SECRET_KEY && sub.user_id) {
       try {
-        await clerk.users.updateUser(sub.user_id, {
-          unsafeMetadata: {
-            subscriptionStatus: 'active',
-            subscriptionExpires: renewalDate,
+        const clerkRes = await fetch(`https://api.clerk.com/v1/users/${sub.user_id}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${env.CLERK_SECRET_KEY}`,
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            public_metadata: {
+              subscriptionStatus: 'active',
+              subscriptionExpires: renewalDate,
+            },
+          }),
         });
+        if (clerkRes.ok) {
+          console.log(`Updated Clerk metadata for renewal of ${sub.user_id}`);
+        }
       } catch (clerkErr) {
         console.error(`Failed to update Clerk for renewal:`, clerkErr);
       }

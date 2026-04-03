@@ -207,10 +207,14 @@ export async function onRequest(context) {
 
     const returnUrl = redirectUrl || `${new URL(request.url).origin}/dashboard`;
 
-    // Get user info from Clerk response
+    // Get user info from Clerk user object
     const userData = auth.user;
-    const userEmail = userData?.email_addresses?.[0]?.email_address || userData?.primary_email_address_id || `user_${userId}@oktowatch.local`;
-    const userName = userData?.first_name || userData?.username || `User ${userId}`;
+    const userEmail = userData?.email_addresses?.[0]?.email_address || 
+                      userData?.emails?.[0]?.email_address || 
+                      `user_${auth.userId}@oktowatch.local`;
+    const userName = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || 
+                     userData?.username || 
+                     `User ${auth.userId}`;
 
     // Get or create Dodo customer
     const customerId = await getOrCreateDodoCustomer(userId, userEmail, userName, env);

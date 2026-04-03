@@ -1,0 +1,16 @@
+Removing duplicate root .html files in favor of folder-based index.html files for the following pages:
+- dashboard.html
+- plans.html
+- about.html
+- contact.html
+- cv-admin.html
+- discover.html
+- history.html
+- how-it-works.html
+- index.html
+- lists.html
+- privacy.html
+- profiles.html
+- settings.html
+- signin.html
+- signup.html
