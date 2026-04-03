@@ -495,7 +495,7 @@ footer a:hover { color: var(--accent); }
 }
 </style>
 </head>
-<body data-page="home">
+<body data-page="search">
 
 
 
@@ -525,20 +525,39 @@ footer a:hover { color: var(--accent); }
 
 
 
-<div id="heroSection" style="padding: 2rem 1.5rem">
-  <div class="hero" style="max-width: 500px; margin: 0 auto; text-align: left;">
-    <h1 style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 1; animation: none;">🔍 Search any title</h1>
-    <div class="search-wrap" style="opacity: 1; animation: none; margin: 0;">
-      <div class="suggestions-wrap">
-        <div class="search-box" style="border-color: var(--border);">
-          <input type="text" id="searchInput" placeholder="Search any movie or TV show..." autocomplete="off"/>
-          <button class="search-btn" id="searchBtn" onclick="doSearch()">Check →</button>
+<div class="page-wrap" id="pageWrap">
+  <div id="heroSection" style="padding: 1rem 1.5rem">
+    <div class="hero" style="text-align: left;">
+      <h1 style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 1; animation: none;">🔍 Search any title</h1>
+      <div class="search-wrap" style="opacity: 1; animation: none; margin: 0;">
+        <div class="suggestions-wrap">
+          <div class="search-box" style="border-color: var(--border);">
+            <input type="text" id="searchInput" placeholder="Search any movie or TV show..." autocomplete="off"/>
+            <button class="search-btn" id="searchBtn" onclick="doSearch()">Check →</button>
+          </div>
+          <div class="suggestions" id="suggestions"></div>
         </div>
-        <div class="suggestions" id="suggestions"></div>
       </div>
     </div>
   </div>
-</div>
+
+  <div id="trendingEmptyState" style="padding: 1rem 1.5rem;">
+    <div class="recently-viewed-label" style="font-size:0.75rem; letter-spacing:0.05em; color:var(--muted); margin-bottom:0.75rem; font-weight:700;">SUGGESTED TITLES</div>
+    <div class="recent-grid">
+      <div class="recent-item" onclick="heroInput.value='Deadpool & Wolverine'; doSearch()">
+        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" alt="Deadpool & Wolverine"></div>
+        <div class="recent-info"><div class="recent-title">Deadpool & Wolverine</div><div class="recent-year">2024</div></div>
+      </div>
+      <div class="recent-item" onclick="heroInput.value='Inside Out 2'; doSearch()">
+        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" alt="Inside Out 2"></div>
+        <div class="recent-info"><div class="recent-title">Inside Out 2</div><div class="recent-year">2024</div></div>
+      </div>
+      <div class="recent-item" onclick="heroInput.value='Bluey'; type='tv'; doSearch()">
+        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/c77zPIfa8W5PZgQ6W08f1sA84Yw.jpg" alt="Bluey"></div>
+        <div class="recent-info"><div class="recent-title">Bluey</div><div class="recent-year">2018</div></div>
+      </div>
+    </div>
+  </div>
 
 <div class="result-section" id="resultSection">
   <div id="disambigCard" style="display:none"></div>
@@ -987,38 +1006,17 @@ function getEffectiveRecent() {
 
 // Listen for auth — kick off D1 sync as soon as we know the user is Pro.
 document.addEventListener('cv:auth', ({ detail }) => {
-  if (!detail.loggedIn) {
-    window.location.href = '/signin?redirect=/search';
-    return;
-  }
   renderRecentSearchesCarousel();
   if (detail.isPro || detail.isFamily) {
     syncD1Cache();
   }
 });
 
-// ── NAV STATE ─────────────────────────────────────────────────────────────
-function showResultState({showNav=true}={}) {
-  const cvNav=document.getElementById('cvNav'); if(cvNav) cvNav.style.display='none';
-  if(showNav) document.getElementById('navCollapsed').classList.add('visible');
-  document.getElementById('heroSection').classList.add('hidden');
-  document.getElementById('featuresWrap').style.display='none';
-  document.getElementById('footerEl').style.display='none';
-}
-function showHeroState() {
-  const cvNav=document.getElementById('cvNav'); if(cvNav) cvNav.style.display='flex';
-  document.getElementById('navCollapsed').classList.remove('visible');
-  document.getElementById('heroSection').classList.remove('hidden');
-  document.getElementById('featuresWrap').style.display='block';
-  document.getElementById('footerEl').style.display='flex';
-  document.getElementById('resultSection').style.display='none';
-}
+// ── NAV STATE (collapsed nav removed — using dashboard shell nav) ────────
 function goHome() {
-  showHeroState(); heroInput.value=''; collInput.value='';
+  showHeroState(); heroInput.value='';
   window.scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>heroInput.focus(),350);
 }
-function openMenu() { cvOpenMenu && cvOpenMenu(); }
-function closeMenu() { cvCloseMenu && cvCloseMenu(); }
 function getChildAge() { return null; }
 function setAudience(btn,aud) { document.querySelectorAll('.aud-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentAudience=aud; if(currentBreakdown) renderVerdict(); }
 
@@ -1036,7 +1034,7 @@ function renderDropdown(boxId,history) {
 }
 function onClearAll(boxId) { clearHistory(); document.getElementById(boxId).classList.remove('visible'); }
 function onRemoveHistory(title,boxId) { removeFromHistory(title); const h=getHistory(); if(!h.length){document.getElementById(boxId).classList.remove('visible');return;} renderDropdown(boxId,h); }
-function onHistoryClick(title) { heroInput.value=title; collInput.value=title; hideSuggestions(); hideCollapsedSuggestions(); doSearchByTitle(title); }
+function onHistoryClick(title) { heroInput.value=title; hideSuggestions(); doSearchByTitle(title); }
 
 async function fetchSuggestions(q,boxId) {
   try {
@@ -1059,22 +1057,19 @@ async function fetchSuggestions(q,boxId) {
 }
 
 const heroInput=document.getElementById('searchInput');
-const collInput=document.getElementById('collapsedInput');
+const collInput=null; // collapsed nav removed — dashboard shell nav is used instead
 
 heroInput.addEventListener('focus',()=>{ if(pageReady&&!heroInput.value.trim()) renderDropdown('suggestions',getHistory()); });
-// Render carousel for guests immediately
+// Render carousel immediately
 renderRecentSearchesCarousel();
 
 heroInput.addEventListener('input',()=>{ clearTimeout(suggestTimer); const q=heroInput.value.trim(); if(!q){renderDropdown('suggestions',getHistory());return;} hideSuggestions(); suggestTimer=setTimeout(()=>fetchSuggestions(q,'suggestions'),300); });
 heroInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){hideSuggestions();doSearch();} if(e.key==='Escape')hideSuggestions(); });
-collInput.addEventListener('focus',()=>{ if(pageReady&&!collInput.value.trim()) renderDropdown('collapsedSuggestions',getHistory()); });
-collInput.addEventListener('input',()=>{ clearTimeout(collapsedSuggestTimer); const q=collInput.value.trim(); if(!q){renderDropdown('collapsedSuggestions',getHistory());return;} hideCollapsedSuggestions(); collapsedSuggestTimer=setTimeout(()=>fetchSuggestions(q,'collapsedSuggestions'),300); });
-collInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){hideCollapsedSuggestions();doCollapsedSearch();} if(e.key==='Escape')hideCollapsedSuggestions(); });
-document.addEventListener('click',e=>{ if(!e.target.closest('#heroSection .suggestions-wrap')) hideSuggestions(); if(!e.target.closest('#navCollapsed .suggestions-wrap')) hideCollapsedSuggestions(); });
+document.addEventListener('click',e=>{ if(!e.target.closest('#heroSection .suggestions-wrap')) hideSuggestions(); });
 
 function hideSuggestions() { document.getElementById('suggestions').classList.remove('visible'); }
-function hideCollapsedSuggestions() { document.getElementById('collapsedSuggestions').classList.remove('visible'); }
-function selectSuggestion(id,type,title) { heroInput.value=title; collInput.value=title; hideSuggestions(); hideCollapsedSuggestions(); runAnalysis(id,type); }
+function hideCollapsedSuggestions() { /* no-op: collapsed nav removed */ }
+function selectSuggestion(id,type,title) { heroInput.value=title; hideSuggestions(); runAnalysis(id,type); }
 function quickSearch(title) { heroInput.value=title; doSearch(); }
 
 // ── Recent searches carousel ───────────────────────────────────────────────
@@ -1103,7 +1098,7 @@ function renderRecentSearchesCarousel() {
   quick.style.display = 'none';
 }
 function doSearch() { const q=heroInput.value.trim(); if(q) doSearchByTitle(q); }
-function doCollapsedSearch() { const q=collInput.value.trim(); if(q) doSearchByTitle(q); }
+function doCollapsedSearch() { /* no-op: collapsed nav removed */ }
 function retrySearch() { if(lastId) runAnalysis(lastId,lastType,false); }
 
 async function doSearchByTitle(q) {
@@ -1116,11 +1111,10 @@ async function doSearchByTitle(q) {
     const top=results.slice(0,4), topTitle=(top[0].title||top[0].name||'').toLowerCase();
     const hasDupes=top.length>1&&top.slice(1).some(r=>{ const t=(r.title||r.name||'').toLowerCase(); return t===topTitle||t.includes(topTitle)||topTitle.includes(t); });
     if(hasDupes&&top.length>1) showDisambig(top); else runAnalysis(results[0].id,results[0].media_type);
-  } catch(e) { showResultState(); showSection(); document.getElementById('navCollapsed').classList.add('visible'); showError('Search failed. Is the server running?'); }
+  } catch(e) { showResultState(); showSection(); showError('Search failed. Is the server running?'); }
 }
 
 async function showEmptyWithSuggestion(q) {
-  document.getElementById('navCollapsed').classList.add('visible');
   document.getElementById('emptyCard').style.display='block';
   document.getElementById('emptyTitle').textContent='No results found';
   document.getElementById('emptyMsg').textContent=`We couldn't find "${q}".`;
@@ -1159,7 +1153,7 @@ function showDisambig(results) {
       }).join('')}
     </div>`;
 }
-function onDisambigSelect(id,type,title) { document.getElementById('disambigCard').style.display='none'; heroInput.value=title; collInput.value=title; runAnalysis(id,type); }
+function onDisambigSelect(id,type,title) { document.getElementById('disambigCard').style.display='none'; heroInput.value=title; runAnalysis(id,type); }
 
 async function runAnalysis(id,type,isRetry=false) {
   lastId=id; lastType=type;
@@ -1190,7 +1184,7 @@ async function runAnalysis(id,type,isRetry=false) {
     const childAge=getChildAge();
 
     currentMovieTitle=title; currentYear=year; currentPosterUrl=backdrop||poster||'';
-    saveHistory(title); heroInput.value=title; collInput.value=title;
+    saveHistory(title); heroInput.value=title;
     setLoadingStatus('Analysing content…');
     const breakdown=await getAIBreakdown({tmdb_id:id,media_type:type,season:null,title,year,overview,genres,certRating,keywords,type,childAge});
     clearLoadingStatus(); hideSkeleton(); currentBreakdown=breakdown;
@@ -1229,11 +1223,10 @@ async function runAnalysis(id,type,isRetry=false) {
 
     if(type==='tv') initSeasonSelector(id,details); else document.getElementById('seasonSection').style.display='none';
     document.getElementById('resultCard').style.display='block';
-    document.getElementById('navCollapsed').classList.add('visible');
     renderRecentlyViewed(id);
     window.scrollTo({top:0,behavior:'smooth'});
   } catch(e) {
-    clearLoadingStatus(); hideSkeleton(); document.getElementById('navCollapsed').classList.add('visible');
+    clearLoadingStatus(); hideSkeleton();
     if(e.message === 'guest_limit') {
       showGuestGate(e.resetsAt);
       return;
@@ -1424,9 +1417,18 @@ function showToast(msg) { const t=document.getElementById('shareToast'); t.textC
 let proNudgeTimer=null;
 function showProNudge(msg) { const el=document.getElementById('proNudge'); document.getElementById('proNudgeMsg').textContent=msg; el.classList.add('show'); clearTimeout(proNudgeTimer); proNudgeTimer=setTimeout(()=>el.classList.remove('show'),4000); }
 
+function showResultState({showNav=true}={}) {
+  // Keep the persistent dashboard nav visible — only hide hero/empty-state
+  document.getElementById('heroSection').classList.add('hidden');
+  document.getElementById('trendingEmptyState').style.display='none';
+}
+function showHeroState() {
+  document.getElementById('heroSection').classList.remove('hidden');
+  document.getElementById('trendingEmptyState').style.display='block';
+}
 function showSection() { document.getElementById('resultSection').style.display='block'; }
-function showSkeleton() { document.getElementById('skeletonCard').style.display='block'; clearLoadingStatus(); document.getElementById('resultCard').style.display='none'; document.getElementById('emptyCard').style.display='none'; document.getElementById('errorCard').style.display='none'; document.getElementById('recentlyViewed').style.display='none'; ['searchBtn','collapsedBtn'].forEach(id=>{const b=document.getElementById(id);b.disabled=true;b.textContent='...'; }); }
-function hideSkeleton() { document.getElementById('skeletonCard').style.display='none'; ['searchBtn','collapsedBtn'].forEach(id=>{const b=document.getElementById(id);b.disabled=false;b.textContent='Check →'; }); }
+function showSkeleton() { document.getElementById('skeletonCard').style.display='block'; clearLoadingStatus(); document.getElementById('resultCard').style.display='none'; document.getElementById('emptyCard').style.display='none'; document.getElementById('errorCard').style.display='none'; document.getElementById('recentlyViewed').style.display='none'; const sb=document.getElementById('searchBtn'); if(sb){sb.disabled=true;sb.textContent='...';} }
+function hideSkeleton() { document.getElementById('skeletonCard').style.display='none'; const sb=document.getElementById('searchBtn'); if(sb){sb.disabled=false;sb.textContent='Check →';} }
 function showError(msg) { document.getElementById('errorCard').style.display='block'; document.getElementById('errorMsg').textContent=msg; }
 
 function showGuestGate(resetsAt) {
@@ -1550,7 +1552,7 @@ document.getElementById('listModal').addEventListener('click',e=>{ if(e.target==
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
-  heroInput.blur(); collInput.blur();
+  heroInput.blur();
   setTimeout(()=>{ pageReady=true; },500);
 
   // Active profile: auto-set child age from API (Pro) or sessionStorage
