@@ -320,7 +320,7 @@ footer a:hover { color: var(--accent); }
       return;
     }
 
-    const afterSignUpUrl = plan && ['pro', 'family'].includes(plan) ? '/signup' : '/plans';
+    const afterSignUpUrl = plan && ['pro', 'family'].includes(plan) ? '/signup' : '/dashboard';
 
     window.Clerk.mountSignUp(document.getElementById('clerk-signup'), {
       afterSignUpUrl: afterSignUpUrl,

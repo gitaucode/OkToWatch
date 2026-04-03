@@ -33,8 +33,10 @@ export async function getUserTier(userId, db) {
     }
 
     const renewalDate = new Date(sub.renews_at);
-    if (new Date() >= renewalDate) {
-      return 'free'; // Time to renew
+    const GRACE_PERIOD_MS = 3600000; // 1 hour grace period
+    const gracePeriodEnd = new Date(renewalDate.getTime() + GRACE_PERIOD_MS);
+    if (new Date() >= gracePeriodEnd) {
+      return 'free'; // Time to renew (after grace period)
     }
 
     return sub.tier; // pro or family

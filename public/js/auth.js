@@ -608,11 +608,6 @@
 
   // ── Dispatch auth event (always fires, even on failure) ───────────────────
   function dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser) {
-    // Free beta mode — all signed-in users get Pro access until billing is live
-    if (!BILLING_ENABLED && loggedIn) {
-      isPro    = true;
-      isFamily = false;
-    }
     window.CV = { loggedIn, isPro, isFamily, tier: tier || 'free', user: clerkUser || null };
     renderNav(loggedIn, isPro, clerkUser || null);
     document.dispatchEvent(new CustomEvent('cv:auth', {

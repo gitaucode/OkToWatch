@@ -455,10 +455,10 @@ if (document.readyState === 'loading') {
 
 // ── Upgrade handler ──────────────────────────────────────────────────────
 async function handleUpgrade(plan) {
-  const token = localStorage.getItem('clerk_session_token');
+  const loggedIn = window.CV?.loggedIn;
   
   if (plan === 'free') {
-    if (!token) {
+    if (!loggedIn) {
       window.location.href = '/signup';
     } else {
       showToast("You're already using the free plan!");
@@ -467,7 +467,7 @@ async function handleUpgrade(plan) {
   }
 
   // For Pro/Family, need to be logged in
-  if (!token) {
+  if (!loggedIn) {
     // Get billing cycle from toggle
     const billingToggle = document.getElementById('billingToggle');
     const isYearly = billingToggle?.classList.contains('yearly');

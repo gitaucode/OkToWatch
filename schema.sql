@@ -1,6 +1,6 @@
--- ClearView D1 Schema
--- Apply with: wrangler d1 execute clearview --file=./schema.sql
--- Remote:     wrangler d1 execute clearview --file=./schema.sql --remote
+-- OkToWatch D1 Schema
+-- Apply with: wrangler d1 execute oktowatch --file=./schema.sql
+-- Remote:     wrangler d1 execute oktowatch --file=./schema.sql --remote
 
 -- ── Profiles ──────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS profiles (
