@@ -158,15 +158,24 @@ body {
 .welcome-text { flex: 1; min-width: 0; overflow: hidden; }
 .welcome-text h2 { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .welcome-text p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
-.btn-search {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  background: var(--accent); color: white; border: none;
-  padding: 0.5rem 1.1rem; border-radius: 100px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 700;
-  cursor: pointer; text-decoration: none; flex-shrink: 0;
-  transition: opacity 0.15s;
+.dash-search-input {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  padding: 0.45rem 0.85rem; border-radius: 100px;
+  cursor: text; transition: all 0.2s; width: 100%; max-width: 240px;
 }
-.btn-search:hover { opacity: 0.88; }
+.dash-search-input:hover { border-color: rgba(0,0,0,0.15); background: white; }
+.dash-search-input input {
+  border: none; background: transparent; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; width: 100%;
+  color: var(--text); pointer-events: none;
+}
+.dash-search-input input::placeholder { color: var(--muted); }
+.dash-search-kbd {
+  background: rgba(0,0,0,0.05); padding: 0.15rem 0.35rem;
+  border-radius: 4px; font-size: 0.65rem; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.05em; flex-shrink: 0;
+}
 
 /* ── Stats row ── */
 .stats-row {
@@ -543,7 +552,11 @@ footer a:hover { color: var(--accent); }
         <h2 id="welcomeName">Welcome back</h2>
         <p id="welcomeSub">Your family's OkToWatch</p>
       </div>
-      <a class="btn-search" href="/search">🔍 Search</a>
+      <div class="dash-search-input" onclick="window.cvOpenSearchModal && window.cvOpenSearchModal()">
+        <span style="font-size:0.85rem;color:var(--muted)">🔍</span>
+        <input type="text" placeholder="Search any title..." readonly tabindex="-1">
+        <span class="dash-search-kbd">⌘K</span>
+      </div>
     </div>
 
     <!-- Stats -->
@@ -583,7 +596,7 @@ footer a:hover { color: var(--accent); }
     <div class="dash-grid">
       <div class="card" style="opacity:0;animation:fadeUp 0.4s ease forwards 0.2s;">
         <div class="section-label">Quick Actions</div>
-        <a class="action-item" href="/search">
+        <a class="action-item" href="#" onclick="event.preventDefault(); window.cvOpenSearchModal && window.cvOpenSearchModal()">
           <div class="action-icon ai-green">🔍</div>
           <div class="action-text"><strong>New Search</strong><span>Check any title</span></div>
           <span class="action-arrow">›</span>

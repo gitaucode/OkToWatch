@@ -41,7 +41,6 @@
   ];
   const NAV_LOGGED_IN = [
     { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Search',    href: '/search' },
     { label: 'Lists',     href: '/lists' },
     { label: 'Discover',  href: '/discover' },
     { label: 'History',   href: '/history' },
@@ -85,6 +84,11 @@
         ? `<img src="${user.imageUrl}" alt="${initial}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
         : initial;
       rightHTML = `
+        <button class="nav-search-pill" onclick="cvOpenSearchModal()">
+          <span class="nsp-icon">🔍</span>
+          <span class="nsp-text">Search titles...</span>
+          <span class="nsp-kbd">⌘K</span>
+        </button>
         <button class="nav-avatar" id="navAvatarBtn" aria-label="Account menu">${avatarContent}</button>
         <div class="nav-dropdown" id="navDropdown">
           <div class="nav-dropdown-header">
@@ -266,6 +270,24 @@
     display: flex; align-items: center; gap: 0.5rem;
     flex-shrink: 0; position: relative;
   }
+  .nav-search-pill {
+    display: none; align-items: center; gap: 0.4rem;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(0,0,0,0.08);
+    color: var(--muted, #7a908a);
+    padding: 0.35rem 0.6rem 0.35rem 0.75rem;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: all 0.15s; margin-right: 0.25rem;
+  }
+  .nav-search-pill:hover { background: white; border-color: rgba(0,0,0,0.15); color: var(--text, #1a2420); }
+  .nsp-icon { font-size: 0.8rem; }
+  .nsp-text { font-size: 0.82rem; font-weight: 500; }
+  .nsp-kbd {
+    background: rgba(0,0,0,0.05); padding: 0.15rem 0.35rem;
+    border-radius: 4px; font-size: 0.65rem; font-weight: 700;
+    margin-left: 0.5rem; letter-spacing: 0.05em;
+  }
+  @media (min-width: 650px) { .nav-search-pill { display: flex; } }
   .nav-btn {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.82rem; font-weight: 600;
@@ -548,6 +570,18 @@
   }
 
   // Global search modal functions
+  window.cvOpenSearchModal = function() {
+    const modal = document.getElementById('cvSearchModal');
+    const input = document.getElementById('cvSearchInput');
+    if (modal) {
+      modal.classList.add('open');
+      if (input) {
+        // give it a tiny delay for transitions
+        setTimeout(() => input.focus(), 50);
+      }
+    }
+  };
+
   window.cvCloseSearchModal = function() {
     const modal = document.getElementById('cvSearchModal');
     const input = document.getElementById('cvSearchInput');
@@ -574,9 +608,49 @@
     } catch (e) {
       console.error('History save failed:', e);
     }
-    // Navigate
-    window.location.href = `/index?id=${id}&type=${type}`;
+    // Close the search modal
+    cvCloseSearchModal();
+    
+    // Update URL without reloading (History API)
+    const url = new URL(window.location);
+    url.searchParams.set('searchId', id);
+    url.searchParams.set('searchType', type);
+    window.history.pushState({ panelOpen: true, id, type }, '', url);
+
+    // Lazy load or trigger panel
+    if (window.cvSearchPanel) {
+      window.cvSearchPanel.openTitle(id, type);
+    } else {
+      const overlay = document.createElement('div');
+      overlay.id = 'cvPanelGlobalOverlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:9999;display:none;';
+      document.body.appendChild(overlay);
+
+      const script = document.createElement('script');
+      script.src = '/js/search-panel.js?v=' + Date.now(); // Cache bust for dev
+      script.onload = () => window.cvSearchPanel.openTitle(id, type);
+      document.body.appendChild(script);
+    }
   };
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.panelOpen && window.cvSearchPanel) {
+      window.cvSearchPanel.openTitle(e.state.id, e.state.type);
+    } else if (window.cvSearchPanel) {
+      window.cvSearchPanel.close();
+    }
+  });
+
+  // Handle deep links on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const sId = params.get('searchId');
+    const sType = params.get('searchType');
+    if (sId && sType) {
+      setTimeout(() => window.cvOpenTitle(sId, sType), 100);
+    }
+  });
 
   // ── Public guards ─────────────────────────────────────────────────────────
   window.requireAuth = function () {
