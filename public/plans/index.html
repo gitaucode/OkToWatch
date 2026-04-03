@@ -480,7 +480,9 @@ async function handleUpgrade(plan) {
     });
 
     if (!response.ok) {
-      showToast('Error initiating checkout. Please try again.');
+      const errBody = await response.json().catch(() => ({}));
+      console.error('Checkout API error:', response.status, errBody);
+      showToast(errBody?.error || 'Error initiating checkout. Please try again.');
       return;
     }
 
