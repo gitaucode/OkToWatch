@@ -227,8 +227,20 @@ body {
 /* ── Toast ── */
 .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ── Footer ── */
+footer {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
 .footer-logo-text { font-size: 0.88rem; color: var(--text); display:inline-flex; align-items:center; gap:0.4rem; }
-.footer-beta-badge { display:inline-flex; align-items:center; justify-content:center; padding:0.14rem 0.38rem; border-radius:999px; background:rgba(42,107,85,0.1); border:1px solid rgba(42,107,85,0.16); color:var(--accent); font-size:0.58rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; transform:translateY(-1px); }
+.footer-logo-text strong { font-weight: 700; }
+@media (max-width: 599px) { footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; } }
 
 @keyframes fadeUp  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
@@ -527,51 +539,65 @@ document.addEventListener('cv:auth', async ({ detail }) => {
 
 // ── Load all settings data ────────────────────────────────────────────────
 async function loadSettings(user) {
-  // Populate account fields immediately from Clerk user
-  document.getElementById('firstName').value  = user.firstName  || '';
-  document.getElementById('lastName').value   = user.lastName   || '';
-  document.getElementById('emailField').value = user.email      || '';
-  if (user.memberSince) {
-    const date = new Date(user.memberSince);
-    document.getElementById('memberSince').textContent = 'Member since ' + date.toLocaleDateString('en-US', { month:'long', year:'numeric' });
-  }
-
-  // Load profiles from API
-  try { _profiles = await apiGet('/api/profiles'); } catch { _profiles = []; }
-
-  // Load saved prefs from localStorage (Segment 6 — server prefs deferred)
-  const savedPrefs = JSON.parse(localStorage.getItem('cv_prefs') || 'null');
-  if (savedPrefs) _prefs = new Set(savedPrefs);
-
-  const savedDigest    = JSON.parse(localStorage.getItem('cv_digest')    || 'false');
-  const savedStreaming = JSON.parse(localStorage.getItem('cv_streaming') || '[]');
-  _digest    = savedDigest;
-  _streaming = new Set(savedStreaming);
-
-  // Load subscription status
-  let subscription = null;
   try {
-    subscription = await apiGet('/api/subscription-status');
-  } catch(e) {
-    console.error('Failed to load subscription:', e);
+    // Populate account fields immediately from Clerk user
+    // Note: Clerk user has emailAddresses array, not .email directly
+    const email = user.emailAddresses?.[0]?.emailAddress || user.email || '';
+    document.getElementById('firstName').value  = user.firstName || '';
+    document.getElementById('lastName').value   = user.lastName  || '';
+    document.getElementById('emailField').value = email;
+
+    const createdAt = user.createdAt || user.memberSince;
+    if (createdAt) {
+      const date = new Date(createdAt);
+      document.getElementById('memberSince').textContent = 'Member since ' + date.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+    }
+
+    // Load profiles from API (with 6s timeout)
+    try {
+      _profiles = await Promise.race([
+        apiGet('/api/profiles'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000))
+      ]);
+    } catch { _profiles = []; }
+
+    // Load saved prefs from localStorage
+    const savedPrefs = JSON.parse(localStorage.getItem('cv_prefs') || 'null');
+    if (savedPrefs) _prefs = new Set(savedPrefs);
+    const savedDigest    = JSON.parse(localStorage.getItem('cv_digest')    || 'false');
+    const savedStreaming = JSON.parse(localStorage.getItem('cv_streaming') || '[]');
+    _digest    = savedDigest;
+    _streaming = new Set(savedStreaming);
+
+    // Load subscription status (with 6s timeout so it can never hang forever)
+    let subscription = null;
+    try {
+      subscription = await Promise.race([
+        apiGet('/api/subscription-status'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000))
+      ]);
+    } catch(e) {
+      console.warn('Subscription status unavailable:', e.message);
+    }
+
+    // Render everything
+    renderProfiles();
+    renderPrefGrid();
+    renderStreamingGrid();
+    renderDigestToggle();
+    populateBilling(subscription);
+
+    // Show/hide upgrade nudge
+    const isFreeTier = !subscription || subscription.tier === 'free';
+    document.getElementById('upgradeNudge').style.display = isFreeTier ? 'block' : 'none';
+
+  } catch(err) {
+    console.error('loadSettings error:', err);
+  } finally {
+    // Always hide skeleton — even if something threw above
+    document.getElementById('settingsSkeleton').style.display = 'none';
+    document.getElementById('settingsContent').classList.add('ready');
   }
-
-  // Render everything
-  renderProfiles();
-  renderPrefGrid();
-  renderStreamingGrid();
-  renderDigestToggle();
-
-  // Populate billing info
-  populateBilling(subscription);
-
-  // Show/hide upgrade nudge based on tier
-  const isFreeTier = !subscription || subscription.tier === 'free';
-  document.getElementById('upgradeNudge').style.display = isFreeTier ? 'block' : 'none';
-
-  // Show content, hide skeleton
-  document.getElementById('settingsSkeleton').style.display = 'none';
-  document.getElementById('settingsContent').classList.add('ready');
 }
 
 // ── Account ───────────────────────────────────────────────────────────────
@@ -806,7 +832,7 @@ document.getElementById('confirmModal').addEventListener('click', e => {
   if (e.target === document.getElementById('confirmModal')) closeConfirm();
 });
 </script>
-<script src="/js/auth.js?v=aea3acb"></script>
+<script src="/js/auth.js?v=20260403"></script>
 </body>
 </html>
 
