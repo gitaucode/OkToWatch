@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
+<meta name="theme-color" content="#0d0d0f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,25 +14,337 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
 <link rel="shortcut icon" href="/favicon.ico">
 <title>Dashboard — OkToWatch</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
-  --warn-bg: #fef6e4; --pro-light: #e4efe9;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08);
-  --radius: 16px; --radius-sm: 10px;
+  --bg: #f5f5f7; --surface: #ffffff; --surface2: #f5f5f7;
+  --border: rgba(0,0,0,0.07); --text: #1d1d1f; --text2: #424245;
+  --muted: #6e6e73; --accent: #2a6b55; --accent-light: #e6f2ed;
+  --warn-bg: #fff8ee; --pro-light: #f0ebff;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 18px; --radius-sm: 12px; --radius-pill: 100px;
+  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-serif;
 }
-html { overflow-x: hidden; }
+html { overflow-x: hidden; scroll-behavior: smooth; }
 body {
   background: var(--bg); color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  font-family: var(--font); font-size: 15px;
   min-height: 100vh; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 #nav-root { position: relative; z-index: 10; min-height: 56px; }
-.page-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+.page-wrap { max-width: 760px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+
+/* ── Hero Banner ───────────────────────────────────────────────────────── */
+.hero-banner {
+  background:
+    radial-gradient(ellipse at 12% 55%, rgba(139,92,246,0.55) 0%, transparent 52%),
+    radial-gradient(ellipse at 88% 75%, rgba(251,146,60,0.45)  0%, transparent 50%),
+    radial-gradient(ellipse at 5%  92%, rgba(52,199,89,0.30)   0%, transparent 42%),
+    radial-gradient(ellipse at 65% 15%, rgba(96,165,250,0.20)  0%, transparent 45%),
+    #0d0d0f;
+  padding: 2.5rem 1.5rem 3.5rem;
+  color: white; position: relative; overflow: hidden;
+}
+.hero-banner::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 70px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+}
+.hero-inner { max-width: 760px; margin: 0 auto; }
+.hero-greeting {
+  font-size: 2rem; font-weight: 700; letter-spacing: -0.035em;
+  line-height: 1.1; margin-bottom: 0.25rem;
+  opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s;
+}
+.hero-sub {
+  font-size: 0.88rem; color: rgba(255,255,255,0.55); margin-bottom: 1.5rem;
+  opacity: 0; animation: fadeUp 0.5s ease forwards 0.18s;
+}
+/* Profile pills — JS renders .profile-card elements into .hero-profiles */
+.hero-profiles {
+  display: flex; gap: 0.45rem; overflow-x: auto; padding-bottom: 0.2rem;
+  scrollbar-width: none; margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.5s ease forwards 0.25s;
+}
+.hero-profiles::-webkit-scrollbar { display: none; }
+.profile-card {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.42rem 0.95rem; border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.72); cursor: pointer; white-space: nowrap;
+  transition: all 0.18s ease; font-size: 0.82rem; font-weight: 500;
+  user-select: none; position: relative; flex-shrink: 0;
+}
+.profile-card:hover { background: rgba(255,255,255,0.16); color: white; border-color: rgba(255,255,255,0.28); }
+.profile-card.active { background: white; color: #1d1d1f; border-color: white; font-weight: 600; }
+.profile-card.add-card { border-style: dashed; border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.42); }
+.profile-card.add-card:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.3); }
+.profile-emoji { font-size: 1rem; line-height: 1; }
+.profile-name  { font-size: 0.82rem; }
+.profile-age   { font-size: 0.7rem; opacity: 0.65; }
+.active-dot    { display: none; }
+#profilesPremiumBadge { display: none; }
+/* Hero search */
+.hero-search {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-pill); padding: 0.6rem 1rem;
+  cursor: text; max-width: 360px; backdrop-filter: blur(12px);
+  transition: all 0.2s; opacity: 0; animation: fadeUp 0.5s ease forwards 0.32s;
+}
+.hero-search:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.28); }
+.hero-search input {
+  border: none; background: transparent; outline: none;
+  font-family: var(--font); font-size: 0.88rem; width: 100%; color: white;
+}
+.hero-search input::placeholder { color: rgba(255,255,255,0.42); }
+.hero-search-kbd {
+  background: rgba(255,255,255,0.12); padding: 0.15rem 0.4rem;
+  border-radius: 5px; font-size: 0.65rem; font-weight: 600;
+  color: rgba(255,255,255,0.45); letter-spacing: 0.04em; flex-shrink: 0;
+}
+
+/* ── Skeleton ──────────────────────────────────────────────────────────── */
+.skel {
+  background: linear-gradient(90deg, #e5e5ea 25%, #ebebf0 50%, #e5e5ea 75%);
+  background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+.skel-line { height: 12px; border-radius: 6px; margin-bottom: 0.6rem; }
+.skel-block { height: 52px; border-radius: 10px; margin-bottom: 0.6rem; }
+.skel-avatar { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
+#pageLoader { display: block; }
+#pageLoader.hidden { display: none; }
+#pageContent { display: none; }
+#pageContent.visible { display: block; }
+
+/* ── Trial banner ──────────────────────────────────────────────────────── */
+.trial-banner {
+  display: flex; align-items: center; gap: 0.85rem;
+  background: linear-gradient(135deg, #1a3d2e 0%, #2a6b55 100%);
+  border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+  margin-bottom: 1rem; color: white;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
+  box-shadow: 0 4px 16px rgba(42,107,85,0.2);
+}
+.trial-banner-icon { font-size: 1.3rem; flex-shrink: 0; }
+.trial-banner-text { flex: 1; min-width: 0; }
+.trial-banner-text strong { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.15rem; }
+.trial-banner-text span   { font-size: 0.75rem; opacity: 0.82; line-height: 1.4; }
+.trial-banner-btn {
+  background: white; color: var(--accent); border: none; border-radius: var(--radius-pill);
+  padding: 0.4rem 1rem; font-family: var(--font); font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0; text-decoration: none;
+  transition: opacity 0.15s; display: inline-block;
+}
+.trial-banner-btn:hover { opacity: 0.88; }
+.trial-banner-close {
+  background: none; border: none; color: rgba(255,255,255,0.6);
+  cursor: pointer; font-size: 1rem; padding: 0.2rem 0.3rem;
+  line-height: 1; flex-shrink: 0; font-family: var(--font);
+}
+.trial-banner-close:hover { color: white; }
+
+/* ── Section label ─────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Stats (Bento) ─────────────────────────────────────────────────────── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem; margin-bottom: 1rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.12s;
+}
+.stat-card {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.1rem 1rem;
+  border: 1px solid var(--border);
+}
+.stat-icon  { font-size: 1.1rem; margin-bottom: 0.5rem; display: block; }
+.stat-num   { font-size: 2.1rem; font-weight: 700; letter-spacing: -0.05em; color: var(--text); line-height: 1; margin-bottom: 0.2rem; }
+.stat-label { font-size: 0.7rem; color: var(--muted); font-weight: 500; }
+.stat-spark { margin-top: 0.65rem; height: 26px; display: flex; align-items: flex-end; gap: 2px; }
+.spark-bar  { flex: 1; border-radius: 3px; background: #e5e5ea; min-height: 4px; transition: height 0.6s ease; }
+.spark-bar.green  { background: #34c759; }
+.spark-bar.red    { background: #ff3b30; }
+.spark-bar.accent { background: var(--accent); }
+
+/* ── Dash grid ─────────────────────────────────────────────────────────── */
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem; border: 1px solid var(--border); }
+.action-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+  cursor: pointer; text-decoration: none; color: var(--text); transition: opacity 0.15s;
+}
+.action-item:last-child { border-bottom: none; }
+.action-item:hover { opacity: 0.65; }
+.action-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.ai-green  { background: #e6f4ec; }
+.ai-orange { background: #fff3e0; }
+.ai-purple { background: #f0ebff; }
+.ai-blue   { background: #e8f0fe; }
+.action-text strong { font-size: 0.82rem; font-weight: 600; display: block; }
+.action-text span   { font-size: 0.7rem; color: var(--muted); }
+.action-arrow       { color: var(--muted); margin-left: auto; flex-shrink: 0; }
+.recent-row {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.55rem 0; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: all 0.12s; border-radius: 8px;
+}
+.recent-row:last-child { border-bottom: none; }
+.recent-row:hover { background: var(--surface2); margin: 0 -0.5rem; padding: 0.55rem 0.5rem; }
+.recent-thumb { width: 30px; min-width: 30px; height: 44px; border-radius: 6px; overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+.recent-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.recent-info  { flex: 1; min-width: 0; }
+.recent-title { font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-meta  { font-size: 0.67rem; color: var(--muted); margin-top: 0.05rem; }
+.recent-tag   { font-size: 0.63rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: var(--radius-pill); background: var(--accent-light); color: var(--accent); white-space: nowrap; flex-shrink: 0; }
+.empty-mini   { text-align: center; padding: 1.5rem 1rem; }
+.empty-mini p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.5rem; }
+.empty-mini a { font-size: 0.78rem; color: var(--accent); font-weight: 600; text-decoration: none; }
+
+/* ── Trending horizontal carousel ──────────────────────────────────────── */
+.trending-section { margin-bottom: 1rem; opacity: 0; animation: fadeUp 0.4s ease forwards 0.3s; }
+.trending-header  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.trending-toggle  { display: flex; gap: 0.2rem; background: var(--surface2); border-radius: var(--radius-pill); padding: 3px; border: 1px solid var(--border); }
+.trend-tab {
+  font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-pill); border: none; background: none;
+  color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: var(--font);
+}
+.trend-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.trending-grid {
+  display: flex; gap: 0.85rem; overflow-x: auto;
+  padding-bottom: 0.75rem; scrollbar-width: none; scroll-snap-type: x mandatory;
+}
+.trending-grid::-webkit-scrollbar { display: none; }
+.trend-card {
+  min-width: 145px; flex-shrink: 0; background: var(--surface);
+  border-radius: var(--radius-sm); box-shadow: var(--shadow);
+  overflow: hidden; cursor: pointer; position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  scroll-snap-align: start; border: 1px solid var(--border);
+}
+.trend-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.trend-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background: var(--surface2); }
+.trend-poster-placeholder { width: 100%; aspect-ratio: 2/3; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.trend-body  { padding: 0.65rem 0.75rem 0.75rem; }
+.trend-title { font-size: 0.78rem; font-weight: 700; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.3rem; }
+.trend-meta  { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+.trend-cert  { font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.35rem; border-radius: 3px; border: 1.5px solid currentColor; white-space: nowrap; }
+.trend-cert.green  { color: #248a52; }
+.trend-cert.yellow { color: #b07800; }
+.trend-cert.red    { color: #c0392b; }
+.trend-cert.grey   { color: var(--muted); }
+.trend-year        { font-size: 0.67rem; color: var(--muted); }
+.trend-cached {
+  position: absolute; top: 0.4rem; right: 0.4rem;
+  background: rgba(42,107,85,0.92); color: white;
+  font-size: 0.55rem; font-weight: 700; letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem; border-radius: 4px; text-transform: uppercase;
+}
+.trend-check-btn {
+  display: block; width: 100%; background: var(--text); color: white; border: none;
+  border-radius: var(--radius-pill); padding: 0.4rem 0.75rem;
+  font-family: var(--font); font-size: 0.72rem; font-weight: 600;
+  cursor: pointer; text-align: center; transition: opacity 0.15s;
+}
+.trend-check-btn:hover { opacity: 0.78; }
+.trend-skel        { min-width: 145px; flex-shrink: 0; background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); overflow: hidden; }
+.trend-skel-poster { width: 100%; aspect-ratio: 2/3; background: linear-gradient(90deg, #e5e5ea 25%, #ebebf0 50%, #e5e5ea 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.trend-skel-body   { padding: 0.65rem 0.75rem; }
+.trend-skel-line   { height: 10px; border-radius: 5px; margin-bottom: 0.4rem; background: linear-gradient(90deg, #e5e5ea 25%, #ebebf0 50%, #e5e5ea 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+
+/* ── Digest banner ─────────────────────────────────────────────────────── */
+.digest-banner {
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 1.1rem 1.25rem; margin-top: 0.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  text-decoration: none; color: var(--text); border: 1px solid var(--border);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.38s;
+}
+.digest-banner:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+.digest-icon  { font-size: 1.75rem; flex-shrink: 0; }
+.digest-text strong { font-size: 0.875rem; font-weight: 700; display: block; }
+.digest-text span   { font-size: 0.75rem; color: var(--muted); }
+.digest-arrow { color: var(--muted); margin-left: auto; flex-shrink: 0; }
+
+/* ── Locked sections (free users) ──────────────────────────────────────── */
+.locked-overlay { display: none; }
+.section-locked { opacity: 1; pointer-events: auto; }
+.section-locked::after { display: none; }
+.profiles-section { margin-bottom: 1rem; opacity: 0; animation: fadeUp 0.4s ease forwards 0.15s; }
+
+/* ── Modal ─────────────────────────────────────────────────────────────── */
+.modal-overlay  { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); align-items: flex-end; justify-content: center; }
+.modal-overlay.visible { display: flex; }
+.modal-sheet    { background: var(--surface); border-radius: 20px 20px 0 0; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.28s ease forwards; padding-bottom: env(safe-area-inset-bottom, 1rem); }
+.modal-handle   { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0.75rem auto 0; }
+.modal-header   { padding: 1rem 1.5rem 0.85rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+.modal-close    { background: var(--surface2); border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; color: var(--text2); }
+.modal-body     { padding: 1.25rem 1.5rem; }
+.modal-footer   { padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.field          { margin-bottom: 1rem; }
+.field label    { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 0.35rem; }
+.field input    { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; font-family: var(--font); font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.2s; }
+.field input:focus { border-color: var(--accent); background: white; }
+.field input::placeholder { color: var(--muted); }
+.btn-primary      { background: var(--text); color: white; border: none; border-radius: var(--radius-pill); padding: 0.75rem; font-family: var(--font); font-size: 0.875rem; font-weight: 600; cursor: pointer; width: 100%; transition: opacity 0.15s; }
+.btn-primary:hover { opacity: 0.82; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost-modal  { background: var(--surface2); color: var(--text2); border: none; border-radius: var(--radius-pill); padding: 0.75rem; font-family: var(--font); font-size: 0.875rem; font-weight: 500; cursor: pointer; width: 100%; }
+.btn-ghost-modal:hover { background: #e5e5ea; }
+.emoji-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.35rem; }
+.emoji-btn  { font-size: 1.4rem; padding: 0.3rem 0.35rem; background: var(--surface2); border: 2px solid transparent; border-radius: 8px; cursor: pointer; line-height: 1; transition: all 0.12s; }
+.emoji-btn:hover   { background: var(--accent-light); }
+.emoji-btn.selected { background: var(--accent-light); border-color: var(--accent); }
+
+/* ── Toast ─────────────────────────────────────────────────────────────── */
+.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: var(--radius-pill); font-size: 0.82rem; font-weight: 500; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 760px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid var(--border); }
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--text); }
+.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--text); display: flex; align-items: center; justify-content: center; }
+.footer-logo-text { font-size: 0.88rem; color: var(--text); }
+.footer-logo-text strong { font-weight: 700; }
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .hero-banner { padding: 2rem 1.1rem 2.8rem; }
+  .hero-greeting { font-size: 1.6rem; }
+  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
+  .stats-row { gap: 0.5rem; }
+  .stat-num { font-size: 1.75rem; }
+  .stat-card { padding: 0.9rem 0.85rem; }
+  .dash-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+  .trial-banner { flex-wrap: wrap; gap: 0.6rem; }
+  .trial-banner-btn { width: 100%; text-align: center; }
+}
+@media (max-width: 380px) {
+  .hero-greeting { font-size: 1.35rem; }
+  .stat-num { font-size: 1.5rem; }
+  .stat-label { font-size: 0.6rem; }
+  .page-wrap { padding: 1rem 0.65rem 4rem; }
+}
 
 /* ── Trending ─────────────────────────────────────────────────────────── */
 .trending-section {
@@ -439,45 +751,6 @@ body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Footer ── */
-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 0.75rem;
-  max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem;
-  border-top: 1px solid rgba(0,0,0,0.08);
-}
-footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
-.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-.footer-logo-text { font-size: 0.88rem; color: var(--text); }
-.footer-logo-text strong { font-weight: 700; }
-
-@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-
-/* ── Responsive ── */
-@media (max-width: 599px) {
-  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
-  .trending-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-  .welcome-bar { padding: 1rem 1.1rem; gap: 0.75rem; }
-  .stats-row { gap: 0.5rem; }
-  .stat-num { font-size: 1.55rem; }
-  .stat-card { padding: 0.85rem 0.5rem; }
-  .profiles-grid { grid-template-columns: repeat(3, 1fr); }
-  .dash-grid { grid-template-columns: 1fr; }
-  .digest-banner { padding: 1rem; }
-  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
-}
-@media (max-width: 380px) {
-  .stat-num { font-size: 1.3rem; }
-  .stat-label { font-size: 0.6rem; }
-  .welcome-text h2 { font-size: 0.92rem; }
-  .btn-search { font-size: 0.75rem; padding: 0.45rem 0.85rem; }
-  .page-wrap { padding: 1rem 0.65rem 4rem; }
-  .action-label { font-size: 0.82rem; }
-  .action-sub { font-size: 0.72rem; }
-}
 </style>
 <meta property="og:image" content="https://oktowatch.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -487,80 +760,48 @@ footer a:hover { color: var(--accent); }
 
 <div id="nav-root"></div>
 
+<!-- ── Apple Gradient Hero Banner ────────────────────────────────────────────── -->
+<div class="hero-banner">
+  <div class="hero-inner">
+    <div class="hero-greeting" id="welcomeName">Welcome back</div>
+    <div class="hero-sub" id="welcomeSub">Your family’s OkToWatch</div>
+    <!-- Profile pills rendered by JS into #profilesGrid -->
+    <div class="profiles-section" style="margin-bottom:0;animation:none;opacity:1;">
+      <span id="profilesPremiumBadge" style="display:none;"></span>
+      <div class="hero-profiles" id="profilesGrid"></div>
+    </div>
+    <!-- Search -->
+    <div class="hero-search" onclick="document.getElementById('dashRealInput').focus()">
+      <span style="color:rgba(255,255,255,0.5);font-size:0.9rem;">&#128269;</span>
+      <input type="text" id="dashRealInput" placeholder="Search any title…" readonly
+        onfocus="this.blur(); window.cvOpenSearchModal && window.cvOpenSearchModal();">
+      <span class="hero-search-kbd">⌘K</span>
+    </div>
+  </div>
+</div>
+
+<!-- hidden avatar kept for JS compat -->
+<div id="welcomeAvatar" style="display:none;"></div>
+
 <div class="page-wrap">
 
   <!-- ── Skeleton loader ── -->
   <div id="pageLoader">
-    <!-- Welcome bar skeleton -->
-    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:1.1rem 1.5rem;">
-      <div class="skel skel-avatar"></div>
-      <div style="flex:1;">
-        <div class="skel skel-line" style="width:55%;"></div>
-        <div class="skel skel-line" style="width:35%;margin-bottom:0;"></div>
-      </div>
-      <div class="skel" style="width:88px;height:34px;border-radius:100px;flex-shrink:0;"></div>
-    </div>
-    <!-- Stats skeleton -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
-      <div class="skel-card" style="text-align:center;padding:1rem 0.75rem;">
-        <div class="skel skel-line" style="width:50%;margin:0 auto 0.4rem;height:28px;border-radius:6px;"></div>
-        <div class="skel skel-line" style="width:70%;margin:0 auto;height:10px;"></div>
-      </div>
-      <div class="skel-card" style="text-align:center;padding:1rem 0.75rem;">
-        <div class="skel skel-line" style="width:50%;margin:0 auto 0.4rem;height:28px;border-radius:6px;"></div>
-        <div class="skel skel-line" style="width:70%;margin:0 auto;height:10px;"></div>
-      </div>
-      <div class="skel-card" style="text-align:center;padding:1rem 0.75rem;">
-        <div class="skel skel-line" style="width:50%;margin:0 auto 0.4rem;height:28px;border-radius:6px;"></div>
-        <div class="skel skel-line" style="width:70%;margin:0 auto;height:10px;"></div>
-      </div>
+      <div class="skel-card" style="padding:1.1rem 1rem;"><div class="skel skel-line" style="width:30%;height:10px;margin-bottom:0.75rem;"></div><div class="skel skel-line" style="width:45%;height:28px;margin-bottom:0.5rem;border-radius:6px;"></div><div class="skel skel-line" style="width:65%;height:8px;margin-bottom:0;"></div></div>
+      <div class="skel-card" style="padding:1.1rem 1rem;"><div class="skel skel-line" style="width:30%;height:10px;margin-bottom:0.75rem;"></div><div class="skel skel-line" style="width:45%;height:28px;margin-bottom:0.5rem;border-radius:6px;"></div><div class="skel skel-line" style="width:65%;height:8px;margin-bottom:0;"></div></div>
+      <div class="skel-card" style="padding:1.1rem 1rem;"><div class="skel skel-line" style="width:30%;height:10px;margin-bottom:0.75rem;"></div><div class="skel skel-line" style="width:45%;height:28px;margin-bottom:0.5rem;border-radius:6px;"></div><div class="skel skel-line" style="width:65%;height:8px;margin-bottom:0;"></div></div>
     </div>
-    <!-- Profiles skeleton -->
-    <div class="skel-card" style="margin-bottom:1rem;">
-      <div class="skel skel-line" style="width:30%;height:10px;margin-bottom:1rem;"></div>
-      <div style="display:flex;gap:0.65rem;">
-        <div class="skel" style="height:90px;border-radius:10px;flex:1;"></div>
-        <div class="skel" style="height:90px;border-radius:10px;flex:1;"></div>
-        <div class="skel" style="height:90px;border-radius:10px;flex:1;"></div>
-        <div class="skel" style="height:90px;border-radius:10px;flex:1;"></div>
-      </div>
-    </div>
-    <!-- Two-col grid skeleton -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div class="skel-card">
-        <div class="skel skel-line" style="width:45%;height:10px;margin-bottom:1rem;"></div>
-        <div class="skel skel-block"></div>
-        <div class="skel skel-block"></div>
-        <div class="skel skel-block" style="margin-bottom:0;"></div>
-      </div>
-      <div class="skel-card">
-        <div class="skel skel-line" style="width:45%;height:10px;margin-bottom:1rem;"></div>
-        <div class="skel skel-block"></div>
-        <div class="skel skel-block"></div>
-        <div class="skel skel-block" style="margin-bottom:0;"></div>
-      </div>
+      <div class="skel-card"><div class="skel skel-line" style="width:40%;height:10px;margin-bottom:1rem;"></div><div class="skel skel-block"></div><div class="skel skel-block"></div><div class="skel skel-block" style="margin-bottom:0;"></div></div>
+      <div class="skel-card"><div class="skel skel-line" style="width:40%;height:10px;margin-bottom:1rem;"></div><div class="skel skel-block"></div><div class="skel skel-block"></div><div class="skel skel-block" style="margin-bottom:0;"></div></div>
     </div>
   </div>
 
   <!-- ── Page content ── -->
   <div id="pageContent">
 
-    <!-- Welcome bar -->
-    <div class="welcome-bar">
-      <div class="welcome-avatar" id="welcomeAvatar">👋</div>
-      <div class="welcome-text">
-        <h2 id="welcomeName">Welcome back</h2>
-        <p id="welcomeSub">Your family's OkToWatch</p>
-      </div>
-      <div class="dash-search-input" onclick="document.getElementById('dashRealInput').focus()">
-        <span style="font-size:0.85rem;color:var(--muted)">🔍</span>
-        <input type="text" id="dashRealInput" placeholder="Search any title..." readonly onfocus="this.blur(); window.cvOpenSearchModal && window.cvOpenSearchModal();">
-        <span class="dash-search-kbd">⌘K</span>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <!-- Account banner -->
+    <!-- Trial banner -->
     <div class="trial-banner" id="trialBanner" style="display:none;">
       <span class="trial-banner-icon">✨</span>
       <div class="trial-banner-text">
@@ -571,25 +812,26 @@ footer a:hover { color: var(--accent); }
       <button class="trial-banner-close" id="trialBannerClose" aria-label="Dismiss">✕</button>
     </div>
 
+    <!-- Stats bento -->
     <div class="stats-row">
       <div class="stat-card">
+        <span class="stat-icon">🔍</span>
         <div class="stat-num" id="statSearches">0</div>
         <div class="stat-label">Searches</div>
+        <div class="stat-spark" id="sparkSearches"></div>
       </div>
       <div class="stat-card">
+        <span class="stat-icon">✅</span>
         <div class="stat-num" id="statApproved">0</div>
         <div class="stat-label">Approved</div>
+        <div class="stat-spark" id="sparkApproved"></div>
       </div>
       <div class="stat-card">
+        <span class="stat-icon">🚫</span>
         <div class="stat-num" id="statBlocked">0</div>
         <div class="stat-label">Blocked</div>
+        <div class="stat-spark" id="sparkBlocked"></div>
       </div>
-    </div>
-
-    <!-- Family profiles -->
-    <div class="profiles-section">
-      <div class="section-label">Family Profiles <span style="font-size:0.85rem;color:var(--accent);margin-left:0.5rem;" id="profilesPremiumBadge">pro</span></div>
-      <div class="profiles-grid" id="profilesGrid"></div>
     </div>
 
     <!-- Quick actions + Recent searches -->
@@ -603,7 +845,7 @@ footer a:hover { color: var(--accent); }
         </a>
         <a class="action-item" href="/lists?tab=approved">
           <div class="action-icon ai-green">✅</div>
-          <div class="action-text"><strong>Approved List</strong><span>Titles you've greenlit</span></div>
+          <div class="action-text"><strong>Approved List</strong><span>Titles you’ve greenlit</span></div>
           <span class="action-arrow">›</span>
         </a>
         <a class="action-item" href="/lists?tab=blocked">
@@ -618,11 +860,10 @@ footer a:hover { color: var(--accent); }
         </a>
         <a class="action-item" href="/history">
           <div class="action-icon ai-blue">📋</div>
-          <div class="action-text"><strong>Full History</strong><span>Everything you've checked</span></div>
+          <div class="action-text"><strong>Full History</strong><span>Everything you’ve checked</span></div>
           <span class="action-arrow">›</span>
         </a>
       </div>
-
       <div class="card" style="opacity:0;animation:fadeUp 0.4s ease forwards 0.25s;">
         <div class="section-label">Recent Searches</div>
         <div id="dashRecent">
@@ -634,7 +875,7 @@ footer a:hover { color: var(--accent); }
       </div>
     </div>
 
-    <!-- Trending this week -->
+    <!-- Trending carousel -->
     <div class="trending-section" id="trendingSection">
       <div class="trending-header">
         <div class="section-label" style="margin-bottom:0;">Trending this week</div>
@@ -644,31 +885,48 @@ footer a:hover { color: var(--accent); }
         </div>
       </div>
       <div class="trending-grid" id="trendingGrid">
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Weekly digest nudge -->
+    <a class="digest-banner" href="/settings/#digest">
+      <span class="digest-icon">📬</span>
+      <div class="digest-text">
+        <strong>Weekly Safe Picks</strong>
+        <span>A personalised email every week — titles safe for your family’s ages.</span>
+      </div>
+      <span class="digest-arrow">›</span>
+    </a>
+
+  </div><!-- end #pageContent -->
+
+</div><!-- end .page-wrap -->
+
+<footer>
+  <a class="footer-logo" href="/dashboard">
+    <div class="footer-logo-mark">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
+  </a>
+  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
+    <a href="/about">About</a>
+    <a href="/privacy">Privacy</a>
+  </div>
+  <p>© 2026 OkToWatch</p>
+  <div style="width:100%;border-top:1px solid var(--border);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.4;" loading="lazy">
+    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>idth:80%"></div>
             <div class="trend-skel-line" style="width:50%"></div>
           </div>
         </div>
@@ -777,6 +1035,20 @@ let selectedEmoji = '👧';
 let _profiles = [];
 let _history  = [];
 let _lists    = [];
+
+// ── Sparkline helper ──────────────────────────────────────────────────────
+function renderSpark(id, value, colorClass) {
+  const el = document.getElementById(id);
+  if (!el || !value) return;
+  const bars = 7;
+  const heights = Array.from({length: bars}, (_, i) => {
+    if (i === bars - 1) return 100;
+    return Math.round(20 + Math.random() * 70);
+  });
+  el.innerHTML = heights.map((h, i) =>
+    `<div class="spark-bar${i === bars-1 ? ' ' + colorClass : ''}" style="height:${h}%"></div>`
+  ).join('');
+}
 
 // ── Toast ─────────────────────────────────────────────────────────────────
 function showToast(msg) {
@@ -901,6 +1173,12 @@ async function loadDashboard(user) {
   animateNum('statSearches', _history.length);
   animateNum('statApproved', _lists.filter(l => l.list_type === 'approved').length);
   animateNum('statBlocked',  _lists.filter(l => l.list_type === 'blocked').length);
+  // Sparklines
+  setTimeout(() => {
+    renderSpark('sparkSearches', _history.length, 'accent');
+    renderSpark('sparkApproved', _lists.filter(l => l.list_type === 'approved').length, 'green');
+    renderSpark('sparkBlocked',  _lists.filter(l => l.list_type === 'blocked').length, 'red');
+  }, 400);
   renderProfiles();
   renderRecent();
   loadTrending('movie');
