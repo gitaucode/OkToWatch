@@ -250,7 +250,7 @@
   .cv-nav-logo-text strong { font-weight: 700; }
   .cv-nav-links {
     display: flex; align-items: center; gap: 0.25rem;
-    margin-left: auto;
+    flex: 1; justify-content: center;
   }
   .nav-link {
     font-family: 'DM Sans', sans-serif;
@@ -600,6 +600,12 @@
       detail: { loggedIn, isPro, isFamily, user: clerkUser || null }
     }));
   }
+
+  // ── Reserve nav height early to prevent layout shift ───────────────────
+  (function reserveNavHeight() {
+    const navRoot = document.getElementById('nav-root');
+    if (navRoot) navRoot.style.minHeight = '56px';
+  })();
 
   // ── Preconnect to Clerk CDN as early as possible ────────────────────────
   (function() {
