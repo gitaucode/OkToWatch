@@ -576,8 +576,8 @@
     if (modal) {
       modal.classList.add('open');
       if (input) {
-        // give it a tiny delay for transitions
-        setTimeout(() => input.focus(), 50);
+        input.focus(); // Synchronous focus
+        setTimeout(() => input.focus(), 50); // Fallback after transition
       }
     }
   };

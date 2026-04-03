@@ -168,7 +168,7 @@ body {
 .dash-search-input input {
   border: none; background: transparent; outline: none;
   font-family: 'DM Sans', sans-serif; font-size: 0.85rem; width: 100%;
-  color: var(--text); pointer-events: none;
+  color: var(--text);
 }
 .dash-search-input input::placeholder { color: var(--muted); }
 .dash-search-kbd {
@@ -552,9 +552,9 @@ footer a:hover { color: var(--accent); }
         <h2 id="welcomeName">Welcome back</h2>
         <p id="welcomeSub">Your family's OkToWatch</p>
       </div>
-      <div class="dash-search-input" onclick="window.cvOpenSearchModal && window.cvOpenSearchModal()">
+      <div class="dash-search-input" onclick="document.getElementById('dashRealInput').focus()">
         <span style="font-size:0.85rem;color:var(--muted)">🔍</span>
-        <input type="text" placeholder="Search any title..." readonly tabindex="-1">
+        <input type="text" id="dashRealInput" placeholder="Search any title..." readonly onfocus="this.blur(); window.cvOpenSearchModal && window.cvOpenSearchModal();">
         <span class="dash-search-kbd">⌘K</span>
       </div>
     </div>
@@ -1191,6 +1191,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 </script>
-<script src="/js/auth.js?v=20260403"></script>
+<script src="/js/auth.js?v=20260403_2"></script>
 </body>
 </html>
