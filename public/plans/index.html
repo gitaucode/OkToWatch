@@ -254,7 +254,6 @@ footer a:hover { color: var(--accent); }
     <div class="plan-card pro">
       <div class="popular-badge">Available now</div>
       <div class="plan-name">Pro</div>
-      <div class="trial-badge" id="proTrialBadge">🂊 14-day free trial</div>
       <div class="plan-price" id="proPrice"><sup>$</sup>4.99<span id="proPeriod">/mo</span></div>
       <div class="plan-price-alt" id="proAlt">Billed monthly · cancel anytime</div>
       <div class="plan-divider"></div>
@@ -268,13 +267,12 @@ footer a:hover { color: var(--accent); }
         <li><span class="feat-icon">✅</span> Compare mode</li>
         <li><span class="feat-icon">❌</span> Family sharing & up to 5 profiles</li>
       </ul>
-      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Start free trial</button>
+      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Upgrade to Pro</button>
     </div>
 
     <!-- Family -->
     <div class="plan-card family">
       <div class="plan-name">Family</div>
-      <div class="trial-badge" id="familyTrialBadge">🂊 14-day free trial</div>
       <div class="plan-price" id="familyPrice"><sup>$</sup>7.99<span id="familyPeriod">/mo</span></div>
       <div class="plan-price-alt" id="familyAlt">Billed monthly · cancel anytime</div>
       <div class="plan-divider"></div>
@@ -287,7 +285,7 @@ footer a:hover { color: var(--accent); }
         <li><span class="feat-icon">✅</span> Family dashboard & digest</li>
         <li><span class="feat-icon">✅</span> Priority support</li>
       </ul>
-      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Start free trial</button>
+      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Upgrade to Family</button>
     </div>
 
   </div>
@@ -336,18 +334,18 @@ footer a:hover { color: var(--accent); }
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Can I try Pro or Family free?
+        How does the free plan work?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">Yes — both plans include a 14-day free trial. No credit card required to start, and you can cancel anytime.</div>
+      <div class="faq-a">The free plan lets you search unlimited titles and get AI insights. Pro and Family plans add saved lists, multiple profiles, and more. Upgrade anytime to unlock premium features.</div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Do I need a credit card for the free trial?
+        Can I change my plan?
         <span class="faq-arrow">▾</span>
       </button>
-      <div class="faq-a">No. You can start either 14-day trial without providing payment details upfront.</div>
+      <div class="faq-a">Yes. You can upgrade or downgrade anytime. Plan changes take effect at your next billing cycle.</div>
     </div>
 
     <div class="faq-item">
@@ -413,30 +411,17 @@ function initBillingToggle() {
     document.getElementById('labelYearly').classList.toggle('active', isYearly);
 
     if (isYearly) {
-      // Yearly — no trial, +1 month free
+      // Yearly pricing
       document.getElementById('proPrice').innerHTML    = `<sup>$</sup>${PRICES.pro.yearly.replace('$', '')}<span id="proPeriod">/yr</span>`;
       document.getElementById('proAlt').textContent    = `Billed annually · ${PRICES.pro.yearly}/yr`;
       document.getElementById('familyPrice').innerHTML = `<sup>$</sup>${PRICES.family.yearly.replace('$', '')}<span id="familyPeriod">/yr</span>`;
       document.getElementById('familyAlt').textContent = `Billed annually · ${PRICES.family.yearly}/yr`;
-      document.getElementById('proTrialBadge').style.display    = 'none';
-      document.getElementById('familyTrialBadge').style.display = 'none';
-      // Update CTAs if not already on a plan
-      const proCta = document.getElementById('proCta');
-      const famCta = document.getElementById('familyCta');
-      if (proCta?.dataset.state !== 'current')    proCta.textContent = 'Start free trial';
-      if (famCta?.dataset.state !== 'current')  famCta.textContent = 'Start free trial';
     } else {
-      // Monthly — 14-day trial
+      // Monthly pricing
       document.getElementById('proPrice').innerHTML    = `<sup>$</sup>4.99<span id="proPeriod">/mo</span>`;
       document.getElementById('proAlt').textContent    = 'Billed monthly · cancel anytime';
       document.getElementById('familyPrice').innerHTML = `<sup>$</sup>7.99<span id="familyPeriod">/mo</span>`;
       document.getElementById('familyAlt').textContent = 'Billed monthly · cancel anytime';
-      document.getElementById('proTrialBadge').style.display    = '';
-      document.getElementById('familyTrialBadge').style.display = '';
-      const proCta = document.getElementById('proCta');
-      const famCta = document.getElementById('familyCta');
-      if (proCta?.dataset.state !== 'current')    proCta.textContent = 'Start free trial';
-      if (famCta?.dataset.state !== 'current')  famCta.textContent = 'Start free trial';
     }
   });
 }

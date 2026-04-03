@@ -107,9 +107,9 @@ async function handlePaymentConfirmed(event, db, clerk) {
         orderId,
         tier,
         cycle,
-        'trial', // Start in trial status
+        'active', // Immediate activation, no trial
         cents,
-        new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19),
+        null, // No trial period
         sqlRenewal,
         sqlNow,
         sqlNow
@@ -124,7 +124,7 @@ async function handlePaymentConfirmed(event, db, clerk) {
         await clerk.users.updateUser(userId, {
           unsafeMetadata: {
             subscriptionTier: tier,
-            subscriptionStatus: 'trial',
+            subscriptionStatus: 'active',
             subscriptionExpires: renewalDate,
           },
         });
