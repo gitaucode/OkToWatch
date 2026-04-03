@@ -241,7 +241,58 @@ footer a:hover { color: var(--accent); }
     document.getElementById('clerk-signup').classList.add('ready');
   }
 
+  // Get plan from URL params
+  function getPlanFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      plan: params.get('plan'),
+      cycle: params.get('cycle') || 'monthly'
+    };
+  }
+
+  async function triggerCheckout(plan, billingCycle) {
+    try {
+      const token = localStorage.getItem('clerk_session_token');
+      if (!token) {
+        // If no token yet, wait a bit and try again
+        setTimeout(() => triggerCheckout(plan, billingCycle), 500);
+        return;
+      }
+
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          plan,
+          billingCycle,
+          redirectUrl: '/dashboard',
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Checkout error:', response.status);
+        window.location.href = '/dashboard';
+        return;
+      }
+
+      const { checkoutUrl } = await response.json();
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+      window.location.href = '/dashboard';
+    }
+  }
+
   async function boot() {
+    const { plan, cycle } = getPlanFromUrl();
+    
     // Show "taking longer than usual" after 3s
     const slowTimer = setTimeout(() => {
       const sk = document.getElementById('clerkSkeleton');
@@ -256,12 +307,18 @@ footer a:hover { color: var(--accent); }
     await window.Clerk.load();
 
     if (window.Clerk.user) {
-      window.location.href = '/dashboard';
+      if (plan && ['pro', 'family'].includes(plan)) {
+        triggerCheckout(plan, cycle);
+      } else {
+        window.location.href = '/dashboard';
+      }
       return;
     }
 
+    const afterSignUpUrl = plan && ['pro', 'family'].includes(plan) ? '/signup' : '/dashboard';
+
     window.Clerk.mountSignUp(document.getElementById('clerk-signup'), {
-      afterSignUpUrl: '/dashboard',
+      afterSignUpUrl: afterSignUpUrl,
       signInUrl: '/signin',
       appearance: {
         variables: {
@@ -282,11 +339,26 @@ footer a:hover { color: var(--accent); }
       }
     });
 
-    // Poll for Clerk card render, then swap skeleton → real form
-    const poll = setInterval(() => {
-      const card = document.querySelector('#clerk-signup .cl-card, #clerk-signup [data-localization-key]');
-      if (card) { clearInterval(poll); showClerk(); }
-    }, 80);
+    // If plan exists, after signup completes, trigger checkout
+    let poll;
+    if (plan && ['pro', 'family'].includes(plan)) {
+      poll = setInterval(() => {
+        if (window.Clerk.user) {
+          clearInterval(poll);
+          // Signup successful, trigger checkout
+          triggerCheckout(plan, cycle);
+        }
+      }, 100);
+      
+      // Timeout after 30s
+      setTimeout(() => clearInterval(poll), 30000);
+    } else {
+      // Poll for Clerk card render, then swap skeleton → real form
+      poll = setInterval(() => {
+        const card = document.querySelector('#clerk-signup .cl-card, #clerk-signup [data-localization-key]');
+        if (card) { clearInterval(poll); showClerk(); }
+      }, 80);
+    }
 
     // Fallback after 2.5s
     setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);

@@ -249,7 +249,7 @@ footer a:hover { color: var(--accent); }
         <li><span class="feat-icon">❌</span> Synced history</li>
         <li><span class="feat-icon">❌</span> Family sharing</li>
       </ul>
-      <button class="plan-cta" style="background:var(--surface2);color:var(--text);" onclick="handleUpgrade('free')">Start searching free</button>
+      <button class="plan-cta" style="background:var(--surface2);color:var(--text);" onclick="handleUpgrade('free')">Start</button>
     </div>
 
     <!-- Pro -->
@@ -468,7 +468,11 @@ async function handleUpgrade(plan) {
 
   // For Pro/Family, need to be logged in
   if (!token) {
-    window.location.href = '/signup';
+    // Get billing cycle from toggle
+    const billingToggle = document.getElementById('billingToggle');
+    const isYearly = billingToggle?.classList.contains('yearly');
+    const cycle = isYearly ? 'yearly' : 'monthly';
+    window.location.href = `/signup?plan=${plan}&cycle=${cycle}`;
     return;
   }
 
@@ -488,7 +492,7 @@ async function handleUpgrade(plan) {
       body: JSON.stringify({
         plan,
         billingCycle,
-        redirectUrl: window.location.href,
+        redirectUrl: '/dashboard',
       }),
     });
 

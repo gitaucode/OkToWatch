@@ -115,7 +115,6 @@ async function createDodoCheckoutSession(customerId, plan, billingCycle, returnU
             quantity: 1,
             price_cents: product.price,
             interval: product.interval,
-            trial_days: 30, // 30-day free trial
           },
         ],
         success_url: `${returnUrl}?checkout=success`,
