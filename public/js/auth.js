@@ -464,7 +464,7 @@
       btn.addEventListener('click', async () => {
         try {
           await window.Clerk.signOut();
-          window.location.href = '/index';
+          window.location.href = '/';
         } catch (e) {
           console.error('Sign out failed', e);
         }

@@ -294,7 +294,7 @@ tbody td { padding: 0.7rem 1rem; font-size: 0.82rem; vertical-align: middle; }
 
 <!-- Top bar -->
 <div class="topbar" style="display:none;" id="appShell">
-  <a class="topbar-logo" href="/index">
+  <a class="topbar-logo" href="/dashboard">
     <div class="topbar-logo-mark">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
     </div>
@@ -578,7 +578,7 @@ let pendingUserId = null, pendingAnnId = null;
   // Sign out
   document.getElementById('topbarSignOut').onclick = async () => {
     await window.Clerk.signOut();
-    window.location.href = '/index';
+    window.location.href = '/';
   };
 
   // Nav
