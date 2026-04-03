@@ -1655,6 +1655,13 @@ window.addEventListener('DOMContentLoaded',()=>{
   else if(paramQ){ heroInput.value=paramQ; doSearch(); }
   else { initOnboarding(); }
 });
+
+// Redirect logged-in users to the dashboard automatically
+document.addEventListener('cv:auth', (e) => {
+  if (e.detail.loggedIn) {
+    window.location.replace('/dashboard');
+  }
+});
 </script>
 <script>
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('/sw.js').then(r=>console.log('SW registered')).catch(e=>console.log('SW failed:',e)); }); }

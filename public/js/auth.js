@@ -105,7 +105,7 @@
     root.innerHTML = `
 <nav class="cv-nav" id="cvNav">
   <div class="cv-nav-inner">
-    <a href="/index" class="cv-nav-logo">
+    <a href="${loggedIn ? '/dashboard' : '/index'}" class="cv-nav-logo">
       <div class="cv-nav-logo-mark">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="3" fill="white"/>
@@ -141,7 +141,12 @@
 <div class="cv-nav-mobile-overlay" id="cvNavOverlay"></div>
 <div class="cv-nav-mobile" id="cvNavMobile">
   <div class="cv-nav-mobile-inner">
-    <div class="cv-nav-mobile-links">${linkHTML}</div>
+    <div class="cv-nav-mobile-links">
+      <a href="/dashboard" class="nav-link ${window.location.pathname.includes('dashboard') ? 'active' : ''}">Dashboard</a>
+      <a href="/lists" class="nav-link ${window.location.pathname.includes('lists') ? 'active' : ''}">Lists</a>
+      <a href="/discover" class="nav-link ${window.location.pathname.includes('discover') ? 'active' : ''}">Discover</a>
+      <a href="/history" class="nav-link ${window.location.pathname.includes('history') ? 'active' : ''}">History</a>
+    </div>
     <div class="cv-nav-mobile-actions">
       ${!loggedIn
         ? `<a href="/signin" class="nav-btn nav-btn--ghost" style="width:100%;text-align:center;">Sign in</a>
