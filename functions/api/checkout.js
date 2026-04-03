@@ -104,7 +104,7 @@ async function createDodoCheckoutSession(customerId, plan, billingCycle, returnU
     const response = await fetch(`${DODO_API_BASE}/checkout_sessions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${DODO_API_KEY}`,
+        'Authorization': `Bearer ${env.DODO_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -207,11 +207,10 @@ export async function onRequest(context) {
 
     const returnUrl = redirectUrl || `${new URL(request.url).origin}/dashboard`;
 
-    // Get user info from Clerk (using the token to fetch user details)
-    // Note: In a real implementation, you'd decode the token or use Clerk's API
-    // For now, we'll use the user ID directly
-    const userEmail = `user_${userId}@oktowatch.local`; // Placeholder
-    const userName = `User ${userId}`; // Placeholder
+    // Get user info from Clerk response
+    const userData = auth.user;
+    const userEmail = userData?.email_addresses?.[0]?.email_address || userData?.primary_email_address_id || `user_${userId}@oktowatch.local`;
+    const userName = userData?.first_name || userData?.username || `User ${userId}`;
 
     // Get or create Dodo customer
     const customerId = await getOrCreateDodoCustomer(userId, userEmail, userName, env);
