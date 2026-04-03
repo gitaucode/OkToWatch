@@ -227,20 +227,27 @@ body {
 
 /* ── Locked sections for free users ── */
 .locked-overlay {
-  position: absolute; inset: 0; background: rgba(255,255,255,0.85);
-  border-radius: inherit; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 0.35rem;
-  z-index: 10; backdrop-filter: blur(1px);
+  display: none;
 }
-.locked-icon { font-size: 1.8rem; }
-.locked-label { font-size: 0.65rem; font-weight: 700; color: var(--text2); letter-spacing: 0.05em; text-transform: uppercase; }
-.locked-plan { font-size: 0.6rem; color: var(--muted); margin-top: 0.1rem; }
 .section-locked {
-  position: relative; opacity: 0.6; pointer-events: none;
+  opacity: 1;
+  pointer-events: auto;
 }
 .section-locked::after {
-  content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.7);
-  border-radius: inherit; z-index: 5;
+  display: none;
+}
+
+/* ── Premium badge ── */
+#profilesPremiumBadge {
+  display: none;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 /* ── Dash grid ── */
@@ -568,7 +575,7 @@ footer a:hover { color: var(--accent); }
 
     <!-- Family profiles -->
     <div class="profiles-section">
-      <div class="section-label">Family Profiles</div>
+      <div class="section-label">Family Profiles <span style="font-size:0.85rem;color:var(--accent);margin-left:0.5rem;" id="profilesPremiumBadge">pro</span></div>
       <div class="profiles-grid" id="profilesGrid"></div>
     </div>
 
@@ -718,6 +725,38 @@ footer a:hover { color: var(--accent); }
   </div>
 </div>
 
+<!-- Upgrade prompt modal -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h3>Upgrade to Pro</h3>
+      <button class="modal-close" onclick="closeUpgradeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;padding:1rem 0;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;" id="upgradeFeatureIcon">💎</div>
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;" id="upgradeFeatureTitle">Save Child Profiles</h2>
+        <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem;" id="upgradeFeatureDesc">Create and manage up to 2 child profiles per child, tailored content recommendations based on age.</p>
+        
+        <div style="background:var(--surface2);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;text-align:left;">
+          <div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:0.75rem;">Pro plan includes:</div>
+          <ul style="list-style:none;font-size:0.82rem;color:var(--text2);line-height:1.8;">
+            <li>✅ Up to 2 child profiles</li>
+            <li>✅ Synced search history</li>
+            <li>✅ Save approved/blocked lists</li>
+            <li>✅ Season-level analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="/plans" class="btn-primary" style="text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;">Start 14-day free trial</a>
+      <button class="btn-ghost-modal" onclick="closeUpgradeModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const EMOJIS = ['👧','👦','🧒','👶','🌟','🦁','🐼','🦊','🐸','🐨','🚀','⚽','🎮','🎨','🎵','🦋'];
 
@@ -860,44 +899,46 @@ async function loadDashboard(user) {
   }
 }
 
-// ── Apply locks for free users ────────────────────────────────────────────
+// ── Apply feature visibility for free users ────────────────────────────────────────────
 function applyFreeLocks() {
-  // Lock profiles section
-  const profilesSection = document.getElementById('profilesGrid')?.parentElement;
-  if (profilesSection) {
-    profilesSection.classList.add('section-locked');
-    const grid = document.getElementById('profilesGrid');
-    const overlay = document.createElement('div');
-    overlay.className = 'locked-overlay';
-    overlay.innerHTML = '<div class="locked-icon">🔒</div><div class="locked-label">Pro plan</div><div class="locked-plan">Save profiles</div>';
-    grid.style.position = 'relative';
-    grid.appendChild(overlay);
-  }
+  const tier = window.userTier || 'free';
   
-  // Lock lists section (stats)
-  const statsRow = document.querySelector('.stats-row');
-  if (statsRow) {
-    statsRow.classList.add('section-locked');
-    const overlay = document.createElement('div');
-    overlay.className = 'locked-overlay';
-    overlay.innerHTML = '<div class="locked-icon">🔒</div><div class="locked-label">Pro plan</div><div class="locked-plan">Save lists</div>';
-    statsRow.style.position = 'relative';
-    statsRow.appendChild(overlay);
+  if (tier === 'free') {
+    // Show premium badge for free users
+    document.getElementById('profilesPremiumBadge').style.display = 'inline-block';
+    
+    // Make profile cards trigger upgrade modal instead of opening
+    document.querySelectorAll('.profile-card:not(.add-card)').forEach(card => {
+      card.style.cursor = 'pointer';
+      card.onclick = (e) => {
+        e.stopPropagation();
+        showUpgradeModal('child-profiles', '👨‍👩‍👧', 'Save Child Profiles', 'Create and manage up to 2 child profiles per child, with content recommendations tailored to each child\'s age.');
+      };
+    });
+  } else {
+    // For paid users, hide premium badge
+    document.getElementById('profilesPremiumBadge').style.display = 'none';
   }
-  
-  // Disable profile clicks
-  document.querySelectorAll('.profile-card').forEach(card => {
-    card.style.cursor = 'not-allowed';
-    card.onclick = () => {
-      const msg = document.createElement('div');
-      msg.className = 'toast show';
-      msg.textContent = 'Upgrade to Pro to create child profiles';
-      msg.id = 'tempToast';
-      document.body.appendChild(msg);
-      setTimeout(() => msg.remove(), 3000);
-    };
-  });
 }
+
+// ── Upgrade modal handlers ─────────────────────────────────────────────────────────────
+function showUpgradeModal(feature, icon, title, desc) {
+  document.getElementById('upgradeFeatureIcon').textContent = icon;
+  document.getElementById('upgradeFeatureTitle').textContent = title;
+  document.getElementById('upgradeFeatureDesc').textContent = desc;
+  document.getElementById('upgradeModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeUpgradeModal() {
+  document.getElementById('upgradeModal').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.getElementById('upgradeModal')?.addEventListener('click', e => {
+  if (e.target === document.getElementById('upgradeModal')) closeUpgradeModal();
+});
 
 // ── Trending ─────────────────────────────────────────────────────────────
 let _trendType = 'movie';
@@ -1018,6 +1059,7 @@ function getActiveProfile() { return sessionStorage.getItem('cv_active_profile')
 function renderProfiles() {
   const active = getActiveProfile();
   const grid   = document.getElementById('profilesGrid');
+  const tier   = window.userTier || 'free';
   let html = '';
 
   if (_profiles.length) {
@@ -1035,7 +1077,11 @@ function renderProfiles() {
   }
 
   if (_profiles.length < 5) {
-    html += `<div class="profile-card add-card" onclick="openModal()">
+    const addAction = tier === 'free' 
+      ? `showUpgradeModal('child-profiles', '👨‍👩‍👧', 'Save Child Profiles', 'Create and manage up to 2 child profiles per child—each with age-appropriate content recommendations.')`
+      : `openModal()`;
+    
+    html += `<div class="profile-card add-card" onclick="${addAction}">
       <span class="profile-emoji" style="font-size:1.3rem;">＋</span>
       <div class="profile-name" style="font-size:0.72rem;">Add child</div>
     </div>`;
