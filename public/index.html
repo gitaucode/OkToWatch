@@ -491,6 +491,19 @@ footer a:hover { color: var(--accent); }
 .ob-btn-skip { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--muted); cursor: pointer; padding: 0.3rem; }
 .ob-btn-skip:hover { color: var(--text2); }
 
+/* Guest search limit wall */
+#guestSearchLimitOverlay { display: none; position: fixed; inset: 0; z-index: 650; background: rgba(20,30,26,0.75); backdrop-filter: blur(10px); align-items: flex-end; justify-content: center; }
+#guestSearchLimitOverlay.visible { display: flex; }
+.guest-limit-card { background: linear-gradient(180deg, #ffffff 0%, #fbfcfb 100%); border-radius: 24px 24px 0 0; box-shadow: 0 -16px 48px rgba(0,0,0,0.22); max-width: 520px; width: 100%; animation: slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; padding: 1.75rem; padding-bottom: max(1.75rem, env(safe-area-inset-bottom)); text-align: center; }
+.guest-limit-icon { font-size: 3.5rem; margin-bottom: 0.9rem; }
+.guest-limit-title { font-size: 1.45rem; font-weight: 700; letter-spacing: -0.035em; margin-bottom: 0.45rem; }
+.guest-limit-msg { font-size: 0.9rem; color: var(--text2); line-height: 1.65; margin-bottom: 1.5rem; }
+.guest-limit-cta { display: flex; flex-direction: column; gap: 0.6rem; }
+.guest-limit-btn-primary { background: linear-gradient(135deg, #1f5c47 0%, #2a6b55 100%); color: white; border: none; border-radius: 100px; padding: 0.9rem 1.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, opacity 0.15s; box-shadow: 0 10px 24px rgba(42,107,85,0.22); }
+.guest-limit-btn-primary:hover { opacity: 0.95; transform: translateY(-1px); }
+.guest-limit-btn-secondary { background: none; border: 1.5px solid var(--border); border-radius: 100px; padding: 0.8rem 1.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.15s; }
+.guest-limit-btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (min-width: 600px) {
@@ -864,6 +877,19 @@ footer a:hover { color: var(--accent); }
 <div class="share-toast" id="shareToast">Link copied!</div>
 <canvas id="shareCanvas"></canvas>
 
+<!-- Guest search limit wall -->
+<div id="guestSearchLimitOverlay">
+  <div class="guest-limit-card">
+    <div class="guest-limit-icon">🔓</div>
+    <h2 class="guest-limit-title">Get unlimited searches</h2>
+    <p class="guest-limit-msg">You've used 3 free searches. Sign up for a free account to search unlimited titles with full AI breakdowns.</p>
+    <div class="guest-limit-cta">
+      <a href="/signup" class="guest-limit-btn-primary">Sign up free →</a>
+      <button class="guest-limit-btn-secondary" onclick="document.getElementById('guestSearchLimitOverlay').classList.remove('visible')">Continue browsing</button>
+    </div>
+  </div>
+</div>
+
 <!-- Pro nudge -->
 <div class="pro-nudge" id="proNudge">
   <span id="proNudgeMsg">Create a free beta account to unlock this feature.</span>
@@ -1184,7 +1210,8 @@ function toggleHiddenCats(el) {
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────
 const API='', TMDB_W500='https://image.tmdb.org/t/p/w500', TMDB_W300='https://image.tmdb.org/t/p/w300', TMDB_LOGO='https://image.tmdb.org/t/p/w45';
-const HISTORY_KEY='cv_search_history', RECENT_KEY='cv_recently_viewed', MAX_HISTORY=3, MAX_RECENT=6;
+const HISTORY_KEY='cv_search_history', RECENT_KEY='cv_recently_viewed', MAX_HISTORY=3, MAX_RECENT=6, GUEST_SEARCHES_KEY='cv_guest_searches';
+const MAX_GUEST_SEARCHES=3;
 const levelClass={none:'level-none',mild:'level-mild',moderate:'level-moderate',strong:'level-strong'};
 const levelLabel={none:'None',mild:'Mild',moderate:'Moderate',strong:'Strong'};
 const dotClass={none:'dot-none',mild:'dot-mild',moderate:'dot-moderate',strong:'dot-strong'};
@@ -1196,6 +1223,11 @@ let currentAudience='young', currentBreakdown=null, lastId=null, lastType=null, 
 let suggestTimer=null, collapsedSuggestTimer=null;
 let currentMovieTitle='', currentYear='', currentPosterUrl='';
 let pageReady=false;
+
+// ── GUEST SEARCH TRACKING ─────────────────────────────────────────────────
+function getGuestSearchCount() { try { return JSON.parse(localStorage.getItem(GUEST_SEARCHES_KEY)) || 0; } catch { return 0; } }
+function incrementGuestSearchCount() { const count = getGuestSearchCount() + 1; try { localStorage.setItem(GUEST_SEARCHES_KEY, JSON.stringify(count)); } catch {} return count; }
+function clearGuestSearchCount() { try { localStorage.removeItem(GUEST_SEARCHES_KEY); } catch {} }
 
 // ── LOCAL STORAGE ─────────────────────────────────────────────────────────
 function getHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY))||[]; } catch { return []; } }
@@ -1241,8 +1273,12 @@ function getEffectiveRecent() {
 // Listen for auth — kick off D1 sync as soon as we know the user is Pro.
 document.addEventListener('cv:auth', ({ detail }) => {
   renderRecentSearchesCarousel();
-  if (detail.loggedIn && (detail.isPro || detail.isFamily)) {
-    syncD1Cache();
+  if (detail.loggedIn) {
+    // User logged in — clear guest search counter
+    clearGuestSearchCount();
+    if (detail.isPro || detail.isFamily) {
+      syncD1Cache();
+    }
   }
 });
 
@@ -1424,6 +1460,17 @@ function onDisambigSelect(id,type,title) { document.getElementById('disambigCard
 
 async function runAnalysis(id,type,isRetry=false) {
   lastId=id; lastType=type;
+  
+  // Check guest search limit
+  const isLoggedIn = window.CV?.loggedIn;
+  if (!isLoggedIn) {
+    const newCount = incrementGuestSearchCount();
+    if (newCount > MAX_GUEST_SEARCHES) {
+      document.getElementById('guestSearchLimitOverlay').classList.add('visible');
+      return;
+    }
+  }
+  
   showResultState({showNav:false}); showSection(); showSkeleton();
   document.getElementById('disambigCard').style.display='none';
   setLoadingStatus('Fetching details…');

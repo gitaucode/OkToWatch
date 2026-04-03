@@ -225,6 +225,24 @@ body {
 }
 .profile-card.active .active-dot { display: block; }
 
+/* ── Locked sections for free users ── */
+.locked-overlay {
+  position: absolute; inset: 0; background: rgba(255,255,255,0.85);
+  border-radius: inherit; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.35rem;
+  z-index: 10; backdrop-filter: blur(1px);
+}
+.locked-icon { font-size: 1.8rem; }
+.locked-label { font-size: 0.65rem; font-weight: 700; color: var(--text2); letter-spacing: 0.05em; text-transform: uppercase; }
+.locked-plan { font-size: 0.6rem; color: var(--muted); margin-top: 0.1rem; }
+.section-locked {
+  position: relative; opacity: 0.6; pointer-events: none;
+}
+.section-locked::after {
+  content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.7);
+  border-radius: inherit; z-index: 5;
+}
+
 /* ── Dash grid ── */
 .dash-grid {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -735,6 +753,8 @@ document.addEventListener("cv:auth", ({ detail }) => {
     window.location.href = "/signin?redirect=/dashboard";
     return;
   }
+  // Pass tier info to dashboard
+  window.userTier = detail.tier || (detail.isFamily ? 'family' : detail.isPro ? 'pro' : 'free');
   loadDashboard(detail.user);
 });
 
@@ -754,8 +774,19 @@ function renderTrialBanner() {
 
   if (dismissed) { banner.style.display = 'none'; return; }
 
-  document.getElementById('trialBannerTitle').textContent = 'Welcome to OkToWatch';
-  document.getElementById('trialBannerSub').textContent   = 'Enjoy unlimited searches, detailed breakdowns, and your saved lists.';
+  const tier = window.userTier || 'free';
+  
+  if (tier === 'free') {
+    document.getElementById('trialBannerTitle').textContent = 'Free account';
+    document.getElementById('trialBannerSub').textContent   = 'Unlimited searches. Upgrade anytime to unlock saved lists and family profiles.';
+  } else if (tier === 'pro') {
+    document.getElementById('trialBannerTitle').textContent = 'Welcome to Pro';
+    document.getElementById('trialBannerSub').textContent   = 'Enjoy saved lists, up to 2 child profiles, and more.';
+  } else if (tier === 'family') {
+    document.getElementById('trialBannerTitle').textContent = 'Welcome to Family';
+    document.getElementById('trialBannerSub').textContent   = 'Enjoy family sharing with up to 5 profiles and all Pro features.';
+  }
+  
   banner.style.display = 'flex';
 
   // Dismiss button — hides for this session only
@@ -804,6 +835,51 @@ async function loadDashboard(user) {
   renderProfiles();
   renderRecent();
   loadTrending('movie');
+  
+  // Apply locks for free users
+  const tier = window.userTier || 'free';
+  if (tier === 'free') {
+    applyFreeLocks();
+  }
+}
+
+// ── Apply locks for free users ────────────────────────────────────────────
+function applyFreeLocks() {
+  // Lock profiles section
+  const profilesSection = document.getElementById('profilesGrid')?.parentElement;
+  if (profilesSection) {
+    profilesSection.classList.add('section-locked');
+    const grid = document.getElementById('profilesGrid');
+    const overlay = document.createElement('div');
+    overlay.className = 'locked-overlay';
+    overlay.innerHTML = '<div class="locked-icon">🔒</div><div class="locked-label">Pro plan</div><div class="locked-plan">Save profiles</div>';
+    grid.style.position = 'relative';
+    grid.appendChild(overlay);
+  }
+  
+  // Lock lists section (stats)
+  const statsRow = document.querySelector('.stats-row');
+  if (statsRow) {
+    statsRow.classList.add('section-locked');
+    const overlay = document.createElement('div');
+    overlay.className = 'locked-overlay';
+    overlay.innerHTML = '<div class="locked-icon">🔒</div><div class="locked-label">Pro plan</div><div class="locked-plan">Save lists</div>';
+    statsRow.style.position = 'relative';
+    statsRow.appendChild(overlay);
+  }
+  
+  // Disable profile clicks
+  document.querySelectorAll('.profile-card').forEach(card => {
+    card.style.cursor = 'not-allowed';
+    card.onclick = () => {
+      const msg = document.createElement('div');
+      msg.className = 'toast show';
+      msg.textContent = 'Upgrade to Pro to create child profiles';
+      msg.id = 'tempToast';
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 3000);
+    };
+  });
 }
 
 // ── Trending ─────────────────────────────────────────────────────────────

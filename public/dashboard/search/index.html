@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2a6b55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OkToWatch">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<title>Search — OkToWatch</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --safe: #2a7d52; --safe-bg: #e6f4ec;
+  --warn: #b07a10; --warn-bg: #fef6e4;
+  --moderate: #b85c1a; --moderate-bg: #fef0e6;
+  --danger: #c0392b; --danger-bg: #fdecea;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 16px; --radius-sm: 10px;
+}
+html, body { overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
+#nav-root { position: relative; z-index: 10; }
+
+.search-page-wrap {
+  max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem;
+  opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
+}
+
+.search-header {
+  text-align: center; margin-bottom: 2rem;
+}
+
+.search-header h1 {
+  font-size: 2rem; font-weight: 700; letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.search-header p {
+  font-size: 0.9rem; color: var(--text2);
+}
+
+.search-box-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input-group {
+  display: flex; gap: 0.75rem;
+}
+
+.search-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 100px; padding: 0.8rem 1.2rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  outline: none; transition: all 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,107,85,0.1);
+}
+
+.search-btn {
+  background: var(--accent); color: white; border: none;
+  border-radius: 100px; padding: 0.8rem 1.5rem;
+  font-family: 'DM Sans', sans-serif; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
+}
+
+.search-btn:hover { opacity: 0.88; }
+
+.search-filters {
+  background: var(--surface2); border-radius: var(--radius-sm);
+  padding: 1rem; margin-top: 1rem; display: none;
+}
+
+.search-filters.visible { display: block; }
+
+.filter-group {
+  margin-bottom: 0.75rem;
+}
+
+.filter-group:last-child { margin-bottom: 0; }
+
+.filter-label {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.4rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+
+.filter-lock {
+  font-size: 0.65rem; background: rgba(42,107,85,0.1);
+  color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 3px;
+  margin-left: auto; margin-right: 0;
+}
+
+.filter-options {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+
+.filter-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; padding: 0.4rem 0.75rem;
+  font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.filter-btn.selected {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+
+.filter-btn.disabled {
+  opacity: 0.5; cursor: not-allowed; background: var(--surface2);
+}
+
+.search-recentlyviewed {
+  margin-top: 2rem;
+}
+
+.search-section-label {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.85rem;
+}
+
+.search-recent-list {
+  display: grid; grid-template-columns: 1fr; gap: 0.5rem;
+}
+
+.search-recent-item {
+  background: var(--surface); border-radius: var(--radius-sm);
+  padding: 0.75rem; display: flex; align-items: center; gap: 0.75rem;
+  cursor: pointer; transition: all 0.15s; border: 1px solid var(--border);
+}
+
+.search-recent-item:hover {
+  border-color: var(--accent); background: var(--accent-light);
+}
+
+.search-recent-thumb {
+  width: 40px; min-width: 40px; height: 56px; border-radius: 6px;
+  background: var(--surface2); display: flex; align-items: center;
+  justify-content: center; overflow: hidden; font-size: 1.2rem;
+}
+
+.search-recent-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.search-recent-info { flex: 1; min-width: 0; }
+
+.search-recent-title {
+  font-size: 0.85rem; font-weight: 700; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+.search-recent-meta {
+  font-size: 0.7rem; color: var(--muted); margin-top: 0.1rem;
+}
+
+.search-result-section { display: none; margin-top: 2rem; }
+
+.search-result-section.visible { display: block; }
+
+footer {
+  position: relative; z-index: 1; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+  max-width: 1100px; width: 100%; margin: 0 auto;
+  padding: 1.25rem; border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 599px) {
+  .search-page-wrap { padding: 1.5rem 0.75rem 4rem; }
+  .search-input-group { flex-direction: column; }
+  .search-btn { width: 100%; }
+}
+</style>
+</head>
+<body data-page="dashboard-search">
+
+<div id="nav-root"></div>
+
+<div class="search-page-wrap">
+  <div class="search-header">
+    <h1>Find something to watch</h1>
+    <p>Search any movie or TV show — instant AI breakdown</p>
+  </div>
+
+  <div class="search-box-wrap">
+    <div class="search-input-group">
+      <input type="text" class="search-input" id="dashSearchInput" 
+             placeholder="Search a title..." autocomplete="off" />
+      <button class="search-btn" id="dashSearchBtn" onclick="dashboardSearch()">Search →</button>
+    </div>
+    
+    <div class="search-filters" id="dashSearchFilters">
+      <div class="filter-group">
+        <div class="filter-label">
+          Type
+          <span class="filter-lock" id="typeLock" style="display:none;">Pro</span>
+        </div>
+        <div class="filter-options">
+          <button class="filter-btn selected" data-filter="type" data-value="all">All</button>
+          <button class="filter-btn" data-filter="type" data-value="movie">Movies</button>
+          <button class="filter-btn" data-filter="type" data-value="tv">TV Shows</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-recentlyviewed" id="dashRecentSection" style="display:none;">
+    <div class="search-section-label">Recently viewed</div>
+    <div class="search-recent-list" id="dashRecentList"></div>
+  </div>
+
+  <div class="search-result-section" id="dashResultSection"></div>
+</div>
+
+<footer>
+  <a href="/dashboard" style="text-decoration:none;color:var(--muted);">← Back to dashboard</a>
+  <p>Home · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a></p>
+  <p>© 2026 OkToWatch</p>
+</footer>
+
+<script src="/js/auth.js?v=aea3acb"></script>
+<script>
+const TMDB_W300 = 'https://image.tmdb.org/t/p/w300';
+const API = '';
+
+let dashboardSearchRecent = [];
+
+// Get recently viewed from main index
+function loadRecentlyViewed() {
+  try {
+    dashboardSearchRecent = JSON.parse(localStorage.getItem('cv_recently_viewed')) || [];
+    if (dashboardSearchRecent.length) {
+      document.getElementById('dashRecentSection').style.display = 'block';
+      const list = document.getElementById('dashRecentList');
+      list.innerHTML = dashboardSearchRecent.slice(0, 5).map(item => `
+        <div class="search-recent-item" onclick="dashboardCheck(${item.id}, '${item.media_type}', '${item.title.replace(/'/g, "\\'")}')">
+          <div class="search-recent-thumb">
+            ${item.poster ? `<img src="${TMDB_W300}${item.poster}" alt="">` : '🎬'}
+          </div>
+          <div class="search-recent-info">
+            <div class="search-recent-title">${item.title}</div>
+            <div class="search-recent-meta">${item.year} · ${item.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (e) {}
+}
+
+async function dashboardSearch() {
+  const query = document.getElementById('dashSearchInput').value.trim();
+  if (!query) return;
+  
+  try {
+    const res = await fetch(`${API}/api/tmdb/search/multi?query=${encodeURIComponent(query)}&page=1`);
+    const data = await res.json();
+    const results = (data.results || []).slice(0, 5);
+    
+    if (!results.length) {
+      document.getElementById('dashResultSection').innerHTML = '<p style="color:var(--muted);">No results found.</p>';
+      document.getElementById('dashResultSection').classList.add('visible');
+      return;
+    }
+    
+    document.getElementById('dashResultSection').innerHTML = results.map(r => {
+      const title = r.title || r.name;
+      const poster = r.poster_path ? `<img src="${TMDB_W300}${r.poster_path}" alt="">` : '🎬';
+      const year = (r.release_date || r.first_air_date || '').slice(0, 4);
+      return `
+        <div class="search-recent-item" onclick="dashboardCheck(${r.id}, '${r.media_type}', '${title.replace(/'/g, "\\'")}')" style="margin-bottom:0.5rem;">
+          <div class="search-recent-thumb">${poster}</div>
+          <div class="search-recent-info">
+            <div class="search-recent-title">${title}</div>
+            <div class="search-recent-meta">${year} · ${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('dashResultSection').classList.add('visible');
+  } catch (e) {
+    console.error('Search error:', e);
+  }
+}
+
+function dashboardCheck(tmdbId, type, title) {
+  window.location.href = `/index?id=${tmdbId}&type=${type}`;
+}
+
+// Load recently viewed on init
+loadRecentlyViewed();
+
+// Enter key to search
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dashSearchInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') dashboardSearch();
+  });
+});
+
+// Apply pro filters lock
+document.addEventListener('cv:auth', ({ detail }) => {
+  const tier = detail.tier || (detail.isFamily ? 'family' : detail.isPro ? 'pro' : 'free');
+  if (tier === 'free') {
+    // Show lock indicators for pro-only filters
+    document.getElementById('typeLock').style.display = 'inline';
+  }
+});
+</script>
+</body>
+</html>

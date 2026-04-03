@@ -315,12 +315,12 @@ footer a:hover { color: var(--accent); }
       if (plan && ['pro', 'family'].includes(plan)) {
         triggerCheckout(plan, cycle);
       } else {
-        window.location.href = '/dashboard';
+        window.location.href = '/plans';
       }
       return;
     }
 
-    const afterSignUpUrl = plan && ['pro', 'family'].includes(plan) ? '/signup' : '/dashboard';
+    const afterSignUpUrl = plan && ['pro', 'family'].includes(plan) ? '/signup' : '/plans';
 
     window.Clerk.mountSignUp(document.getElementById('clerk-signup'), {
       afterSignUpUrl: afterSignUpUrl,
