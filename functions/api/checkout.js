@@ -10,8 +10,8 @@
 
 import { getAuth } from '../_shared/clerk.js';
 
-const DODO_API_BASE = 'https://api.dodopayments.com/v1';
-
+// We'll dynamically determine the Dodo API base URL based on the API key prefix
+// Checkouts will use either test.dodopayments.com or live.dodopayments.com
 // Map our tiers to Dodo product IDs (set up in Dodo dashboard)
 const PRODUCT_MAP = {
   'pro-monthly': {
@@ -45,7 +45,10 @@ async function createDodoCheckout(userEmail, userName, plan, billingCycle, retur
     throw new Error(`Invalid plan combination: ${key}`);
   }
 
-  const response = await fetch(`${DODO_API_BASE}/checkouts`, {
+  const isTestMode = env.DODO_API_KEY?.startsWith('test_');
+  const basePath = isTestMode ? 'https://test.dodopayments.com' : 'https://live.dodopayments.com';
+
+  const response = await fetch(`${basePath}/checkouts`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${env.DODO_API_KEY}`,
