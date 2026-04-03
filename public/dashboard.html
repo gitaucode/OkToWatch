@@ -751,20 +751,9 @@ setTimeout(() => {
 
 // ── Load everything ───────────────────────────────────────────────────────
 function renderTrialBanner() {
-  const banner    = document.getElementById('trialBanner');
-  const dismissed = sessionStorage.getItem('trial_banner_dismissed');
-
-  if (dismissed) { banner.style.display = 'none'; return; }
-
-  document.getElementById('trialBannerTitle').textContent = 'Welcome to OkToWatch';
-  document.getElementById('trialBannerSub').textContent   = 'Enjoy unlimited searches, detailed breakdowns, and your saved lists.';
-  banner.style.display = 'flex';
-
-  // Dismiss button — hides for this session only
-  document.getElementById('trialBannerClose').addEventListener('click', () => {
-    banner.style.display = 'none';
-    sessionStorage.setItem('trial_banner_dismissed', '1');
-  }, { once: true });
+  const banner = document.getElementById('trialBanner');
+  // Out of beta — hide the banner permanently
+  banner.style.display = 'none';
 }
 
 async function loadDashboard(user) {

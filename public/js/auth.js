@@ -108,7 +108,7 @@
           <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
         </svg>
       </div>
-      <span class="cv-nav-logo-text">Ok<strong>ToWatch</strong><span class="cv-nav-beta-badge">Beta</span></span>
+      <span class="cv-nav-logo-text">Ok<strong>ToWatch</strong></span>
     </a>
     <div class="cv-nav-links" id="cvNavLinks">${linkHTML}</div>
     <div class="cv-nav-right" id="cvNavRight">${rightHTML}</div>
@@ -607,13 +607,13 @@
 
 
   // ── Dispatch auth event (always fires, even on failure) ───────────────────
-  function dispatchAuth(loggedIn, isPro, isFamily, clerkUser) {
+  function dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser) {
     // Free beta mode — all signed-in users get Pro access until billing is live
     if (!BILLING_ENABLED && loggedIn) {
       isPro    = true;
       isFamily = false;
     }
-    window.CV = { loggedIn, isPro, isFamily, user: clerkUser || null };
+    window.CV = { loggedIn, isPro, isFamily, tier: tier || 'free', user: clerkUser || null };
     renderNav(loggedIn, isPro, clerkUser || null);
     document.dispatchEvent(new CustomEvent('cv:auth', {
       detail: { loggedIn, isPro, isFamily, user: clerkUser || null }
@@ -679,7 +679,8 @@
       // In production, fetch actual subscription status from API
       if (loggedIn && BILLING_ENABLED) {
         try {
-          const sessionToken = await clerkUser.getToken();
+          // Get session token from Clerk's session object
+          const sessionToken = await window.Clerk?.session?.getToken?.();
           if (sessionToken) {
             const subStatus = await fetchSubscriptionStatus(sessionToken);
             isPro = subStatus.isPro || false;
