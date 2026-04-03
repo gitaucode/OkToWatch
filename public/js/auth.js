@@ -248,19 +248,6 @@
     display: inline-flex; align-items: center; gap: 0.4rem;
   }
   .cv-nav-logo-text strong { font-weight: 700; }
-  // Navigation styling
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 0.14rem 0.4rem;
-    border-radius: 999px;
-    background: rgba(42,107,85,0.1);
-    border: 1px solid rgba(42,107,85,0.16);
-    color: var(--accent, #2a6b55);
-    font-size: 0.58rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transform: translateY(-1px);
-  }
   .cv-nav-links {
     display: flex; align-items: center; gap: 0.25rem;
     margin-left: auto;
