@@ -511,8 +511,6 @@ function toggleFaq(btn) {
   if (!isOpen) item.classList.add('open');
 }
 
-}
-
 // ── Auth-aware CTAs ────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   const { loggedIn, isPro, isFamily } = detail;
