@@ -12,10 +12,10 @@ import { getAuth } from '../../_shared/clerk.js';
 
 // Map Dodo product IDs to our tier/billing cycle
 const DODO_PRODUCTS = {
-  'pdt_0Nbr4kPAG5n9yXCxF7w62': { tier: 'pro', cycle: 'monthly', cents: 499 },
-  'pdt_0Nbr4wkuJCZ2G0JWAetog': { tier: 'pro', cycle: 'yearly', cents: 4999 },
-  'pdt_0Nbr54CnvJt3KBKEBBYeM': { tier: 'family', cycle: 'monthly', cents: 799 },
-  'pdt_0Nbr5tE4vwLj4afwcdvFm': { tier: 'family', cycle: 'yearly', cents: 7999 },
+  'pdt_0NbuM2yMGhrcndSFQSONJ': { tier: 'pro',    cycle: 'monthly', cents: 499  },
+  'pdt_0NbuMAYUaN7DFufZHdGRG': { tier: 'pro',    cycle: 'yearly',  cents: 4999 },
+  'pdt_0NbuML3eDWo8BlbR48Rfs': { tier: 'family', cycle: 'monthly', cents: 799  },
+  'pdt_0NbuMVVlgNEQUah6C5uPC': { tier: 'family', cycle: 'yearly',  cents: 7999 },
 };
 
 /**
@@ -61,9 +61,9 @@ function toSqlDate(isoDate) {
 /**
  * Handle successful payment (order completed)
  */
-async function handlePaymentConfirmed(event, db, clerk) {
+async function handlePaymentConfirmed(event, db, clerk, env) {
   const { orderId, customerId, productId, metadata } = event;
-  const userId = metadata?.userId;
+  const userId = metadata?.user_id || metadata?.userId;
 
   if (!userId) {
     console.error('Payment confirmed but no userId in metadata:', event);
@@ -157,7 +157,7 @@ async function handlePaymentConfirmed(event, db, clerk) {
 /**
  * Handle subscription renewal (recurring charge)
  */
-async function handleSubscriptionRenewed(event, db, clerk) {
+async function handleSubscriptionRenewed(event, db, clerk, env) {
   const { orderId, customerId, productId } = event;
 
   try {
@@ -317,11 +317,11 @@ export async function onRequest(context) {
     // Handle different webhook event types (Dodo event names)
     switch (eventType) {
       case 'subscription.active':
-        result = await handlePaymentConfirmed(body.data, db, clerk);
+        result = await handlePaymentConfirmed(body.data, db, clerk, env);
         break;
       
       case 'subscription.renewed':
-        result = await handleSubscriptionRenewed(body.data, db, clerk);
+        result = await handleSubscriptionRenewed(body.data, db, clerk, env);
         break;
       
       case 'subscription.failed':

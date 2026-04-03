@@ -15,19 +15,19 @@ import { getAuth } from '../_shared/clerk.js';
 // Map our tiers to Dodo product IDs (set up in Dodo dashboard)
 const PRODUCT_MAP = {
   'pro-monthly': {
-    productId: 'pdt_0Nbr4kPAG5n9yXCxF7w62',
+    productId: 'pdt_0NbuM2yMGhrcndSFQSONJ',
     name: 'Pro Monthly',
   },
   'pro-yearly': {
-    productId: 'pdt_0Nbr4wkuJCZ2G0JWAetog',
+    productId: 'pdt_0NbuMAYUaN7DFufZHdGRG',
     name: 'Pro Yearly',
   },
   'family-monthly': {
-    productId: 'pdt_0Nbr54CnvJt3KBKEBBYeM',
+    productId: 'pdt_0NbuML3eDWo8BlbR48Rfs',
     name: 'Family Monthly',
   },
   'family-yearly': {
-    productId: 'pdt_0Nbr5tE4vwLj4afwcdvFm',
+    productId: 'pdt_0NbuMVVlgNEQUah6C5uPC',
     name: 'Family Yearly',
   },
 };
@@ -37,7 +37,7 @@ const PRODUCT_MAP = {
  * Uses the correct POST /checkouts endpoint with inline customer + product_cart.
  * Returns the checkout_url to redirect the user to.
  */
-async function createDodoCheckout(userEmail, userName, plan, billingCycle, returnUrl, env) {
+async function createDodoCheckout(userEmail, userName, plan, billingCycle, returnUrl, env, userId) {
   const key = `${plan}-${billingCycle}`;
   const product = PRODUCT_MAP[key];
 
@@ -67,6 +67,7 @@ async function createDodoCheckout(userEmail, userName, plan, billingCycle, retur
       ],
       return_url: returnUrl,
       metadata: {
+        user_id: userId,
         plan,
         billing_cycle: billingCycle,
       },
@@ -181,7 +182,8 @@ export async function onRequest(context) {
       plan,
       billingCycle,
       returnUrl,
-      env
+      env,
+      auth.userId
     );
 
     return new Response(
