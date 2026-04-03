@@ -472,7 +472,7 @@ async function handleUpgrade(plan) {
     const billingToggle = document.getElementById('billingToggle');
     const isYearly = billingToggle?.classList.contains('yearly');
     const cycle = isYearly ? 'yearly' : 'monthly';
-    window.location.href = `/signup?plan=${plan}&cycle=${cycle}`;
+    window.location.href = `/signin?plan=${plan}&cycle=${cycle}`;
     return;
   }
 

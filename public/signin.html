@@ -231,11 +231,53 @@ footer a:hover { color: var(--accent); }
   const params   = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect') || '/dashboard';
   const reason   = params.get('reason');
+  const plan     = params.get('plan');
+  const cycle    = params.get('cycle') || 'monthly';
 
   if (reason === 'pro') {
     const b = document.getElementById('reasonBanner');
     b.textContent = '🔓 That feature is free during beta. Sign in to continue.';
     b.classList.add('visible');
+  }
+
+  // Trigger checkout after signin
+  async function triggerCheckout(planName, billingCycle) {
+    try {
+      const token = localStorage.getItem('clerk_session_token');
+      if (!token) {
+        setTimeout(() => triggerCheckout(planName, billingCycle), 500);
+        return;
+      }
+
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          plan: planName,
+          billingCycle,
+          redirectUrl: '/dashboard',
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Checkout error:', response.status);
+        window.location.href = '/dashboard';
+        return;
+      }
+
+      const { checkoutUrl } = await response.json();
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+      window.location.href = '/dashboard';
+    }
   }
 
   function showClerk() {
@@ -258,12 +300,18 @@ footer a:hover { color: var(--accent); }
     await window.Clerk.load();
 
     if (window.Clerk.user) {
-      window.location.href = redirect;
+      if (plan && ['pro', 'family'].includes(plan)) {
+        triggerCheckout(plan, cycle);
+      } else {
+        window.location.href = redirect;
+      }
       return;
     }
 
+    const afterSignInUrl = plan && ['pro', 'family'].includes(plan) ? '/signin' : redirect;
+
     window.Clerk.mountSignIn(document.getElementById('clerk-signin'), {
-      afterSignInUrl: redirect,
+      afterSignInUrl: afterSignInUrl,
       signUpUrl: '/signup',
       appearance: {
         variables: {
@@ -284,14 +332,26 @@ footer a:hover { color: var(--accent); }
       }
     });
 
-    // Clerk doesn't have a reliable "mounted" callback, so we poll for the card
-    const poll = setInterval(() => {
-      const card = document.querySelector('#clerk-signin .cl-card, #clerk-signin [data-localization-key]');
-      if (card) { clearInterval(poll); showClerk(); }
-    }, 80);
+    // If plan exists, after signin completes, trigger checkout
+    if (plan && ['pro', 'family'].includes(plan)) {
+      let poll = setInterval(() => {
+        if (window.Clerk.user) {
+          clearInterval(poll);
+          triggerCheckout(plan, cycle);
+        }
+      }, 100);
+      
+      setTimeout(() => clearInterval(poll), 30000);
+    } else {
+      // Clerk doesn't have a reliable "mounted" callback, so we poll for the card
+      let pollCard = setInterval(() => {
+        const card = document.querySelector('#clerk-signin .cl-card, #clerk-signin [data-localization-key]');
+        if (card) { clearInterval(pollCard); showClerk(); }
+      }, 80);
 
-    // Fallback: show after 2.5s regardless
-    setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);
+      // Fallback: show after 2.5s regardless
+      setTimeout(() => { clearInterval(pollCard); showClerk(); }, 2500);
+    }
   }
 
   document.readyState === 'loading'
