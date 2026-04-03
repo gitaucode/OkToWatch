@@ -302,7 +302,7 @@ body {
         <div class="field">
           <label>Plan</label>
           <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.15rem;">
-            <span class="plan-pill" id="planPill">Free Beta</span>
+            <span class="plan-pill" id="planPill">Free</span>
             <span style="font-size:0.78rem;color:var(--muted);" id="memberSince"></span>
           </div>
         </div>
@@ -385,16 +385,16 @@ body {
       </div>
     </div>
 
-    <!-- 5. Beta access -->
+    <!-- 5. Account & Billing -->
     <div class="section-card" id="billingSection">
       <div class="section-head">
         <span class="section-head-icon">🎉</span>
-        <h2>Beta access</h2>
+        <h2>Account & Billing</h2>
       </div>
       <div class="section-body">
         <div class="billing-row">
           <span class="billing-row-label">Access</span>
-          <span class="billing-row-value" id="billingPlan">Free Beta</span>
+          <span class="billing-row-value" id="billingPlan">Free</span>
         </div>
         <div class="billing-row">
           <span class="billing-row-label">Status</span>
@@ -402,7 +402,7 @@ body {
         </div>
         <div class="billing-row">
           <span class="billing-row-label">What to expect</span>
-          <span class="billing-row-value" id="billingCycle">Paid plans will return after beta with advance notice.</span>
+          <span class="billing-row-value" id="billingCycle">Upgrade to Pro or Family for advanced features.</span>
         </div>
       </div>
     </div>
@@ -440,12 +440,12 @@ body {
     <div class="footer-logo-mark">
       <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
     </div>
-    <span class="footer-logo-text">Ok<strong>ToWatch</strong><span class="footer-beta-badge">Beta</span></span>
+    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
   </a>
   <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
     <a href="/about">About</a>
     <a href="/privacy">Privacy</a>
-    <a href="/plans">Beta access</a>
+    <a href="/plans">Plans</a>
   </div>
   <p>© 2026 OkToWatch</p>
   <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
@@ -542,7 +542,7 @@ async function loadSettings(user) {
   renderStreamingGrid();
   renderDigestToggle();
 
-  document.getElementById('planPill').textContent = '🎉 Free Beta';
+  document.getElementById('planPill').textContent = 'Free';
   populateBilling();
 
   // Show content, hide skeleton
@@ -690,9 +690,9 @@ function toggleStream(s) {
 
 // ── Billing ───────────────────────────────────────────────────────────────
 function populateBilling() {
-  document.getElementById('billingPlan').textContent = 'Free Beta';
+  document.getElementById('billingPlan').textContent = 'Free';
   document.getElementById('billingStatus').textContent = 'Unlocked';
-  document.getElementById('billingCycle').textContent = 'Paid plans will return after beta with advance notice.';
+  document.getElementById('billingCycle').textContent = 'Upgrade to Pro or Family for advanced features.';
 }
 
 // ── Confirm modal ─────────────────────────────────────────────────────────

@@ -6,8 +6,7 @@
 
 (function () {
   // ── Billing flag ──────────────────────────────────────────────────────────
-  // Set to true when Dodo Payments is live and approved.
-  // false = all logged-in users get full Pro access (free beta mode).
+  // Set to true when billing is live. Features are restricted by subscription.
   const BILLING_ENABLED = true;
   window.BILLING_ENABLED = BILLING_ENABLED;
 
@@ -249,7 +248,7 @@
     display: inline-flex; align-items: center; gap: 0.4rem;
   }
   .cv-nav-logo-text strong { font-weight: 700; }
-  .cv-nav-beta-badge {
+  // Navigation styling
     display: inline-flex; align-items: center; justify-content: center;
     padding: 0.14rem 0.4rem;
     border-radius: 999px;
@@ -597,7 +596,7 @@
       window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname);
     }
   };
-  // requirePro: beta is free, so any signed-in user can access these surfaces for now.
+  // requirePro: checks subscription tier for access control
   window.requirePro = function () {
     if (!window.CV?.loggedIn) {
       window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname);

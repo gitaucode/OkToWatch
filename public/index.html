@@ -892,8 +892,8 @@ footer a:hover { color: var(--accent); }
 
 <!-- Pro nudge -->
 <div class="pro-nudge" id="proNudge">
-  <span id="proNudgeMsg">Create a free beta account to unlock this feature.</span>
-  <a href="/plans" class="pro-nudge-btn">See beta access →</a>
+  <span id="proNudgeMsg">Upgrade your account to unlock this feature.</span>
+  <a href="/plans" class="pro-nudge-btn">View plans →</a>
   <button class="pro-nudge-close" onclick="document.getElementById('proNudge').classList.remove('show')">✕</button>
 </div>
 
@@ -1588,7 +1588,7 @@ async function initSeasonSelector(id,details) {
   if(!window.CV?.isPro && !window.CV?.isFamily) {
     pillsEl.innerHTML=`
       <button class="season-pill active" style="cursor:default;">All seasons</button>
-      <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis is included for free during beta once you sign in.')">
+      <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis is available with Pro or Family plans.')">
         <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" style="opacity:0.7;flex-shrink:0"><path d="M12 7V5A4 4 0 0 0 4 5v2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1zM6 5a2 2 0 1 1 4 0v2H6V5z"/></svg>
         ${seasons.length} seasons — Pro
       </button>`;
@@ -1947,7 +1947,7 @@ document.addEventListener('click',e=>{ const tag=e.target.closest('.poster-tag[d
 let compareData=null, compareTimer=null;
 
 function openCompare() {
-  if(!window.CV?.isPro && !window.CV?.isFamily){ showProNudge('Compare mode is included for free during beta once you sign in.'); return; }
+  if(!window.CV?.isPro && !window.CV?.isFamily){ showProNudge('Compare mode is available with Pro or Family plans.'); return; }
   const sec=document.getElementById('compareSection'), card=document.getElementById('compareSearchCard');
   sec.classList.add('visible'); card.style.display='block';
   document.getElementById('compareResultWrap').style.display='none'; document.getElementById('compareHeader').style.display='none';

@@ -524,14 +524,14 @@ footer a:hover { color: var(--accent); }
     </div>
 
     <!-- Stats -->
-    <!-- Beta access banner -->
+    <!-- Account banner -->
     <div class="trial-banner" id="trialBanner" style="display:none;">
       <span class="trial-banner-icon">✨</span>
       <div class="trial-banner-text">
-        <strong id="trialBannerTitle">Free beta access is on</strong>
-        <span id="trialBannerSub">Everything in your dashboard is unlocked during beta.</span>
+        <strong id="trialBannerTitle">Free account</strong>
+        <span id="trialBannerSub">Unlimited searches. Upgrade anytime to unlock saved lists and family profiles.</span>
       </div>
-      <a href="/plans" class="trial-banner-btn">Beta details</a>
+      <a href="/plans" class="trial-banner-btn">View plans</a>
       <button class="trial-banner-close" id="trialBannerClose" aria-label="Dismiss">✕</button>
     </div>
 
@@ -751,9 +751,31 @@ setTimeout(() => {
 
 // ── Load everything ───────────────────────────────────────────────────────
 function renderTrialBanner() {
-  const banner = document.getElementById('trialBanner');
-  // Out of beta — hide the banner permanently
-  banner.style.display = 'none';
+  const banner    = document.getElementById('trialBanner');
+  const dismissed = sessionStorage.getItem('trial_banner_dismissed');
+
+  if (dismissed) { banner.style.display = 'none'; return; }
+
+  const tier = window.userTier || 'free';
+  
+  if (tier === 'free') {
+    document.getElementById('trialBannerTitle').textContent = 'Free account';
+    document.getElementById('trialBannerSub').textContent   = 'Unlimited searches. Upgrade anytime to unlock saved lists and family profiles.';
+  } else if (tier === 'pro') {
+    document.getElementById('trialBannerTitle').textContent = 'Welcome to Pro';
+    document.getElementById('trialBannerSub').textContent   = 'Enjoy saved lists, up to 2 child profiles, and more.';
+  } else if (tier === 'family') {
+    document.getElementById('trialBannerTitle').textContent = 'Welcome to Family';
+    document.getElementById('trialBannerSub').textContent   = 'Enjoy family sharing with up to 5 profiles and all Pro features.';
+  }
+  
+  banner.style.display = 'flex';
+
+  // Dismiss button — hides for this session only
+  document.getElementById('trialBannerClose').addEventListener('click', () => {
+    banner.style.display = 'none';
+    sessionStorage.setItem('trial_banner_dismissed', '1');
+  }, { once: true });
 }
 
 async function loadDashboard(user) {

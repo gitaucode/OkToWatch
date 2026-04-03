@@ -377,7 +377,7 @@ footer a:hover { color: var(--accent); }
   <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
     <a href="/about">About</a>
     <a href="/contact">Contact</a>
-    <a href="/plans">Beta access</a>
+    <a href="/plans">Plans</a>
     <a href="/privacy">Privacy</a>
     <a href="/index">Search</a>
   </div>
@@ -435,10 +435,10 @@ if (document.readyState === 'loading') {
 
 // ── Upgrade handler ──────────────────────────────────────────────────────
 async function handleUpgrade(plan) {
-  const token = localStorage.getItem('clerk_session_token');
+  const loggedIn = window.CV?.loggedIn;
   
   if (plan === 'free') {
-    if (!token) {
+    if (!loggedIn) {
       window.location.href = '/signup';
     } else {
       showToast("You're already using the free plan!");
@@ -447,7 +447,7 @@ async function handleUpgrade(plan) {
   }
 
   // For Pro/Family, need to be logged in
-  if (!token) {
+  if (!loggedIn) {
     // Get billing cycle from toggle
     const billingToggle = document.getElementById('billingToggle');
     const isYearly = billingToggle?.classList.contains('yearly');
@@ -457,6 +457,9 @@ async function handleUpgrade(plan) {
   }
 
   try {
+    // Get Clerk session token
+    const token = await window.Clerk.session.getToken();
+    
     // Get the billing cycle from toggle
     const billingToggle = document.getElementById('billingToggle');
     const isYearly = billingToggle?.classList.contains('yearly');
@@ -508,39 +511,12 @@ function toggleFaq(btn) {
   if (!isOpen) item.classList.add('open');
 }
 
-function applyBetaMode(loggedIn) {
-  document.querySelector('.billing-toggle').style.display = 'none';
-  document.getElementById('proPrice').innerHTML = '<span style="font-size:1.6rem;font-weight:700;color:var(--accent)">Free</span>';
-  document.getElementById('familyPrice').innerHTML = '<span style="font-size:1.6rem;font-weight:700;color:#7b5ea7">Free</span>';
-  document.getElementById('proTrialBadge').style.display = 'none';
-  document.getElementById('familyTrialBadge').style.display = 'none';
-  document.getElementById('proAlt').textContent = 'Everything here is included during beta · no card needed';
-  document.getElementById('familyAlt').textContent = 'Everything here is included during beta · no card needed';
-
-  const proCta = document.getElementById('proCta');
-  const famCta = document.getElementById('familyCta');
-  if (loggedIn) {
-    proCta.textContent = "You're in ✓";
-    proCta.className = 'plan-cta plan-cta--current';
-    proCta.onclick = null;
-    famCta.textContent = "You're in ✓";
-    famCta.className = 'plan-cta plan-cta--current-family';
-    famCta.onclick = null;
-  } else {
-    proCta.textContent = 'Sign up free →';
-    proCta.onclick = () => window.location.href = '/signup';
-    famCta.textContent = 'Sign up free →';
-    famCta.onclick = () => window.location.href = '/signup';
-  }
 }
 
 // ── Auth-aware CTAs ────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   const { loggedIn, isPro, isFamily } = detail;
-  if (!window.BILLING_ENABLED) {
-    applyBetaMode(loggedIn);
-    return;
-  }
+
   const proCta    = document.getElementById('proCta');
   const famCta    = document.getElementById('familyCta');
 

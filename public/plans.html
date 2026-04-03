@@ -387,7 +387,7 @@ footer a:hover { color: var(--accent); }
   <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
     <a href="/about">About</a>
     <a href="/contact">Contact</a>
-    <a href="/plans">Beta access</a>
+    <a href="/plans">Plans</a>
     <a href="/privacy">Privacy</a>
     <a href="/index">Search</a>
   </div>
@@ -477,6 +477,9 @@ async function handleUpgrade(plan) {
   }
 
   try {
+    // Get Clerk session token
+    const token = await window.Clerk.session.getToken();
+    
     // Get the billing cycle from toggle
     const billingToggle = document.getElementById('billingToggle');
     const isYearly = billingToggle?.classList.contains('yearly');
@@ -528,51 +531,9 @@ function toggleFaq(btn) {
   if (!isOpen) item.classList.add('open');
 }
 
-// ── Beta mode (BILLING_ENABLED = false) ───────────────────────────────────
-function applyBetaMode(loggedIn) {
-  // Hero
-  document.querySelector('.hero-eyebrow').innerHTML = '🎉 Free during beta';
-  document.querySelector('.hero p').textContent =
-    'Everything is free while we\'re in beta. Sign up and get full access to Pro and Family features with no payment required. Pricing launches soon.';
-
-  // Hide monthly/yearly toggle
-  document.querySelector('.billing-toggle').style.display = 'none';
-
-  // Hide prices, show "Free" 
-  document.getElementById('proPrice').innerHTML    = '<span style="font-size:1.6rem;font-weight:700;color:var(--accent)">Free</span>';
-  document.getElementById('proAlt').textContent    = 'All Pro features unlocked · no card needed';
-  document.getElementById('familyPrice').innerHTML = '<span style="font-size:1.6rem;font-weight:700;color:#7b5ea7">Free</span>';
-  document.getElementById('familyAlt').textContent = 'All Family features unlocked · no card needed';
-
-  // CTAs
-  const proCta = document.getElementById('proCta');
-  const famCta = document.getElementById('familyCta');
-  if (loggedIn) {
-    proCta.textContent = 'You\'re in ✓';
-    proCta.className   = 'plan-cta plan-cta--current';
-    proCta.onclick     = null;
-    proCta.dataset.state = 'current';
-    famCta.textContent = 'You\'re in ✓';
-    famCta.className   = 'plan-cta plan-cta--current-family';
-    famCta.onclick     = null;
-    famCta.dataset.state = 'current';
-  } else {
-    proCta.textContent = 'Sign up free →';
-    proCta.onclick     = () => window.location.href = '/signup';
-    famCta.textContent = 'Sign up free →';
-    famCta.onclick     = () => window.location.href = '/signup';
-  }
-}
-
-// ── Auth-aware CTAs ────────────────────────────────────────────────────────
+// ── Auth-aware CTAs ──────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   const { loggedIn, isPro, isFamily, tier } = detail;
-
-  // Beta mode — billing not yet live
-  if (!window.BILLING_ENABLED) {
-    applyBetaMode(loggedIn);
-    return;
-  }
 
   // Normal billing mode ─────────────────────────────────────────────────────
   const proCta = document.getElementById('proCta');

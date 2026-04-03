@@ -70,20 +70,14 @@ export async function requireAuth(request, env) {
 }
 
 /**
- * Guard: requires a valid session.
- * In beta (BILLING_ENABLED = false): all signed-in users have access
- * In production: only Pro/Family subscribers have access
+ * Guard: requires a valid session and subscription check.
+ * Checks subscription tier based on tier_id in database
  */
 export async function requirePro(request, env) {
   const auth = await getAuth(request, env);
   if (!auth) return { error: json401('Unauthorised') };
 
-  // Beta mode — all signed-in users have access
-  if (!env.BILLING_ENABLED) {
-    return { auth };
-  }
-
-  // Production mode — check subscription
+  // Check subscription tier
   if (env.DB) {
     try {
       const sub = await env.DB
@@ -114,19 +108,13 @@ export async function requirePro(request, env) {
 
 /**
  * Guard: requires a Family subscription
- * In beta: all signed-in users have access
- * In production: only Family subscribers have access
+ * Only Family subscribers have access
  */
 export async function requireFamily(request, env) {
   const auth = await getAuth(request, env);
   if (!auth) return { error: json401('Unauthorised') };
 
-  // Beta mode — all signed-in users have access
-  if (!env.BILLING_ENABLED) {
-    return { auth };
-  }
-
-  // Production mode — check subscription
+  // Check subscription tier
   if (env.DB) {
     try {
       const sub = await env.DB
