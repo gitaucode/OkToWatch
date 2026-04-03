@@ -30,9 +30,12 @@ body {
   background: var(--bg); color: var(--text);
   font-family: 'DM Sans', sans-serif; font-size: 15px;
   min-height: 100vh; overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 10% 10%, rgba(42,107,85,0.13) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 90%, rgba(42,107,85,0.08) 0%, transparent 45%);
 }
 #nav-root { position: relative; z-index: 10; min-height: 56px; }
-.page-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+.page-wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
 
 /* ── Trending ─────────────────────────────────────────────────────────── */
 .trending-section {
@@ -55,7 +58,7 @@ body {
 }
 .trend-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .trending-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem;
 }
 .trend-card {
   background: var(--surface); border-radius: var(--radius-sm);
@@ -66,7 +69,9 @@ body {
 .trend-poster {
   width: 100%; aspect-ratio: 2/3; object-fit: cover;
   display: block; background: var(--surface2);
+  transition: transform 0.35s ease;
 }
+.trend-card:hover .trend-poster { transform: scale(1.06); }
 .trend-poster-placeholder {
   width: 100%; aspect-ratio: 2/3; background: var(--surface2);
   display: flex; align-items: center; justify-content: center;
@@ -142,11 +147,14 @@ body {
 
 /* ── Welcome bar ── */
 .welcome-bar {
-  background: var(--surface); border-radius: var(--radius);
-  box-shadow: var(--shadow); padding: 1.1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(42,107,85,0.06) 0%, var(--surface) 60%);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 1.1rem 1.5rem;
   margin-bottom: 1rem;
   display: flex; align-items: center; gap: 1rem;
   opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
+  border-left: 3px solid var(--accent);
 }
 .welcome-avatar {
   width: 46px; height: 46px; border-radius: 50%;
@@ -186,8 +194,11 @@ body {
 .stat-card {
   background: var(--surface); border-radius: var(--radius-sm);
   box-shadow: var(--shadow); padding: 1rem 0.75rem;
-  text-align: center; cursor: default;
+  text-align: center; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none; color: inherit; display: block;
 }
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
 .stat-num { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.04em; color: var(--accent); line-height: 1; }
 .stat-label { font-size: 0.68rem; color: var(--muted); font-weight: 500; margin-top: 0.3rem; }
 
@@ -218,7 +229,7 @@ body {
   position: relative; user-select: none;
 }
 .profile-card:hover   { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
-.profile-card.active  { border-color: var(--accent); background: var(--accent-light); }
+.profile-card.active  { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 1px var(--accent), 0 4px 12px rgba(42,107,85,0.18); }
 .profile-card.add-card {
   border: 2px dashed var(--border); background: transparent;
   box-shadow: none; color: var(--muted);
@@ -357,15 +368,16 @@ body {
 
 /* ── Digest banner ── */
 .digest-banner {
-  background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: linear-gradient(135deg, rgba(42,107,85,0.06) 0%, var(--surface) 100%);
+  border-radius: var(--radius); box-shadow: var(--shadow);
   padding: 1.1rem 1.25rem;
   margin-top: 1.5rem;
   display: flex; align-items: center; gap: 1rem;
   text-decoration: none; color: var(--text);
-  border: 2px solid transparent; transition: border-color 0.15s;
+  border: 1.5px solid rgba(42,107,85,0.2); transition: border-color 0.15s, box-shadow 0.15s;
   opacity: 0; animation: fadeUp 0.4s ease forwards 0.35s;
 }
-.digest-banner:hover { border-color: var(--accent); }
+.digest-banner:hover { border-color: var(--accent); box-shadow: 0 6px 20px rgba(42,107,85,0.15); }
 .digest-icon { font-size: 1.75rem; flex-shrink: 0; }
 .digest-text strong { font-size: 0.875rem; font-weight: 700; display: block; }
 .digest-text span   { font-size: 0.75rem; color: var(--muted); }
@@ -460,7 +472,7 @@ footer a:hover { color: var(--accent); }
 @media (max-width: 599px) {
   .page-wrap { padding: 1.25rem 0.85rem 4rem; }
   .trending-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-  .welcome-bar { padding: 1rem 1.1rem; gap: 0.75rem; }
+  .welcome-bar { padding: 1rem 1.1rem; gap: 0.75rem; border-left-width: 2px; }
   .stats-row { gap: 0.5rem; }
   .stat-num { font-size: 1.55rem; }
   .stat-card { padding: 0.85rem 0.5rem; }
@@ -572,18 +584,18 @@ footer a:hover { color: var(--accent); }
     </div>
 
     <div class="stats-row">
-      <div class="stat-card">
+      <a class="stat-card" href="/history">
         <div class="stat-num" id="statSearches">0</div>
         <div class="stat-label">Searches</div>
-      </div>
-      <div class="stat-card">
+      </a>
+      <a class="stat-card" href="/lists?tab=approved">
         <div class="stat-num" id="statApproved">0</div>
         <div class="stat-label">Approved</div>
-      </div>
-      <div class="stat-card">
+      </a>
+      <a class="stat-card" href="/lists?tab=blocked">
         <div class="stat-num" id="statBlocked">0</div>
         <div class="stat-label">Blocked</div>
-      </div>
+      </a>
     </div>
 
     <!-- Family profiles -->
@@ -599,6 +611,11 @@ footer a:hover { color: var(--accent); }
         <a class="action-item" href="#" onclick="event.preventDefault(); window.cvOpenSearchModal && window.cvOpenSearchModal()">
           <div class="action-icon ai-green">🔍</div>
           <div class="action-text"><strong>New Search</strong><span>Check any title</span></div>
+          <span class="action-arrow">›</span>
+        </a>
+        <a class="action-item" href="/discover">
+          <div class="action-icon ai-blue">🎯</div>
+          <div class="action-text"><strong>Find Safe Content</strong><span>Browse by age &amp; genre</span></div>
           <span class="action-arrow">›</span>
         </a>
         <a class="action-item" href="/lists?tab=approved">
@@ -644,34 +661,12 @@ footer a:hover { color: var(--accent); }
         </div>
       </div>
       <div class="trending-grid" id="trendingGrid">
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
-        <div class="trend-skel">
-          <div class="trend-skel-poster"></div>
-          <div class="trend-skel-body">
-            <div class="trend-skel-line" style="width:80%"></div>
-            <div class="trend-skel-line" style="width:50%"></div>
-          </div>
-        </div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
+        <div class="trend-skel"><div class="trend-skel-poster"></div><div class="trend-skel-body"><div class="trend-skel-line" style="width:80%"></div><div class="trend-skel-line" style="width:50%"></div></div></div>
       </div>
     </div>
 
@@ -970,7 +965,7 @@ async function loadTrending(type = 'movie') {
   }
 
   // Skeleton
-  grid.innerHTML = Array(4).fill(`
+  grid.innerHTML = Array(6).fill(`
     <div class="trend-skel">
       <div class="trend-skel-poster"></div>
       <div class="trend-skel-body">
@@ -1001,7 +996,7 @@ async function loadTrending(type = 'movie') {
     ]);
 
     const data = await trendRes.json();
-    const items = (data.results || []).slice(0, 4);
+    const items = (data.results || []).slice(0, 6);
 
     // Build set of cached tmdb IDs
     if (cacheRes?.ok) {
@@ -1143,8 +1138,14 @@ function renderRecent() {
   if (!recent.length) return; // keep empty state
 
   el.innerHTML = recent.map(r => {
-    const profile = r.profile_id ? _profiles.find(p => p.id === r.profile_id) : null;
-    const poster  = r.poster
+    const profile   = r.profile_id ? _profiles.find(p => p.id === r.profile_id) : null;
+    const listEntry = _lists.find(l => String(l.tmdb_id) === String(r.tmdb_id) && l.media_type === r.media_type);
+    const verdictHtml = listEntry
+      ? (listEntry.list_type === 'approved'
+          ? ' · <span style="color:var(--accent);font-weight:700;">✅ Approved</span>'
+          : ' · <span style="color:#c0392b;font-weight:700;">🚫 Blocked</span>')
+      : '';
+    const poster = r.poster
       ? `<img src="${r.poster}" alt="${r.title}" loading="lazy">`
       : '🎬';
     return `
@@ -1152,7 +1153,7 @@ function renderRecent() {
         <div class="recent-thumb">${poster}</div>
         <div class="recent-info">
           <div class="recent-title">${r.title}</div>
-          <div class="recent-meta">${r.year || ''} · ${r.media_type === 'tv' ? 'TV Show' : 'Movie'}</div>
+          <div class="recent-meta">${r.year || ''} · ${r.media_type === 'tv' ? 'TV Show' : 'Movie'}${verdictHtml}</div>
         </div>
         ${profile ? `<span class="recent-tag">${profile.emoji} ${profile.name}</span>` : ''}
       </div>`;
@@ -1214,7 +1215,11 @@ document.getElementById('addModal').addEventListener('click', e => {
 
 // Close modal on Escape
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') { closeModal(); closeUpgradeModal(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    window.cvOpenSearchModal && window.cvOpenSearchModal();
+  }
 });
 </script>
 <script src="/js/auth.js?v=20260403_2"></script>
