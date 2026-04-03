@@ -551,7 +551,7 @@
             const year = dateStr ? dateStr.substring(0, 4) : '';
             return `
             <button class="cv-search-item" onclick="cvOpenTitle('${r.id}','${r.media_type}')">
-              <div class="cv-search-item-poster">${r.poster_path ? `<img src="https://image.tmdb.org/t/p/w88${r.poster_path}" alt="">` : '🎬'}</div>
+              <div class="cv-search-item-poster">${r.poster_path ? `<img src="https://image.tmdb.org/t/p/w92${r.poster_path}" alt="">` : '🎬'}</div>
               <div class="cv-search-item-info">
                 <div class="cv-search-item-title">${title}</div>
                 <div class="cv-search-item-meta">${year}${year ? ' · ' : ''}${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>

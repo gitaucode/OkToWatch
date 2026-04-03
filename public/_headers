@@ -1,12 +1,12 @@
-/* HTML pages: short cache for frequent updates */
-/*.html
+/*
   Cache-Control: public, max-age=300, must-revalidate
 
-/* API endpoints: no cache */
 /api/*
   Cache-Control: no-cache, no-store, must-revalidate
 
-/* JS: 1-hour cache + query-string versioning for cache busting */
+/css/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /js/*
   Cache-Control: public, max-age=3600, must-revalidate
 
