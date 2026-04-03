@@ -5,6 +5,7 @@
     .cv-slide-over-header { position:sticky; top:0; background:rgba(200,217,209,0.95); backdrop-filter:blur(14px); z-index:20; padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
     .cv-so-close { background:var(--surface2); width:32px; height:32px; border-radius:50%; border:none; cursor:pointer; font-size:1.1rem; color:var(--text2); display:flex; align-items:center; justify-content:center; }
     .cv-slide-over-iframe { flex:1; width:100%; border:none; background:transparent; }
+    .cv-panel-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; display:none; }
   `;
   
   if(!document.getElementById('cv-panel-css')) {
@@ -25,6 +26,14 @@
     <iframe id="cvSlideOverIframe" class="cv-slide-over-iframe"></iframe>
   `;
   document.body.appendChild(wrapper);
+
+  let globalOverlay = document.getElementById('cvPanelGlobalOverlay');
+  if (!globalOverlay) {
+    globalOverlay = document.createElement('div');
+    globalOverlay.id = 'cvPanelGlobalOverlay';
+    globalOverlay.className = 'cv-panel-overlay';
+    document.body.appendChild(globalOverlay);
+  }
 
   window.cvSearchPanel = {
     openTitle: function(id, type) {
