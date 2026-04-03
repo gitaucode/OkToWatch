@@ -1272,7 +1272,16 @@ function setLoadingStatus(msg) { const el=document.getElementById('loadingStatus
 function clearLoadingStatus() { const el=document.getElementById('loadingStatus'); if(el) el.style.display='none'; }
 
 async function getAIBreakdown({tmdb_id,media_type,season=null,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext}) {
-  const res=await fetch(`${API}/api/analyze`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tmdb_id,media_type,season,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext})});
+  const headers = { 'Content-Type': 'application/json' };
+  try {
+    if (window.Clerk?.session) {
+      const token = await window.Clerk.session.getToken();
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+    }
+  } catch (e) {
+    console.warn('Could not get session token for analyze request:', e);
+  }
+  const res=await fetch(`${API}/api/analyze`,{method:'POST',headers,body:JSON.stringify({tmdb_id,media_type,season,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext})});
   const data=await res.json(); 
   if(data.error) {
     const err = new Error(data.error);
