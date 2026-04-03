@@ -250,12 +250,17 @@ footer a:hover { color: var(--accent); }
     };
   }
 
-  async function triggerCheckout(plan, billingCycle) {
+  async function triggerCheckout(plan, billingCycle, attempts = 0) {
     try {
       const token = localStorage.getItem('clerk_session_token');
       if (!token) {
-        // If no token yet, wait a bit and try again
-        setTimeout(() => triggerCheckout(plan, billingCycle), 500);
+        // Retry up to 15 times (7.5 seconds total)
+        if (attempts < 15) {
+          setTimeout(() => triggerCheckout(plan, billingCycle, attempts + 1), 500);
+          return;
+        }
+        // Timeout - just go to dashboard
+        window.location.href = '/dashboard';
         return;
       }
 
@@ -345,8 +350,8 @@ footer a:hover { color: var(--accent); }
       poll = setInterval(() => {
         if (window.Clerk.user) {
           clearInterval(poll);
-          // Signup successful, trigger checkout
-          triggerCheckout(plan, cycle);
+          // Wait 1s for Clerk to sync session to localStorage, then trigger checkout
+          setTimeout(() => triggerCheckout(plan, cycle), 1000);
         }
       }, 100);
       

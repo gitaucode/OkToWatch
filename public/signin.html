@@ -241,11 +241,17 @@ footer a:hover { color: var(--accent); }
   }
 
   // Trigger checkout after signin
-  async function triggerCheckout(planName, billingCycle) {
+  async function triggerCheckout(planName, billingCycle, attempts = 0) {
     try {
       const token = localStorage.getItem('clerk_session_token');
       if (!token) {
-        setTimeout(() => triggerCheckout(planName, billingCycle), 500);
+        // Retry up to 15 times (7.5 seconds total)
+        if (attempts < 15) {
+          setTimeout(() => triggerCheckout(planName, billingCycle, attempts + 1), 500);
+          return;
+        }
+        // Timeout - just go to dashboard
+        window.location.href = '/dashboard';
         return;
       }
 
@@ -337,7 +343,8 @@ footer a:hover { color: var(--accent); }
       let poll = setInterval(() => {
         if (window.Clerk.user) {
           clearInterval(poll);
-          triggerCheckout(plan, cycle);
+          // Wait 1s for Clerk to sync session to localStorage, then trigger checkout
+          setTimeout(() => triggerCheckout(plan, cycle), 1000);
         }
       }, 100);
       
