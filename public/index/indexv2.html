@@ -135,9 +135,9 @@ tailwind.config = {
       <div class="bg-white border border-slate-200 p-8 rounded-xl shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div class="flex gap-6 items-center">
-            <!-- Age recommendation circle -->
-            <div class="w-24 h-24 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary shrink-0" id="ageCircle">
-              <span class="skel rounded-full" style="width:80px;height:80px;">&nbsp;</span>
+            <!-- Age recommendation box -->
+            <div class="w-24 h-24 rounded-[20px] bg-[#0B6B40] text-emerald-50 flex items-center justify-center shrink-0 shadow-inner" id="ageBox">
+              <span class="skel w-full h-full rounded-[20px]">&nbsp;</span>
             </div>
             <div>
               <h3 class="text-xl font-bold mb-1">Expert Parent Verdict</h3>
@@ -447,10 +447,10 @@ function renderHero(d, certRating = '') {
 
 // ── Render Verdict Card ────────────────────────────────────────────────────
 function renderVerdictCard(d, bd, providerResults = {}) {
-  // Age recommendation circle
-  const ageCircle = document.getElementById('ageCircle');
-  const ageLabel = getAgeLabel(bd);
-  ageCircle.innerHTML = `<span class="text-2xl font-bold">${ageLabel}</span>`;
+  // Age recommendation box
+  const ageBox = document.getElementById('ageBox');
+  const ageVal = getAgeNumber(bd); // Returns just the number+ string, e.g. "15+"
+  ageBox.innerHTML = `<span class="text-[42px] font-black tracking-tighter leading-none">${ageVal}</span>`;
 
   // Verdict summary text
   const summaryEl = document.getElementById('verdictSummaryText');
@@ -477,16 +477,16 @@ function renderVerdictCard(d, bd, providerResults = {}) {
 }
 
 
-// Derive a readable age recommendation from verdicts
-function getAgeLabel(bd) {
-  if (!bd?.verdicts) return 'All ages';
+// Derive a readable age number from verdicts
+function getAgeNumber(bd) {
+  if (!bd?.verdicts) return 'ALL';
   const { young, teens, adults } = bd.verdicts;
-  if (young?.tier === 'safe')  return 'Ages 7+';
-  if (young?.tier === 'warn')  return 'Ages 10+';
-  if (teens?.tier === 'safe')  return 'Ages 13+';
-  if (teens?.tier === 'warn')  return 'Ages 15+';
-  if (adults?.tier === 'safe') return 'Ages 18+';
-  return 'Adults';
+  if (young?.tier === 'safe')  return '7+';
+  if (young?.tier === 'warn')  return '10+';
+  if (teens?.tier === 'safe')  return '13+';
+  if (teens?.tier === 'warn')  return '15+';
+  if (adults?.tier === 'safe') return '18+';
+  return 'R';
 }
 
 // ── Render Breakdown ───────────────────────────────────────────────────────
