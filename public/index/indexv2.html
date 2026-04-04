@@ -120,9 +120,13 @@ tailwind.config = {
       </div>
     </div>
   </section>
+  <!-- ── AI Summary Strip ───────────────────────────────────────────────── -->
+  <div id="movieSummaryStrip" class="max-w-[1440px] mx-auto px-8 py-6 border-b border-surface-variant hidden">
+    <p class="text-[14.5px] italic text-on-surface-variant leading-relaxed max-w-4xl" id="summaryStripText"></p>
+  </div>
 
   <!-- ── Content Grid ───────────────────────────────────────────────────── -->
-  <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 pb-24">
+  <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 py-10 pb-24">
 
     <!-- ── Main Column (col-span-8) ────────────────────────────────────── -->
     <div class="lg:col-span-8 space-y-12">
@@ -362,7 +366,7 @@ async function loadPage() {
     const analyzeRes = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords })
+      body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords, type: _type })
     });
     const analyzeData = await analyzeRes.json();
 
@@ -379,6 +383,14 @@ async function loadPage() {
     if (!_breakdown.summary) _breakdown.summary = '';
     const validLevels = ['none','mild','moderate','strong'];
     (_breakdown.categories || []).forEach(c => { if (!validLevels.includes(c.level)) c.level = 'none'; });
+
+    // Populate the AI Summary Strip
+    const summaryStripWrap = document.getElementById('movieSummaryStrip');
+    const summaryStripText = document.getElementById('summaryStripText');
+    if (_breakdown.summary) {
+      summaryStripText.textContent = _breakdown.summary;
+      summaryStripWrap.classList.remove('hidden');
+    }
 
     renderVerdictCard(_details, _breakdown, providers.results || {});
     renderAccordion(_breakdown);
