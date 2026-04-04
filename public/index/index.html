@@ -719,15 +719,36 @@ footer a:hover { color: var(--accent); }
     </div>
   </div>
 
-  <div class="status-card" id="guestGate" style="display:none">
+<div class="status-card" id="guestGate" style="display:none">
   <div class="status-icon" style="background:#e8f0fe;">🔍</div>
-  <h3 id="guestGateTitle" style="font-size:1.15rem;margin-bottom:0.5rem;">Daily limit reached</h3>
-<p id="guestGateMsg" style="margin-bottom:0.25rem;">You've used your free searches for today.</p>
-  <p style="font-size:0.8rem;margin-bottom:1.5rem;color:var(--muted);">Resets in <strong id="guestGateTime" style="color:var(--text);">--h --m</strong></p>
+
+  <h3 id="guestGateTitle" style="font-size:1.15rem;margin-bottom:0.5rem;">
+    Daily limit reached
+  </h3>
+
+  <p id="guestGateMsg" style="margin-bottom:0.25rem;">
+    You've used your free searches for today.
+  </p>
+
+  <p style="font-size:0.8rem;margin-bottom:1.5rem;color:var(--muted);">
+    Resets in <strong id="guestGateTime" style="color:var(--text);">--h --m</strong>
+  </p>
+
   <div style="display:flex;flex-direction:column;gap:0.6rem;max-width:240px;margin:0 auto 1rem;">
-    <a id="guestGatePrimary" href="/signup" class="btn-secondary" style="background:var(--accent);color:white;text-decoration:none;">Sign up free</a>
-<a id="guestGateSecondary" href="/plans" class="btn-secondary" style="background:var(--surface2);color:var(--text2);text-decoration:none;">View Pro plans</a>
-  <button onclick="document.getElementById('guestGate').style.display='none'" style="background:none;border:none;font-size:0.75rem;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.15s;">Wait and come back</button>
+    <a id="guestGatePrimary" href="/signup" class="btn-secondary" style="background:var(--accent);color:white;text-decoration:none;">
+      Sign up free
+    </a>
+
+    <a id="guestGateSecondary" href="/plans" class="btn-secondary" style="background:var(--surface2);color:var(--text2);text-decoration:none;">
+      View Pro plans
+    </a>
+  </div>
+
+  <!-- THIS MUST BE OUTSIDE -->
+  <button onclick="document.getElementById('guestGate').style.display='none'"
+    style="background:none;border:none;font-size:0.75rem;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;">
+    Wait and come back
+  </button>
 </div>
 
   <div class="recently-viewed" id="recentlyViewed" style="display:none">
