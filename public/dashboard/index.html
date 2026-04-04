@@ -963,9 +963,9 @@ function renderTrialBanner() {
 async function loadDashboard(user) {
   // Populate welcome bar immediately from auth data — no waiting
   const name = user?.firstName || user?.displayName || 'there';
-  document.getElementById('heroGreeting').textContent = 'Hi ' + name + ' 👋';
+  document.getElementById('welcomeName').textContent = 'Hi ' + name + ' 👋';
 
-  const avatarEl = document.getElementById('heroAvatar');
+  const avatarEl = document.getElementById('welcomeAvatar');
   if (user?.imageUrl) {
     avatarEl.innerHTML = `<img src="${user.imageUrl}" alt="${name}">`;
   } else {
