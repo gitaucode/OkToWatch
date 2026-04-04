@@ -41,6 +41,11 @@
   --ease-std:cubic-bezier(0.4,0,0.2,1);
   --font-ui:'Inter',system-ui,sans-serif;
   --font-serif:'Lora',Georgia,serif;
+  /* Semantic verdict colours */
+  --verdict-safe-bg:#EAF3DE; --verdict-safe-text:#27500A; --verdict-safe-dot:#3B6D11;
+  --verdict-caution-bg:#FAEEDA; --verdict-caution-text:#633806; --verdict-caution-dot:#854F0B;
+  --verdict-danger-bg:#FCEBEB; --verdict-danger-text:#791F1F; --verdict-danger-dot:#A32D2D;
+  --verdict-none-dot:#D3D1C7;
 }
 
 /* ── Dark Mode ── */
@@ -58,6 +63,11 @@
     --shadow:0 4px 16px rgba(0,0,0,0.4);
     --shadow-md:0 8px 24px rgba(0,0,0,0.45);
     --shadow-lg:0 16px 40px rgba(0,0,0,0.5);
+    /* Semantic verdict colours (dark mode) */
+    --verdict-safe-bg:rgba(58,109,17,0.2); --verdict-safe-text:#7FD566; --verdict-safe-dot:#7FD566;
+    --verdict-caution-bg:rgba(133,79,11,0.2); --verdict-caution-text:#F0B83D; --verdict-caution-dot:#F0B83D;
+    --verdict-danger-bg:rgba(163,45,45,0.2); --verdict-danger-text:#FF7575; --verdict-danger-dot:#FF7575;
+    --verdict-none-dot:#6B6A5F;
   }
 }
 
@@ -372,6 +382,20 @@ body {
   margin-bottom: 0.3rem; letter-spacing: -0.01em;
 }
 .trend-meta { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.trend-verdict-pill {
+  display: flex; align-items: center; gap: 0.25rem;
+  font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.5rem;
+  border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+}
+.trend-verdict-pill.safe { background: var(--verdict-safe-bg); color: var(--verdict-safe-text); }
+.trend-verdict-pill.caution { background: var(--verdict-caution-bg); color: var(--verdict-caution-text); }
+.trend-verdict-pill.danger { background: var(--verdict-danger-bg); color: var(--verdict-danger-text); }
+.trend-verdict-dot {
+  width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0;
+}
+.trend-verdict-pill.safe .trend-verdict-dot { background: var(--verdict-safe-dot); }
+.trend-verdict-pill.caution .trend-verdict-dot { background: var(--verdict-caution-dot); }
+.trend-verdict-pill.danger .trend-verdict-dot { background: var(--verdict-danger-dot); }
 .trend-cert {
   font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.35rem;
   border-radius: 3px; border: 1.5px solid currentColor;
@@ -1124,6 +1148,8 @@ function renderTrendCard(item, type) {
   const cert     = getCert(item);
   const cached   = _cachedIds.has(String(item.id));
   const cachedBadge = cached ? '<span class="trend-cached">✓ Analysed</span>' : '';
+  // Verdict pill placeholder - populated when verdict data is available
+  const verdictHtml = '<!-- Verdict pill would be rendered here when verdict data is available -->';
 
   return `
     <div class="trend-card" onclick="checkTitle(${item.id}, '${type}', '${esc(title)}')">
@@ -1134,6 +1160,7 @@ function renderTrendCard(item, type) {
         <div class="trend-meta">
           ${cert ? `<span class="trend-cert ${cert.cls}">${cert.label}</span>` : ''}
           ${year ? `<span class="trend-year">${year}</span>` : ''}
+          ${verdictHtml}
         </div>
         <button class="trend-check-btn">${cached ? '✓ View analysis' : 'Check it →'}</button>
       </div>
