@@ -63,7 +63,7 @@ tailwind.config = {
       <div class="hidden md:flex gap-6">
         <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/dashboard">Dashboard</a>
         <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/lists">Lists</a>
-        <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-headline font-bold tracking-tight" href="/discover/discoverv2.html">Discover</a>
+        <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-headline font-bold tracking-tight" href="/discover">Discover</a>
         <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/history">History</a>
       </div>
     </div>
@@ -295,7 +295,7 @@ tailwind.config = {
       }
 
       return `
-        <div class="group flex items-center gap-6 p-4 hover:bg-surface-container-low transition-colors duration-200 border-b border-outline-variant/10 cursor-pointer" onclick="window.location.href='/index/indexv2.html?id=${item.id}&type=movie'">
+        <div class="group flex items-center gap-6 p-4 hover:bg-surface-container-low transition-colors duration-200 border-b border-outline-variant/10 cursor-pointer" onclick="window.location.href='/index?id=${item.id}&type=movie'">
           ${poster}
           <div class="flex-grow">
             <div class="flex items-center justify-between">

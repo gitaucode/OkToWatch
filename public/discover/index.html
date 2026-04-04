@@ -1,404 +1,336 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="OkToWatch">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
-<link rel="shortcut icon" href="/favicon.ico">
-<title>Discover — OkToWatch</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Discover | OkToWatch</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "surface-dim": "#d3dbdf","tertiary": "#006d4a","surface-variant": "#dde3e7",
+        "secondary-fixed": "#dce2f3","inverse-on-surface": "#9c9d9e","tertiary-dim": "#005f40",
+        "on-secondary-container": "#4b525f","secondary-container": "#dce2f3",
+        "inverse-primary": "#dae2fd","outline": "#757c7f","on-tertiary-container": "#005a3c",
+        "error-container": "#fe8983","surface-container-low": "#f2f4f5","on-secondary-fixed-variant": "#555c69",
+        "primary-fixed-dim": "#ccd4ee","primary-container": "#dae2fd","surface-container-highest": "#dde3e7",
+        "primary": "#565e74","on-primary": "#f7f7ff","error-dim": "#4e0309",
+        "on-tertiary": "#e6ffee","surface-bright": "#f9f9fa","on-primary-container": "#4a5167",
+        "background": "#f9f9fa","surface": "#f9f9fa","surface-container-lowest": "#ffffff",
+        "on-tertiary-fixed-variant": "#006544","secondary": "#585f6d","on-primary-fixed": "#373f54",
+        "on-secondary-fixed": "#39404c","tertiary-fixed": "#69f6b8","on-error-container": "#752121",
+        "on-secondary": "#f8f8ff","outline-variant": "#acb3b6","on-error": "#fff7f6",
+        "on-primary-fixed-variant": "#535b71","on-surface": "#2d3336","tertiary-fixed-dim": "#58e7ab",
+        "surface-tint": "#565e74","on-tertiary-fixed": "#00452d","on-background": "#2d3336",
+        "inverse-surface": "#0c0e0f","surface-container-high": "#e4e9ec","secondary-dim": "#4c5361",
+        "on-surface-variant": "#596063","surface-container": "#ebeef0","primary-dim": "#4a5268",
+        "primary-fixed": "#dae2fd","secondary-fixed-dim": "#ced4e4","tertiary-container": "#69f6b8",
+        "error": "#9f403d"
+      },
+      "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+      "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Inter"], "label": ["Inter"] }
+    },
+  },
+}
+</script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
-  --safe: #2a7d52; --safe-bg: #e6f4ec;
-  --warn: #b07a10; --warn-bg: #fef6e4;
-  --moderate: #b85c1a; --moderate-bg: #fef0e6;
-  --danger: #c0392b; --danger-bg: #fdecea;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --radius: 16px; --radius-sm: 10px;
-}
-html, body { overflow-x: hidden; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
-
-.page-wrap { max-width: 920px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
-
-/* Skeleton */
-.skel { background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-/* Header */
-.page-header { margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s; }
-.page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 0.3rem; }
-.page-header p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-
-/* Filters Panel */
-.filters-panel {
-  background: var(--surface); border-radius: var(--radius);
-  box-shadow: var(--shadow); padding: 1.5rem;
-  margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
-}
-.filter-group { margin-bottom: 1.25rem; }
-.filter-group:last-child { margin-bottom: 0; }
-.filter-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; display: block; }
-
-/* Slider */
-.age-slider-wrap { display: flex; align-items: flex-end; gap: 1rem; }
-input[type="range"] {
-  flex: 1; height: 6px; border-radius: 3px;
-  background: linear-gradient(to right, var(--accent-light) 0%, var(--accent) 100%);
-  border: none; outline: none; -webkit-appearance: none; appearance: none;
-  cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: var(--accent); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-input[type="range"]::-moz-range-thumb {
-  width: 20px; height: 20px; border-radius: 50%; border: none;
-  background: var(--accent); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-.age-display {
-  font-size: 1.25rem; font-weight: 700; color: var(--accent);
-  min-width: 45px; text-align: center;
-}
-
-/* Genre buttons */
-.genre-buttons {
-  display: flex; flex-wrap: wrap; gap: 0.5rem;
-}
-.genre-btn {
-  background: var(--surface2); border: 1.5px solid var(--border);
-  color: var(--text2); padding: 0.45rem 1rem; border-radius: 100px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.genre-btn:hover { border-color: var(--accent); color: var(--accent); }
-.genre-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
-
-/* Content type */
-.type-buttons {
-  display: flex; gap: 0.5rem;
-}
-.type-btn {
-  flex: 1; background: var(--surface2); border: 1.5px solid var(--border);
-  color: var(--text2); padding: 0.6rem; border-radius: 10px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
-  cursor: pointer; transition: all 0.15s;
-}
-.type-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
-
-/* Checkbox */
-.checkbox-wrap { display: flex; align-items: center; gap: 0.6rem; }
-input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-.checkbox-label { font-size: 0.88rem; cursor: pointer; }
-
-/* Search button */
-.btn-search {
-  background: var(--accent); color: white; border: none;
-  padding: 0.65rem 1.5rem; border-radius: 100px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 700;
-  cursor: pointer; width: 100%; transition: opacity 0.15s; margin-top: 0.25rem;
-}
-.btn-search:hover { opacity: 0.88; }
-.btn-search:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Results */
-.results-section {
-  opacity: 0; animation: fadeUp 0.4s ease forwards 0.15s;
-}
-.results-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1rem;
-}
-.results-title { font-size: 0.95rem; font-weight: 700; }
-.results-count { font-size: 0.78rem; color: var(--muted); }
-
-/* Grid */
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1rem;
-}
-
-.result-card {
-  background: var(--surface); border-radius: var(--radius-sm);
-  overflow: hidden; box-shadow: var(--shadow);
-  cursor: pointer; transition: all 0.15s;
-  border: 1.5px solid transparent;
-}
-.result-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-
-.result-poster {
-  width: 100%; aspect-ratio: 2/3; overflow: hidden;
-  background: var(--bg); display: flex; align-items: center;
-  justify-content: center; font-size: 2rem;
-}
-.result-poster img { width: 100%; height: 100%; object-fit: cover; }
-
-.result-info { padding: 0.75rem; }
-.result-title {
-  font-size: 0.8rem; font-weight: 700;
-  line-height: 1.3; overflow: hidden; text-overflow: ellipsis;
-  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;
-}
-.result-meta {
-  font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem;
-}
-.result-verdict {
-  font-size: 0.68rem; color: var(--accent); font-weight: 600;
-  margin-top: 0.3rem; text-transform: capitalize;
-}
-
-/* Loading */
-.loading { text-align: center; padding: 2rem; color: var(--muted); }
-.empty-state {
-  background: var(--surface); border-radius: var(--radius);
-  box-shadow: var(--shadow); padding: 3rem 2rem; text-align: center;
-}
-.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-.empty-state h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-.empty-state p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
-
-/* Footer */
-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto;
-  padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08);
-}
-footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
-.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-.footer-logo-text { font-size: 0.88rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; }
-.footer-logo-text strong { font-weight: 700; }
-
-@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-@media (max-width: 599px) {
-  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
-  .page-header h1 { font-size: 1.25rem; }
-  .results-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.75rem; }
-}
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+  /* Suppress the injected cv-nav from auth.js */
+  #nav-root * { visibility: hidden !important; }
+  #nav-root .cv-search-modal,
+  #nav-root .cv-search-modal * { visibility: visible !important; }
+  .skel { background: linear-gradient(90deg, #e4e9ec 25%, #f2f4f5 50%, #e4e9ec 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 0.5rem; }
+  @keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
 </style>
 </head>
-<body data-page="discover">
+<body class="bg-background text-on-surface min-h-screen flex flex-col" data-page="discover">
 
+<!-- Hidden Nav Root for auth.js to attach to -->
 <div id="nav-root"></div>
 
-<div class="page-wrap">
-  <div class="page-header">
-    <h1>Find Safe Content</h1>
-    <p>Discover movies and TV shows based on your child's age and interests. All recommendations are filtered for safety.</p>
-  </div>
-
-  <div class="filters-panel">
-    <div class="filter-group">
-      <label for="ageSlider" class="filter-label">Child's Age</label>
-      <div class="age-slider-wrap">
-        <input type="range" id="ageSlider" min="0" max="18" value="8" oninput="updateAge(this.value)">
-        <div class="age-display" id="ageDisplay">8</div>
+<!-- TopNavBar Component -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
+  <nav class="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+    <div class="flex items-center gap-8">
+      <span class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">OkToWatch</span>
+      <div class="hidden md:flex gap-6">
+        <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/dashboard">Dashboard</a>
+        <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/lists">Lists</a>
+        <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-headline font-bold tracking-tight" href="/discover">Discover</a>
+        <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/history">History</a>
       </div>
     </div>
-
-    <div class="filter-group">
-      <label class="filter-label">Content Type</label>
-      <div class="type-buttons">
-        <button class="type-btn active" data-type="movie" onclick="setType(this,'movie')">Movies</button>
-        <button class="type-btn" data-type="tv" onclick="setType(this,'tv')">TV Shows</button>
+    <div class="flex items-center gap-4">
+      <div class="relative hidden lg:block">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline scale-75">search</span>
+        <input class="bg-surface-container-highest border border-outline/20 rounded-lg pl-10 pr-4 py-1.5 text-sm w-64 focus:bg-surface-container-lowest focus:ring-0 focus:outline-none transition-all cursor-pointer" type="text" placeholder="Search..." readonly onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" />
       </div>
+      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all text-slate-700 dark:text-slate-200" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all text-slate-700 dark:text-slate-200" onclick="window.location.href='/settings'">
+        <span class="material-symbols-outlined">account_circle</span>
+      </button>
     </div>
+  </nav>
+</header>
 
-    <div class="filter-group">
-      <label class="filter-label">Interests</label>
-      <div class="genre-buttons" id="genreButtons"></div>
-    </div>
-
-    <div class="filter-group">
-      <div class="checkbox-wrap">
-        <input type="checkbox" id="safeOnly">
-        <label for="safeOnly" class="checkbox-label">Show only verified safe content</label>
-      </div>
-    </div>
-
-    <button class="btn-search" onclick="search()">Search</button>
-  </div>
-
-  <div class="results-section" id="resultsSection" style="display:none;">
-    <div class="results-header">
-      <div class="results-title" id="resultsTitle">Recommendations</div>
-      <div class="results-count" id="resultsCount">—</div>
-    </div>
-    <div class="results-grid" id="resultsGrid"></div>
-  </div>
-
-  <div id="loadingState" style="display:none;" class="loading">
-    Searching...
-  </div>
-
-  <div id="emptyState" style="display:none;" class="empty-state">
-    <div class="empty-icon">🔍</div>
-    <h3>No results found</h3>
-    <p>Try adjusting your filters or search criteria.</p>
-  </div>
-</div>
-
-<footer>
-  <a class="footer-logo" href="/dashboard">
-    <div class="footer-logo-mark">
-      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
-    </div>
-    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
-  </a>
-  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
-    <a href="/about">About</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/plans">Plans</a>
-  </div>
-  <p>© 2026 OkToWatch</p>
-</footer>
-
-<script src="/js/auth.js?v=20260403"></script>
-<script>
-const API = location.hostname === 'localhost' ? 'http://localhost:8787' : '';
-const TMDB_BASE = 'https://image.tmdb.org/t/p';
-
-const GENRES = {
-  movie: {
-    28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy',
-    80: 'Crime', 18: 'Drama', 10751: 'Family', 14: 'Fantasy',
-    27: 'Horror', 36: 'History', 10402: 'Music', 9648: 'Mystery',
-    10749: 'Romance', 878: 'Sci-Fi', 53: 'Thriller', 10752: 'War', 37: 'Western'
-  },
-  tv: {
-    10759: 'Action & Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime',
-    18: 'Drama', 10751: 'Family', 10762: 'Kids', 9648: 'Mystery',
-    10763: 'News', 10764: 'Reality', 10765: 'Sci-Fi & Fantasy', 10766: 'Soap',
-    10767: 'Talk', 10768: 'War & Politics', 37: 'Western'
-  }
-};
-
-let currentAge = 8;
-let selectedGenres = [];
-let currentType = 'movie';
-
-function updateAge(val) {
-  currentAge = parseInt(val);
-  document.getElementById('ageDisplay').textContent = val;
-}
-
-function setType(btn, type) {
-  currentType = type;
-  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderGenreButtons();
-}
-
-function renderGenreButtons() {
-  const genres = GENRES[currentType];
-  const buttons = document.getElementById('genreButtons');
-  buttons.innerHTML = Object.entries(genres).map(([id, name]) => 
-    `<button class="genre-btn${selectedGenres.includes(id) ? ' active' : ''}" onclick="toggleGenre(this,'${id}','${name}')">${name}</button>`
-  ).join('');
-}
-
-function toggleGenre(btn, id, name) {
-  if (selectedGenres.includes(id)) {
-    selectedGenres = selectedGenres.filter(g => g !== id);
-    btn.classList.remove('active');
-  } else {
-    selectedGenres.push(id);
-    btn.classList.add('active');
-  }
-}
-
-async function search() {
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'Searching...';
-
-  document.getElementById('resultsSection').style.display = 'none';
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('loadingState').style.display = 'block';
-
-  try {
-    const token = await window.Clerk.session.getToken();
-    const params = new URLSearchParams({
-      age: currentAge,
-      genres: selectedGenres.join(','),
-      safeOnly: document.getElementById('safeOnly').checked,
-      type: currentType,
-    });
-
-    const res = await fetch(`${API}/api/discover?${params}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-
-    document.getElementById('loadingState').style.display = 'none';
-
-    if (data.results && data.results.length > 0) {
-      renderResults(data.results);
-      document.getElementById('resultsSection').style.display = 'block';
-      document.getElementById('resultsCount').textContent = `${data.results.length} results`;
-    } else {
-      document.getElementById('emptyState').style.display = 'block';
-    }
-  } catch (e) {
-    console.error('Search error:', e);
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'block';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Search';
-  }
-}
-
-function renderResults(results) {
-  const grid = document.getElementById('resultsGrid');
-  grid.innerHTML = results.map(item => {
-    const poster = item.poster_path ? `<img src="${TMDB_BASE}/w342${item.poster_path}" alt="${item.title || item.name}" loading="lazy">` : '🎬';
-    const title = item.title || item.name;
-    const year = (item.release_date || item.first_air_date || '').slice(0, 4);
-    const verdict = item.cached_verdict ? `Safe for ${currentAge}+` : 'Not analyzed';
-
-    return `
-      <div class="result-card" onclick="openTitle('${item.id}','${currentType}')">
-        <div class="result-poster">${poster}</div>
-        <div class="result-info">
-          <div class="result-title">${title}</div>
-          <div class="result-meta">${year}</div>
-          ${item.cached_verdict ? `<div class="result-verdict">✓ Safe</div>` : ''}
+<!-- Main Content Layout -->
+<main class="pt-16 flex-grow flex w-full max-w-[1440px] mx-auto">
+  <!-- Sidebar Filters -->
+  <aside class="w-64 border-r border-slate-200/60 p-8 hidden md:block shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
+    <div class="space-y-8">
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">Age Rating</h3>
+        <div class="space-y-3" id="ageFilters">
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input name="age-rating" value="18" class="rounded-full border-outline-variant text-primary focus:ring-primary age-cb" type="radio" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">All Ages</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input name="age-rating" value="8" class="rounded-full border-outline-variant text-primary focus:ring-primary age-cb" type="radio" checked onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">8+ (PG)</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input name="age-rating" value="12" class="rounded-full border-outline-variant text-primary focus:ring-primary age-cb" type="radio" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">12+</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input name="age-rating" value="15" class="rounded-full border-outline-variant text-primary focus:ring-primary age-cb" type="radio" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">15+</span>
+          </label>
         </div>
       </div>
-    `;
-  }).join('');
-}
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">Genre</h3>
+        <div class="space-y-3" id="genreFilters">
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary genre-cb" type="checkbox" value="28" checked onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Action</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary genre-cb" type="checkbox" value="12" checked onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Adventure</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary genre-cb" type="checkbox" value="35" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Comedy</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary genre-cb" type="checkbox" value="878" checked onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Sci-Fi</span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">Streaming</h3>
+        <div class="space-y-3" id="streamingFilters">
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox" value="disney" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Disney+</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox" value="netflix" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Netflix</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox" value="amazon" onchange="runDiscover()"/>
+            <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Prime Video</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </aside>
 
-function openTitle(id, type) {
-  window.location.href = `/index?id=${id}&type=${type}`;
-}
+  <!-- Results Canvas -->
+  <section class="flex-grow p-8 bg-surface min-h-[calc(100vh-4rem)]">
+    <header class="mb-10 block" id="resultsHeader">
+      <p class="text-sm text-on-surface-variant mb-1 font-medium">Smart Recommendations for</p>
+      <h2 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface">Discover Top Picks</h2>
+      <p class="text-xs text-on-surface-variant mt-2" id="resultsSubtext">Loading results...</p>
+    </header>
 
-// Initialize on auth
-document.addEventListener('cv:auth', ({ detail }) => {
-  if (detail.loggedIn) {
-    renderGenreButtons();
-  } else {
-    window.location.href = '/signin?redirect=/discover';
+    <!-- Results High-Density List -->
+    <div class="space-y-1" id="resultsContainer">
+      <!-- Skeleton loader initially -->
+      <div class="flex items-center gap-6 p-4 border-b border-outline-variant/10">
+        <div class="w-20 h-28 skel rounded-xl shrink-0"></div>
+        <div class="flex-grow space-y-2">
+          <div class="skel h-6 w-1/3"></div>
+          <div class="skel h-4 w-1/4"></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-6 p-4 border-b border-outline-variant/10">
+        <div class="w-20 h-28 skel rounded-xl shrink-0"></div>
+        <div class="flex-grow space-y-2">
+          <div class="skel h-6 w-1/3"></div>
+          <div class="skel h-4 w-1/4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination View More -->
+    <div class="mt-12 flex justify-center hidden" id="loadMoreContainer">
+      <button onclick="loadMore()" class="px-8 py-3 bg-surface-container-high text-primary font-bold rounded-lg hover:bg-surface-container-highest transition-colors">
+        Load More Results
+      </button>
+    </div>
+  </section>
+</main>
+
+<!-- Footer Component -->
+<footer class="w-full py-12 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+  <div class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex flex-col items-center md:items-start gap-2">
+      <span class="text-lg font-semibold text-slate-900 dark:text-white">OkToWatch</span>
+      <p class="text-slate-600 dark:text-slate-400 font-body text-sm leading-relaxed">© 2026 OkToWatch. Data provided by TMDb.</p>
+    </div>
+    <div class="flex gap-8">
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="/about">About</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="/privacy">Privacy</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="#">Terms</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="#">TMDb Attribution</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/auth.js?v=20260405"></script>
+<script>
+  let currentPage = 1;
+  let currentResults = [];
+  let isFetching = false;
+
+  async function runDiscover(page = 1) {
+    if (isFetching) return;
+    isFetching = true;
+    
+    if (page === 1) {
+      document.getElementById('resultsContainer').innerHTML = `
+        <div class="flex items-center gap-6 p-4 border-b border-outline-variant/10">
+          <div class="w-20 h-28 skel rounded-xl shrink-0"></div><div class="flex-grow space-y-2"><div class="skel h-6 w-1/3"></div><div class="skel h-4 w-1/4"></div></div>
+        </div>
+        <div class="flex items-center gap-6 p-4 border-b border-outline-variant/10">
+          <div class="w-20 h-28 skel rounded-xl shrink-0"></div><div class="flex-grow space-y-2"><div class="skel h-6 w-1/3"></div><div class="skel h-4 w-1/4"></div></div>
+        </div>
+      `;
+      document.getElementById('loadMoreContainer').classList.add('hidden');
+    }
+
+    try {
+      const token = window.Clerk?.session ? await window.Clerk.session.getToken() : null;
+      
+      // Collect query params
+      const selectedAge = document.querySelector('input[name="age-rating"]:checked')?.value || '8';
+      const selectedGenres = Array.from(document.querySelectorAll('.genre-cb:checked')).map(cb => cb.value).join(',');
+      // (Streaming networks are hardcoded in the backend to netflix,hulu,amazon,disney for TV currently, so we'll just query movies for now or let the backend handle it).
+      
+      const startTime = performance.now();
+      
+      const params = new URLSearchParams({
+        age: selectedAge,
+        genres: selectedGenres,
+        page: page,
+        type: 'movie'
+      });
+
+      const res = await fetch('/api/discover?' + params.toString(), {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const data = await res.json();
+      
+      const endTime = performance.now();
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+      if (page === 1) currentResults = [];
+      
+      if (data.results && data.results.length > 0) {
+        currentResults = currentResults.concat(data.results);
+        renderResults(currentResults);
+        document.getElementById('resultsSubtext').textContent = `Showing ${currentResults.length} results found in ${timeTaken} seconds`;
+        document.getElementById('loadMoreContainer').classList.remove('hidden');
+      } else {
+        if (page === 1) {
+          document.getElementById('resultsContainer').innerHTML = '<p class="p-4 text-on-surface-variant font-medium">No results found matching your filters.</p>';
+          document.getElementById('resultsSubtext').textContent = 'No results found.';
+        }
+        document.getElementById('loadMoreContainer').classList.add('hidden');
+      }
+      currentPage = page;
+
+    } catch (err) {
+      console.error(err);
+      if (page === 1) {
+        document.getElementById('resultsContainer').innerHTML = '<p class="p-4 text-error font-medium">Failed to load results. Please try again.</p>';
+        document.getElementById('resultsSubtext').textContent = 'Error loading results.';
+      }
+    } finally {
+      isFetching = false;
+    }
   }
-});
+
+  function loadMore() {
+    runDiscover(currentPage + 1);
+  }
+
+  function renderResults(results) {
+    const list = results.map(item => {
+      const poster = item.poster_path ? `<img alt="${item.title}" class="w-20 h-[7.5rem] object-cover rounded-xl shrink-0" src="https://image.tmdb.org/t/p/w200${item.poster_path}"/>` : '<div class="w-20 h-[7.5rem] bg-surface-container-highest rounded-xl shrink-0 flex items-center justify-center text-3xl">🎬</div>';
+      const title = item.title || item.name;
+      const year = (item.release_date || item.first_air_date || '').slice(0, 4);
+      
+      // Determine rating badge color logic
+      let badgeHtml = '';
+      if (item.cached_verdict) {
+        // Find best match if cached
+        badgeHtml = `<span class="px-3 py-1 text-xs font-bold bg-tertiary text-on-tertiary rounded-lg">Verified Safe</span>`;
+      } else {
+        badgeHtml = `<span class="px-3 py-1 text-xs font-bold bg-surface-container-high text-on-surface rounded-lg">Check Safety</span>`;
+      }
+
+      return `
+        <div class="group flex items-center gap-6 p-4 hover:bg-surface-container-low transition-colors duration-200 border-b border-outline-variant/10 cursor-pointer" onclick="window.location.href='/index?id=${item.id}&type=movie'">
+          ${poster}
+          <div class="flex-grow">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-headline font-bold text-lg text-on-surface group-hover:text-primary transition-colors">${title}</h3>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-sm font-medium text-on-surface-variant">${year}</span>
+                  <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+                  <span class="text-sm text-on-surface-variant">TMDB Pop: ${Math.round(item.popularity || 0)}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-6">
+                <!-- Fake runtime since simple discover doesn't have it -->
+                ${badgeHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('resultsContainer').innerHTML = list;
+  }
+
+  // Trigger on load
+  document.addEventListener('DOMContentLoaded', () => {
+    runDiscover(1);
+  });
+
+  // Re-run if auth changes
+  document.addEventListener('cv:auth', ({ detail }) => {
+    if (detail.loggedIn) {
+      runDiscover(1);
+    }
+  });
 </script>
 </body>
 </html>
