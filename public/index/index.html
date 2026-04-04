@@ -1550,12 +1550,7 @@ function showSkeleton() { document.getElementById('skeletonCard').style.display=
 function hideSkeleton() { document.getElementById('skeletonCard').style.display='none'; ['searchBtn','collapsedBtn'].forEach(id=>{const b=document.getElementById(id);b.disabled=false;b.textContent='Check →'; }); }
 function showError(msg) { document.getElementById('errorCard').style.display='block'; document.getElementById('errorMsg').textContent=msg; }
 
-function showGuestGate(resetsAt) {
-  document.getElementById('errorCard').style.display='none';
-  document.getElementById('emptyCard').style.display='none';
-  document.getElementById('guestGate').style.display='block';
-  
-  let rateLimitGateTimer = null;
+let rateLimitGateTimer = null;
 
 function showRateLimitGate({ resetsAt, limit, code }) {
   document.getElementById('errorCard').style.display = 'none';
@@ -1575,8 +1570,8 @@ function showRateLimitGate({ resetsAt, limit, code }) {
 
   titleEl.textContent = isGuest ? 'Free limit reached' : 'Daily limit reached';
   msgEl.textContent = isGuest
-    ? `You've used your ${resolvedLimit} free searches for today.`
-    : `You've used your ${resolvedLimit} searches for today.`;
+    ? 'You have used your ' + resolvedLimit + ' free searches for today.'
+    : 'You have used your ' + resolvedLimit + ' searches for today.';
 
   if (isGuest) {
     primaryEl.href = '/signup';
@@ -1595,20 +1590,16 @@ function showRateLimitGate({ resetsAt, limit, code }) {
       timeEl.textContent = '--h --m';
       return;
     }
-
     const diff = Math.max(0, resetsAt - Date.now());
     const h = Math.floor(diff / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
-    timeEl.textContent = `${h}h ${m}m`;
+    timeEl.textContent = h + 'h ' + m + 'm';
   }
 
   updateTime();
 
   if (rateLimitGateTimer) clearInterval(rateLimitGateTimer);
   rateLimitGateTimer = setInterval(updateTime, 60000);
-}
-  updateTime();
-  setInterval(updateTime, 60000);
 }
 
 // Mobile tooltip
