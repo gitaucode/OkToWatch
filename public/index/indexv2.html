@@ -488,31 +488,24 @@ function renderAccordion(bd) {
 
   container.innerHTML = cats.map(cat => {
     const cfg = LEVEL_CFG[cat.level] || LEVEL_CFG.none;
-    const isNone = cat.level === 'none';
     
     return `
-      <div class="py-5 border-b border-surface-variant flex flex-col md:flex-row md:items-start gap-4">
-        <!-- Name & Description -->
-        <div class="flex-1">
-          <h4 class="font-bold text-[15px] text-on-surface mb-1">${esc(cat.name)}</h4>
-          <p class="text-[13px] text-on-surface-variant leading-relaxed">
-            ${esc(cat.note || cat.description || 'No noticeable issues.')}
-          </p>
+      <div class="py-4 border-b border-surface-variant flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-[15px] text-on-surface">${esc(cat.name)}</h4>
+          <div class="${cfg.bgCls} ${cfg.cls} px-2.5 py-1 rounded-lg flex items-center gap-1.5 shrink-0">
+            <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+            <span class="text-[11px] font-bold uppercase tracking-wider">${cfg.label}</span>
+          </div>
         </div>
-        
-        <!-- Level Pill -->
-        <div class="${cfg.bgCls} ${cfg.cls} px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0 self-start">
-          <div class="w-1.5 h-1.5 rounded-full bg-current ${isNone ? 'opacity-50' : 'opacity-100'}"></div>
-          <span class="text-xs font-bold uppercase tracking-wider">${cfg.label}</span>
-        </div>
+        <p class="text-[13px] text-on-surface-variant leading-relaxed pr-8">
+          ${esc(cat.note || cat.description || 'No noticeable issues.')}
+        </p>
       </div>
     `;
   }).join('');
   
-  // Remove the bottom border from the very last item using CSS
-  if (container.lastElementChild) {
-    container.lastElementChild.classList.remove('border-b');
-  }
+  if (container.lastElementChild) container.lastElementChild.classList.remove('border-b');
 }
 
 function toggleAccordion(headerEl) {
