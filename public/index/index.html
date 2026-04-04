@@ -720,16 +720,15 @@ footer a:hover { color: var(--accent); }
   </div>
 
   <div class="status-card" id="guestGate" style="display:none">
-    <div class="status-icon" style="background:#e8f0fe;">🔍</div>
-    <h3 style="font-size:1.15rem;margin-bottom:0.5rem;">Free limit reached</h3>
-    <p style="margin-bottom:0.25rem;">You've used your 3 free searches for today.</p>
-    <p style="font-size:0.8rem;margin-bottom:1.5rem;color:var(--muted);">Resets in <strong id="guestGateTime" style="color:var(--text);">--h --m</strong></p>
-    <div style="display:flex;flex-direction:column;gap:0.6rem;max-width:240px;margin:0 auto 1rem;">
-      <a href="/signup" class="btn-secondary" style="background:var(--accent);color:white;text-decoration:none;">Sign up free</a>
-      <a href="/plans" class="btn-secondary" style="background:var(--surface2);color:var(--text2);text-decoration:none;">View Pro plans</a>
-    </div>
-    <button onclick="document.getElementById('guestGate').style.display='none'" style="background:none;border:none;font-size:0.75rem;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.15s;">Wait and come back</button>
-  </div>
+  <div class="status-icon" style="background:#e8f0fe;">🔍</div>
+  <h3 id="guestGateTitle" style="font-size:1.15rem;margin-bottom:0.5rem;">Daily limit reached</h3>
+<p id="guestGateMsg" style="margin-bottom:0.25rem;">You've used your free searches for today.</p>
+  <p style="font-size:0.8rem;margin-bottom:1.5rem;color:var(--muted);">Resets in <strong id="guestGateTime" style="color:var(--text);">--h --m</strong></p>
+  <div style="display:flex;flex-direction:column;gap:0.6rem;max-width:240px;margin:0 auto 1rem;">
+    <a id="guestGatePrimary" href="/signup" class="btn-secondary" style="background:var(--accent);color:white;text-decoration:none;">Sign up free</a>
+<a id="guestGateSecondary" href="/plans" class="btn-secondary" style="background:var(--surface2);color:var(--text2);text-decoration:none;">View Pro plans</a>
+  <button onclick="document.getElementById('guestGate').style.display='none'" style="background:none;border:none;font-size:0.75rem;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.15s;">Wait and come back</button>
+</div>
 
   <div class="recently-viewed" id="recentlyViewed" style="display:none">
     <div class="recently-viewed-label">Recently viewed</div>
@@ -1324,10 +1323,14 @@ async function runAnalysis(id,type,isRetry=false) {
     window.scrollTo({top:0,behavior:'smooth'});
   } catch(e) {
     clearLoadingStatus(); hideSkeleton(); document.getElementById('navCollapsed').classList.add('visible');
-    if(e.message === 'guest_limit') {
-      showGuestGate(e.resetsAt);
-      return;
-    }
+    if(e.message === 'guest_limit' || e.message === 'rate_limit') {
+  showRateLimitGate({
+    resetsAt: e.resetsAt,
+    limit: e.limit,
+    code: e.message
+  });
+  return;
+}
     if(!isRetry) {
       setLoadingStatus('Retrying…');
       setTimeout(async()=>{ clearLoadingStatus(); try{ await runAnalysis(id,type,true); }catch(e2){ showError('Analysis failed after retry. Please try again shortly.'); } },1500);
@@ -1341,18 +1344,25 @@ function setLoadingStatus(msg) { const el=document.getElementById('loadingStatus
 function clearLoadingStatus() { const el=document.getElementById('loadingStatus'); if(el) el.style.display='none'; }
 
 async function getAIBreakdown({tmdb_id,media_type,season=null,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext}) {
-  const res=await fetch(`${API}/api/analyze`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tmdb_id,media_type,season,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext})});
-  const data=await res.json(); 
+  const res=await fetch(`${API}/api/analyze`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({tmdb_id,media_type,season,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext})
+  });
+  const data=await res.json();
+
   if(data.error) {
     const err = new Error(data.error);
     if(data.resetsAt) err.resetsAt = data.resetsAt;
+    if(typeof data.limit === 'number') err.limit = data.limit;
     throw err;
   }
-  // Normalize: cached response has _cached:true; both shapes have content or choices
+
   const content=data.content??data.choices?.[0]?.message?.content;
   const text=Array.isArray(content)?content.map(c=>c.text||'').join('').trim():String(content||'').trim();
   return parseJSON(text);
 }
+
 function parseJSON(text) {
   text=text.replace(/```json|```/gi,'').trim();
   const start=text.indexOf('{'),end=text.lastIndexOf('}');
@@ -1524,12 +1534,58 @@ function showGuestGate(resetsAt) {
   document.getElementById('emptyCard').style.display='none';
   document.getElementById('guestGate').style.display='block';
   
+  let rateLimitGateTimer = null;
+
+function showRateLimitGate({ resetsAt, limit, code }) {
+  document.getElementById('errorCard').style.display = 'none';
+  document.getElementById('emptyCard').style.display = 'none';
+  document.getElementById('guestGate').style.display = 'block';
+
+  const isGuest = code === 'guest_limit';
+  const resolvedLimit = typeof limit === 'number'
+    ? limit
+    : (isGuest ? 10 : 20);
+
+  const titleEl = document.getElementById('guestGateTitle');
+  const msgEl = document.getElementById('guestGateMsg');
+  const timeEl = document.getElementById('guestGateTime');
+  const primaryEl = document.getElementById('guestGatePrimary');
+  const secondaryEl = document.getElementById('guestGateSecondary');
+
+  titleEl.textContent = isGuest ? 'Free limit reached' : 'Daily limit reached';
+  msgEl.textContent = isGuest
+    ? `You've used your ${resolvedLimit} free searches for today.`
+    : `You've used your ${resolvedLimit} searches for today.`;
+
+  if (isGuest) {
+    primaryEl.href = '/signup';
+    primaryEl.textContent = 'Sign up free';
+    secondaryEl.href = '/plans';
+    secondaryEl.textContent = 'View Pro plans';
+  } else {
+    primaryEl.href = '/plans';
+    primaryEl.textContent = 'Upgrade to Pro';
+    secondaryEl.href = '/dashboard';
+    secondaryEl.textContent = 'Go to dashboard';
+  }
+
   function updateTime() {
+    if (!resetsAt) {
+      timeEl.textContent = '--h --m';
+      return;
+    }
+
     const diff = Math.max(0, resetsAt - Date.now());
     const h = Math.floor(diff / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
-    document.getElementById('guestGateTime').textContent = `${h}h ${m}m`;
+    timeEl.textContent = `${h}h ${m}m`;
   }
+
+  updateTime();
+
+  if (rateLimitGateTimer) clearInterval(rateLimitGateTimer);
+  rateLimitGateTimer = setInterval(updateTime, 60000);
+}
   updateTime();
   setInterval(updateTime, 60000);
 }
