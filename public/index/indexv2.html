@@ -154,17 +154,15 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Content Breakdown Accordion (exact original structure) -->
+      <!-- Content Breakdown (List Map Format) -->
       <section>
-        <h2 class="text-2xl font-bold mb-6">Detailed Content Breakdown</h2>
-        <div class="space-y-4" id="breakdownAccordion">
-          <!-- Skeleton accordion items -->
-          <div class="skel h-20 rounded-xl"></div>
-          <div class="skel h-20 rounded-xl"></div>
-          <div class="skel h-20 rounded-xl"></div>
-          <div class="skel h-20 rounded-xl"></div>
-          <div class="skel h-20 rounded-xl"></div>
-          <div class="skel h-20 rounded-xl"></div>
+        <h2 class="text-xs font-bold text-outline uppercase tracking-widest mb-6 border-b border-surface-variant pb-2">Content Breakdown</h2>
+        <div class="space-y-0" id="breakdownAccordion">
+          <!-- Skeleton list items -->
+          <div class="skel h-16 rounded-lg mb-2"></div>
+          <div class="skel h-16 rounded-lg mb-2"></div>
+          <div class="skel h-16 rounded-lg mb-2"></div>
+          <div class="skel h-16 rounded-lg mb-2"></div>
         </div>
       </section>
 
@@ -479,7 +477,7 @@ function getAgeLabel(bd) {
   return 'Adults';
 }
 
-// ── Render Accordion ───────────────────────────────────────────────────────
+// ── Render Breakdown ───────────────────────────────────────────────────────
 function renderAccordion(bd) {
   const container = document.getElementById('breakdownAccordion');
   const cats = bd?.categories || [];
@@ -488,28 +486,33 @@ function renderAccordion(bd) {
     return;
   }
 
-  container.innerHTML = cats.map((cat, i) => {
-    const cfg  = LEVEL_CFG[cat.level] || LEVEL_CFG.none;
-    const icon = catIcon(cat.name);
-    const isFirst = i === 0; // first item expanded by default (matches mockup)
+  container.innerHTML = cats.map(cat => {
+    const cfg = LEVEL_CFG[cat.level] || LEVEL_CFG.none;
+    const isNone = cat.level === 'none';
+    
     return `
-      <div class="bg-surface-container-low rounded-xl overflow-hidden">
-        <div class="p-6 flex items-center justify-between cursor-pointer hover:bg-surface-container transition-colors group" onclick="toggleAccordion(this)">
-          <div class="flex items-center gap-4">
-            <span class="material-symbols-outlined ${cfg.cls}">${icon}</span>
-            <div>
-              <span class="font-bold block">${esc(cat.name)}</span>
-              <span class="text-xs font-semibold ${cfg.cls} uppercase tracking-tighter">${cfg.label}</span>
-            </div>
-          </div>
-          <span class="material-symbols-outlined accordion-chevron ${isFirst ? 'open' : ''} transition-transform">expand_more</span>
+      <div class="py-5 border-b border-surface-variant flex flex-col md:flex-row md:items-start gap-4">
+        <!-- Name & Description -->
+        <div class="flex-1">
+          <h4 class="font-bold text-[15px] text-on-surface mb-1">${esc(cat.name)}</h4>
+          <p class="text-[13px] text-on-surface-variant leading-relaxed">
+            ${esc(cat.note || cat.description || 'No noticeable issues.')}
+          </p>
         </div>
-        <div class="accordion-body ${isFirst ? 'open' : ''} px-6 pb-6 pt-2 border-t border-white/50">
-          <p class="text-on-surface-variant text-sm leading-relaxed">${esc(cat.note || cat.description || '')}</p>
-          ${cat.quote ? `<div class="mt-4 p-4 bg-white/60 rounded-lg text-sm italic text-on-surface">"${esc(cat.quote)}"</div>` : ''}
+        
+        <!-- Level Pill -->
+        <div class="${cfg.bgCls} ${cfg.cls} px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0 self-start">
+          <div class="w-1.5 h-1.5 rounded-full bg-current ${isNone ? 'opacity-50' : 'opacity-100'}"></div>
+          <span class="text-xs font-bold uppercase tracking-wider">${cfg.label}</span>
         </div>
-      </div>`;
+      </div>
+    `;
   }).join('');
+  
+  // Remove the bottom border from the very last item using CSS
+  if (container.lastElementChild) {
+    container.lastElementChild.classList.remove('border-b');
+  }
 }
 
 function toggleAccordion(headerEl) {
