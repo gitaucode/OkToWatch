@@ -368,17 +368,19 @@ async function loadPage() {
     });
     const analyzeData = await analyzeRes.json();
 
-    // Parse AI JSON from response (handles both raw string and object responses)
-    if (analyzeData.categories) {
-      // Already a parsed breakdown object (cached response)
-      _breakdown = analyzeData;
-    } else {
-      let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
-      if (Array.isArray(rawContent)) rawContent = rawContent.map(c => c.text || '').join('');
-      rawContent = String(rawContent).replace(/```json|```/gi, '').trim();
-      const jsonStart = rawContent.indexOf('{'), jsonEnd = rawContent.lastIndexOf('}');
-      if (jsonStart > -1) _breakdown = JSON.parse(rawContent.slice(jsonStart, jsonEnd + 1));
-    }
+    if (analyzeData.error) throw new Error(analyzeData.error);
+
+    // Parse AI JSON from response using identical logic to previous design
+    let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
+    if (Array.isArray(rawContent)) rawContent = rawContent.map(c => c.text || '').join('');
+    rawContent = String(rawContent).replace(/```json|```/gi, '').trim();
+    const jsonStart = rawContent.indexOf('{'), jsonEnd = rawContent.lastIndexOf('}');
+    if (jsonStart === -1 || jsonEnd === -1) throw new Error('No JSON in response');
+    
+    _breakdown = JSON.parse(rawContent.slice(jsonStart, jsonEnd + 1));
+    if (!_breakdown.summary) _breakdown.summary = '';
+    const validLevels = ['none','mild','moderate','strong'];
+    (_breakdown.categories || []).forEach(c => { if (!validLevels.includes(c.level)) c.level = 'none'; });
 
     renderVerdictCard(_details, _breakdown, providers.results || {});
     renderAccordion(_breakdown);
@@ -503,7 +505,7 @@ function renderAccordion(bd) {
           <span class="material-symbols-outlined accordion-chevron ${isFirst ? 'open' : ''} transition-transform">expand_more</span>
         </div>
         <div class="accordion-body ${isFirst ? 'open' : ''} px-6 pb-6 pt-2 border-t border-white/50">
-          <p class="text-on-surface-variant text-sm leading-relaxed">${esc(cat.description || cat.notes || '')}</p>
+          <p class="text-on-surface-variant text-sm leading-relaxed">${esc(cat.note || cat.description || '')}</p>
           ${cat.quote ? `<div class="mt-4 p-4 bg-white/60 rounded-lg text-sm italic text-on-surface">"${esc(cat.quote)}"</div>` : ''}
         </div>
       </div>`;
