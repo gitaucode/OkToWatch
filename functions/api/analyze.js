@@ -134,6 +134,25 @@ export async function onRequestPost(context) {
     }
   }
 
+  // Helper to attach usage tracking
+  async function attachUsage(data, identityVal, limitVal) {
+    if (!identityVal || !env.DB || !limitVal) return data;
+    try {
+      const row = await env.DB.prepare(
+        "SELECT count, window_start FROM request_limits WHERE identity = ? AND endpoint = 'analyze'"
+      ).bind(identityVal).first();
+      if (row) {
+        const used = row.count;
+        const remaining = Math.max(0, limitVal - used);
+        const resetsAt = row.window_start + WINDOW;
+        data._usage = { limit: limitVal, used, remaining, resetsAt };
+      }
+    } catch (e) {
+      console.error('Usage tracking error:', e);
+    }
+    return data;
+  }
+
   // ── 1. Cache lookup ─────────────────────────────────────
   if (env.DB && tmdb_id && media_type) {
     const cacheKey = buildCacheKey(tmdb_id, media_type, season);
@@ -148,7 +167,9 @@ export async function onRequestPost(context) {
         const ageDays = (Date.now() - new Date(row.cached_at).getTime()) / 86400000;
 
         if (ageDays < CACHE_TTL_DAYS) {
-          return jsonOk(mergeCachedFlag(JSON.parse(row.result_json), true));
+          const cachedData = mergeCachedFlag(JSON.parse(row.result_json), true);
+          const withUsage = await attachUsage(cachedData, identity, limit);
+          return jsonOk(withUsage);
         }
       }
     } catch (e) {
@@ -204,7 +225,8 @@ export async function onRequestPost(context) {
       });
   }
 
-  return jsonOk(groqData);
+  const withUsage = await attachUsage(groqData, identity, limit);
+  return jsonOk(withUsage);
 }
 
 export async function onRequestOptions() {

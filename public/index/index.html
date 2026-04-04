@@ -611,6 +611,7 @@ footer a:hover { color: var(--accent); }
         </div>
         <div class="suggestions" id="suggestions"></div>
       </div>
+      <div style="margin-top:0.6rem;font-size:0.75rem;color:var(--muted);" id="usageIndicator" style="display:none;"></div>
 
       <div class="quick-row">
         <span class="quick-label">Try:</span>
@@ -1302,8 +1303,10 @@ async function runAnalysis(id,type,isRetry=false) {
     currentMovieTitle=title; currentYear=year; currentPosterUrl=backdrop||poster||'';
     saveHistory(title); heroInput.value=title; collInput.value=title;
     setLoadingStatus('Analysing content…');
-    const breakdown=await getAIBreakdown({tmdb_id:id,media_type:type,season:null,title,year,overview,genres,certRating,keywords,type,childAge});
+    const result=await getAIBreakdown({tmdb_id:id,media_type:type,season:null,title,year,overview,genres,certRating,keywords,type,childAge});
+    const breakdown=result.breakdown;
     clearLoadingStatus(); hideSkeleton(); currentBreakdown=breakdown;
+    updateUsageIndicator(result._usage);
 
     if(childAge!==null) {
       currentAudience=childAge<=10?'young':childAge<=17?'teens':'adults';
@@ -1345,13 +1348,14 @@ async function runAnalysis(id,type,isRetry=false) {
   } catch(e) {
     clearLoadingStatus(); hideSkeleton(); document.getElementById('navCollapsed').classList.add('visible');
     if(e.message === 'guest_limit' || e.message === 'rate_limit') {
-  showRateLimitGate({
-    resetsAt: e.resetsAt,
-    limit: e.limit,
-    code: e.message
-  });
-  return;
-}
+      if(e._usage) updateUsageIndicator(e._usage);
+      showRateLimitGate({
+        resetsAt: e.resetsAt,
+        limit: e.limit,
+        code: e.message
+      });
+      return;
+    }
     if(!isRetry) {
       setLoadingStatus('Retrying…');
       setTimeout(async()=>{ clearLoadingStatus(); try{ await runAnalysis(id,type,true); }catch(e2){ showError('Analysis failed after retry. Please try again shortly.'); } },1500);
@@ -1363,6 +1367,17 @@ async function runAnalysis(id,type,isRetry=false) {
 let loadingStatusTimer=null;
 function setLoadingStatus(msg) { const el=document.getElementById('loadingStatus'),txt=document.getElementById('loadingStatusText'); if(el&&txt){txt.innerHTML=`<span class="loading-dots">${msg}</span>`;el.style.display='block';} }
 function clearLoadingStatus() { const el=document.getElementById('loadingStatus'); if(el) el.style.display='none'; }
+
+function updateUsageIndicator(usage) {
+  const ui=document.getElementById('usageIndicator');
+  if(!ui) return;
+  if(!usage || !usage.remaining === undefined) {
+    ui.style.display='none';
+    return;
+  }
+  ui.style.display='block';
+  ui.textContent=`${usage.remaining} searches remaining`;
+}
 
 async function getAIBreakdown({tmdb_id,media_type,season=null,title,year,overview,genres,certRating,keywords,type,childAge,seasonContext}) {
   const res=await fetch(`${API}/api/analyze`,{
@@ -1376,12 +1391,14 @@ async function getAIBreakdown({tmdb_id,media_type,season=null,title,year,overvie
     const err = new Error(data.error);
     if(data.resetsAt) err.resetsAt = data.resetsAt;
     if(typeof data.limit === 'number') err.limit = data.limit;
+    if(data._usage) err._usage = data._usage;
     throw err;
   }
 
   const content=data.content??data.choices?.[0]?.message?.content;
   const text=Array.isArray(content)?content.map(c=>c.text||'').join('').trim():String(content||'').trim();
-  return parseJSON(text);
+  const breakdown=parseJSON(text);
+  return {breakdown, _usage: data._usage};
 }
 
 function parseJSON(text) {
@@ -1453,7 +1470,9 @@ async function analyseSeasonContent(showId,seasonNum) {
     const seasonContext=[seasonOverview,episodeSummaries?`Episodes: ${episodeSummaries}`:''].filter(Boolean).join(' ');
     const {title:showTitle,certRating,genres,keywords}=currentRenderData;
     const childAge=getChildAge();
-    const breakdown=await getAIBreakdown({tmdb_id:currentShowId,media_type:'tv',season:seasonNum,title:`${showTitle} — ${seasonTitle}`,year:airYear||currentYear,overview:seasonContext||`Season ${seasonNum} of ${showTitle}`,genres,certRating,keywords,type:'tv',childAge,seasonContext:`This analysis is specifically for Season ${seasonNum} of ${showTitle}, not the whole series.`});
+    const result=await getAIBreakdown({tmdb_id:currentShowId,media_type:'tv',season:seasonNum,title:`${showTitle} — ${seasonTitle}`,year:airYear||currentYear,overview:seasonContext||`Season ${seasonNum} of ${showTitle}`,genres,certRating,keywords,type:'tv',childAge,seasonContext:`This analysis is specifically for Season ${seasonNum} of ${showTitle}, not the whole series.`});
+    const breakdown=result.breakdown;
+    updateUsageIndicator(result._usage);
     refreshEl.classList.remove('visible'); document.querySelectorAll('.season-pill').forEach(p=>p.classList.remove('loading'));
     const ss=document.getElementById('movieSummaryStrip');
     if(breakdown.summary){ss.textContent=breakdown.summary;ss.style.display='block';}
@@ -1645,7 +1664,9 @@ async function selectCompareTitle(id,type,title) {
     let certRating=''; if(type==='movie'){const us=(releases.results||[]).find(r=>r.iso_3166_1==='US');if(us){const cert=us.release_dates.find(d=>d.certification);certRating=cert?.certification||'';}}else{const us=(releases.results||[]).find(r=>r.iso_3166_1==='US');certRating=us?.rating||'';}
     const compareTitle=details.title||details.name||'', year=(details.release_date||details.first_air_date||'').slice(0,4), overview=details.overview||'', genres=(details.genres||[]).map(g=>g.name).join(', '), keywords=((details.keywords?.keywords||details.keywords?.results)||[]).map(k=>k.name).slice(0,20).join(', ');
     const backdrop=details.backdrop_path?`${TMDB_W500}${details.backdrop_path}`:null, poster=details.poster_path?`${TMDB_W300}${details.poster_path}`:null, childAge=getChildAge();
-    const breakdown=await getAIBreakdown({tmdb_id:id,media_type:type,season:null,title:compareTitle,year,overview,genres,certRating,keywords,type,childAge});
+    const result=await getAIBreakdown({tmdb_id:id,media_type:type,season:null,title:compareTitle,year,overview,genres,certRating,keywords,type,childAge});
+    const breakdown=result.breakdown;
+    updateUsageIndicator(result._usage);
     compareData={id,type,title:compareTitle,year,certRating,genres,backdrop,poster,breakdown};
     renderCompareResult(); renderCompareHeader();
   } catch(e) { wrap.innerHTML=`<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem;">Could not load comparison. <a href="#" onclick="openCompare()" style="color:var(--accent);">Try again</a></div>`; console.error(e); }
