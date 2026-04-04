@@ -326,28 +326,61 @@ async function loadPage() {
   }
 
   try {
-    // 1. Fetch TMDb details + analyze in parallel
-    const [detailsRes, analyzeRes] = await Promise.all([
-      fetch(`/api/tmdb/${_type}/${_tmdbId}?append_to_response=credits,watch/providers,release_dates,content_ratings`),
-      fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type })
-      })
+    // Step 1 — Fetch TMDb details, ratings, and providers in parallel
+    const endpoint = _type === 'tv' ? 'tv' : 'movie';
+    const [details, ratings, providers] = await Promise.all([
+      fetch(`/api/tmdb/${endpoint}/${_tmdbId}?append_to_response=credits,keywords`).then(r => r.json()),
+      _type === 'movie'
+        ? fetch(`/api/tmdb/movie/${_tmdbId}/release_dates`).then(r => r.json())
+        : fetch(`/api/tmdb/tv/${_tmdbId}/content_ratings`).then(r => r.json()),
+      fetch(`/api/tmdb/${endpoint}/${_tmdbId}/watch/providers`).then(r => r.json())
     ]);
 
-    _details = await detailsRes.json();
+    _details = details;
+    // Attach providers onto details for renderVerdictCard
+    _details._providers = providers.results || {};
+
+    // Extract cert rating (same logic as index.html)
+    let certRating = '';
+    if (_type === 'movie') {
+      const us = (ratings.results || []).find(r => r.iso_3166_1 === 'US');
+      if (us) { const cert = us.release_dates.find(d => d.certification); certRating = cert?.certification || ''; }
+    } else {
+      const us = (ratings.results || []).find(r => r.iso_3166_1 === 'US');
+      certRating = us?.rating || '';
+    }
+
+    // Extract metadata for the analyze call
+    const title    = details.title || details.name || '';
+    const year     = (details.release_date || details.first_air_date || '').slice(0, 4);
+    const overview = details.overview || '';
+    const genres   = (details.genres || []).map(g => g.name).join(', ');
+    const keywords = ((details.keywords?.keywords || details.keywords?.results) || []).map(k => k.name).slice(0, 20).join(', ');
+
+    // Render hero immediately — don't block on AI call
+    renderHero(_details, certRating);
+
+    // Step 2 — Call analyze with full metadata (sequential, after we have details)
+    const analyzeRes = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords })
+    });
     const analyzeData = await analyzeRes.json();
 
-    // Parse AI response
-    let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
-    if (Array.isArray(rawContent)) rawContent = rawContent.map(c => c.text || '').join('');
-    rawContent = String(rawContent).replace(/```json|```/gi, '').trim();
-    const jsonStart = rawContent.indexOf('{'), jsonEnd = rawContent.lastIndexOf('}');
-    _breakdown = jsonStart > -1 ? JSON.parse(rawContent.slice(jsonStart, jsonEnd + 1)) : analyzeData;
+    // Parse AI JSON from response (handles both raw string and object responses)
+    if (analyzeData.categories) {
+      // Already a parsed breakdown object (cached response)
+      _breakdown = analyzeData;
+    } else {
+      let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
+      if (Array.isArray(rawContent)) rawContent = rawContent.map(c => c.text || '').join('');
+      rawContent = String(rawContent).replace(/```json|```/gi, '').trim();
+      const jsonStart = rawContent.indexOf('{'), jsonEnd = rawContent.lastIndexOf('}');
+      if (jsonStart > -1) _breakdown = JSON.parse(rawContent.slice(jsonStart, jsonEnd + 1));
+    }
 
-    renderHero(_details);
-    renderVerdictCard(_details, _breakdown);
+    renderVerdictCard(_details, _breakdown, providers.results || {});
     renderAccordion(_breakdown);
     renderSidebar(_details, _breakdown);
 
@@ -355,11 +388,12 @@ async function loadPage() {
     console.error('Page load error:', e);
     document.getElementById('heroTitle').textContent = 'Could not load';
     document.getElementById('verdictSummaryText').textContent = 'Failed to load content breakdown. Please try again.';
+    document.getElementById('breakdownAccordion').innerHTML = '<p class="text-on-surface-variant text-sm py-4">Analysis failed. Please try again.</p>';
   }
 }
 
 // ── Render Hero ────────────────────────────────────────────────────────────
-function renderHero(d) {
+function renderHero(d, certRating = '') {
   const title    = d.title || d.name || 'Unknown';
   const year     = (d.release_date || d.first_air_date || '').slice(0, 4);
   const runtime  = d.runtime ? `${d.runtime}m` : (d.episode_run_time?.[0] ? `${d.episode_run_time[0]}m` : '');
@@ -389,17 +423,18 @@ function renderHero(d) {
   // Title
   document.getElementById('heroTitle').textContent = title;
 
-  // Meta row (exact original: bullet-separated)
+  // Meta row — year · runtime · rating (· cert if available)
   const metaParts = [
     year ? `<span>${year}</span>` : '',
     runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${runtime}</span>` : '',
     rating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">star</span> ${rating}</span>` : '',
+    certRating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${certRating}</span>` : '',
   ].filter(Boolean).join('');
   document.getElementById('heroMeta').innerHTML = metaParts;
 }
 
 // ── Render Verdict Card ────────────────────────────────────────────────────
-function renderVerdictCard(d, bd) {
+function renderVerdictCard(d, bd, providerResults = {}) {
   // Age recommendation circle
   const ageCircle = document.getElementById('ageCircle');
   const ageLabel = getAgeLabel(bd);
@@ -410,11 +445,11 @@ function renderVerdictCard(d, bd) {
   const summaryText = bd?.verdicts?.young?.sub || bd?.summary || 'Content breakdown available below.';
   summaryEl.textContent = summaryText;
 
-  // Where to Watch
-  const providers = d['watch/providers']?.results?.GB || d['watch/providers']?.results?.US || {};
-  const flatrate  = providers.flatrate || [];
-  const rent      = providers.rent     || [];
-  const wtw       = document.getElementById('whereToWatch');
+  // Where to Watch — prefer GB then US
+  const provs    = providerResults.GB || providerResults.US || {};
+  const flatrate = provs.flatrate || [];
+  const rent     = provs.rent     || [];
+  const wtw      = document.getElementById('whereToWatch');
 
   const allProviders = [...flatrate, ...rent.filter(r => !flatrate.find(f => f.provider_id === r.provider_id))].slice(0, 5);
   if (allProviders.length) {
@@ -428,6 +463,7 @@ function renderVerdictCard(d, bd) {
     wtw.innerHTML = '<span class="text-sm text-on-surface-variant">Not available on streaming</span>';
   }
 }
+
 
 // Derive a readable age recommendation from verdicts
 function getAgeLabel(bd) {
