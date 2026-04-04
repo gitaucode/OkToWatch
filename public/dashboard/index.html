@@ -1074,6 +1074,7 @@ document.getElementById('upgradeModal')?.addEventListener('click', e => {
 // ── Trending ─────────────────────────────────────────────────────────────
 let _trendType = 'movie';
 let _cachedIds  = new Set();
+let _verdictData = {}; // Store verdict summaries keyed by tmdb_id
 
 async function loadTrending(type = 'movie') {
   _trendType = type;
@@ -1132,6 +1133,22 @@ async function loadTrending(type = 'movie') {
       return;
     }
 
+    // Fetch verdicts for these items
+    const itemIds = items.map(i => i.id).join(',');
+    const verdictsData = {};
+    if (itemIds) {
+      try {
+        const verRes = await fetch(`/api/verdicts?ids=${itemIds}`);
+        if (verRes.ok) {
+          const verdicts = await verRes.json();
+          Object.assign(verdictsData, verdicts);
+        }
+      } catch (e) {
+        console.error('Verdicts fetch error:', e);
+      }
+    }
+    _verdictData = verdictsData;
+
     grid.innerHTML = items.map(item => renderTrendCard(item, type)).join('');
   } catch(e) {
     grid.innerHTML = '<p style="font-size:0.8rem;color:var(--muted);grid-column:1/-1;text-align:center;padding:1rem 0;">Could not load trending titles.</p>';
@@ -1148,8 +1165,14 @@ function renderTrendCard(item, type) {
   const cert     = getCert(item);
   const cached   = _cachedIds.has(String(item.id));
   const cachedBadge = cached ? '<span class="trend-cached">✓ Analysed</span>' : '';
-  // Verdict pill placeholder - populated when verdict data is available
-  const verdictHtml = '<!-- Verdict pill would be rendered here when verdict data is available -->';
+  
+  // Build verdict pill if verdict data exists for this ID
+  let verdictHtml = '';
+  const verdict = _verdictData[item.id];
+  if (verdict) {
+    const levelClass = verdict.level === 'safe' ? 'safe' : verdict.level === 'strong' ? 'danger' : 'caution';
+    verdictHtml = `<span class="trend-verdict-pill ${levelClass}"><span class="trend-verdict-dot"></span>${esc(verdict.summary)}</span>`;
+  }
 
   return `
     <div class="trend-card" onclick="checkTitle(${item.id}, '${type}', '${esc(title)}')">
