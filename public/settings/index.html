@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Family Profile | OkToWatch</title>
+    <title>Settings | OkToWatch</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -81,11 +81,9 @@
         }
     </script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
         body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .brand-font, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -103,186 +101,331 @@
             border-radius: 4px;
         }
 
-        /* Suppress the injected cv-nav from auth.js */
         #nav-root * { visibility: hidden !important; }
-        #nav-root .cv-search-modal,
-        #nav-root .cv-search-modal * { visibility: visible !important; }
+        #nav-root .cv-search-modal, #nav-root .cv-search-modal * { visibility: visible !important; }
 
-        /* Modal styling */
         .modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
         .modal-overlay.visible { display: flex; }
         
-        /* Toast ── */
         .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a2420; color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Dynamic Sidebar Active States */
+        .sidebar-item { transition: all 0.2s; cursor: pointer; }
+        .sidebar-item.active { background: white; color: #1a2420; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .dark .sidebar-item.active { background: #1e293b; color: white; }
+        .sidebar-item:not(.active):hover { background: rgba(0,0,0,0.03); }
+        .dark .sidebar-item:not(.active):hover { background: rgba(255,255,255,0.05); }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen flex flex-col" data-page="settings">
+<body class="bg-background text-on-surface antialiased" data-page="settings">
 
-<!-- Hidden Nav Root for auth.js to attach to -->
 <div id="nav-root"></div>
 
-<!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 h-16">
     <div class="flex justify-between items-center h-full px-8 max-w-[1440px] mx-auto">
-        <div class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter font-headline">OkToWatch</div>
-        <nav class="hidden md:flex items-center space-x-8">
+        <div class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter brand-font">OkToWatch</div>
+        <nav class="hidden md:flex items-center space-x-8 font-label">
             <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/dashboard">Dashboard</a>
             <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/lists">Lists</a>
             <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/discover">Discover</a>
             <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/history">History</a>
         </nav>
-        <div class="flex items-center space-x-4">
-            <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all text-slate-700 dark:text-slate-200" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
-                <span class="material-symbols-outlined">search</span>
+        <div class="flex items-center gap-4">
+            <button class="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all rounded-full" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
+                <span class="material-symbols-outlined" data-icon="search">search</span>
             </button>
-            <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1" onclick="window.location.href='/settings'">
-                <span class="material-symbols-outlined">account_circle</span>
+            <button class="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all rounded-full" onclick="window.location.href='/settings'">
+                <span class="material-symbols-outlined text-slate-900 dark:text-white pb-1" data-icon="account_circle">account_circle</span>
             </button>
         </div>
     </div>
 </header>
 
-<main class="flex-grow pt-32 pb-24">
-    <div class="max-w-4xl mx-auto px-8">
-        
-        <!-- Header Section -->
-        <div class="mb-12">
-            <h1 class="text-4xl font-bold tracking-tight mb-2 text-on-surface">Family Profile</h1>
-            <p class="text-on-surface-variant body-md opacity-70">Manage viewing permissions and safety guidelines for your children.</p>
-        </div><!-- Bento Layout Container -->
-        
-        <div id="loadingState" class="text-center py-12 text-on-surface-variant">
-            Loading profiles...
+<main class="max-w-[1440px] mx-auto pt-28 pb-16 px-8 flex flex-col md:flex-row gap-12">
+    <!-- SideNavBar -->
+    <aside class="w-full md:w-64 shrink-0 mt-8">
+        <div class="px-3 mb-6">
+            <h2 class="text-lg font-semibold text-slate-900 dark:text-white brand-font">Settings</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 font-body">Manage your experience</p>
         </div>
-
-        <div id="mainContent" class="grid grid-cols-1 md:grid-cols-12 gap-8 hidden">
-            <!-- Profile Selector: Level 1 Container -->
-            <section class="md:col-span-12 bg-surface-container-low p-8 rounded-xl">
-                <h2 class="headline-md font-bold text-on-surface mb-8 tracking-tight">Active Profile</h2>
-                <div class="flex flex-wrap gap-10" id="profileListContainer">
-                    <!-- Profiles populated via JS -->
-                </div>
-            </section>
-
-            <!-- Settings Forms (Hidden if no profiles) -->
-            <div id="settingsWorkspace" class="md:col-span-7 space-y-8 hidden">
-                <!-- Age Rating Slider -->
-                <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm border border-outline-variant/10">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-headline font-bold text-on-surface">Maximum Age Rating</h3>
-                        <span id="ageBadge" class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-sm font-bold font-headline">TV-PG / 12+</span>
-                    </div>
-                    <div class="relative py-4">
-                        <input id="ageSlider" class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer" max="17" min="1" type="range" value="12" oninput="handleAgeChange()"/>
-                        <div class="flex justify-between mt-4 text-[10px] font-bold text-on-surface-variant font-headline uppercase tracking-widest opacity-60">
-                            <span>ALL</span>
-                            <span>7+</span>
-                            <span>12+</span>
-                            <span>14+</span>
-                            <span>16+</span>
-                            <span>17+</span>
-                        </div>
-                    </div>
-                    <p id="ageItalicDesc" class="mt-4 text-sm text-on-surface-variant/70 leading-relaxed italic">"Allows viewing of family content while restricting mature themes."</p>
-                </div>
-
-                <!-- Restrictions Toggle List -->
-                <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm border border-outline-variant/10">
-                    <h3 class="font-headline font-bold text-on-surface mb-6">Content Restrictions</h3>
-                    <div class="space-y-6">
-                        <!-- Toggle Item -->
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-headline font-semibold text-on-surface">Violence &amp; Gore</p>
-                                <p class="text-xs text-on-surface-variant">Hide content with intense physical conflict</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input id="chkViolence" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
-                                <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
-                            </label>
-                        </div>
-                        <!-- Toggle Item -->
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-headline font-semibold text-on-surface">Mature Language</p>
-                                <p class="text-xs text-on-surface-variant">Filter out explicit dialogue and profanity</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input id="chkLanguage" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
-                                <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
-                            </label>
-                        </div>
-                        <!-- Toggle Item -->
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-headline font-semibold text-on-surface">Substance Use</p>
-                                <p class="text-xs text-on-surface-variant">Restrict depictions of smoking or drinking</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input id="chkSubstances" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
-                                <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Danger Zone / Delete Profile -->
-                <div class="flex justify-end pt-2">
-                    <button id="delBtn" onclick="requestDeleteProfile()" class="text-xs font-bold text-error border border-error px-4 py-2 rounded-lg hover:bg-error hover:text-on-error transition-colors bg-transparent">Delete Profile</button>
-                </div>
-            </div>
-
-            <!-- Editorial Sidebar / Summary -->
-            <aside id="summaryWorkspace" class="md:col-span-5 space-y-8 hidden">
-                <div class="bg-surface-container p-8 rounded-lg">
-                    <div class="flex items-center gap-3 text-tertiary mb-4">
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
-                        <h3 class="font-headline font-bold uppercase tracking-widest text-xs">Guardian Analysis</h3>
-                    </div>
-                    <p class="text-on-surface font-headline text-lg font-bold mb-4"><span id="summaryName">Leo</span>'s Profile Summary</p>
-                    <ul class="space-y-4" id="summaryList">
-                        <!-- Populated dynamically -->
-                    </ul>
-                </div>
-                <!-- Action Button Container -->
-                <div class="pt-4">
-                    <button id="saveBtn" onclick="saveActiveProfile()" class="w-full py-5 bg-[#0F172A] text-white font-headline font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
-                        <span class="material-symbols-outlined">save</span>
-                        Save Profile Settings
-                    </button>
-                    <p id="saveTimestamp" class="mt-4 text-center text-xs text-on-surface-variant font-medium"></p>
-                </div>
-            </aside>
-            
-            <div id="noProfilesWorkspace" class="md:col-span-12 hidden text-center py-10 opacity-70">
-                <span class="material-symbols-outlined text-6xl text-outline mb-4">family_restroom</span>
-                <p>No profiles found. Add a child profile to manage settings.</p>
-            </div>
-            
-        </div>
-    </div>
-</main>
-
-<!-- Footer -->
-<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 mt-auto border-t border-slate-200 dark:border-slate-800">
-    <div class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="flex flex-col items-center md:items-start gap-2">
-            <div class="text-lg font-semibold text-slate-900 dark:text-white font-headline">OkToWatch</div>
-            <p class="text-slate-600 dark:text-slate-400 font-['Inter'] text-sm leading-relaxed">© 2026 OkToWatch. Data provided by TMDb.</p>
-        </div>
-        <nav class="flex gap-8">
-            <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-['Inter'] text-sm" href="/about">About</a>
-            <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-['Inter'] text-sm" href="/privacy">Privacy</a>
-            <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-['Inter'] text-sm" href="#">Terms</a>
-            <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-['Inter'] text-sm" href="#">TMDb Attribution</a>
+        <nav class="flex flex-col gap-1 py-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl px-2">
+            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg active" id="nav-profile" onclick="switchTab('profile')">
+                <span class="material-symbols-outlined" data-icon="person">person</span>
+                <span>Profile</span>
+            </a>
+            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-family" onclick="switchTab('family')">
+                <span class="material-symbols-outlined" data-icon="family_restroom">family_restroom</span>
+                <span>Family Settings</span>
+            </a>
+            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-subscription" onclick="switchTab('subscription')">
+                <span class="material-symbols-outlined" data-icon="payments">payments</span>
+                <span>Subscription</span>
+            </a>
+            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-notifications" onclick="switchTab('notifications')">
+                <span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+                <span>Notifications</span>
+            </a>
+            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-security" onclick="switchTab('security')">
+                <span class="material-symbols-outlined" data-icon="shield">shield</span>
+                <span>Security</span>
+            </a>
         </nav>
-    </div>
-</footer>
+    </aside>
+
+    <!-- Main Content Area -->
+    <section class="flex-1 min-w-0">
+        
+        <!-- GENERIC SETTINGS TABS (max-w-3xl) -->
+        <div id="wrapper-general" class="space-y-12 max-w-3xl">
+            <!-- TAB: PROFILE -->
+            <div id="tab-profile" class="tab-content space-y-8 block">
+                <div class="space-y-2 mb-8">
+                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Profile & Account</h1>
+                    <p class="text-on-surface-variant body-md opacity-80">Update your personal information and contact email.</p>
+                </div>
+                <div class="bg-surface-container-low p-8 rounded-xl space-y-8 shadow-sm">
+                    <div class="flex justify-between items-end border-b border-outline-variant/15 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold brand-font">Profile Details</h3>
+                            <p class="text-sm text-on-surface-variant font-label">Your main display identity.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Display Name</label>
+                            <input id="inputDisplayName" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" type="text" placeholder="e.g. John Doe"/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Email Address</label>
+                            <input id="inputEmail" class="w-full bg-surface-container-lowest/50 border border-outline-variant/30 rounded-lg px-4 py-2 text-on-surface-variant opacity-70 cursor-not-allowed" type="email" readonly value=""/>
+                        </div>
+                    </div>
+                    <div class="pt-4 flex items-center gap-4">
+                        <button id="btnSaveName" onclick="saveName()" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-dim transition-colors flex items-center gap-2">Save Changes</button>
+                        <button onclick="window.Clerk.openUserProfile()" class="text-primary font-semibold px-4 py-2.5 hover:underline decoration-2 underline-offset-4">Manage Login / Password</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SUBSCRIPTION -->
+            <div id="tab-subscription" class="tab-content space-y-8 hidden">
+                <div class="space-y-2 mb-8">
+                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Subscription</h1>
+                    <p class="text-on-surface-variant body-md opacity-80">Manage your billing and plan details.</p>
+                </div>
+                <div class="bg-surface-container-low p-8 rounded-xl space-y-6 shadow-sm relative overflow-hidden">
+                    <!-- Loading overlay for billing -->
+                    <div id="billingLoading" class="absolute inset-0 bg-surface-container-low/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
+                        <span class="material-symbols-outlined animate-spin text-primary">progress_activity</span>
+                        <span class="text-sm font-semibold text-primary">Loading subscription...</span>
+                    </div>
+
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-xl font-bold brand-font">Current Plan</h3>
+                            <div class="mt-2 flex items-center gap-3">
+                                <span id="billTierLabel" class="text-2xl font-bold text-on-surface capitalize">Free Tier</span>
+                                <span id="billStatusBadge" class="bg-surface-variant text-on-surface px-3 py-1 rounded-full text-xs font-bold">INACTIVE</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Renewal Date</p>
+                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/60">—</p>
+                        </div>
+                    </div>
+                    <div class="bg-surface-container-lowest p-6 rounded-lg flex items-center justify-between border border-outline-variant/10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-8 bg-surface-container rounded flex items-center justify-center">
+                                <span class="material-symbols-outlined text-on-surface-variant" data-icon="credit_card">credit_card</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-on-surface">Payment handled via Dodo</p>
+                                <p class="text-sm text-on-surface-variant">Update via customer portal</p>
+                            </div>
+                        </div>
+                        <a href="/plans" class="text-primary font-bold text-sm hover:underline">Manage Plans</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: NOTIFICATIONS -->
+            <div id="tab-notifications" class="tab-content space-y-8 hidden">
+                <div class="space-y-2 mb-8">
+                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Notifications</h1>
+                    <p class="text-on-surface-variant body-md opacity-80">Choose how you want us to reach you.</p>
+                </div>
+                <div class="bg-surface-container-low p-8 rounded-xl space-y-6 shadow-sm">
+                    <h3 class="text-xl font-bold brand-font">Inbox Preferences</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <p class="font-bold text-on-surface">Weekly Safe Picks (Digest)</p>
+                                <p class="text-sm text-on-surface-variant">A curated digest of family-friendly reviews delivered weekly.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input id="chkDigest" type="checkbox" class="sr-only peer" onchange="toggleDigest(this.checked)"/>
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between py-2 border-t border-outline-variant/15">
+                            <div>
+                                <p class="font-bold text-on-surface">Security Alerts</p>
+                                <p class="text-sm text-on-surface-variant">Important updates regarding your login and account safety.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input checked disabled type="checkbox" class="sr-only peer"/>
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary opacity-60"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SECURITY -->
+            <div id="tab-security" class="tab-content space-y-8 hidden">
+                <div class="space-y-2 mb-8">
+                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Security</h1>
+                    <p class="text-on-surface-variant body-md opacity-80">Secure your account and manage active sessions.</p>
+                </div>
+                <div class="bg-surface-container-low p-8 rounded-xl space-y-8 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <span class="material-symbols-outlined text-tertiary text-3xl" data-icon="verified_user">verified_user</span>
+                        <div>
+                            <h3 class="text-xl font-bold brand-font">Clerk Advanced Security</h3>
+                            <p class="text-sm text-on-surface-variant">OkToWatch uses Clerk to provide enterprise-grade security including Passkeys and 2FA.</p>
+                        </div>
+                        <button onclick="window.Clerk.openUserProfile()" class="ml-auto bg-surface-container-highest text-primary px-6 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-colors text-sm">Review 2FA</button>
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-outline-variant/20">
+                    <button onclick="openDeleteModal()" class="text-error font-bold flex items-center gap-2 hover:bg-error/5 px-4 py-2 rounded-md transition-colors">
+                        <span class="material-symbols-outlined" data-icon="delete">delete</span>
+                        Deactivate Account
+                    </button>
+                    <p class="text-xs text-on-surface-variant mt-2 px-4">Permanently purges your profiles, lists, and history.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAMILY TABS (bento grid layout) -->
+        <div id="tab-family" class="tab-content hidden h-full w-full">
+            <div class="space-y-2 mb-8">
+                <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Family Settings</h1>
+                <p class="text-on-surface-variant body-md opacity-80">Manage viewing permissions and safety guidelines for your children.</p>
+            </div>
+            
+            <div id="loadingStateFamily" class="text-center py-12 text-on-surface-variant">
+                <span class="material-symbols-outlined animate-spin mb-2">progress_activity</span><br>
+                Loading profiles...
+            </div>
+
+            <div id="mainContentFamily" class="grid grid-cols-1 md:grid-cols-12 gap-8 hidden">
+                <!-- Profile Selector -->
+                <section class="md:col-span-12 bg-surface-container-low p-8 rounded-xl shadow-sm">
+                    <h2 class="headline-md font-bold text-on-surface mb-8 tracking-tight">Active Profile</h2>
+                    <div class="flex flex-wrap gap-10" id="profileListContainer">
+                        <!-- Profiles populated via JS -->
+                    </div>
+                </section>
+
+                <!-- Settings Forms -->
+                <div id="settingsWorkspace" class="md:col-span-7 space-y-8 hidden">
+                    <!-- Age Rating Slider -->
+                    <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm border border-outline-variant/10">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-headline font-bold text-on-surface">Maximum Age Rating</h3>
+                            <span id="ageBadge" class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-sm font-bold font-headline">TV-PG / 12+</span>
+                        </div>
+                        <div class="relative py-4">
+                            <input id="ageSlider" class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer" max="17" min="1" type="range" value="12" oninput="handleAgeChange()"/>
+                            <div class="flex justify-between mt-4 text-[10px] font-bold text-on-surface-variant font-headline uppercase tracking-widest opacity-60">
+                                <span>ALL</span>
+                                <span>7+</span>
+                                <span>12+</span>
+                                <span>14+</span>
+                                <span>16+</span>
+                                <span>17+</span>
+                            </div>
+                        </div>
+                        <p id="ageItalicDesc" class="mt-4 text-sm text-on-surface-variant/70 leading-relaxed italic">"Allows viewing of family content while restricting mature themes."</p>
+                    </div>
+
+                    <!-- Restrictions Toggle List -->
+                    <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm border border-outline-variant/10">
+                        <h3 class="font-headline font-bold text-on-surface mb-6">Content Restrictions</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-headline font-semibold text-on-surface">Violence &amp; Gore</p>
+                                    <p class="text-xs text-on-surface-variant">Hide content with intense physical conflict</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input id="chkViolence" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
+                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-headline font-semibold text-on-surface">Mature Language</p>
+                                    <p class="text-xs text-on-surface-variant">Filter out explicit dialogue and profanity</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input id="chkLanguage" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
+                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-headline font-semibold text-on-surface">Substance Use</p>
+                                    <p class="text-xs text-on-surface-variant">Restrict depictions of smoking or drinking</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input id="chkSubstances" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
+                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-2">
+                        <button onclick="requestDeleteProfile()" class="text-xs font-bold text-error border border-error/50 px-4 py-2 rounded-lg hover:bg-error hover:text-on-error transition-colors bg-white">Delete Profile</button>
+                    </div>
+                </div>
+
+                <!-- Editorial Sidebar -->
+                <aside id="summaryWorkspace" class="md:col-span-5 space-y-8 hidden">
+                    <div class="bg-surface-container p-8 rounded-lg shadow-sm border border-outline-variant/10">
+                        <div class="flex items-center gap-3 text-tertiary mb-4">
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                            <h3 class="font-headline font-bold uppercase tracking-widest text-xs">Guardian Analysis</h3>
+                        </div>
+                        <p class="text-on-surface font-headline text-lg font-bold mb-4"><span id="summaryName">Leo</span>'s Profile Summary</p>
+                        <ul class="space-y-4" id="summaryList"></ul>
+                    </div>
+                    <div class="pt-4">
+                        <button id="saveBtn" onclick="saveActiveProfile()" class="w-full py-5 bg-slate-900 text-white font-headline font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
+                            <span class="material-symbols-outlined">save</span>
+                            Save Profile Settings
+                        </button>
+                        <p id="saveTimestamp" class="mt-4 text-center text-xs text-on-surface-variant font-medium"></p>
+                    </div>
+                </aside>
+                
+                <div id="noProfilesWorkspace" class="md:col-span-12 hidden text-center py-10 opacity-70">
+                    <span class="material-symbols-outlined text-6xl text-outline mb-4">family_restroom</span>
+                    <p>No profiles found. Add a child profile to manage settings.</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
 
 <div class="toast" id="toast"></div>
 
-<!-- Add Profile Modal -->
+<!-- Modal: Add Profile -->
 <div class="modal-overlay" id="addProfileModal">
     <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4">
         <div class="flex justify-between items-center border-b border-surface-variant pb-3 mb-4">
@@ -303,63 +446,204 @@
     </div>
 </div>
 
+<!-- Modal: Delete Account Confirm -->
+<div class="modal-overlay" id="deleteAccountModal">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4 text-center">
+        <span class="material-symbols-outlined text-border block text-error text-5xl mb-4">warning</span>
+        <h3 class="font-headline font-bold text-lg mb-2">Delete Entire Account?</h3>
+        <p class="text-sm text-on-surface-variant mb-6">This will instantly wipe your active profiles, curated history, and any saved reviews. This cannot be undone.</p>
+        <div class="flex flex-col gap-2">
+            <button onclick="executeAccountDeletion()" class="w-full py-2.5 bg-error text-white font-bold rounded-xl">Yes, Delete Account</button>
+            <button onclick="closeDeleteModal()" class="w-full py-2.5 text-slate-600 font-bold hover:bg-slate-100 rounded-xl">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script src="/js/auth.js?v=20260405"></script>
 <script>
-    let profiles = [];
-    let activeProfileId = null;
+    // ── Global Tab State ──
+    const TABS = ['profile', 'family', 'subscription', 'notifications', 'security'];
+    
+    function switchTab(tabId) {
+        // Toggle nav items
+        TABS.forEach(t => document.getElementById(`nav-${t}`)?.classList.remove('active'));
+        document.getElementById(`nav-${tabId}`)?.classList.add('active');
+        
+        // Hide all tabs
+        TABS.forEach(t => document.getElementById(`tab-${t}`)?.classList.add('hidden'));
+        document.getElementById(`wrapper-general`)?.classList.remove('hidden');
 
-    // Toast function
+        if (tabId === 'family') {
+            document.getElementById(`wrapper-general`)?.classList.add('hidden');
+            document.getElementById(`tab-family`)?.classList.remove('hidden');
+            if (activeProfileId === null && Object.keys(profiles).length === 0) {
+                // If they haven't loaded profiles yet, attempt a load if auth exists
+                loadFamilyData();
+            }
+        } else {
+            document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
+        }
+        
+        window.scrollTo(0,0);
+        // Persist tab visually
+        window.history.replaceState(null, null, `?tab=${tabId}`);
+    }
+
+    // Initialize tab from URL
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        let initTab = urlParams.get('tab');
+        if (!TABS.includes(initTab)) initTab = 'profile';
+        switchTab(initTab);
+    });
+
+    // ── GENERAL UTILS ──
     function showToast(msg, dur = 2500) {
         const t = document.getElementById('toast');
         t.textContent = msg;
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), dur);
     }
-
-    // Core Init logic bound to Auth
-    document.addEventListener('cv:auth', async ({ detail }) => {
-        if (!detail.loggedIn) {
-            window.location.href = '/signin?redirect=/settings';
-            return;
-        }
-        await loadData();
-    });
-
+    
     async function authHeaders() {
         const t = await window.Clerk.session.getToken();
         return { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' };
     }
 
-    async function loadData() {
+    let globalUser = null;
+
+    // ── BIND TO AUTH.JS ──
+    document.addEventListener('cv:auth', async ({ detail }) => {
+        if (!detail.loggedIn) {
+            window.location.href = '/signin?redirect=/settings';
+            return;
+        }
+        globalUser = detail.user;
+        
+        // 1. Populate General Profile Tab
+        const fullName = `${globalUser.firstName||''} ${globalUser.lastName||''}`.trim();
+        document.getElementById('inputDisplayName').value = fullName;
+        document.getElementById('inputEmail').value = globalUser.emailAddresses?.[0]?.emailAddress || globalUser.email || '';
+        
+        // 2. Fetch Billing
+        loadBilling();
+
+        // 3. Populate Notifications locally
+        const savedDigest = JSON.parse(localStorage.getItem('cv_digest') || 'false');
+        document.getElementById('chkDigest').checked = savedDigest;
+
+        // 4. Fetch Family
+        loadFamilyData();
+    });
+
+    // ── PROFILE TAB ──
+    async function saveName() {
+        const input = document.getElementById('inputDisplayName').value.trim();
+        if (!input) return showToast("Name cannot be empty");
+        
+        const split = input.split(' ');
+        const first = split[0];
+        const last = split.slice(1).join(' ');
+
+        const btn = document.getElementById('btnSaveName');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Saving...';
+
+        try {
+            const res = await fetch('/api/settings/name', {
+                method: 'PUT', headers: await authHeaders(),
+                body: JSON.stringify({ firstName: first, lastName: last })
+            });
+            if (res.ok) showToast("Display name updated!");
+            else showToast("Failed to update name");
+        } catch(e) {
+            showToast("Network error");
+        } finally {
+            btn.innerHTML = oldHtml;
+        }
+    }
+
+    // ── SUBSCRIPTION TAB ──
+    async function loadBilling() {
+        try {
+            const res = await fetch('/api/subscription-status', { headers: await authHeaders() });
+            if (res.ok) {
+                const sub = await res.json();
+                
+                const tierMap = { 'free': 'Free Tier', 'pro': 'Pro Plan', 'family': 'Family Plan' };
+                document.getElementById('billTierLabel').textContent = tierMap[sub.tier] || 'Free Tier';
+                
+                const badge = document.getElementById('billStatusBadge');
+                if (sub.status === 'active' || sub.status === 'trial') {
+                    badge.textContent = sub.status.toUpperCase();
+                    badge.className = "bg-tertiary text-on-tertiary px-3 py-1 rounded-full text-xs font-bold";
+                } else {
+                    badge.textContent = "INACTIVE";
+                    badge.className = "bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full text-xs font-bold";
+                }
+                
+                if (sub.renewsAt) {
+                    const dt = new Date(sub.renewsAt);
+                    document.getElementById('billRenewalText').textContent = dt.toLocaleDateString();
+                } else if (sub.trialEndsAt) {
+                    const dt = new Date(sub.trialEndsAt);
+                    document.getElementById('billRenewalText').textContent = dt.toLocaleDateString() + " (Trial End)";
+                } else {
+                    document.getElementById('billRenewalText').textContent = "—";
+                }
+            }
+        } catch(e) {} finally {
+            document.getElementById('billingLoading').classList.add('hidden');
+        }
+    }
+
+    // ── NOTIFICATIONS TAB ──
+    function toggleDigest(val) {
+        localStorage.setItem('cv_digest', JSON.stringify(val));
+        showToast(val ? "Digest Enabled" : "Digest Disabled");
+    }
+
+    // ── DANGER ZONE ──
+    function openDeleteModal() { document.getElementById('deleteAccountModal').classList.add('visible'); }
+    function closeDeleteModal() { document.getElementById('deleteAccountModal').classList.remove('visible'); }
+    async function executeAccountDeletion() {
+        try {
+            await fetch('/api/profiles?all=1', { method: 'DELETE', headers: await authHeaders() });
+            localStorage.clear();
+            showToast("Account data wiped");
+            setTimeout(() => { window.location.href = '/'; }, 1000);
+        } catch(e) { showToast("Failed to delete"); }
+    }
+
+    // ── FAMILY TAB ENGINE (Ported cleanly) ──
+    let profiles = [];
+    let activeProfileId = null;
+
+    async function loadFamilyData() {
         try {
             const res = await fetch('/api/profiles', { headers: await authHeaders() });
             if (res.ok) {
                 profiles = await res.json();
-                if (profiles.length > 0 && !activeProfileId) {
-                    activeProfileId = profiles[0].id;
-                }
-                renderDashboard();
+                if (profiles.length > 0 && !activeProfileId) activeProfileId = profiles[0].id;
+                renderFamilyDashboard();
             }
         } catch (e) {
-            console.error('Failed to load profiles');
+            console.error('Failed to load family');
         } finally {
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('loadingStateFamily').classList.add('hidden');
+            document.getElementById('mainContentFamily').classList.remove('hidden');
         }
     }
 
-    function renderDashboard() {
+    function renderFamilyDashboard() {
         const list = document.getElementById('profileListContainer');
         const hasProfiles = profiles.length > 0;
         
         let html = '';
-        
         profiles.forEach(p => {
             const isActive = p.id === activeProfileId;
-            // Border classes if active
             const ringClasses = isActive ? 'border-4 border-primary ring-4 ring-primary/10' : 'border-2 border-transparent group-hover:border-outline-variant';
             const bgHover = isActive ? '' : 'group-hover:bg-surface-container-high';
-            // Opacity for inactive
             const wrapperClass = isActive ? 'flex flex-col items-center gap-3 cursor-pointer group' : 'flex flex-col items-center gap-3 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity';
             
             html += `
@@ -377,24 +661,22 @@
             </div>`;
         });
 
-        // Add Profile button
         if (profiles.length < 5) {
             html += `
             <div class="flex flex-col items-center gap-3 cursor-pointer group" onclick="openAddModal()">
-                <div class="w-24 h-24 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center group-hover:bg-surface-container-high transition-colors">
+                <div class="w-24 h-24 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center group-hover:bg-surface-container-high transition-colors bg-white">
                     <span class="material-symbols-outlined text-3xl text-outline">add</span>
                 </div>
                 <span class="font-headline font-bold text-outline">Add Profile</span>
             </div>`;
         }
-
         list.innerHTML = html;
 
         if (hasProfiles) {
             document.getElementById('settingsWorkspace').classList.remove('hidden');
             document.getElementById('summaryWorkspace').classList.remove('hidden');
             document.getElementById('noProfilesWorkspace').classList.add('hidden');
-            populateForm();
+            populateFamilyForm();
         } else {
             document.getElementById('settingsWorkspace').classList.add('hidden');
             document.getElementById('summaryWorkspace').classList.add('hidden');
@@ -405,25 +687,20 @@
     function selectProfile(id) {
         activeProfileId = id;
         document.getElementById('saveTimestamp').textContent = '';
-        renderDashboard();
+        renderFamilyDashboard();
     }
 
-    function populateForm() {
+    function populateFamilyForm() {
         const p = profiles.find(x => x.id === activeProfileId);
         if (!p) return;
 
-        // Set name everywhere
         document.getElementById('summaryName').textContent = p.name;
         
-        // Age Slider
         const slider = document.getElementById('ageSlider');
         slider.value = p.age || 8;
         
-        // Blocked Categories
         let blocked = [];
-        try {
-            if (p.blocked_categories) blocked = JSON.parse(p.blocked_categories);
-        } catch(e){}
+        try { if (p.blocked_categories) blocked = JSON.parse(p.blocked_categories); } catch(e){}
 
         document.getElementById('chkViolence').checked = blocked.includes('Violence');
         document.getElementById('chkLanguage').checked = blocked.includes('Language');
@@ -436,7 +713,7 @@
     function handleAgeChange() {
         const age = parseInt(document.getElementById('ageSlider').value);
         updateAgeBadge(age);
-        handleRestrictionChange(); // update the summary dynamically
+        handleRestrictionChange();
     }
 
     function updateAgeBadge(age) {
@@ -448,8 +725,6 @@
         else label = 'TV-Y / ALL';
 
         document.getElementById('ageBadge').textContent = label;
-
-        // Name ref
         const pName = profiles.find(x => x.id === activeProfileId)?.name || 'the child';
         document.getElementById('ageItalicDesc').textContent = `"Allows ${pName} to view content up to an age tier of ${label} natively."`;
     }
@@ -468,8 +743,6 @@
 
     function generateSummary(name, age, blocked) {
         let html = '';
-
-        // Positive logic
         let movies = 'family animations';
         if (age >= 14) movies = 'PG-13 action blockbusters';
         else if (age >= 12) movies = 'advanced PG titles like Spider-Man';
@@ -479,15 +752,12 @@
         <li class="flex gap-3">
             <span class="material-symbols-outlined text-tertiary text-sm mt-1">check_circle</span>
             <span class="text-sm text-on-surface-variant leading-relaxed">Movies like <strong class="text-on-surface">${movies}</strong> are recommended via Discover.</span>
-        </li>`;
-
-        html += `
+        </li>
         <li class="flex gap-3">
             <span class="material-symbols-outlined text-tertiary text-sm mt-1">check_circle</span>
             <span class="text-sm text-on-surface-variant leading-relaxed">Safety-first filters inherently block excessively dark psychological elements for this tier.</span>
         </li>`;
 
-        // Blocks
         if (blocked.length > 0) {
             const mapped = blocked.map(x => x === 'Drugs & alcohol' ? 'Substance Use' : x).join(', ');
             html += `
@@ -496,7 +766,6 @@
                 <span class="text-sm text-on-surface-variant leading-relaxed">Strictly filtering: <strong class="text-error bg-error/10 px-1 py-0.5 rounded">${mapped}</strong>.</span>
             </li>`;
         }
-
         document.getElementById('summaryList').innerHTML = html;
     }
 
@@ -513,29 +782,19 @@
 
         try {
             const res = await fetch(`/api/profiles?id=${activeProfileId}`, {
-                method: 'PUT',
-                headers: await authHeaders(),
-                body: JSON.stringify({
-                    age: age,
-                    blocked_categories: blocked
-                })
+                method: 'PUT', headers: await authHeaders(),
+                body: JSON.stringify({ age, blocked_categories: blocked })
             });
 
             if (res.ok) {
                 const updated = await res.json();
-                // update local state
                 const idx = profiles.findIndex(x => x.id === activeProfileId);
                 profiles[idx] = updated;
-                
                 const now = new Date();
                 document.getElementById('saveTimestamp').textContent = `Last updated: ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-                showToast('Profile settings saved successfully');
-            } else {
-                showToast('Failed to save settings');
-            }
-        } catch (e) {
-            showToast('Network error saving settings');
-        } finally {
+                showToast('Profile saved');
+            } else showToast('Failed to save settings');
+        } catch (e) { showToast('Network error'); } finally {
             btn.innerHTML = '<span class="material-symbols-outlined">save</span> Save Profile Settings';
         }
     }
@@ -547,29 +806,25 @@
             if (res.ok) {
                 profiles = profiles.filter(x => x.id !== activeProfileId);
                 activeProfileId = profiles.length > 0 ? profiles[0].id : null;
-                renderDashboard();
+                renderFamilyDashboard();
                 showToast('Profile deleted');
             }
         } catch (e) { showToast('Execution failed'); }
     }
 
-    // Modal controls
     function openAddModal() { document.getElementById('addProfileModal').classList.add('visible'); }
     function closeAddModal() { document.getElementById('addProfileModal').classList.remove('visible'); }
 
     async function submitAddProfile() {
         const name = document.getElementById('newProfileName').value.trim();
         const age = parseInt(document.getElementById('newProfileAge').value);
-        if (!name) { showToast('Name is required'); return; }
-        if (!age || age < 1 || age > 17) { showToast('Valid age (1-17) is required'); return; }
+        if (!name || !age || age < 1 || age > 17) return showToast('Valid name & age (1-17) required');
 
         try {
             const res = await fetch('/api/profiles', {
-                method: 'POST',
-                headers: await authHeaders(),
+                method: 'POST', headers: await authHeaders(),
                 body: JSON.stringify({ name, age, emoji: '👦' })
             });
-
             if (res.ok) {
                 const json = await res.json();
                 profiles.push(json);
@@ -580,7 +835,7 @@
                 selectProfile(json.id);
             } else {
                 const err = await res.json();
-                showToast(err.error || 'Failed to create profile');
+                showToast(err.error || 'Creation failed');
             }
         } catch (e) { showToast('Network Error'); }
     }
