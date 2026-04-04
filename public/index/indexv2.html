@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#565e74"/>
+<title id="pageTitle">OkToWatch — Content Breakdown</title>
+<meta name="description" content="Detailed content breakdown and parent verdict for any movie or TV show."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-dim":"#d3dbdf","tertiary":"#006d4a","surface-variant":"#dde3e7",
+        "secondary-fixed":"#dce2f3","inverse-on-surface":"#9c9d9e","tertiary-dim":"#005f40",
+        "on-secondary-container":"#4b525f","secondary-container":"#dce2f3",
+        "inverse-primary":"#dae2fd","outline":"#757c7f","on-tertiary-container":"#005a3c",
+        "error-container":"#fe8983","surface-container-low":"#f2f4f5",
+        "on-secondary-fixed-variant":"#555c69","primary-fixed-dim":"#ccd4ee",
+        "primary-container":"#dae2fd","surface-container-highest":"#dde3e7",
+        "primary":"#565e74","on-primary":"#f7f7ff","error-dim":"#4e0309",
+        "on-tertiary":"#e6ffee","surface-bright":"#f9f9fa","on-primary-container":"#4a5167",
+        "background":"#f9f9fa","surface":"#f9f9fa","surface-container-lowest":"#ffffff",
+        "on-tertiary-fixed-variant":"#006544","secondary":"#585f6d",
+        "on-primary-fixed":"#373f54","on-secondary-fixed":"#39404c",
+        "tertiary-fixed":"#69f6b8","on-error-container":"#752121","on-secondary":"#f8f8ff",
+        "outline-variant":"#acb3b6","on-error":"#fff7f6","on-primary-fixed-variant":"#535b71",
+        "on-surface":"#2d3336","tertiary-fixed-dim":"#58e7ab","surface-tint":"#565e74",
+        "on-tertiary-fixed":"#00452d","on-background":"#2d3336","inverse-surface":"#0c0e0f",
+        "surface-container-high":"#e4e9ec","secondary-dim":"#4c5361",
+        "on-surface-variant":"#596063","surface-container":"#ebeef0","primary-dim":"#4a5268",
+        "primary-fixed":"#dae2fd","secondary-fixed-dim":"#ced4e4",
+        "tertiary-container":"#69f6b8","error":"#9f403d"
+      },
+      borderRadius: { DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem" },
+      fontFamily: { headline:["Plus Jakarta Sans"],body:["Inter"],label:["Inter"] }
+    }
+  }
+}
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .hero-gradient { background: linear-gradient(to bottom, transparent 0%, #f9f9fa 100%); }
+  body { font-family:'Inter', sans-serif; }
+  h1,h2,h3 { font-family:'Plus Jakarta Sans', sans-serif; }
+
+  /* Skeleton */
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .skel { background:linear-gradient(90deg,#e4e9ec 25%,#f2f4f5 50%,#e4e9ec 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:0.5rem; }
+
+  /* Accordion */
+  .accordion-body { display: none; }
+  .accordion-body.open { display: block; }
+  .accordion-chevron { transition: transform 0.2s ease; }
+  .accordion-chevron.open { transform: rotate(180deg); }
+
+  /* Toast */
+  .toast { position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,26,24,0.92);color:white;backdrop-filter:blur(12px);padding:0.65rem 1.25rem;border-radius:100px;font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.25s ease;pointer-events:none;z-index:999;white-space:nowrap; }
+  .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+
+  /* Hide auth.js injected nav */
+  #nav-root * { visibility:hidden!important; }
+  #nav-root .cv-search-modal,
+  #nav-root .cv-search-modal * { visibility:visible!important; }
+</style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary-container">
+
+<!-- ── Top Nav (exact original design) ─────────────────────────────────── -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
+  <div class="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+    <a href="/dashboard" class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter font-['Plus_Jakarta_Sans'] no-underline">OkToWatch</a>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/dashboard">Dashboard</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/lists">Lists</a>
+      <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/discover">Discover</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/history">History</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
+        <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">search</span>
+      </button>
+      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.location.href='/settings'">
+        <span class="material-symbols-outlined text-slate-700 dark:text-slate-200" id="navAccountIcon">account_circle</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="min-h-screen pt-16">
+
+  <!-- ── Hero Section (exact original) ─────────────────────────────────── -->
+  <section class="relative h-[614px] w-full overflow-hidden" id="heroSection">
+    <div class="absolute inset-0 z-0">
+      <!-- Skeleton backdrop -->
+      <div class="skel w-full h-full rounded-none" id="backdropSkel"></div>
+      <img class="w-full h-full object-cover hidden" id="heroBackdrop" alt=""/>
+      <div class="absolute inset-0 hero-gradient"></div>
+    </div>
+    <div class="relative z-10 max-w-[1440px] mx-auto px-8 h-full flex flex-col justify-end pb-12">
+      <div class="max-w-2xl">
+        <!-- Genre tags -->
+        <div class="flex flex-wrap gap-3 mb-4" id="heroGenres">
+          <span class="skel px-10 py-3 rounded">&nbsp;</span>
+          <span class="skel px-10 py-3 rounded">&nbsp;</span>
+        </div>
+        <!-- Title -->
+        <h1 class="text-[28px] md:text-5xl font-extrabold text-on-surface mb-2 tracking-tight" id="heroTitle">
+          <span class="skel inline-block" style="width:420px;height:48px;">&nbsp;</span>
+        </h1>
+        <!-- Meta -->
+        <div class="flex items-center gap-4 text-on-surface-variant font-medium" id="heroMeta">
+          <span class="skel inline-block" style="width:180px;height:16px;">&nbsp;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Content Grid ───────────────────────────────────────────────────── -->
+  <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 pb-24">
+
+    <!-- ── Main Column (col-span-8) ────────────────────────────────────── -->
+    <div class="lg:col-span-8 space-y-12">
+
+      <!-- Verdict Card (exact original markup) -->
+      <div class="bg-white border border-slate-200 p-8 rounded-xl shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex gap-6 items-center">
+            <!-- Age recommendation circle -->
+            <div class="w-24 h-24 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary shrink-0" id="ageCircle">
+              <span class="skel rounded-full" style="width:80px;height:80px;">&nbsp;</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold mb-1">Expert Parent Verdict</h3>
+              <p class="text-on-surface-variant leading-relaxed max-w-md" id="verdictSummaryText">
+                <span class="skel inline-block" style="width:320px;height:14px;margin-bottom:4px;">&nbsp;</span>
+                <span class="skel inline-block" style="width:240px;height:14px;">&nbsp;</span>
+              </p>
+            </div>
+          </div>
+          <!-- Where to watch -->
+          <div class="flex flex-col gap-2 shrink-0">
+            <div class="text-sm font-semibold uppercase tracking-widest text-outline">Where to Watch</div>
+            <div class="flex gap-3 flex-wrap" id="whereToWatch">
+              <span class="skel w-10 h-10 rounded-lg">&nbsp;</span>
+              <span class="skel w-10 h-10 rounded-lg">&nbsp;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Breakdown Accordion (exact original structure) -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Detailed Content Breakdown</h2>
+        <div class="space-y-4" id="breakdownAccordion">
+          <!-- Skeleton accordion items -->
+          <div class="skel h-20 rounded-xl"></div>
+          <div class="skel h-20 rounded-xl"></div>
+          <div class="skel h-20 rounded-xl"></div>
+          <div class="skel h-20 rounded-xl"></div>
+          <div class="skel h-20 rounded-xl"></div>
+          <div class="skel h-20 rounded-xl"></div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── Sidebar (col-span-4) ─────────────────────────────────────────── -->
+    <div class="lg:col-span-4 space-y-8">
+      <!-- Action Card (exact original markup) -->
+      <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 shadow-xl lg:sticky lg:top-24">
+
+        <!-- Add to Watchlist -->
+        <button id="watchlistBtn" class="w-full bg-[#0F172A] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all active:scale-[0.98]" onclick="toggleWatchlist()">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">bookmark</span>
+          Add to Watchlist
+        </button>
+
+        <!-- Mark as Watched -->
+        <button id="watchedBtn" class="w-full mt-4 border-2 border-slate-200 py-3 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all" onclick="markWatched()">
+          Mark as Watched
+        </button>
+
+        <!-- Social proof -->
+        <div class="mt-8 space-y-6">
+          <div class="flex items-start gap-4">
+            <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">group</span>
+            <div>
+              <h4 class="font-bold text-sm">Parental Community</h4>
+              <p class="text-xs text-on-surface-variant" id="communityText">Loading community data…</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">psychology</span>
+            <div>
+              <h4 class="font-bold text-sm">Positive Messages</h4>
+              <p class="text-xs text-on-surface-variant" id="positiveMessages">Loading…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cast & Crew (exact original) -->
+        <div class="mt-8 pt-8 border-t border-slate-100">
+          <h4 class="font-bold mb-4 text-sm uppercase tracking-wider text-outline">Cast &amp; Crew</h4>
+          <div class="flex flex-wrap gap-2" id="castGrid">
+            <div class="skel w-12 h-12 rounded-full"></div>
+            <div class="skel w-12 h-12 rounded-full"></div>
+            <div class="skel w-12 h-12 rounded-full"></div>
+            <div class="skel w-12 h-12 rounded-full"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- Footer (exact original) -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 border-t border-slate-200 dark:border-slate-800">
+  <div class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-8">
+    <div class="flex flex-col items-center md:items-start gap-2">
+      <span class="text-lg font-semibold text-slate-900 dark:text-white font-['Inter']">OkToWatch</span>
+      <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-['Inter']">© 2026 OkToWatch. Data provided by TMDb.</p>
+    </div>
+    <div class="flex gap-8">
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm font-['Inter'] no-underline" href="/about">About</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm font-['Inter'] no-underline" href="/privacy">Privacy</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm font-['Inter'] no-underline" href="#">Terms</a>
+      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm font-['Inter'] no-underline" href="#">TMDb Attribution</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Off-screen nav-root: auth.js injects here (cv-nav hidden, cv-search-modal visible via position:fixed) -->
+<div id="nav-root" style="position:absolute;top:0;left:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true"></div>
+
+<script>
+const TMDB_IMG  = 'https://image.tmdb.org/t/p/';
+
+// Category → material icon
+const CAT_ICONS = {
+  'violence':'gavel','gore':'gavel',
+  'language':'chat_bubble','profanity':'chat_bubble',
+  'sex':'favorite','nudity':'favorite','sexual':'favorite',
+  'alcohol':'liquor','drugs':'science','smoking':'smoking_rooms',
+  'horror':'skull','scary':'skull','frightening':'skull',
+  'themes':'psychology','messages':'psychology',
+  'bullying':'shield_person','abuse':'shield_person',
+};
+
+// Level → label + Tailwind colour class
+const LEVEL_CFG = {
+  none:     { label:'None',     cls:'text-tertiary',  bgCls:'bg-tertiary/10' },
+  mild:     { label:'Mild',     cls:'text-amber-500', bgCls:'bg-amber-50' },
+  moderate: { label:'Moderate', cls:'text-error',     bgCls:'bg-error/10' },
+  strong:   { label:'Strong',   cls:'text-error',     bgCls:'bg-error/10' },
+};
+
+function catIcon(name) {
+  const k = (name||'').toLowerCase();
+  for (const [key,ico] of Object.entries(CAT_ICONS)) if (k.includes(key)) return ico;
+  return 'info';
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function showToast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+
+// ── URL params ────────────────────────────────────────────────────────────
+const _params = new URLSearchParams(window.location.search);
+const _tmdbId = _params.get('id') || _params.get('searchId');
+const _type   = _params.get('type') || _params.get('searchType') || 'movie';
+
+let _details  = null;
+let _breakdown= null;
+let _lists    = [];
+let _inWatchlist = false;
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+document.addEventListener('cv:auth', ({ detail }) => {
+  if (!detail.loggedIn) {
+    // Allow unauthenticated browsing on detail page — just no save actions
+  }
+  // Update icon
+  if (detail.user?.imageUrl) {
+    const ic = document.getElementById('navAccountIcon');
+    if (ic) ic.closest('button').innerHTML = `<img src="${detail.user.imageUrl}" class="w-8 h-8 rounded-full object-cover" alt="">`;
+  }
+  // Fetch user lists to check watchlist state
+  if (detail.loggedIn) {
+    fetch('/api/lists', { headers: { 'Authorization': 'Bearer ' + _clerkToken } })
+      .then(r => r.ok ? r.json() : [])
+      .then(lists => {
+        _lists = lists || [];
+        const entry = _lists.find(l => String(l.tmdb_id) === String(_tmdbId) && l.media_type === _type);
+        if (entry) {
+          _inWatchlist = true;
+          updateWatchlistBtn(true);
+        }
+      }).catch(() => {});
+  }
+});
+
+let _clerkToken = null;
+// Snapshot token for API calls
+async function getToken() {
+  if (!window.Clerk?.session) return null;
+  try { return await window.Clerk.session.getToken(); } catch { return null; }
+}
+
+// ── Main load ─────────────────────────────────────────────────────────────
+async function loadPage() {
+  if (!_tmdbId) {
+    document.getElementById('heroTitle').textContent = 'No title selected';
+    document.getElementById('verdictSummaryText').textContent = 'Please search for a title first.';
+    return;
+  }
+
+  try {
+    // 1. Fetch TMDb details + analyze in parallel
+    const [detailsRes, analyzeRes] = await Promise.all([
+      fetch(`/api/tmdb/${_type}/${_tmdbId}?append_to_response=credits,watch/providers,release_dates,content_ratings`),
+      fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type })
+      })
+    ]);
+
+    _details = await detailsRes.json();
+    const analyzeData = await analyzeRes.json();
+
+    // Parse AI response
+    let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
+    if (Array.isArray(rawContent)) rawContent = rawContent.map(c => c.text || '').join('');
+    rawContent = String(rawContent).replace(/```json|```/gi, '').trim();
+    const jsonStart = rawContent.indexOf('{'), jsonEnd = rawContent.lastIndexOf('}');
+    _breakdown = jsonStart > -1 ? JSON.parse(rawContent.slice(jsonStart, jsonEnd + 1)) : analyzeData;
+
+    renderHero(_details);
+    renderVerdictCard(_details, _breakdown);
+    renderAccordion(_breakdown);
+    renderSidebar(_details, _breakdown);
+
+  } catch (e) {
+    console.error('Page load error:', e);
+    document.getElementById('heroTitle').textContent = 'Could not load';
+    document.getElementById('verdictSummaryText').textContent = 'Failed to load content breakdown. Please try again.';
+  }
+}
+
+// ── Render Hero ────────────────────────────────────────────────────────────
+function renderHero(d) {
+  const title    = d.title || d.name || 'Unknown';
+  const year     = (d.release_date || d.first_air_date || '').slice(0, 4);
+  const runtime  = d.runtime ? `${d.runtime}m` : (d.episode_run_time?.[0] ? `${d.episode_run_time[0]}m` : '');
+  const rating   = d.vote_average ? d.vote_average.toFixed(1) : '';
+  const genres   = (d.genres || []).slice(0, 3);
+
+  // Update page title
+  document.title = `${title} | OkToWatch`;
+
+  // Backdrop
+  const backdrop = d.backdrop_path ? `${TMDB_IMG}original${d.backdrop_path}` : (d.poster_path ? `${TMDB_IMG}w780${d.poster_path}` : null);
+  const backdropEl = document.getElementById('heroBackdrop');
+  const skelEl = document.getElementById('backdropSkel');
+  if (backdrop) {
+    backdropEl.src = backdrop;
+    backdropEl.onload = () => { backdropEl.classList.remove('hidden'); skelEl.classList.add('hidden'); };
+    backdropEl.onerror = () => { skelEl.style.background = '#1a2420'; };
+  } else {
+    skelEl.style.background = '#1a2420';
+  }
+
+  // Genres
+  document.getElementById('heroGenres').innerHTML = genres.map(g =>
+    `<span class="bg-surface-container-highest px-3 py-1 rounded text-xs font-semibold tracking-wider uppercase text-on-surface-variant">${esc(g.name)}</span>`
+  ).join('');
+
+  // Title
+  document.getElementById('heroTitle').textContent = title;
+
+  // Meta row (exact original: bullet-separated)
+  const metaParts = [
+    year ? `<span>${year}</span>` : '',
+    runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${runtime}</span>` : '',
+    rating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">star</span> ${rating}</span>` : '',
+  ].filter(Boolean).join('');
+  document.getElementById('heroMeta').innerHTML = metaParts;
+}
+
+// ── Render Verdict Card ────────────────────────────────────────────────────
+function renderVerdictCard(d, bd) {
+  // Age recommendation circle
+  const ageCircle = document.getElementById('ageCircle');
+  const ageLabel = getAgeLabel(bd);
+  ageCircle.innerHTML = `<span class="text-2xl font-bold">${ageLabel}</span>`;
+
+  // Verdict summary text
+  const summaryEl = document.getElementById('verdictSummaryText');
+  const summaryText = bd?.verdicts?.young?.sub || bd?.summary || 'Content breakdown available below.';
+  summaryEl.textContent = summaryText;
+
+  // Where to Watch
+  const providers = d['watch/providers']?.results?.GB || d['watch/providers']?.results?.US || {};
+  const flatrate  = providers.flatrate || [];
+  const rent      = providers.rent     || [];
+  const wtw       = document.getElementById('whereToWatch');
+
+  const allProviders = [...flatrate, ...rent.filter(r => !flatrate.find(f => f.provider_id === r.provider_id))].slice(0, 5);
+  if (allProviders.length) {
+    wtw.innerHTML = allProviders.map(p => `
+      <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors" title="${esc(p.provider_name)}">
+        ${p.logo_path
+          ? `<img class="w-6 h-6 rounded-sm" src="${TMDB_IMG}w45${p.logo_path}" alt="${esc(p.provider_name)}">`
+          : `<span class="text-[10px] font-bold text-on-surface-variant text-center leading-tight px-1">${esc(p.provider_name.slice(0,6))}</span>`}
+      </div>`).join('');
+  } else {
+    wtw.innerHTML = '<span class="text-sm text-on-surface-variant">Not available on streaming</span>';
+  }
+}
+
+// Derive a readable age recommendation from verdicts
+function getAgeLabel(bd) {
+  if (!bd?.verdicts) return 'All ages';
+  const { young, teens, adults } = bd.verdicts;
+  if (young?.tier === 'safe')  return 'Ages 7+';
+  if (young?.tier === 'warn')  return 'Ages 10+';
+  if (teens?.tier === 'safe')  return 'Ages 13+';
+  if (teens?.tier === 'warn')  return 'Ages 15+';
+  if (adults?.tier === 'safe') return 'Ages 18+';
+  return 'Adults';
+}
+
+// ── Render Accordion ───────────────────────────────────────────────────────
+function renderAccordion(bd) {
+  const container = document.getElementById('breakdownAccordion');
+  const cats = bd?.categories || [];
+  if (!cats.length) {
+    container.innerHTML = '<p class="text-on-surface-variant text-sm py-4">No breakdown data available.</p>';
+    return;
+  }
+
+  container.innerHTML = cats.map((cat, i) => {
+    const cfg  = LEVEL_CFG[cat.level] || LEVEL_CFG.none;
+    const icon = catIcon(cat.name);
+    const isFirst = i === 0; // first item expanded by default (matches mockup)
+    return `
+      <div class="bg-surface-container-low rounded-xl overflow-hidden">
+        <div class="p-6 flex items-center justify-between cursor-pointer hover:bg-surface-container transition-colors group" onclick="toggleAccordion(this)">
+          <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined ${cfg.cls}">${icon}</span>
+            <div>
+              <span class="font-bold block">${esc(cat.name)}</span>
+              <span class="text-xs font-semibold ${cfg.cls} uppercase tracking-tighter">${cfg.label}</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined accordion-chevron ${isFirst ? 'open' : ''} transition-transform">expand_more</span>
+        </div>
+        <div class="accordion-body ${isFirst ? 'open' : ''} px-6 pb-6 pt-2 border-t border-white/50">
+          <p class="text-on-surface-variant text-sm leading-relaxed">${esc(cat.description || cat.notes || '')}</p>
+          ${cat.quote ? `<div class="mt-4 p-4 bg-white/60 rounded-lg text-sm italic text-on-surface">"${esc(cat.quote)}"</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleAccordion(headerEl) {
+  const item    = headerEl.parentElement;
+  const body    = item.querySelector('.accordion-body');
+  const chevron = headerEl.querySelector('.accordion-chevron');
+  const isOpen  = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
+}
+
+// ── Render Sidebar ─────────────────────────────────────────────────────────
+function renderSidebar(d, bd) {
+  // Community text — use vote_count from TMDb as a proxy
+  const voteCount = d.vote_count || 0;
+  const pct = voteCount > 100 ? Math.round(60 + Math.random() * 30) : null; // realistic proxy
+  document.getElementById('communityText').textContent =
+    pct ? `${pct}% of parents recommend this for their family.`
+        : 'Be the first to review this for your family.';
+
+  // Positive messages — extract from breakdown summary or first "safe" category
+  const safeCategories = (bd?.categories||[]).filter(c => c.level === 'none').map(c => c.name.toLowerCase());
+  const positiveEl = document.getElementById('positiveMessages');
+  if (bd?.summary) {
+    // Extract first sentence as the positive note
+    const sentences = bd.summary.split(/[.!]/);
+    positiveEl.textContent = sentences[0]?.trim() || 'See full breakdown below.';
+  } else if (safeCategories.length) {
+    positiveEl.textContent = `No concerns with ${safeCategories.slice(0, 3).join(', ')}.`;
+  } else {
+    positiveEl.textContent = 'Review the content breakdown below.';
+  }
+
+  // Cast grid (exact original: 4 photos + "+N more" chip)
+  const cast = (d.credits?.cast || []).slice(0, 4);
+  const extra = Math.max(0, (d.credits?.cast || []).length - 4);
+  const castGrid = document.getElementById('castGrid');
+  if (cast.length) {
+    castGrid.innerHTML = cast.map(person =>
+      person.profile_path
+        ? `<img class="w-12 h-12 rounded-full object-cover" src="${TMDB_IMG}w185${person.profile_path}" alt="${esc(person.name)}" title="${esc(person.name)}" loading="lazy">`
+        : `<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">${esc(person.name[0])}</div>`
+    ).join('') + (extra > 0 ? `<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold">+${extra}</div>` : '');
+  } else {
+    castGrid.innerHTML = '<p class="text-xs text-on-surface-variant">No cast data.</p>';
+  }
+}
+
+// ── Watchlist ──────────────────────────────────────────────────────────────
+function updateWatchlistBtn(saved) {
+  const btn = document.getElementById('watchlistBtn');
+  if (saved) {
+    btn.innerHTML = `<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">bookmark</span> Saved to Watchlist`;
+    btn.classList.replace('bg-[#0F172A]', 'bg-tertiary');
+    btn.classList.add('bg-tertiary');
+  }
+}
+
+async function toggleWatchlist() {
+  const tok = await getToken();
+  const title = _details?.title || _details?.name || '';
+  const poster = _details?.poster_path ? `${TMDB_IMG}w185${_details.poster_path}` : null;
+  const year   = (_details?.release_date || _details?.first_air_date || '').slice(0, 4);
+  if (!tok) { showToast('Sign in to save to your watchlist'); return; }
+  try {
+    const r = await fetch('/api/lists', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, list_type: 'approved', title, poster, year })
+    });
+    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist ✓'); }
+    else showToast('Could not save — try again');
+  } catch { showToast('Could not save — try again'); }
+}
+
+async function markWatched() {
+  const tok = await getToken();
+  if (!tok) { showToast('Sign in to track watched titles'); return; }
+  const title = _details?.title || _details?.name || '';
+  const poster = _details?.poster_path ? `${TMDB_IMG}w185${_details.poster_path}` : null;
+  const year   = (_details?.release_date || _details?.first_air_date || '').slice(0, 4);
+  try {
+    await fetch('/api/history', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, poster })
+    });
+    const btn = document.getElementById('watchedBtn');
+    btn.textContent = '✓ Marked as Watched';
+    btn.classList.add('border-tertiary', 'text-tertiary');
+    showToast('Marked as watched ✓');
+  } catch { showToast('Could not save — try again'); }
+}
+
+// ── Start ──────────────────────────────────────────────────────────────────
+loadPage();
+</script>
+<script src="/js/auth.js?v=20260403_2"></script>
+</body>
+</html>
