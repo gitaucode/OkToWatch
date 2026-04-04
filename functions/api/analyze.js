@@ -39,7 +39,7 @@ export async function onRequestPost(context) {
   }
 
   if (auth?.userId) {
-    identity = `user:${auth.userId}`;
+    identity = 'guest:' + ip;
     errorCode = 'rate_limit';
 
     if (env.DB) {
