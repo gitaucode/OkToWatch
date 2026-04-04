@@ -1,198 +1,128 @@
 /**
- * OkToWatch — functions/_shared/clerk.js
- * Shared Clerk auth helpers for all Cloudflare Pages Functions.
- *
- * Usage:
- *   import { requireAuth, requirePro, getAuth } from '../_shared/clerk.js';
+ * Secure Clerk auth with JWT signature verification
  */
 
-const CLERK_API = 'https://api.clerk.com/v1';
+const JWKS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+let jwksCache = null;
+let jwksFetchedAt = 0;
 
-/**
- * Verify the Clerk session token from the request.
- * Returns { userId, sessionId, isPro, isFamily } or null if not authenticated.
- */
 export async function getAuth(request, env) {
   try {
     const token = extractToken(request);
     if (!token) return null;
 
-    // Decode JWT payload (Clerk JWTs are standard JWTs)
-    // We decode without verifying signature here, then validate by fetching the user
     const parts = token.split('.');
     if (parts.length !== 3) return null;
 
-    let payload;
-    try {
-      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-      const padded  = base64 + '=='.slice((2 - base64.length * 3) & 3);
-      payload = JSON.parse(atob(padded));
-    } catch { return null; }
+    const header = JSON.parse(decodeBase64(parts[0]));
+    const payload = JSON.parse(decodeBase64(parts[1]));
 
-    const userId = payload?.sub;
-    if (!userId) return null;
+    if (!header.kid || !payload.sub) return null;
 
-    // Check token expiry
     if (payload.exp && Date.now() / 1000 > payload.exp) return null;
 
-    // Fetch user from Clerk backend to get fresh publicMetadata
-    const userRes = await fetch(`${CLERK_API}/users/${userId}`, {
-      headers: { 'Authorization': `Bearer ${env.CLERK_SECRET_KEY}` },
+    const jwks = await getJWKS(env, header.kid);
+    if (!jwks) return null;
+
+    const key = jwks.keys.find(function (k) {
+      return k.kid === header.kid;
     });
 
-    if (!userRes.ok) {
-      console.error('Clerk user fetch failed:', userRes.status);
-      return null;
-    }
+    if (!key) return null;
+
+    const publicKey = await crypto.subtle.importKey(
+      'jwk',
+      key,
+      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+
+    const valid = await crypto.subtle.verify(
+      'RSASSA-PKCS1-v1_5',
+      publicKey,
+      base64ToArrayBuffer(parts[2]),
+      new TextEncoder().encode(parts[0] + '.' + parts[1])
+    );
+
+    if (!valid) return null;
+
+    const userRes = await fetch('https://api.clerk.com/v1/users/' + payload.sub, {
+      headers: {
+        Authorization: 'Bearer ' + env.CLERK_SECRET_KEY
+      }
+    });
+
+    if (!userRes.ok) return null;
+
     const user = await userRes.json();
 
     return {
-      userId,
+      userId: payload.sub,
       sessionId: payload.sid,
-      isPro:    user.public_metadata?.isPro === true,
-      isFamily: user.public_metadata?.isFamily === true,
-      user,
+      isPro: user.public_metadata && user.public_metadata.isPro === true,
+      isFamily: user.public_metadata && user.public_metadata.isFamily === true,
+      user: user
     };
+
   } catch (e) {
     console.error('getAuth error:', e);
     return null;
   }
 }
 
-/**
- * Guard: requires a valid session. Returns 401 JSON if not authenticated.
- * Returns the auth object if valid.
- */
-export async function requireAuth(request, env) {
-  const auth = await getAuth(request, env);
-  if (!auth) return { error: json401('Unauthorised') };
-  return { auth };
+async function getJWKS(env, kid) {
+  const now = Date.now();
+
+  if (jwksCache && now - jwksFetchedAt < JWKS_CACHE_TTL) {
+    return jwksCache;
+  }
+
+  try {
+    const url = 'https://' + env.CLERK_FRONTEND_API + '/.well-known/jwks.json';
+
+    const res = await fetch(url);
+    if (!res.ok) return null;
+
+    const data = await res.json();
+
+    jwksCache = data;
+    jwksFetchedAt = now;
+
+    return data;
+  } catch {
+    return null;
+  }
 }
-
-/**
- * Guard: requires a valid session and subscription check.
- * Checks subscription tier based on tier_id in database
- */
-export async function requirePro(request, env) {
-  const auth = await getAuth(request, env);
-  if (!auth) return { error: json401('Unauthorised') };
-
-  // Check subscription tier
-  if (env.DB) {
-    try {
-      const sub = await env.DB
-        .prepare(`SELECT tier, status, renews_at FROM subscriptions WHERE user_id = ? LIMIT 1`)
-        .bind(auth.userId)
-        .first();
-
-      // Check if subscription is active
-      if (sub && (sub.status === 'active' || sub.status === 'trial')) {
-        const renewalDate = new Date(sub.renews_at);
-        if (new Date() < renewalDate) {
-          return { auth }; // Subscription is valid
-        }
-      }
-    } catch (err) {
-      console.error('Error checking subscription:', err);
-      // Continue to check metadata fallback
-    }
-  }
-
-  // Fallback to metadata (for cases where DB is not available)
-  if (auth.isPro || auth.isFamily) {
-    return { auth };
-  }
-
-  return { error: json403('Pro subscription required') };
-}
-
-/**
- * Guard: requires a Family subscription
- * Only Family subscribers have access
- */
-export async function requireFamily(request, env) {
-  const auth = await getAuth(request, env);
-  if (!auth) return { error: json401('Unauthorised') };
-
-  // Check subscription tier
-  if (env.DB) {
-    try {
-      const sub = await env.DB
-        .prepare(`SELECT tier, status, renews_at FROM subscriptions WHERE user_id = ? LIMIT 1`)
-        .bind(auth.userId)
-        .first();
-
-      // Check if subscription is Family and active
-      if (sub && sub.tier === 'family' && (sub.status === 'active' || sub.status === 'trial')) {
-        const renewalDate = new Date(sub.renews_at);
-        if (new Date() < renewalDate) {
-          return { auth }; // Subscription is valid
-        }
-      }
-    } catch (err) {
-      console.error('Error checking subscription:', err);
-      // Continue to check metadata fallback
-    }
-  }
-
-  // Fallback to metadata
-  if (auth.isFamily) {
-    return { auth };
-  }
-
-  return { error: json403('Family subscription required') };
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────
 
 function extractToken(request) {
-  // Check Authorization: Bearer <token>
   const authHeader = request.headers.get('Authorization');
-  if (authHeader?.startsWith('Bearer ')) {
+
+  if (authHeader && authHeader.startsWith('Bearer ')) {
     return authHeader.slice(7);
   }
 
-  // Check __session cookie (Clerk default)
   const cookie = request.headers.get('Cookie') || '';
-  const match  = cookie.match(/(?:^|;\s*)__session=([^;]+)/);
+  const match = cookie.match(/(?:^|;\s*)__session=([^;]+)/);
+
   if (match) return match[1];
 
   return null;
 }
 
-function json401(message) {
-  return new Response(JSON.stringify({ error: message }), {
-    status: 401,
-    headers: { 'Content-Type': 'application/json' },
-  });
+function decodeBase64(str) {
+  const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = base64 + '=='.slice((2 - base64.length * 3) & 3);
+  return atob(padded);
 }
 
-function json403(message) {
-  return new Response(JSON.stringify({ error: message }), {
-    status: 403,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
+function base64ToArrayBuffer(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
 
-/** Convenience: build a JSON response */
-export function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-  });
-}
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
 
-/** Convenience: CORS preflight handler */
-export function handleOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin':  '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+  return bytes;
 }
