@@ -1,511 +1,671 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="OkToWatch">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
-<link rel="shortcut icon" href="/favicon.ico">
-<title>Plans — OkToWatch</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#565e74"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="OkToWatch"/>
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
+<title>Plans & Pricing — OkToWatch</title>
+<meta name="description" content="Simple, honest pricing for families. Search free forever. Unlock saved lists, child profiles, and family sharing with Pro or Family plans."/>
+<meta property="og:image" content="https://oktowatch.com/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-fixed-variant": "#535b71",
+          "outline-variant": "#acb3b6",
+          "inverse-primary": "#dae2fd",
+          "error": "#9f403d",
+          "surface-container-high": "#e4e9ec",
+          "primary-fixed-dim": "#ccd4ee",
+          "surface-bright": "#f9f9fa",
+          "inverse-on-surface": "#9c9d9e",
+          "on-error": "#fff7f6",
+          "on-tertiary-container": "#005a3c",
+          "background": "#f9f9fa",
+          "tertiary-fixed": "#69f6b8",
+          "tertiary-container": "#69f6b8",
+          "surface-dim": "#d3dbdf",
+          "primary-container": "#dae2fd",
+          "surface-container-lowest": "#ffffff",
+          "error-container": "#fe8983",
+          "on-error-container": "#752121",
+          "on-tertiary-fixed-variant": "#006544",
+          "on-primary-fixed": "#373f54",
+          "tertiary-dim": "#005f40",
+          "secondary-fixed": "#dce2f3",
+          "error-dim": "#4e0309",
+          "secondary": "#585f6d",
+          "outline": "#757c7f",
+          "on-secondary-container": "#4b525f",
+          "inverse-surface": "#0c0e0f",
+          "on-secondary-fixed": "#39404c",
+          "surface-container-low": "#f2f4f5",
+          "surface-container-highest": "#dde3e7",
+          "on-surface": "#2d3336",
+          "secondary-dim": "#4c5361",
+          "secondary-fixed-dim": "#ced4e4",
+          "on-primary": "#f7f7ff",
+          "surface-tint": "#565e74",
+          "on-tertiary": "#e6ffee",
+          "on-surface-variant": "#596063",
+          "on-secondary": "#f8f8ff",
+          "on-background": "#2d3336",
+          "surface": "#f9f9fa",
+          "on-secondary-fixed-variant": "#555c69",
+          "on-tertiary-fixed": "#00452d",
+          "surface-container": "#ebeef0",
+          "surface-variant": "#dde3e7",
+          "primary-dim": "#4a5268",
+          "secondary-container": "#dce2f3",
+          "primary": "#565e74",
+          "on-primary-container": "#4a5167",
+          "tertiary-fixed-dim": "#58e7ab",
+          "primary-fixed": "#dae2fd",
+          "tertiary": "#006d4a"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "fontFamily": {
+          "headline": ["Plus Jakarta Sans"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        }
+      },
+    },
+  }
+</script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
-  --safe: #2a7d52; --safe-bg: #e6f4ec;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --radius: 16px; --radius-sm: 10px;
-}
-html { overflow-x: hidden; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px;
-  min-height: 100vh; overflow-x: hidden;
-}
-body::before {
-  content: ''; position: fixed; inset: 0; z-index: 0;
-  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(42,107,85,0.13) 0%, transparent 65%);
-  pointer-events: none;
-}
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
-.page-wrap { max-width: 860px; margin: 0 auto; padding: 3rem 1.25rem 5rem; position: relative; z-index: 1; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-/* ── Hero ── */
-.hero { text-align: center; margin-bottom: 2.5rem; animation: fadeUp 0.4s ease forwards; }
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  background: var(--accent-light); color: var(--accent);
-  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-  padding: 0.3rem 0.85rem; border-radius: 100px; margin-bottom: 1rem;
-}
-.hero h1 { font-size: clamp(1.75rem, 5vw, 2.75rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.75rem; }
-.hero p { font-size: 1rem; color: var(--muted); max-width: 500px; margin: 0 auto; line-height: 1.6; }
+  /* nav-root visibility fix */
+  #nav-root * { visibility: hidden !important; }
+  #nav-root .cv-search-modal,
+  #nav-root .cv-search-modal * { visibility: visible !important; }
 
-/* ── Toggle ── */
-.billing-toggle {
-  display: flex; align-items: center; justify-content: center;
-  gap: 0.75rem; margin-bottom: 2rem;
-  animation: fadeUp 0.4s ease forwards 0.05s; opacity: 0;
-}
-.toggle-label { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
-.toggle-label.active { color: var(--text); font-weight: 700; }
-.toggle-switch {
-  width: 48px; height: 26px; background: var(--accent); border-radius: 100px;
-  border: none; cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0;
-}
-.toggle-switch::after {
-  content: ''; position: absolute; top: 3px; left: 3px;
-  width: 20px; height: 20px; background: white; border-radius: 50%;
-  transition: transform 0.2s;
-}
-.toggle-switch.monthly::after { transform: translateX(0); }
-.toggle-switch.yearly::after  { transform: translateX(22px); }
-.save-badge { background: #fff3cd; color: #856404; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 100px; }
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a2420; color: white;
+    padding: 0.65rem 1.25rem; border-radius: 100px;
+    font-size: 0.82rem; font-weight: 600;
+    opacity: 0; transition: all 0.25s; pointer-events: none;
+    z-index: 999; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Trial badge ── */
-.trial-badge {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  background: #e6f4ec; color: #2a7d52;
-  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em;
-  padding: 0.25rem 0.65rem; border-radius: 100px; margin-bottom: 0.85rem;
-}
+  /* Billing toggle pill */
+  .billing-pill {
+    display: inline-flex; background: #ebeef0;
+    border-radius: 100px; padding: 4px;
+  }
+  .billing-pill button {
+    padding: 0.45rem 1.25rem; border-radius: 100px; border: none;
+    font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; color: #596063; background: transparent;
+  }
+  .billing-pill button.active {
+    background: white; color: #2d3336;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
 
-/* ── Cards grid ── */
-.plans-grid {
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;
-  margin-bottom: 2rem;
-  animation: fadeUp 0.4s ease forwards 0.1s; opacity: 0;
-}
-.plan-card {
-  background: var(--surface); border-radius: 20px;
-  box-shadow: var(--shadow); padding: 1.75rem 1.5rem;
-  position: relative; border: 2px solid transparent;
-  display: flex; flex-direction: column;
-}
-.plan-card.pro {
-  border-color: var(--accent);
-  background: linear-gradient(160deg, #ffffff 60%, #f0f8f4 100%);
-  box-shadow: var(--shadow-lg);
-}
-.plan-card.family { border-color: #7b5ea7; }
-.popular-badge {
-  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-  background: var(--accent); color: white;
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-  padding: 0.3rem 1rem; border-radius: 0 0 10px 10px; white-space: nowrap;
-}
-.plan-name { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
-.plan-card.pro    .plan-name { color: var(--accent); }
-.plan-card.family .plan-name { color: #7b5ea7; }
-.plan-price { font-size: 2.25rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.2rem; }
-.plan-price sup { font-size: 1.1rem; font-weight: 600; vertical-align: super; }
-.plan-price span { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
-.plan-price-alt { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.25rem; min-height: 1.2em; }
-.plan-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
-.plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; margin-bottom: 1.5rem; }
-.plan-features li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.83rem; color: var(--text2); line-height: 1.4; }
-.feat-icon { flex-shrink: 0; font-size: 0.9rem; margin-top: 0.05rem; }
-.plan-cta {
-  width: 100%; padding: 0.8rem; border-radius: 100px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700;
-  border: none; cursor: pointer; transition: all 0.15s; text-align: center;
-  text-decoration: none; display: block;
-}
-.plan-cta--pro     { background: var(--accent); color: white; }
-.plan-cta--pro:hover { opacity: 0.88; transform: translateY(-1px); }
-.plan-cta--family  { background: #7b5ea7; color: white; }
-.plan-cta--family:hover { opacity: 0.88; transform: translateY(-1px); }
-.plan-cta--current { background: var(--accent-light); color: var(--accent); border: 1.5px solid rgba(42,107,85,0.2); cursor: default; }
-.plan-cta--current-family { background: #f3effe; color: #7b5ea7; border: 1.5px solid rgba(123,94,167,0.2); cursor: default; }
+  /* Plan card highlight ring */
+  .plan-card-pro {
+    box-shadow: 0 0 0 2px #565e74, 0 8px 32px rgba(86,94,116,0.15);
+  }
+  .plan-card-family {
+    box-shadow: 0 0 0 2px #7b5ea7, 0 8px 32px rgba(123,94,167,0.12);
+  }
 
-/* ── Current plan banner ── */
-.current-banner {
-  display: none; border-radius: var(--radius);
-  padding: 1.25rem 1.5rem; margin-bottom: 2rem; text-align: center; color: white;
-  animation: fadeUp 0.4s ease forwards;
-}
-.current-banner.visible { display: block; }
-.current-banner.pro-banner    { background: var(--accent); }
-.current-banner.family-banner { background: #7b5ea7; }
-.current-banner h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
-.current-banner p  { font-size: 0.83rem; opacity: 0.85; }
-.current-banner a  { color: white; font-weight: 700; }
+  /* Feature check icon */
+  .feat-icon-yes { color: #006d4a; }
+  .feat-icon-no  { color: #acb3b6; }
 
-/* ── Feature table ── */
-.compare-section { animation: fadeUp 0.4s ease forwards 0.15s; opacity: 0; }
-.compare-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 1rem; }
-.compare-table { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; width: 100%; }
-.compare-row { display: grid; grid-template-columns: 1fr 80px 80px; padding: 0.8rem 1.25rem; border-bottom: 1px solid var(--border); align-items: center; gap: 0.5rem; }
-.compare-row:last-child { border-bottom: none; }
-.compare-row.header { background: var(--surface2); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.compare-row.header span:nth-child(2) { color: var(--accent); text-align: center; }
-.compare-row.header span:nth-child(3) { color: #7b5ea7; text-align: center; }
-.compare-feat { font-size: 0.83rem; color: var(--text2); }
-.compare-cell { text-align: center; font-size: 1rem; }
-.family-extra { font-size: 0.72rem; color: #7b5ea7; font-weight: 600; text-align: center; }
+  /* FAQ */
+  .faq-answer { display: none; }
+  .faq-item.open .faq-answer { display: block; }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  .faq-arrow { transition: transform 0.2s; }
 
-/* ── FAQ ── */
-.faq-section { margin-top: 2.5rem; animation: fadeUp 0.4s ease forwards 0.2s; opacity: 0; }
-.faq-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; text-align: center; margin-bottom: 1.25rem; }
-.faq-item { background: var(--surface); border-radius: var(--radius-sm); margin-bottom: 0.5rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-.faq-q { width: 100%; background: none; border: none; cursor: pointer; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--text); text-align: left; gap: 0.75rem; }
-.faq-q .faq-arrow { flex-shrink: 0; color: var(--muted); transition: transform 0.2s; }
-.faq-item.open .faq-arrow { transform: rotate(180deg); }
-.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
-.faq-item.open .faq-a { display: block; }
+  /* Comparison table alternating rows */
+  .compare-row:nth-child(even) { background: #f9f9fa; }
 
-/* ── Toast ── */
-.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* Fade-up */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .fade-up { opacity: 0; animation: fadeUp 0.4s ease forwards; }
 
-footer { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
-footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
-.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-.footer-logo-text { font-size: 0.88rem; color: var(--text); }
-.footer-logo-text strong { font-weight: 700; }
-
-@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-@media (max-width: 640px) {
-  .page-wrap { padding: 2rem 0.85rem 4rem; }
-  .plans-grid { grid-template-columns: 1fr; }
-  .plan-card.pro { order: -1; }
-  .compare-row { grid-template-columns: 1fr 52px 52px; padding: 0.65rem 0.85rem; gap: 0.25rem; }
-  .compare-feat { font-size: 0.75rem; }
-  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
-}
-@media (max-width: 400px) {
-  .compare-row { grid-template-columns: 1fr 44px 44px; padding: 0.6rem 0.75rem; }
-  .compare-feat { font-size: 0.7rem; }
-  .compare-cell { font-size: 0.85rem; }
-  .family-extra { font-size: 0.62rem; }
-  .billing-toggle { gap: 0.5rem; }
-  .page-wrap { padding: 1.5rem 0.65rem 4rem; }
-}
-@media (max-width: 380px) {
-  .hero h1 { font-size: 1.6rem; }
-  .plan-price { font-size: 1.9rem; }
-}
+  /* Current plan banner */
+  #proCurrentBanner, #familyCurrentBanner { display: none; }
+  #proCurrentBanner.visible, #familyCurrentBanner.visible { display: flex; }
 </style>
-<meta property="og:image" content="https://oktowatch.com/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
 </head>
-<body data-page="plans">
+<body class="bg-background text-on-surface antialiased" data-page="plans">
 
+<!-- Auth Nav -->
 <div id="nav-root"></div>
 
-<div class="page-wrap">
+<!-- ════════════════════════════════
+     HERO SECTION
+════════════════════════════════ -->
+<main class="max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-24">
 
-  <!-- Current plan banner (shown when already subscribed) -->
-  <div class="current-banner pro-banner" id="proCurrentBanner">
-    <h2>✅ You're on Pro</h2>
-    <p>Enjoy saved lists, up to 2 child profiles, synced history, and more.</p>
+  <!-- Current plan banners (shown after auth if already subscribed) -->
+  <div id="proCurrentBanner"
+       class="fade-up mb-10 bg-primary/10 border border-primary/20 rounded-2xl p-5 items-center gap-4"
+       style="animation-delay:0s;">
+    <span class="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+      <span class="material-symbols-outlined text-on-primary text-[20px]" style="font-variation-settings:'FILL' 1;">verified</span>
+    </span>
+    <div>
+      <p class="font-headline font-bold text-on-surface">You're on Pro</p>
+      <p class="text-sm text-on-surface-variant">Saved lists, up to 2 child profiles, synced history, and more.</p>
+    </div>
+    <a href="/settings" class="ml-auto text-sm font-bold text-primary hover:underline underline-offset-2 flex-shrink-0">Manage →</a>
   </div>
-  <div class="current-banner family-banner" id="familyCurrentBanner">
-    <h2>👨‍👩‍👧‍👦 You're on Family</h2>
-    <p>Enjoy family sharing with up to 5 profiles and all Pro features.</p>
+  <div id="familyCurrentBanner"
+       class="fade-up mb-10 bg-purple-50 border border-purple-200 rounded-2xl p-5 items-center gap-4"
+       style="animation-delay:0s;">
+    <span class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0">
+      <span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings:'FILL' 1;">family_restroom</span>
+    </span>
+    <div>
+      <p class="font-headline font-bold text-on-surface">You're on Family</p>
+      <p class="text-sm text-on-surface-variant">Up to 5 profiles, shared watchlists, and all Pro features.</p>
+    </div>
+    <a href="/settings" class="ml-auto text-sm font-bold text-purple-700 hover:underline underline-offset-2 flex-shrink-0">Manage →</a>
   </div>
 
-  <div class="hero">
-    <div class="hero-eyebrow">🎉 Simple pricing</div>
-    <h1>Choose your plan</h1>
-    <p>Free searches for everyone. Paid plans unlock saved lists, multiple profiles, family sharing, and more. Or keep searching free—no limits.</p>
+  <!-- Heading -->
+  <div class="text-center mb-12 fade-up" style="animation-delay:0.05s;">
+    <span class="inline-flex items-center gap-1.5 bg-tertiary/10 text-tertiary text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4">
+      <span class="material-symbols-outlined text-[14px]">star</span>
+      Simple pricing
+    </span>
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface mb-4">
+      Choose your plan
+    </h1>
+    <p class="text-on-surface-variant text-lg max-w-xl mx-auto leading-relaxed">
+      Free searches for everyone. Paid plans unlock saved lists, multiple profiles, and family sharing.
+    </p>
   </div>
 
   <!-- Billing toggle -->
-  <div class="billing-toggle">
-    <span class="toggle-label active" id="labelMonthly">Monthly</span>
-    <button class="toggle-switch monthly" id="billingToggle" aria-label="Toggle billing period"></button>
-    <span class="toggle-label" id="labelYearly">Yearly <span class="save-badge" id="saveBadge">+1 month free</span></span>
+  <div class="flex justify-center mb-10 fade-up" style="animation-delay:0.1s;">
+    <div class="billing-pill">
+      <button class="active" id="btnMonthly" onclick="setBilling('monthly')">Monthly</button>
+      <button id="btnYearly" onclick="setBilling('yearly')">
+        Yearly
+        <span class="ml-1.5 bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Save ~17%</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Plan cards -->
-  <div class="plans-grid">
+  <!-- ═══════════════ PLAN CARDS ═══════════════ -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 fade-up" style="animation-delay:0.15s;">
 
-    <!-- Free -->
-    <div class="plan-card free">
-      <div class="plan-name">Free</div>
-      <div class="plan-price" style="color:var(--muted)">$0</div>
-      <div class="plan-price-alt">Forever free · no card needed</div>
-      <div class="plan-divider"></div>
-      <ul class="plan-features">
-        <li><span class="feat-icon">✅</span> Unlimited searches (no account needed)</li>
-        <li><span class="feat-icon">✅</span> Full AI content breakdown</li>
-        <li><span class="feat-icon">✅</span> Share report links</li>
-        <li><span class="feat-icon">❌</span> Saved lists</li>
-        <li><span class="feat-icon">❌</span> Child profiles</li>
-        <li><span class="feat-icon">❌</span> Synced history</li>
-        <li><span class="feat-icon">❌</span> Family sharing</li>
-      </ul>
-      <button class="plan-cta" style="background:var(--surface2);color:var(--text);" onclick="handleUpgrade('free')">Start</button>
-    </div>
-    <div class="plan-card pro">
-      <div class="popular-badge">Available now</div>
-      <div class="plan-name">Pro</div>
-      <div class="plan-price" id="proPrice"><sup>$</sup>4.99<span id="proPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="proAlt">Billed monthly · cancel anytime</div>
-      <div class="plan-divider"></div>
-      <ul class="plan-features">
-        <li><span class="feat-icon">✅</span> Unlimited searches (no account needed too)</li>
-        <li><span class="feat-icon">✅</span> Full AI content breakdown</li>
-        <li><span class="feat-icon">✅</span> Approved / Blocked / Watch Later lists</li>
-        <li><span class="feat-icon">✅</span> Up to 2 child profiles</li>
-        <li><span class="feat-icon">✅</span> Synced search history</li>
-        <li><span class="feat-icon">✅</span> Season-level analysis</li>
-        <li><span class="feat-icon">✅</span> Compare mode</li>
-        <li><span class="feat-icon">❌</span> Family sharing & up to 5 profiles</li>
-      </ul>
-      <button class="plan-cta plan-cta--pro" id="proCta" onclick="handleUpgrade('pro')">Upgrade to Pro</button>
-    </div>
-
-    <!-- Family -->
-    <div class="plan-card family">
-      <div class="plan-name">Family</div>
-      <div class="plan-price" id="familyPrice"><sup>$</sup>7.99<span id="familyPeriod">/mo</span></div>
-      <div class="plan-price-alt" id="familyAlt">Billed monthly · cancel anytime</div>
-      <div class="plan-divider"></div>
-      <ul class="plan-features">
-        <li><span class="feat-icon">✅</span> Everything in Pro</li>
-        <li><span class="feat-icon">✅</span> Up to 5 child profiles</li>
-        <li><span class="feat-icon">✅</span> Shared family watchlists</li>
-        <li><span class="feat-icon">✅</span> Per-child content thresholds</li>
-        <li><span class="feat-icon">✅</span> Up to 5 parent accounts</li>
-        <li><span class="feat-icon">✅</span> Family dashboard & digest</li>
-        <li><span class="feat-icon">✅</span> Priority support</li>
-      </ul>
-      <button class="plan-cta plan-cta--family" id="familyCta" onclick="handleUpgrade('family')">Upgrade to Family</button>
-    </div>
-
-  </div>
-
-  <!-- Feature comparison -->
-  <div class="compare-section">
-    <div class="compare-title">What's included</div>
-    <div class="compare-table">
-      <div class="compare-row header">
-        <span>Feature</span><span>Pro</span><span>Family</span>
+    <!-- FREE -->
+    <div class="bg-surface-container-lowest rounded-2xl p-7 flex flex-col border border-outline-variant/20 shadow-sm">
+      <p class="text-xs font-bold uppercase tracking-widest text-outline mb-4">Free</p>
+      <div class="mb-1">
+        <span class="text-4xl font-extrabold tracking-tight text-on-surface-variant">$0</span>
       </div>
-      <div class="compare-row"><span class="compare-feat">Unlimited searches (no account)</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Full AI content breakdown</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Share report links</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Synced search history</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Approved / Blocked / Watch Later</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Season-level analysis</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Compare mode</span><span class="compare-cell">✅</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Child profiles</span><span class="compare-cell">Up to 2</span><span class="family-extra">Up to 5</span></div>
-      <div class="compare-row"><span class="compare-feat">Parent accounts</span><span class="compare-cell">1</span><span class="family-extra">Up to 5</span></div>
-      <div class="compare-row"><span class="compare-feat">Shared family watchlists</span><span class="compare-cell">—</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Per-child content thresholds</span><span class="compare-cell">—</span><span class="compare-cell">✅</span></div>
-      <div class="compare-row"><span class="compare-feat">Priority support</span><span class="compare-cell">—</span><span class="compare-cell">✅</span></div>
+      <p class="text-sm text-on-surface-variant mb-6">Forever free · no card needed</p>
+
+      <ul class="space-y-3 flex-1 mb-8">
+        <li class="flex items-start gap-2.5 text-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Unlimited searches (no account needed)
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Full AI content breakdown
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface-variant">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Share report links
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-outline">
+          <span class="material-symbols-outlined text-[18px] feat-icon-no mt-0.5">cancel</span>
+          Saved lists
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-outline">
+          <span class="material-symbols-outlined text-[18px] feat-icon-no mt-0.5">cancel</span>
+          Child profiles
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-outline">
+          <span class="material-symbols-outlined text-[18px] feat-icon-no mt-0.5">cancel</span>
+          Synced history
+        </li>
+      </ul>
+
+      <button onclick="handleUpgrade('free')"
+              class="w-full py-3 bg-surface-container border border-outline-variant/30 text-on-surface-variant font-bold rounded-xl hover:bg-surface-container-high transition-colors font-headline text-sm">
+        Get Started Free
+      </button>
+    </div>
+
+    <!-- PRO — highlighted -->
+    <div class="plan-card-pro bg-surface-container-lowest rounded-2xl p-7 flex flex-col relative">
+      <!-- Most popular badge -->
+      <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+        <span class="bg-primary text-on-primary text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap">
+          Most Popular
+        </span>
+      </div>
+
+      <p class="text-xs font-bold uppercase tracking-widest text-primary mb-4 mt-1">Pro</p>
+      <div class="mb-1 flex items-end gap-1">
+        <span class="text-4xl font-extrabold tracking-tight text-on-surface" id="proPrice">$4.99</span>
+        <span class="text-on-surface-variant text-sm mb-1.5" id="proPeriod">/mo</span>
+      </div>
+      <p class="text-sm text-on-surface-variant mb-6" id="proAlt">Billed monthly · cancel anytime</p>
+
+      <ul class="space-y-3 flex-1 mb-8">
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Unlimited searches
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Full AI content breakdown
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Approved / Blocked / Watch Later lists
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Up to 2 child profiles
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Synced search history
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] feat-icon-yes mt-0.5" style="font-variation-settings:'FILL' 1;">check_circle</span>
+          Season-level TV analysis
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-outline">
+          <span class="material-symbols-outlined text-[18px] feat-icon-no mt-0.5">cancel</span>
+          Family sharing &amp; up to 5 profiles
+        </li>
+      </ul>
+
+      <button id="proCta" onclick="handleUpgrade('pro')"
+              class="w-full py-3 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-dim transition-colors font-headline text-sm active:scale-[0.98]">
+        Upgrade to Pro
+      </button>
+    </div>
+
+    <!-- FAMILY -->
+    <div class="plan-card-family bg-surface-container-lowest rounded-2xl p-7 flex flex-col">
+      <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color:#7b5ea7;">Family</p>
+      <div class="mb-1 flex items-end gap-1">
+        <span class="text-4xl font-extrabold tracking-tight text-on-surface" id="familyPrice">$7.99</span>
+        <span class="text-on-surface-variant text-sm mb-1.5" id="familyPeriod">/mo</span>
+      </div>
+      <p class="text-sm text-on-surface-variant mb-6" id="familyAlt">Billed monthly · cancel anytime</p>
+
+      <ul class="space-y-3 flex-1 mb-8">
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Everything in Pro
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Up to 5 child profiles
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Shared family watchlists
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Per-child content thresholds
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Up to 5 parent accounts
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Family dashboard &amp; digest
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-on-surface">
+          <span class="material-symbols-outlined text-[18px] mt-0.5" style="font-variation-settings:'FILL' 1; color:#7b5ea7;">check_circle</span>
+          Priority support
+        </li>
+      </ul>
+
+      <button id="familyCta" onclick="handleUpgrade('family')"
+              class="w-full py-3 font-bold rounded-xl transition-colors font-headline text-sm active:scale-[0.98]"
+              style="background:#7b5ea7; color:white;">
+        Upgrade to Family
+      </button>
     </div>
   </div>
 
-  <!-- FAQ -->
-  <div class="faq-section">
-    <div class="faq-title">Questions</div>
+  <!-- ═══════════════ FEATURE COMPARISON ═══════════════ -->
+  <div class="mb-16 fade-up" style="animation-delay:0.2s;">
+    <h2 class="text-center text-xs font-bold uppercase tracking-widest text-outline mb-6">What's included</h2>
+    <div class="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/20 shadow-sm">
+      <!-- Header -->
+      <div class="grid grid-cols-[1fr_80px_80px] px-6 py-3 bg-surface-container-low text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-outline-variant/15">
+        <span>Feature</span>
+        <span class="text-center text-primary">Pro</span>
+        <span class="text-center" style="color:#7b5ea7;">Family</span>
+      </div>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Do I need an account to search?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">No — searching is completely free and requires no account. You'll only pay if you want to save lists, track history, or create child profiles.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        What can I do for free?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Search unlimited shows and movies, get full AI breakdowns, and share report links with others—all completely free. No account or credit card required.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How does the free plan work?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">The free plan lets you search unlimited titles and get AI insights. Pro and Family plans add saved lists, multiple profiles, and more. Upgrade anytime to unlock premium features.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Can I change my plan?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Yes. You can upgrade or downgrade anytime. Plan changes take effect at your next billing cycle.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        What's the difference between Pro and Family?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Pro is for a single parent with up to 2 child profiles. Family is designed for larger households — it includes up to 5 child profiles, shared family watchlists, per-child age controls, and priority support.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        What are child profiles?
-        <span class="faq-arrow">▾</span>
-      </button>
-      <div class="faq-a">Child profiles let you set a name, age, and emoji for each child. When a profile is active, search results are tailored to that child's age — so you get a specific verdict rather than a generic one.</div>
+      <!-- Rows -->
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Unlimited searches (no account)</span>
+        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Full AI content breakdown</span>
+        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Share report links</span>
+        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Synced search history</span>
+        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Approved / Blocked / Watchlist</span>
+        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Season-level TV analysis</span>
+        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Child profiles</span>
+        <span class="text-center text-xs font-bold text-on-surface-variant">Up to 2</span>
+        <span class="text-center text-xs font-bold" style="color:#7b5ea7;">Up to 5</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Parent accounts</span>
+        <span class="text-center text-xs font-bold text-on-surface-variant">1</span>
+        <span class="text-center text-xs font-bold" style="color:#7b5ea7;">Up to 5</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Shared family watchlists</span>
+        <span class="text-center text-outline">—</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+        <span class="text-sm text-on-surface-variant">Per-child content thresholds</span>
+        <span class="text-center text-outline">—</span><span class="text-center text-base">✅</span>
+      </div>
+      <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5">
+        <span class="text-sm text-on-surface-variant">Priority support</span>
+        <span class="text-center text-outline">—</span><span class="text-center text-base">✅</span>
+      </div>
     </div>
   </div>
 
-</div>
-
-<footer>
-  <a class="footer-logo" href="/index">
-    <div class="footer-logo-mark">
-      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+  <!-- ═══════════════ TRUST STRIP ═══════════════ -->
+  <div class="flex flex-wrap justify-center gap-6 mb-16 fade-up" style="animation-delay:0.25s;">
+    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+      <span class="material-symbols-outlined text-tertiary text-[20px]">lock</span>
+      Secure checkout via Dodo Payments
     </div>
-    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
-  </a>
-  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-    <a href="/plans">Plans</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/index">Search</a>
+    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+      <span class="material-symbols-outlined text-tertiary text-[20px]">cancel</span>
+      Cancel anytime, no questions asked
+    </div>
+    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+      <span class="material-symbols-outlined text-tertiary text-[20px]">family_restroom</span>
+      Built for parents, trusted by families
+    </div>
   </div>
-  <p>© 2026 OkToWatch</p>
-  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
-    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
-    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+
+  <!-- ═══════════════ FAQ ═══════════════ -->
+  <div class="max-w-2xl mx-auto fade-up" style="animation-delay:0.3s;">
+    <h2 class="text-2xl font-extrabold tracking-tight text-on-surface text-center mb-8">Questions</h2>
+
+    <div class="space-y-3">
+
+      <div class="faq-item bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+        <button class="w-full flex items-center justify-between px-6 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-headline font-bold text-on-surface text-sm">Do I need an account to search?</span>
+          <span class="material-symbols-outlined faq-arrow text-outline text-[20px] flex-shrink-0 ml-3">expand_more</span>
+        </button>
+        <div class="faq-answer px-6 pb-5 text-sm text-on-surface-variant leading-relaxed">
+          No — searching is completely free and requires no account. You'll only pay if you want to save lists, track history, or create child profiles.
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+        <button class="w-full flex items-center justify-between px-6 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-headline font-bold text-on-surface text-sm">What can I do for free?</span>
+          <span class="material-symbols-outlined faq-arrow text-outline text-[20px] flex-shrink-0 ml-3">expand_more</span>
+        </button>
+        <div class="faq-answer px-6 pb-5 text-sm text-on-surface-variant leading-relaxed">
+          Search unlimited shows and movies, get full AI breakdowns, and share report links with others — all completely free. No account or credit card required.
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+        <button class="w-full flex items-center justify-between px-6 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-headline font-bold text-on-surface text-sm">What's the difference between Pro and Family?</span>
+          <span class="material-symbols-outlined faq-arrow text-outline text-[20px] flex-shrink-0 ml-3">expand_more</span>
+        </button>
+        <div class="faq-answer px-6 pb-5 text-sm text-on-surface-variant leading-relaxed">
+          Pro is for a single parent with up to 2 child profiles. Family is designed for larger households — it includes up to 5 child profiles, shared family watchlists, per-child age controls, up to 5 parent accounts, and priority support.
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+        <button class="w-full flex items-center justify-between px-6 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-headline font-bold text-on-surface text-sm">What are child profiles?</span>
+          <span class="material-symbols-outlined faq-arrow text-outline text-[20px] flex-shrink-0 ml-3">expand_more</span>
+        </button>
+        <div class="faq-answer px-6 pb-5 text-sm text-on-surface-variant leading-relaxed">
+          Child profiles let you set a name, age, and emoji for each child. When a profile is active, search results are tailored to that child's age — so you get a specific verdict rather than a generic one.
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+        <button class="w-full flex items-center justify-between px-6 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-headline font-bold text-on-surface text-sm">Can I change or cancel my plan?</span>
+          <span class="material-symbols-outlined faq-arrow text-outline text-[20px] flex-shrink-0 ml-3">expand_more</span>
+        </button>
+        <div class="faq-answer px-6 pb-5 text-sm text-on-surface-variant leading-relaxed">
+          Yes. You can upgrade, downgrade, or cancel anytime from your account settings. Plan changes take effect at your next billing cycle.
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+        <button class="w-full flex items-center justify-between px-6 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-headline font-bold text-on-surface text-sm">How does yearly billing save money?</span>
+          <span class="material-symbols-outlined faq-arrow text-outline text-[20px] flex-shrink-0 ml-3">expand_more</span>
+        </button>
+        <div class="faq-answer px-6 pb-5 text-sm text-on-surface-variant leading-relaxed">
+          Paying yearly costs $49.99/yr for Pro (vs $59.88/yr monthly) and $79.99/yr for Family (vs $95.88/yr monthly) — saving you roughly one to two months free per year.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer class="border-t border-outline-variant/20 mt-8">
+  <div class="max-w-5xl mx-auto px-6 py-8 flex flex-wrap items-center justify-between gap-4">
+    <a href="/dashboard" class="flex items-center gap-2 text-on-surface no-underline">
+      <div class="w-6 h-6 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="3" fill="white"/>
+          <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <span class="text-sm font-semibold">Ok<strong>ToWatch</strong></span>
+    </a>
+    <div class="flex gap-5 flex-wrap">
+      <a href="/about"   class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">About</a>
+      <a href="/contact" class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Contact</a>
+      <a href="/plans"   class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Plans</a>
+      <a href="/privacy" class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Privacy</a>
+    </div>
+    <p class="text-xs text-on-surface-variant">© 2026 OkToWatch</p>
+  </div>
+  <div class="border-t border-outline-variant/10 py-3 flex items-center justify-center gap-2 flex-wrap">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg"
+         alt="TMDb" style="height:11px;opacity:0.45;" loading="lazy"/>
+    <span class="text-[11px] text-on-surface-variant">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" class="underline underline-offset-2">TMDb</a>. Powered by AI.</span>
   </div>
 </footer>
 
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- ════════════════════════════════
+     SCRIPTS
+════════════════════════════════ -->
 <script>
-// ── Pricing data ──────────────────────────────────────────────────────────
+// ── Pricing data (mirrors checkout.js PRODUCT_MAP) ───────────────────────────
 const PRICES = {
-  pro:    { monthly: '$4.99', yearly: '$49.99', yearlyTotal: '$49.99' },
-  family: { monthly: '$7.99', yearly: '$79.99', yearlyTotal: '$79.99' },
+  pro:    { monthly: '4.99', yearly: '49.99' },
+  family: { monthly: '7.99', yearly: '79.99' },
 };
 
-let isYearly = false;
+let _isYearly = false;
 
-// ── Billing toggle ────────────────────────────────────────────────────────
-function initBillingToggle() {
-  const toggle = document.getElementById('billingToggle');
-  if (!toggle) return; // Safety check
-  
-  toggle.addEventListener('click', () => {
-    isYearly = !isYearly;
-    toggle.className = 'toggle-switch ' + (isYearly ? 'yearly' : 'monthly');
-    document.getElementById('labelMonthly').classList.toggle('active', !isYearly);
-    document.getElementById('labelYearly').classList.toggle('active', isYearly);
+// ── Billing toggle ─────────────────────────────────────────────────────────
+function setBilling(mode) {
+  _isYearly = mode === 'yearly';
+  document.getElementById('btnMonthly').classList.toggle('active', !_isYearly);
+  document.getElementById('btnYearly').classList.toggle('active', _isYearly);
 
-    if (isYearly) {
-      // Yearly pricing
-      document.getElementById('proPrice').innerHTML    = `<sup>$</sup>${PRICES.pro.yearly.replace('$', '')}<span id="proPeriod">/yr</span>`;
-      document.getElementById('proAlt').textContent    = `Billed annually · ${PRICES.pro.yearly}/yr`;
-      document.getElementById('familyPrice').innerHTML = `<sup>$</sup>${PRICES.family.yearly.replace('$', '')}<span id="familyPeriod">/yr</span>`;
-      document.getElementById('familyAlt').textContent = `Billed annually · ${PRICES.family.yearly}/yr`;
-    } else {
-      // Monthly pricing
-      document.getElementById('proPrice').innerHTML    = `<sup>$</sup>4.99<span id="proPeriod">/mo</span>`;
-      document.getElementById('proAlt').textContent    = 'Billed monthly · cancel anytime';
-      document.getElementById('familyPrice').innerHTML = `<sup>$</sup>7.99<span id="familyPeriod">/mo</span>`;
-      document.getElementById('familyAlt').textContent = 'Billed monthly · cancel anytime';
-    }
-  });
+  if (_isYearly) {
+    document.getElementById('proPrice').textContent   = `$${PRICES.pro.yearly}`;
+    document.getElementById('proPeriod').textContent  = '/yr';
+    document.getElementById('proAlt').textContent     = `Billed annually · $${PRICES.pro.yearly}/yr`;
+    document.getElementById('familyPrice').textContent = `$${PRICES.family.yearly}`;
+    document.getElementById('familyPeriod').textContent = '/yr';
+    document.getElementById('familyAlt').textContent  = `Billed annually · $${PRICES.family.yearly}/yr`;
+  } else {
+    document.getElementById('proPrice').textContent   = `$${PRICES.pro.monthly}`;
+    document.getElementById('proPeriod').textContent  = '/mo';
+    document.getElementById('proAlt').textContent     = 'Billed monthly · cancel anytime';
+    document.getElementById('familyPrice').textContent = `$${PRICES.family.monthly}`;
+    document.getElementById('familyPeriod').textContent = '/mo';
+    document.getElementById('familyAlt').textContent  = 'Billed monthly · cancel anytime';
+  }
 }
 
-// Initialize on DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initBillingToggle);
-} else {
-  initBillingToggle();
-}
-
-// ── Upgrade handler ──────────────────────────────────────────────────────
+// ── Upgrade handler ─────────────────────────────────────────────────────────
 async function handleUpgrade(plan) {
   const loggedIn = window.CV?.loggedIn;
-  
+  const billingCycle = _isYearly ? 'yearly' : 'monthly';
+
   if (plan === 'free') {
-    if (!loggedIn) {
-      window.location.href = '/signup';
-    } else {
-      showToast("You're already using the free plan!");
-    }
+    if (!loggedIn) { window.location.href = '/signup'; }
+    else { showToast("You're already on the free plan!"); }
     return;
   }
 
-  // For Pro/Family, need to be logged in
   if (!loggedIn) {
-    // Get billing cycle from toggle
-    const billingToggle = document.getElementById('billingToggle');
-    const isYearly = billingToggle?.classList.contains('yearly');
-    const cycle = isYearly ? 'yearly' : 'monthly';
-    window.location.href = `/signin?plan=${plan}&cycle=${cycle}`;
+    window.location.href = `/signin?plan=${plan}&cycle=${billingCycle}`;
     return;
   }
+
+  const btn = document.getElementById(plan === 'pro' ? 'proCta' : 'familyCta');
+  const origText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Redirecting…';
 
   try {
-    // Get Clerk session token
     const token = await window.Clerk.session.getToken();
-    
-    // Get the billing cycle from toggle
-    const billingToggle = document.getElementById('billingToggle');
-    const isYearly = billingToggle?.classList.contains('yearly');
-    const billingCycle = isYearly ? 'yearly' : 'monthly';
-
-    // Request checkout from backend
-    const response = await fetch('/api/checkout', {
+    const res = await fetch('/api/checkout', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        plan,
-        billingCycle,
-        redirectUrl: '/dashboard',
-      }),
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ plan, billingCycle, redirectUrl: '/dashboard' }),
     });
 
-    if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}));
-      console.error('Checkout API error:', response.status, errBody);
-      showToast(errBody?.error || 'Error initiating checkout. Please try again.');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      showToast(err?.error || 'Checkout error — please try again.');
       return;
     }
 
-    const { checkoutUrl } = await response.json();
-    if (checkoutUrl) {
-      window.location.href = checkoutUrl;
-    } else {
-      showToast('Could not load checkout. Please try again.');
-    }
-  } catch (err) {
-    console.error('Checkout error:', err);
+    const { checkoutUrl } = await res.json();
+    if (checkoutUrl) { window.location.href = checkoutUrl; }
+    else { showToast('Could not load checkout. Please try again.'); }
+  } catch (e) {
+    console.error('Checkout error:', e);
     showToast('Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origText;
   }
 }
 
-// ── Toast ──────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+// ── Auth-aware CTAs ─────────────────────────────────────────────────────────
+document.addEventListener('cv:auth', ({ detail }) => {
+  const { loggedIn, isPro, isFamily } = detail;
 
-// ── FAQ ────────────────────────────────────────────────────────────────────
+  const proCta  = document.getElementById('proCta');
+  const famCta  = document.getElementById('familyCta');
+
+  if (isFamily) {
+    document.getElementById('familyCurrentBanner').classList.add('visible');
+    famCta.textContent = 'Current plan ✓';
+    famCta.style.background = '#efe9f8';
+    famCta.style.color = '#7b5ea7';
+    famCta.onclick = null;
+    proCta.textContent = 'Downgrade to Pro';
+  } else if (isPro) {
+    document.getElementById('proCurrentBanner').classList.add('visible');
+    proCta.textContent = 'Current plan ✓';
+    proCta.className = 'w-full py-3 font-bold rounded-xl font-headline text-sm bg-primary/10 text-primary border border-primary/20 cursor-default';
+    proCta.onclick = null;
+    famCta.textContent = 'Upgrade to Family';
+  }
+
+  // Auto-checkout if redirected from signin with plan intent
+  const params = new URLSearchParams(window.location.search);
+  const autoPlan  = params.get('autoCheckout');
+  const autoCycle = params.get('cycle') || 'monthly';
+
+  if (loggedIn && autoPlan && ['pro', 'family'].includes(autoPlan)) {
+    setBilling(autoCycle);
+    handleUpgrade(autoPlan);
+    window.history.replaceState({}, '', '/plans');
+  }
+});
+
+// ── FAQ accordion ──────────────────────────────────────────────────────────
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item');
   const isOpen = item.classList.contains('open');
@@ -513,51 +673,15 @@ function toggleFaq(btn) {
   if (!isOpen) item.classList.add('open');
 }
 
-// ── Auth-aware CTAs ────────────────────────────────────────────────────────
-document.addEventListener('cv:auth', ({ detail }) => {
-  const { loggedIn, isPro, isFamily } = detail;
-
-  const proCta    = document.getElementById('proCta');
-  const famCta    = document.getElementById('familyCta');
-
-  if (isFamily) {
-    document.getElementById('familyCurrentBanner').classList.add('visible');
-    famCta.textContent = 'Current plan ✓';
-    famCta.className   = 'plan-cta plan-cta--current-family';
-    famCta.onclick     = null;
-    famCta.dataset.state = 'current';
-    proCta.textContent = 'Downgrade to Pro';
-  } else if (isPro) {
-    document.getElementById('proCurrentBanner').classList.add('visible');
-    proCta.textContent = 'Current plan ✓';
-    proCta.className   = 'plan-cta plan-cta--current';
-    proCta.onclick     = null;
-    proCta.dataset.state = 'current';
-    famCta.textContent = 'Upgrade to Family';
-  }
-  
-  // Check if auto-checkout is needed (user just signed in with plan intent)
-  const params = new URLSearchParams(window.location.search);
-  const autoPlan = params.get('autoCheckout');
-  const autoCycle = params.get('cycle') || 'monthly';
-  
-  if (loggedIn && autoPlan && ['pro', 'family'].includes(autoPlan)) {
-    // Set the billing toggle to match what was selected
-    const billingToggle = document.getElementById('billingToggle');
-    const isYearly = autoCycle === 'yearly';
-    if (billingToggle) {
-      billingToggle.className = 'toggle-switch ' + (isYearly ? 'yearly' : 'monthly');
-      document.getElementById('labelMonthly').classList.toggle('active', !isYearly);
-      document.getElementById('labelYearly').classList.toggle('active', isYearly);
-    }
-    
-    handleUpgrade(autoPlan);
-    // Clean up URL
-    window.history.replaceState({}, '', '/plans');
-  }
-});
+// ── Toast ──────────────────────────────────────────────────────────────────
+function showToast(msg, dur = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
 </script>
-<script src="/js/auth.js?v=20260403"></script>
+
+<script src="/js/auth.js?v=20260405"></script>
 </body>
 </html>
-
