@@ -1002,6 +1002,10 @@ function getEffectiveRecent() {
 
 // Listen for auth â€” kick off D1 sync as soon as we know the user is Pro.
 document.addEventListener('cv:auth', ({ detail }) => {
+  if (detail.loggedIn && !window.location.search) {
+    window.location.href = '/dashboard';
+    return;
+  }
   renderRecentSearchesCarousel();
   if (detail.isPro || detail.isFamily) {
     syncD1Cache();

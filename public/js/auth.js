@@ -740,6 +740,9 @@
         }
       }
 
+      // Small artificial delay to let UI elements catch up if needed
+      await new Promise(r => setTimeout(r, 50));
+
       dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser);
 
     } catch (err) {

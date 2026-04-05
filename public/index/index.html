@@ -276,6 +276,10 @@ let _inWatchlist = false;
 
 // â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener('cv:auth', ({ detail }) => {
+  if (detail.loggedIn && !window.location.search) {
+    window.location.href = '/dashboard';
+    return;
+  }
   if (!detail.loggedIn) {
     // Allow unauthenticated browsing on detail page â€” just no save actions
   }

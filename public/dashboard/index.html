@@ -301,6 +301,7 @@ let _authReceived=false;
 document.addEventListener('cv:auth',({detail})=>{
   _authReceived=true;
   if(!detail.loggedIn){window.location.href='/signin?redirect=/dashboard';return;}
+  if(window.location.pathname === '/index' || window.location.pathname === '/index.html'){window.location.href='/dashboard';return;}
   window.userTier=detail.tier||(detail.isFamily?'family':detail.isPro?'pro':'free');
   // Update nav account icon with avatar if available
   if(detail.user?.imageUrl){
@@ -439,11 +440,22 @@ async function loadTrending(type='movie'){
     const data=await trendRes.json();
     const items=(data.results||[]).slice(0,4);
     if(cacheRes?.ok){const cached=await cacheRes.json();_cachedIds=new Set((cached||[]).map(String));}
-    if(!items.length){grid.innerHTML='<p class="col-span-full text-sm text-on-surface-variant text-center py-8">Could not load trending titles.</p>';return;}
+    if(!items.length){
+      grid.innerHTML=`<div class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-surface-container-low/50 rounded-2xl border-2 border-dashed border-outline-variant/20">
+        <span class="material-symbols-outlined text-4xl text-outline-variant mb-4">movie_filter</span>
+        <p class="text-sm font-bold text-on-surface-variant mb-1">No matches found for this filter</p>
+        <p class="text-xs text-on-surface-variant max-w-[240px]">Try switching between Movies and TV, or clear your active profile to see all trending content.</p>
+      </div>`;
+      return;
+    }
     try{const vr=await fetch(`/api/verdicts?ids=${items.map(i=>i.id).join(',')}`);if(vr.ok)_verdictData=await vr.json();}catch(e){}
     grid.innerHTML=items.map(item=>trendCard(item,type)).join('');
   }catch(e){
-    grid.innerHTML='<p class="col-span-full text-sm text-on-surface-variant text-center py-8">Could not load trending titles.</p>';
+    grid.innerHTML=`<div class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-surface-container-low/50 rounded-2xl border-2 border-dashed border-outline-variant/20">
+      <span class="material-symbols-outlined text-4xl text-error/40 mb-4">error</span>
+      <p class="text-sm font-bold text-on-surface-variant mb-1">Could not load trending titles</p>
+      <p class="text-xs text-on-surface-variant">There was a problem connecting to the movie database. Please try refreshing.</p>
+    </div>`;
   }
 }
 
