@@ -116,6 +116,9 @@
         .dark .sidebar-item.active { background: #1e293b; color: white; }
         .sidebar-item:not(.active):hover { background: rgba(0,0,0,0.03); }
         .dark .sidebar-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+
+        /* Scroll margin for sticky header */
+        section { scroll-margin-top: 100px; }
     </style>
 </head>
 <body class="bg-background text-on-surface antialiased" data-page="settings">
@@ -142,126 +145,126 @@
     </div>
 </header>
 
-<main class="max-w-[1440px] mx-auto pt-28 pb-16 px-8 flex flex-col md:flex-row gap-12">
+<main class="max-w-[1440px] mx-auto pt-24 pb-16 px-8 flex flex-col md:flex-row gap-12">
     <!-- SideNavBar -->
     <aside class="w-full md:w-64 shrink-0 mt-8">
         <div class="px-3 mb-6">
-            <h2 class="text-lg font-semibold text-slate-900 dark:text-white brand-font">Settings</h2>
+            <h2 class="text-lg font-semibold text-slate-900 dark:text-white brand-font">Account</h2>
             <p class="text-sm text-slate-500 dark:text-slate-400 font-body">Manage your experience</p>
         </div>
-        <nav class="flex flex-col gap-1 py-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl px-2">
-            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg active" id="nav-profile" onclick="switchTab('profile')">
+        <div class="sticky top-28 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-2 flex flex-col gap-1">
+            <button class="sidebar-item w-full p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg active" id="nav-profile" onclick="selectNav('profile')">
                 <span class="material-symbols-outlined" data-icon="person">person</span>
                 <span>Profile</span>
-            </a>
-            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-family" onclick="switchTab('family')">
+            </button>
+            <button class="sidebar-item w-full p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg border-b border-slate-200/50 dark:border-slate-800/50 rounded-b-none" id="nav-family" onclick="selectNav('family')" style="white-space: nowrap;">
                 <span class="material-symbols-outlined" data-icon="family_restroom">family_restroom</span>
                 <span>Family Settings</span>
-            </a>
-            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-subscription" onclick="switchTab('subscription')">
+            </button>
+            <button class="sidebar-item w-full p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-subscription" onclick="selectNav('subscription')">
                 <span class="material-symbols-outlined" data-icon="payments">payments</span>
                 <span>Subscription</span>
-            </a>
-            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-notifications" onclick="switchTab('notifications')">
+            </button>
+            <button class="sidebar-item w-full p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-notifications" onclick="selectNav('notifications')">
                 <span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
                 <span>Notifications</span>
-            </a>
-            <a class="sidebar-item p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-security" onclick="switchTab('security')">
+            </button>
+            <button class="sidebar-item w-full p-3 flex items-center gap-3 text-slate-500 font-label rounded-lg" id="nav-security" onclick="selectNav('security')">
                 <span class="material-symbols-outlined" data-icon="shield">shield</span>
                 <span>Security</span>
-            </a>
-        </nav>
+            </button>
+        </div>
     </aside>
 
     <!-- Main Content Area -->
-    <section class="flex-1 min-w-0">
+    <div class="flex-1 min-w-0 pt-8" id="right-col-wrapper">
         
-        <!-- GENERIC SETTINGS TABS (max-w-3xl) -->
-        <div id="wrapper-general" class="space-y-12 max-w-3xl">
-            <!-- TAB: PROFILE -->
-            <div id="tab-profile" class="tab-content space-y-8 block">
+        <!-- ======================= -->
+        <!-- TAB: GENERAL SETTINGS   -->
+        <!-- ======================= -->
+        <div id="tab-general" class="tab-content" style="display:block;">
+            <div class="space-y-12 max-w-3xl">
+                <!-- Header -->
                 <div class="space-y-2 mb-8">
-                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Profile & Account</h1>
-                    <p class="text-on-surface-variant body-md opacity-80">Update your personal information and contact email.</p>
+                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Settings</h1>
+                    <p class="text-on-surface-variant body-md opacity-80">Refine your parental controls and account preferences for a safer viewing experience.</p>
                 </div>
-                <div class="bg-surface-container-low p-8 rounded-xl space-y-8 shadow-sm">
+
+                <!-- PROFILE SECTION -->
+                <section id="section-profile" class="bg-surface-container-low p-8 rounded-xl space-y-8 scroll-section">
                     <div class="flex justify-between items-end border-b border-outline-variant/15 pb-4">
                         <div>
                             <h3 class="text-xl font-bold brand-font">Profile Details</h3>
-                            <p class="text-sm text-on-surface-variant font-label">Your main display identity.</p>
+                            <p class="text-sm text-on-surface-variant font-label">Update your personal information and contact email.</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Display Name</label>
-                            <input id="inputDisplayName" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" type="text" placeholder="e.g. John Doe"/>
+                            <input id="inputDisplayName" class="w-full bg-surface-container-lowest border-outline-variant/30 rounded-lg px-4 py-2 focus:ring-1 focus:ring-primary focus:border-primary outline-none" type="text" placeholder="e.g. John Doe"/>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Email Address</label>
-                            <input id="inputEmail" class="w-full bg-surface-container-lowest/50 border border-outline-variant/30 rounded-lg px-4 py-2 text-on-surface-variant opacity-70 cursor-not-allowed" type="email" readonly value=""/>
+                            <input id="inputEmail" class="w-full bg-surface-container-lowest/50 border-outline-variant/30 rounded-lg px-4 py-2 text-on-surface-variant opacity-70 cursor-not-allowed outline-none" type="email" readonly value=""/>
                         </div>
                     </div>
                     <div class="pt-4 flex items-center gap-4">
                         <button id="btnSaveName" onclick="saveName()" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-dim transition-colors flex items-center gap-2">Save Changes</button>
-                        <button onclick="window.Clerk.openUserProfile()" class="text-primary font-semibold px-4 py-2.5 hover:underline decoration-2 underline-offset-4">Manage Login / Password</button>
+                        <button onclick="window.Clerk.openUserProfile()" class="text-primary font-semibold px-4 py-2.5 hover:underline decoration-2 underline-offset-4">Change Password</button>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <!-- TAB: SUBSCRIPTION -->
-            <div id="tab-subscription" class="tab-content space-y-8 hidden">
-                <div class="space-y-2 mb-8">
-                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Subscription</h1>
-                    <p class="text-on-surface-variant body-md opacity-80">Manage your billing and plan details.</p>
-                </div>
-                <div class="bg-surface-container-low p-8 rounded-xl space-y-6 shadow-sm relative overflow-hidden">
-                    <!-- Loading overlay for billing -->
+                <!-- SUBSCRIPTION SECTION -->
+                <section id="section-subscription" class="bg-surface-container-low p-8 rounded-xl space-y-6 scroll-section relative overflow-hidden">
                     <div id="billingLoading" class="absolute inset-0 bg-surface-container-low/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-2">
                         <span class="material-symbols-outlined animate-spin text-primary">progress_activity</span>
-                        <span class="text-sm font-semibold text-primary">Loading subscription...</span>
                     </div>
 
                     <div class="flex justify-between items-start">
                         <div>
                             <h3 class="text-xl font-bold brand-font">Current Plan</h3>
                             <div class="mt-2 flex items-center gap-3">
-                                <span id="billTierLabel" class="text-2xl font-bold text-on-surface capitalize">Free Tier</span>
-                                <span id="billStatusBadge" class="bg-surface-variant text-on-surface px-3 py-1 rounded-full text-xs font-bold">INACTIVE</span>
+                                <span id="billTierLabel" class="text-xl md:text-2xl font-bold text-on-surface capitalize">Free Tier</span>
+                                <span id="billStatusBadge" class="bg-surface-variant text-on-surface px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest">INACTIVE</span>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Renewal Date</p>
-                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/60">—</p>
+                            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Next Billing Date</p>
+                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/80">—</p>
                         </div>
                     </div>
-                    <div class="bg-surface-container-lowest p-6 rounded-lg flex items-center justify-between border border-outline-variant/10">
+                    <div class="bg-surface-container-lowest p-6 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4 border border-outline-variant/10">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-8 bg-surface-container rounded flex items-center justify-center">
-                                <span class="material-symbols-outlined text-on-surface-variant" data-icon="credit_card">credit_card</span>
+                            <div class="w-12 h-8 bg-surface-container rounded-sm border border-outline-variant/50 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="credit_card">payments</span>
                             </div>
                             <div>
-                                <p class="font-bold text-on-surface">Payment handled via Dodo</p>
-                                <p class="text-sm text-on-surface-variant">Update via customer portal</p>
+                                <p class="font-bold text-on-surface text-sm">Payment handled securely via Dodo</p>
+                                <p class="text-xs text-on-surface-variant">Access portal to edit payment method</p>
                             </div>
                         </div>
-                        <a href="/plans" class="text-primary font-bold text-sm hover:underline">Manage Plans</a>
+                        <a href="/plans" class="text-primary font-bold text-sm hover:underline md:ml-auto">Manage Plan</a>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <!-- TAB: NOTIFICATIONS -->
-            <div id="tab-notifications" class="tab-content space-y-8 hidden">
-                <div class="space-y-2 mb-8">
-                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Notifications</h1>
-                    <p class="text-on-surface-variant body-md opacity-80">Choose how you want us to reach you.</p>
-                </div>
-                <div class="bg-surface-container-low p-8 rounded-xl space-y-6 shadow-sm">
-                    <h3 class="text-xl font-bold brand-font">Inbox Preferences</h3>
+                <!-- NOTIFICATIONS SECTION -->
+                <section id="section-notifications" class="bg-surface-container-low p-8 rounded-xl space-y-6 scroll-section">
+                    <h3 class="text-xl font-bold brand-font">Notification Preferences</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-2">
                             <div>
-                                <p class="font-bold text-on-surface">Weekly Safe Picks (Digest)</p>
-                                <p class="text-sm text-on-surface-variant">A curated digest of family-friendly reviews delivered weekly.</p>
+                                <p class="font-bold text-on-surface">New Movie Alerts</p>
+                                <p class="text-sm text-on-surface-variant">Get notified when movies matching your safety filters are added.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input checked disabled type="checkbox" class="sr-only peer"/>
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary opacity-50 cursor-not-allowed"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between py-2 border-t border-outline-variant/15">
+                            <div>
+                                <p class="font-bold text-on-surface">Weekly Safe Picks</p>
+                                <p class="text-sm text-on-surface-variant">A curated digest of family-friendly reviews delivered every Friday.</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input id="chkDigest" type="checkbox" class="sr-only peer" onchange="toggleDigest(this.checked)"/>
@@ -275,49 +278,60 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input checked disabled type="checkbox" class="sr-only peer"/>
-                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary opacity-60"></div>
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary opacity-50 cursor-not-allowed"></div>
                             </label>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <!-- TAB: SECURITY -->
-            <div id="tab-security" class="tab-content space-y-8 hidden">
-                <div class="space-y-2 mb-8">
-                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Security</h1>
-                    <p class="text-on-surface-variant body-md opacity-80">Secure your account and manage active sessions.</p>
-                </div>
-                <div class="bg-surface-container-low p-8 rounded-xl space-y-8 shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-tertiary text-3xl" data-icon="verified_user">verified_user</span>
+                <!-- SECURITY SECTION -->
+                <section id="section-security" class="bg-surface-container-low p-8 rounded-xl space-y-8 scroll-section">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                        <span class="material-symbols-outlined text-tertiary text-3xl hidden md:block" data-icon="verified_user">verified_user</span>
                         <div>
-                            <h3 class="text-xl font-bold brand-font">Clerk Advanced Security</h3>
-                            <p class="text-sm text-on-surface-variant">OkToWatch uses Clerk to provide enterprise-grade security including Passkeys and 2FA.</p>
+                            <h3 class="text-xl font-bold brand-font">Two-Factor Authentication</h3>
+                            <p class="text-sm text-on-surface-variant">Protect your curated lists with an extra layer of security.</p>
                         </div>
-                        <button onclick="window.Clerk.openUserProfile()" class="ml-auto bg-surface-container-highest text-primary px-6 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-colors text-sm">Review 2FA</button>
+                        <button onclick="window.Clerk.openUserProfile()" class="md:ml-auto bg-surface-container-highest border border-outline-variant/15 text-primary px-6 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-colors text-sm">Enable 2FA</button>
                     </div>
-                </div>
 
-                <div class="pt-8 border-t border-outline-variant/20">
+                    <div class="space-y-4 pt-4 border-t border-outline-variant/15">
+                        <h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Active Sessions</h4>
+                        <div class="bg-surface-container-lowest border border-outline-variant/10 rounded-lg divide-y divide-outline-variant/10">
+                            <div class="p-4 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary" data-icon="desktop_windows">desktop_windows</span>
+                                    <div>
+                                        <p class="font-semibold text-on-surface text-sm">Chrome on Current OS (Current Session)</p>
+                                        <p class="text-[11px] text-on-surface-variant">Active now</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DANGER ZONE -->
+                <section class="pt-8">
                     <button onclick="openDeleteModal()" class="text-error font-bold flex items-center gap-2 hover:bg-error/5 px-4 py-2 rounded-md transition-colors">
-                        <span class="material-symbols-outlined" data-icon="delete">delete</span>
+                        <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
                         Deactivate Account
                     </button>
-                    <p class="text-xs text-on-surface-variant mt-2 px-4">Permanently purges your profiles, lists, and history.</p>
-                </div>
+                </section>
             </div>
         </div>
 
-        <!-- FAMILY TABS (bento grid layout) -->
-        <div id="tab-family" class="tab-content hidden h-full w-full">
+        <!-- ======================= -->
+        <!-- TAB: FAMILY SETTINGS    -->
+        <!-- ======================= -->
+        <div id="tab-family" class="tab-content w-full" style="display:none;">
             <div class="space-y-2 mb-8">
                 <h1 class="text-4xl font-extrabold tracking-tight text-on-surface headline-md">Family Settings</h1>
                 <p class="text-on-surface-variant body-md opacity-80">Manage viewing permissions and safety guidelines for your children.</p>
             </div>
             
             <div id="loadingStateFamily" class="text-center py-12 text-on-surface-variant">
-                <span class="material-symbols-outlined animate-spin mb-2">progress_activity</span><br>
+                <span class="material-symbols-outlined animate-spin mb-2 text-3xl">progress_activity</span><br>
                 Loading profiles...
             </div>
 
@@ -336,7 +350,7 @@
                     <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm border border-outline-variant/10">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="font-headline font-bold text-on-surface">Maximum Age Rating</h3>
-                            <span id="ageBadge" class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-sm font-bold font-headline">TV-PG / 12+</span>
+                            <span id="ageBadge" class="bg-primary-container text-on-primary-container px-3 py-2 rounded-full text-xs tracking-wide font-extrabold font-headline uppercase leading-none">TV-PG / 12+</span>
                         </div>
                         <div class="relative py-4">
                             <input id="ageSlider" class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer" max="17" min="1" type="range" value="12" oninput="handleAgeChange()"/>
@@ -363,7 +377,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input id="chkViolence" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
-                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+                                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
                                 </label>
                             </div>
                             <div class="flex items-center justify-between">
@@ -373,7 +387,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input id="chkLanguage" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
-                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+                                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
                                 </label>
                             </div>
                             <div class="flex items-center justify-between">
@@ -383,7 +397,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input id="chkSubstances" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
-                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+                                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
                                 </label>
                             </div>
                         </div>
@@ -399,17 +413,17 @@
                     <div class="bg-surface-container p-8 rounded-lg shadow-sm border border-outline-variant/10">
                         <div class="flex items-center gap-3 text-tertiary mb-4">
                             <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
-                            <h3 class="font-headline font-bold uppercase tracking-widest text-xs">Guardian Analysis</h3>
+                            <h3 class="font-headline font-bold uppercase tracking-widest text-[10px]">Guardian Analysis</h3>
                         </div>
                         <p class="text-on-surface font-headline text-lg font-bold mb-4"><span id="summaryName">Leo</span>'s Profile Summary</p>
                         <ul class="space-y-4" id="summaryList"></ul>
                     </div>
                     <div class="pt-4">
-                        <button id="saveBtn" onclick="saveActiveProfile()" class="w-full py-5 bg-slate-900 text-white font-headline font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
+                        <button id="saveBtn" onclick="saveActiveProfile()" class="w-full py-4 bg-slate-900 text-white font-headline font-bold rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
                             <span class="material-symbols-outlined">save</span>
                             Save Profile Settings
                         </button>
-                        <p id="saveTimestamp" class="mt-4 text-center text-xs text-on-surface-variant font-medium"></p>
+                        <p id="saveTimestamp" class="mt-4 text-center text-xs text-on-surface-variant font-medium min-h-[1rem]"></p>
                     </div>
                 </aside>
                 
@@ -419,29 +433,48 @@
                 </div>
             </div>
         </div>
-
-    </section>
+    </div>
 </main>
+
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-4 z-50 border-t border-slate-200">
+    <a href="/discover" class="flex flex-col items-center text-slate-500 hover:text-slate-900 space-y-1">
+        <span class="material-symbols-outlined" data-icon="explore">explore</span>
+        <span class="text-[10px] font-bold font-headline uppercase">Discover</span>
+    </a>
+    <a href="/lists" class="flex flex-col items-center text-slate-500 hover:text-slate-900 space-y-1">
+        <span class="material-symbols-outlined" data-icon="bookmarks">bookmarks</span>
+        <span class="text-[10px] font-bold font-headline uppercase">Library</span>
+    </a>
+    <button onclick="selectNav('profile')" class="flex flex-col items-center text-primary space-y-1">
+        <span class="material-symbols-outlined text-[26px]" data-icon="settings">settings</span>
+        <span class="text-[10px] font-bold font-headline uppercase">Settings</span>
+    </button>
+    <a href="/dashboard" class="flex flex-col items-center text-slate-500 hover:text-slate-900 space-y-1">
+        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+        <span class="text-[10px] font-bold font-headline uppercase">Home</span>
+    </a>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <!-- Modal: Add Profile -->
 <div class="modal-overlay" id="addProfileModal">
-    <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4 border border-outline-variant/10">
         <div class="flex justify-between items-center border-b border-surface-variant pb-3 mb-4">
             <h3 class="font-headline font-bold text-lg">Add New Profile</h3>
             <button onclick="closeAddModal()" class="text-outline hover:text-on-surface">✕</button>
         </div>
         <div class="space-y-4">
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Child's Name</label>
-                <input type="text" id="newProfileName" placeholder="e.g. Emma" maxlength="20" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all"/>
+                <label class="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-1.5">Child's Name</label>
+                <input type="text" id="newProfileName" placeholder="e.g. Emma" maxlength="20" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-all"/>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Age</label>
-                <input type="number" id="newProfileAge" placeholder="e.g. 8" min="1" max="17" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all"/>
+                <label class="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-1.5">Age</label>
+                <input type="number" id="newProfileAge" placeholder="e.g. 8" min="1" max="17" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-all"/>
             </div>
-            <button onclick="submitAddProfile()" class="w-full py-2.5 bg-primary text-on-primary rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity mt-2">Create Profile</button>
+            <button onclick="submitAddProfile()" class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold font-headline hover:bg-primary-dim transition-colors mt-2">Create Profile</button>
         </div>
     </div>
 </div>
@@ -449,53 +482,66 @@
 <!-- Modal: Delete Account Confirm -->
 <div class="modal-overlay" id="deleteAccountModal">
     <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4 text-center">
-        <span class="material-symbols-outlined text-border block text-error text-5xl mb-4">warning</span>
+        <span class="material-symbols-outlined text-border block text-error text-[40px] mb-3">warning</span>
         <h3 class="font-headline font-bold text-lg mb-2">Delete Entire Account?</h3>
-        <p class="text-sm text-on-surface-variant mb-6">This will instantly wipe your active profiles, curated history, and any saved reviews. This cannot be undone.</p>
+        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">This will instantly wipe your active profiles, curated history, and any saved lists. This cannot be undone.</p>
         <div class="flex flex-col gap-2">
-            <button onclick="executeAccountDeletion()" class="w-full py-2.5 bg-error text-white font-bold rounded-xl">Yes, Delete Account</button>
-            <button onclick="closeDeleteModal()" class="w-full py-2.5 text-slate-600 font-bold hover:bg-slate-100 rounded-xl">Cancel</button>
+            <button onclick="executeAccountDeletion()" class="w-full py-3 bg-error text-white font-bold rounded-xl font-headline hover:bg-error-dim transition-colors">Yes, Delete Account</button>
+            <button onclick="closeDeleteModal()" class="w-full py-3 text-slate-600 font-bold hover:bg-slate-100 rounded-xl font-headline transition-colors">Cancel</button>
         </div>
     </div>
 </div>
 
 <script src="/js/auth.js?v=20260405"></script>
 <script>
-    // ── Global Tab State ──
-    const TABS = ['profile', 'family', 'subscription', 'notifications', 'security'];
+    // ── NAVIGATION & TAB STATE ──
+    const SECTIONS = ['profile', 'subscription', 'notifications', 'security'];
     
-    function switchTab(tabId) {
-        // Toggle nav items
-        TABS.forEach(t => document.getElementById(`nav-${t}`)?.classList.remove('active'));
-        document.getElementById(`nav-${tabId}`)?.classList.add('active');
-        
-        // Hide all tabs
-        TABS.forEach(t => document.getElementById(`tab-${t}`)?.classList.add('hidden'));
-        document.getElementById(`wrapper-general`)?.classList.remove('hidden');
+    function selectNav(navId) {
+        // Clear active classes in sidebar
+        document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+        const btn = document.getElementById(`nav-${navId}`);
+        if(btn) btn.classList.add('active');
 
-        if (tabId === 'family') {
-            document.getElementById(`wrapper-general`)?.classList.add('hidden');
-            document.getElementById(`tab-family`)?.classList.remove('hidden');
-            if (activeProfileId === null && Object.keys(profiles).length === 0) {
-                // If they haven't loaded profiles yet, attempt a load if auth exists
-                loadFamilyData();
-            }
+        if (navId === 'family') {
+            document.getElementById('tab-general').style.display = 'none';
+            document.getElementById('tab-family').style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'auto'});
+            if (activeProfileId === null && Object.keys(profiles).length === 0) loadFamilyData();
         } else {
-            document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
+            // General setting sub-tabs
+            document.getElementById('tab-family').style.display = 'none';
+            document.getElementById('tab-general').style.display = 'block';
+            
+            // Scroll to the exact section
+            const section = document.getElementById(`section-${navId}`);
+            if (section) {
+                const y = section.getBoundingClientRect().top + window.scrollY - 100; // offset header
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
         }
-        
-        window.scrollTo(0,0);
-        // Persist tab visually
-        window.history.replaceState(null, null, `?tab=${tabId}`);
     }
 
-    // Initialize tab from URL
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        let initTab = urlParams.get('tab');
-        if (!TABS.includes(initTab)) initTab = 'profile';
-        switchTab(initTab);
-    });
+    // Scroll spy to highlight active menu item natively as you scroll the general container
+    window.addEventListener('scroll', () => {
+        if (document.getElementById('tab-general').style.display === 'none') return; // Do nothing if on family tab
+
+        let current = '';
+        const scrollPosition = window.scrollY + 120; // threshold
+
+        SECTIONS.forEach(id => {
+            const el = document.getElementById(`section-${id}`);
+            if (el && el.offsetTop <= scrollPosition) {
+                current = id;
+            }
+        });
+
+        if (current) {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            const activeBtn = document.getElementById(`nav-${current}`);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+    }, {passive:true});
 
     // ── GENERAL UTILS ──
     function showToast(msg, dur = 2500) {
@@ -514,29 +560,21 @@
 
     // ── BIND TO AUTH.JS ──
     document.addEventListener('cv:auth', async ({ detail }) => {
-        if (!detail.loggedIn) {
-            window.location.href = '/signin?redirect=/settings';
-            return;
-        }
+        if (!detail.loggedIn) { window.location.href = '/signin?redirect=/settings'; return; }
         globalUser = detail.user;
         
-        // 1. Populate General Profile Tab
+        // Populate profile name and email
         const fullName = `${globalUser.firstName||''} ${globalUser.lastName||''}`.trim();
         document.getElementById('inputDisplayName').value = fullName;
         document.getElementById('inputEmail').value = globalUser.emailAddresses?.[0]?.emailAddress || globalUser.email || '';
         
-        // 2. Fetch Billing
         loadBilling();
-
-        // 3. Populate Notifications locally
-        const savedDigest = JSON.parse(localStorage.getItem('cv_digest') || 'false');
+        const savedDigest = JSON.parse(localStorage.getItem('cv_digest') || 'true'); // defaults to true in mock
         document.getElementById('chkDigest').checked = savedDigest;
-
-        // 4. Fetch Family
         loadFamilyData();
     });
 
-    // ── PROFILE TAB ──
+    // ── PROFILE ENGINE ──
     async function saveName() {
         const input = document.getElementById('inputDisplayName').value.trim();
         if (!input) return showToast("Name cannot be empty");
@@ -554,42 +592,30 @@
                 method: 'PUT', headers: await authHeaders(),
                 body: JSON.stringify({ firstName: first, lastName: last })
             });
-            if (res.ok) showToast("Display name updated!");
-            else showToast("Failed to update name");
-        } catch(e) {
-            showToast("Network error");
-        } finally {
-            btn.innerHTML = oldHtml;
-        }
+            res.ok ? showToast("Display name updated!") : showToast("Failed to update name");
+        } catch(e) { showToast("Network error"); } 
+        finally { btn.innerHTML = oldHtml; }
     }
 
-    // ── SUBSCRIPTION TAB ──
+    // ── SUBSCRIPTION ENGINE ──
     async function loadBilling() {
         try {
             const res = await fetch('/api/subscription-status', { headers: await authHeaders() });
             if (res.ok) {
                 const sub = await res.json();
-                
-                const tierMap = { 'free': 'Free Tier', 'pro': 'Pro Plan', 'family': 'Family Plan' };
+                const tierMap = { 'free': 'Free Tier', 'pro': 'Pro Plan', 'family': 'Premium Family Plan' };
                 document.getElementById('billTierLabel').textContent = tierMap[sub.tier] || 'Free Tier';
                 
                 const badge = document.getElementById('billStatusBadge');
                 if (sub.status === 'active' || sub.status === 'trial') {
                     badge.textContent = sub.status.toUpperCase();
-                    badge.className = "bg-tertiary text-on-tertiary px-3 py-1 rounded-full text-xs font-bold";
-                } else {
-                    badge.textContent = "INACTIVE";
-                    badge.className = "bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full text-xs font-bold";
+                    badge.className = "bg-tertiary text-on-tertiary px-3 py-1 rounded-full text-[10px] tracking-widest font-bold uppercase";
                 }
                 
                 if (sub.renewsAt) {
-                    const dt = new Date(sub.renewsAt);
-                    document.getElementById('billRenewalText').textContent = dt.toLocaleDateString();
+                    document.getElementById('billRenewalText').textContent = new Date(sub.renewsAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
                 } else if (sub.trialEndsAt) {
-                    const dt = new Date(sub.trialEndsAt);
-                    document.getElementById('billRenewalText').textContent = dt.toLocaleDateString() + " (Trial End)";
-                } else {
-                    document.getElementById('billRenewalText').textContent = "—";
+                    document.getElementById('billRenewalText').textContent = new Date(sub.trialEndsAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' }) + " (Trial)";
                 }
             }
         } catch(e) {} finally {
@@ -597,10 +623,9 @@
         }
     }
 
-    // ── NOTIFICATIONS TAB ──
     function toggleDigest(val) {
         localStorage.setItem('cv_digest', JSON.stringify(val));
-        showToast(val ? "Digest Enabled" : "Digest Disabled");
+        showToast(val ? "Weekly Digest Enabled" : "Digest Disabled");
     }
 
     // ── DANGER ZONE ──
@@ -615,7 +640,7 @@
         } catch(e) { showToast("Failed to delete"); }
     }
 
-    // ── FAMILY TAB ENGINE (Ported cleanly) ──
+    // ── FAMILY TAB ENGINE ──
     let profiles = [];
     let activeProfileId = null;
 
@@ -627,9 +652,8 @@
                 if (profiles.length > 0 && !activeProfileId) activeProfileId = profiles[0].id;
                 renderFamilyDashboard();
             }
-        } catch (e) {
-            console.error('Failed to load family');
-        } finally {
+        } catch (e) { console.error('Failed to load family'); } 
+        finally {
             document.getElementById('loadingStateFamily').classList.add('hidden');
             document.getElementById('mainContentFamily').classList.remove('hidden');
         }
@@ -642,32 +666,31 @@
         let html = '';
         profiles.forEach(p => {
             const isActive = p.id === activeProfileId;
-            const ringClasses = isActive ? 'border-4 border-primary ring-4 ring-primary/10' : 'border-2 border-transparent group-hover:border-outline-variant';
-            const bgHover = isActive ? '' : 'group-hover:bg-surface-container-high';
+            const ringClasses = isActive ? 'border-4 border-primary ring-4 ring-primary/20 backdrop-blur' : 'border-2 border-transparent group-hover:border-outline-variant';
             const wrapperClass = isActive ? 'flex flex-col items-center gap-3 cursor-pointer group' : 'flex flex-col items-center gap-3 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity';
             
             html += `
-            <div class="${wrapperClass}" onclick="selectProfile('${p.id}')">
+            <div class="${wrapperClass}" onclick="selectProfileFamily('${p.id}')">
                 <div class="relative">
-                    <div class="w-24 h-24 rounded-full overflow-hidden transition-all flex items-center justify-center bg-surface-container-high text-5xl ${ringClasses}">
+                    <div class="w-24 h-24 rounded-full overflow-hidden transition-all flex items-center justify-center bg-surface-variant text-5xl ${ringClasses}">
                         ${p.emoji || '👧'}
                     </div>
                     ${isActive ? `
-                    <div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-1 border-2 border-white">
-                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+                    <div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-1 border-2 border-white shadow-sm">
+                        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
                     </div>` : ''}
                 </div>
-                <span class="font-headline font-bold text-on-surface">${p.name}</span>
+                <span class="font-headline font-bold text-sm tracking-wide text-on-surface">${p.name}</span>
             </div>`;
         });
 
         if (profiles.length < 5) {
             html += `
             <div class="flex flex-col items-center gap-3 cursor-pointer group" onclick="openAddModal()">
-                <div class="w-24 h-24 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center group-hover:bg-surface-container-high transition-colors bg-white">
-                    <span class="material-symbols-outlined text-3xl text-outline">add</span>
+                <div class="w-24 h-24 rounded-full border-2 border-dashed border-outline-variant/60 flex items-center justify-center group-hover:bg-surface-container-high transition-colors bg-white">
+                    <span class="material-symbols-outlined text-3xl text-outline-variant">add</span>
                 </div>
-                <span class="font-headline font-bold text-outline">Add Profile</span>
+                <span class="font-headline font-bold text-sm text-on-surface-variant">Add Profile</span>
             </div>`;
         }
         list.innerHTML = html;
@@ -684,7 +707,7 @@
         }
     }
 
-    function selectProfile(id) {
+    function selectProfileFamily(id) {
         activeProfileId = id;
         document.getElementById('saveTimestamp').textContent = '';
         renderFamilyDashboard();
@@ -722,7 +745,7 @@
         else if (age >= 14) label = 'TV-14 / 14+';
         else if (age >= 12) label = 'TV-PG / 12+';
         else if (age >= 7) label = 'TV-Y7 / 7+';
-        else label = 'TV-Y / ALL';
+        else label = 'TV-G / ALL';
 
         document.getElementById('ageBadge').textContent = label;
         const pName = profiles.find(x => x.id === activeProfileId)?.name || 'the child';
@@ -750,20 +773,20 @@
 
         html += `
         <li class="flex gap-3">
-            <span class="material-symbols-outlined text-tertiary text-sm mt-1">check_circle</span>
-            <span class="text-sm text-on-surface-variant leading-relaxed">Movies like <strong class="text-on-surface">${movies}</strong> are recommended via Discover.</span>
+            <span class="material-symbols-outlined text-tertiary text-lg mt-0.5">check_circle</span>
+            <span class="text-[13px] text-on-surface-variant leading-relaxed">Movies like <strong class="text-on-surface">${movies}</strong> are recommended via Discover.</span>
         </li>
         <li class="flex gap-3">
-            <span class="material-symbols-outlined text-tertiary text-sm mt-1">check_circle</span>
-            <span class="text-sm text-on-surface-variant leading-relaxed">Safety-first filters inherently block excessively dark psychological elements for this tier.</span>
+            <span class="material-symbols-outlined text-tertiary text-lg mt-0.5">check_circle</span>
+            <span class="text-[13px] text-on-surface-variant leading-relaxed">Safety-first filters inherently block excessively dark psychological elements for this tier.</span>
         </li>`;
 
         if (blocked.length > 0) {
             const mapped = blocked.map(x => x === 'Drugs & alcohol' ? 'Substance Use' : x).join(', ');
             html += `
             <li class="flex gap-3">
-                <span class="material-symbols-outlined text-error text-sm mt-1">cancel</span>
-                <span class="text-sm text-on-surface-variant leading-relaxed">Strictly filtering: <strong class="text-error bg-error/10 px-1 py-0.5 rounded">${mapped}</strong>.</span>
+                <span class="material-symbols-outlined text-error text-lg mt-0.5">cancel</span>
+                <span class="text-[13px] text-on-surface-variant leading-relaxed">Strictly filtering: <strong class="text-error bg-error/10 px-1.5 py-0.5 rounded tracking-wide">${mapped}</strong>.</span>
             </li>`;
         }
         document.getElementById('summaryList').innerHTML = html;
@@ -794,9 +817,8 @@
                 document.getElementById('saveTimestamp').textContent = `Last updated: ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
                 showToast('Profile saved');
             } else showToast('Failed to save settings');
-        } catch (e) { showToast('Network error'); } finally {
-            btn.innerHTML = '<span class="material-symbols-outlined">save</span> Save Profile Settings';
-        }
+        } catch (e) { showToast('Network error'); } 
+        finally { btn.innerHTML = '<span class="material-symbols-outlined">save</span> Save Profile Settings'; }
     }
 
     async function requestDeleteProfile() {
@@ -832,7 +854,7 @@
                 showToast('Profile created');
                 document.getElementById('newProfileName').value = '';
                 document.getElementById('newProfileAge').value = '';
-                selectProfile(json.id);
+                selectProfileFamily(json.id);
             } else {
                 const err = await res.json();
                 showToast(err.error || 'Creation failed');
