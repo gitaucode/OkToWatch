@@ -74,7 +74,7 @@ export async function onRequestPost(context) {
   let body;
   try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON' }, 400); }
 
-  const { name, age, emoji = '👧', sensitivity_preset = null, blocked_categories = null, notes = null } = body;
+  const { name, age, emoji = '👧', sensitivity_preset = null, blocked_categories = null, notes = null, quiet_hours_start = null, quiet_hours_end = null } = body;
   if (!name?.trim())               return jsonResponse({ error: 'Name is required' }, 400);
   if (!age || age < 1 || age > 17) return jsonResponse({ error: 'Age must be between 1 and 17' }, 400);
 
@@ -96,8 +96,8 @@ export async function onRequestPost(context) {
   const id = crypto.randomUUID().replace(/-/g, '');
 
   await env.DB
-    .prepare('INSERT INTO profiles (id, user_id, name, age, emoji, sensitivity_preset, blocked_categories, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, auth.userId, name.trim(), parseInt(age), emoji, sensitivity_preset, blockedCategoriesJson, notes)
+    .prepare('INSERT INTO profiles (id, user_id, name, age, emoji, sensitivity_preset, blocked_categories, notes, quiet_hours_start, quiet_hours_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, auth.userId, name.trim(), parseInt(age), emoji, sensitivity_preset, blockedCategoriesJson, notes, quiet_hours_start, quiet_hours_end)
     .run();
 
   const profile = await env.DB
@@ -127,7 +127,7 @@ export async function onRequestPut(context) {
   let body;
   try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON' }, 400); }
 
-  const { name, age, emoji, sensitivity_preset, blocked_categories, notes } = body;
+  const { name, age, emoji, sensitivity_preset, blocked_categories, notes, quiet_hours_start, quiet_hours_end } = body;
   if (name && !name.trim())        return jsonResponse({ error: 'Name cannot be empty' }, 400);
   if (age && (age < 1 || age > 17)) return jsonResponse({ error: 'Age must be between 1 and 17' }, 400);
   
@@ -153,7 +153,9 @@ export async function onRequestPut(context) {
       emoji                = COALESCE(?, emoji),
       sensitivity_preset   = COALESCE(?, sensitivity_preset),
       blocked_categories   = COALESCE(?, blocked_categories),
-      notes                = COALESCE(?, notes)
+      notes                = COALESCE(?, notes),
+      quiet_hours_start    = COALESCE(?, quiet_hours_start),
+      quiet_hours_end      = COALESCE(?, quiet_hours_end)
       WHERE id = ? AND user_id = ?`)
     .bind(
       name?.trim() ?? null,
@@ -162,6 +164,8 @@ export async function onRequestPut(context) {
       sensitivity_preset ?? null,
       blockedCategoriesJson ?? null,
       notes ?? null,
+      quiet_hours_start ?? null,
+      quiet_hours_end ?? null,
       id,
       auth.userId
     )

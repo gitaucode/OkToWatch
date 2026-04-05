@@ -301,7 +301,6 @@ let _authReceived=false;
 document.addEventListener('cv:auth',({detail})=>{
   _authReceived=true;
   if(!detail.loggedIn){window.location.href='/signin?redirect=/dashboard';return;}
-  if(window.location.pathname === '/index' || window.location.pathname === '/index.html'){window.location.href='/dashboard';return;}
   window.userTier=detail.tier||(detail.isFamily?'family':detail.isPro?'pro':'free');
   // Update nav account icon with avatar if available
   if(detail.user?.imageUrl){
@@ -390,7 +389,11 @@ function setActive(id){
   sessionStorage.setItem('cv_active_profile',id);
   renderProfiles();
   const p=_profiles.find(p=>p.id===id);
-  if(p){showToast('Checking for '+p.name+' '+(p.emoji||''));loadTrending(_trendType);}
+  if(p){
+    showToast('Checking for '+p.name+' '+(p.emoji||''));
+    loadTrending(_trendType);
+    document.dispatchEvent(new CustomEvent('cv:profileChanged', { detail: p }));
+  }
 }
 
 // Recent searches â€” exact original row markup
@@ -411,6 +414,24 @@ function renderRecent(){
 
 // Trending
 let _trendType='movie', _cachedIds=new Set(), _verdictData={};
+
+function isQuietHours(p){
+  if(!p.quiet_hours_start || !p.quiet_hours_end) return false;
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+  const [sH, sM] = p.quiet_hours_start.split(':').map(Number);
+  const [eH, eM] = p.quiet_hours_end.split(':').map(Number);
+  const startTime = sH * 60 + sM;
+  const endTime = eH * 60 + eM;
+
+  if (startTime < endTime) {
+    return currentTime >= startTime && currentTime < endTime;
+  } else {
+    // Overlap midnight
+    return currentTime >= startTime || currentTime < endTime;
+  }
+}
+
 async function loadTrending(type='movie'){
   _trendType=type;
   const grid=document.getElementById('trendingGrid');
@@ -425,14 +446,20 @@ async function loadTrending(type='movie'){
     let apiUrl=`/api/tmdb/trending/${type}/week`;
     if(profile){
       let c='';
-      if(type==='movie'){
-        if(profile.age<=7)c='&certification_country=US&certification.lte=G&with_genres=10751,16';
-        else if(profile.age<=11)c='&certification_country=US&certification.lte=PG&with_genres=10751';
-        else if(profile.age<=14)c='&certification_country=US&certification.lte=PG-13';
-      }else{
-        if(profile.age<=7)c='&with_genres=10762,16';
-        else if(profile.age<=11)c='&with_genres=10762';
-        else if(profile.age<=14)c='&with_genres=10759';
+      const quiet = isQuietHours(profile);
+      if (quiet) {
+        c = type === 'movie' ? '&with_genres=99,10751' : '&with_genres=99,10762';
+        if (label) label.textContent = 'Educational Picks (Quiet Hours) ' + (profile.emoji || '');
+      } else {
+        if(type==='movie'){
+          if(profile.age<=7)c='&certification_country=US&certification.lte=G&with_genres=10751,16';
+          else if(profile.age<=11)c='&certification_country=US&certification.lte=PG&with_genres=10751';
+          else if(profile.age<=14)c='&certification_country=US&certification.lte=PG-13';
+        }else{
+          if(profile.age<=7)c='&with_genres=10762,16';
+          else if(profile.age<=11)c='&with_genres=10762';
+          else if(profile.age<=14)c='&with_genres=10759';
+        }
       }
       apiUrl=`/api/tmdb/discover/${type}?include_adult=false&sort_by=popularity.desc&vote_count.gte=50${c}`;
     }

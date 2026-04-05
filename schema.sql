@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   sensitivity_preset  TEXT CHECK (sensitivity_preset IN ('balanced', 'cautious', 'sensitive', NULL)),
   blocked_categories  TEXT,                    -- JSON array of category names to flag for this child
   notes               TEXT,                    -- Parent notes about this child's preferences
+  quiet_hours_start   TEXT,                    -- "HH:MM" format
+  quiet_hours_end     TEXT,                    -- "HH:MM" format
   created_at          TEXT DEFAULT (datetime('now'))
 );
 

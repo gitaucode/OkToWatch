@@ -198,6 +198,7 @@
                             </div>
                         </div>
                     </div>
+
                 </section>
 
                 <!-- DANGER ZONE -->
@@ -288,6 +289,22 @@
                                     <input id="chkSubstances" class="sr-only peer" type="checkbox" onchange="handleRestrictionChange()"/>
                                     <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quiet Hours -->
+                    <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm border border-outline-variant/10">
+                        <h3 class="font-headline font-bold text-on-surface mb-2">Quiet Hours</h3>
+                        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">Automatically restrict discovery to educational content during these hours.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Starts at</label>
+                                <input type="time" id="quietStart" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-primary outline-none" oninput="handleRestrictionChange()"/>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Ends at</label>
+                                <input type="time" id="quietEnd" class="w-full bg-surface-container border-none rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-primary outline-none" oninput="handleRestrictionChange()"/>
                             </div>
                         </div>
                     </div>
@@ -601,8 +618,13 @@
         document.getElementById('chkLanguage').checked = blocked.includes('Language');
         document.getElementById('chkSubstances').checked = blocked.includes('Drugs & alcohol');
 
+        const qStart = p.quiet_hours_start || '';
+        const qEnd = p.quiet_hours_end || '';
+        document.getElementById('quietStart').value = qStart;
+        document.getElementById('quietEnd').value = qEnd;
+
         updateAgeBadge(parseInt(slider.value));
-        generateSummary(p.name, parseInt(slider.value), blocked);
+        generateSummary(p.name, parseInt(slider.value), blocked, qStart, qEnd);
     }
 
     function handleAgeChange() {
@@ -633,10 +655,13 @@
         if (document.getElementById('chkLanguage').checked) blocked.push('Language');
         if (document.getElementById('chkSubstances').checked) blocked.push('Drugs & alcohol');
         
-        generateSummary(pName, age, blocked);
+        const qStart = document.getElementById('quietStart').value;
+        const qEnd = document.getElementById('quietEnd').value;
+
+        generateSummary(pName, age, blocked, qStart, qEnd);
     }
 
-    function generateSummary(name, age, blocked) {
+    function generateSummary(name, age, blocked, qStart, qEnd) {
         let html = '';
         let movies = 'family animations';
         if (age >= 14) movies = 'PG-13 action blockbusters';
@@ -661,6 +686,14 @@
                 <span class="text-[13px] text-on-surface-variant leading-relaxed">Strictly filtering: <strong class="text-error bg-error/10 px-1.5 py-0.5 rounded tracking-wide">${mapped}</strong>.</span>
             </li>`;
         }
+
+        if (qStart && qEnd) {
+            html += `
+            <li class="flex gap-3">
+                <span class="material-symbols-outlined text-amber-500 text-lg mt-0.5">dark_mode</span>
+                <span class="text-[13px] text-on-surface-variant leading-relaxed">Quiet hours active between <strong class="text-on-surface">${qStart}</strong> and <strong class="text-on-surface">${qEnd}</strong>.</span>
+            </li>`;
+        }
         document.getElementById('summaryList').innerHTML = html;
     }
 
@@ -675,10 +708,13 @@
         if (document.getElementById('chkLanguage').checked) blocked.push('Language');
         if (document.getElementById('chkSubstances').checked) blocked.push('Drugs & alcohol');
 
+        const quiet_hours_start = document.getElementById('quietStart').value || null;
+        const quiet_hours_end = document.getElementById('quietEnd').value || null;
+
         try {
             const res = await fetch(`/api/profiles?id=${activeProfileId}`, {
                 method: 'PUT', headers: await authHeaders(),
-                body: JSON.stringify({ age, blocked_categories: blocked })
+                body: JSON.stringify({ age, blocked_categories: blocked, quiet_hours_start, quiet_hours_end })
             });
 
             if (res.ok) {
