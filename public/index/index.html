@@ -299,16 +299,19 @@ document.addEventListener('cv:auth', ({ detail }) => {
   }
   // Fetch user lists to check watchlist state
   if (detail.loggedIn) {
-    fetch('/api/lists', { headers: { 'Authorization': 'Bearer ' + _clerkToken } })
-      .then(r => r.ok ? r.json() : [])
-      .then(lists => {
-        _lists = lists || [];
-        const entry = _lists.find(l => String(l.tmdb_id) === String(_tmdbId) && l.media_type === _type);
-        if (entry) {
-          _inWatchlist = true;
-          updateWatchlistBtn(true);
-        }
-      }).catch(() => {});
+    getToken().then(tok => {
+      if (!tok) return;
+      fetch('/api/lists', { headers: { 'Authorization': 'Bearer ' + tok } })
+        .then(r => r.ok ? r.json() : [])
+        .then(lists => {
+          _lists = lists || [];
+          const entry = _lists.find(l => String(l.tmdb_id) === String(_tmdbId) && l.media_type === _type);
+          if (entry) {
+            _inWatchlist = true;
+            updateWatchlistBtn(true);
+          }
+        }).catch(() => {});
+    });
   }
 });
 
@@ -368,8 +371,22 @@ async function loadPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords, type: _type })
     });
-    const analyzeData = await analyzeRes.json();
 
+    // Handle rate limit specifically — show friendly UI, don't treat as crash
+    if (analyzeRes.status === 429) {
+      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
+      document.getElementById('breakdownAccordion').innerHTML = `
+        <div class="flex flex-col items-center gap-4 py-10 text-center">
+          <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
+          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit — please wait a moment and try again.</p>
+          <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
+            Try Again
+          </button>
+        </div>`;
+      return;
+    }
+
+    const analyzeData = await analyzeRes.json();
     if (analyzeData.error) throw new Error(analyzeData.error);
 
     // Parse AI JSON from response using identical logic to previous design
@@ -398,9 +415,23 @@ async function loadPage() {
 
   } catch (e) {
     console.error('Page load error:', e);
-    document.getElementById('heroTitle').textContent = 'Could not load';
-    document.getElementById('verdictSummaryText').textContent = 'Failed to load content breakdown. Please try again.';
-    document.getElementById('breakdownAccordion').innerHTML = '<p class="text-on-surface-variant text-sm py-4">Analysis failed. Please try again.</p>';
+    // rate_limit error in the JSON body
+    if (String(e.message).toLowerCase().includes('rate_limit') || String(e.message).toLowerCase().includes('rate limit')) {
+      document.getElementById('heroTitle').textContent = _details?.title || _details?.name || 'Could not load';
+      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
+      document.getElementById('breakdownAccordion').innerHTML = `
+        <div class="flex flex-col items-center gap-4 py-10 text-center">
+          <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
+          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit — please wait a moment and try again.</p>
+          <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
+            Try Again
+          </button>
+        </div>`;
+    } else {
+      document.getElementById('heroTitle').textContent = 'Could not load';
+      document.getElementById('verdictSummaryText').textContent = 'Failed to load content breakdown. Please try again.';
+      document.getElementById('breakdownAccordion').innerHTML = '<p class="text-on-surface-variant text-sm py-4">Analysis failed. Please try again.</p>';
+    }
   }
 }
 
