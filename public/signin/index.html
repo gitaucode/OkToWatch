@@ -1,241 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin>
-<link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev">
-<link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin>
-<!-- Start loading Clerk immediately — don't wait for DOMContentLoaded -->
+<meta charset="UTF-8"/>
+<!-- Clerk preload — start fetching before anything else -->
+<link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin/>
+<link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev"/>
+<link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin/>
 <script>
 (function(){
   var s = document.createElement('script');
   s.src = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
   s.setAttribute('data-clerk-publishable-key', 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA');
   s.async = true;
-  window.__clerkScriptPromise = new Promise(function(res, rej) {
-    s.onload = res; s.onerror = rej;
-  });
+  window.__clerkScriptPromise = new Promise(function(res, rej) { s.onload = res; s.onerror = rej; });
   document.head.appendChild(s);
 })();
 </script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="OkToWatch">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
-<link rel="shortcut icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#565e74"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="OkToWatch"/>
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
 <title>Sign In — OkToWatch</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta name="description" content="Sign in to OkToWatch to access your family's movie guides, watchlists, and child profiles."/>
+<meta property="og:image" content="https://oktowatch.com/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-fixed-variant": "#535b71", "outline-variant": "#acb3b6",
+          "inverse-primary": "#dae2fd", "error": "#9f403d",
+          "surface-container-high": "#e4e9ec", "primary-fixed-dim": "#ccd4ee",
+          "surface-bright": "#f9f9fa", "inverse-on-surface": "#9c9d9e",
+          "on-error": "#fff7f6", "on-tertiary-container": "#005a3c",
+          "background": "#f9f9fa", "tertiary-fixed": "#69f6b8",
+          "tertiary-container": "#69f6b8", "surface-dim": "#d3dbdf",
+          "primary-container": "#dae2fd", "surface-container-lowest": "#ffffff",
+          "error-container": "#fe8983", "on-error-container": "#752121",
+          "on-tertiary-fixed-variant": "#006544", "on-primary-fixed": "#373f54",
+          "tertiary-dim": "#005f40", "secondary-fixed": "#dce2f3",
+          "error-dim": "#4e0309", "secondary": "#585f6d", "outline": "#757c7f",
+          "on-secondary-container": "#4b525f", "inverse-surface": "#0c0e0f",
+          "on-secondary-fixed": "#39404c", "surface-container-low": "#f2f4f5",
+          "surface-container-highest": "#dde3e7", "on-surface": "#2d3336",
+          "secondary-dim": "#4c5361", "secondary-fixed-dim": "#ced4e4",
+          "on-primary": "#f7f7ff", "surface-tint": "#565e74",
+          "on-tertiary": "#e6ffee", "on-surface-variant": "#596063",
+          "on-secondary": "#f8f8ff", "on-background": "#2d3336",
+          "surface": "#f9f9fa", "on-secondary-fixed-variant": "#555c69",
+          "on-tertiary-fixed": "#00452d", "surface-container": "#ebeef0",
+          "surface-variant": "#dde3e7", "primary-dim": "#4a5268",
+          "secondary-container": "#dce2f3", "primary": "#565e74",
+          "on-primary-container": "#4a5167", "tertiary-fixed-dim": "#58e7ab",
+          "primary-fixed": "#dae2fd", "tertiary": "#006d4a"
+        },
+        "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Inter"], "label": ["Inter"] }
+      },
+    },
+  }
+</script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
-  --radius: 16px; --radius-sm: 10px;
-}
-html { overflow-x: hidden; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px;
-  min-height: 100vh; display: flex; flex-direction: column;
-  overflow-x: hidden;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(42,107,85,0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 80% 70%, rgba(42,107,85,0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-.auth-wrap {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 2.5rem 1rem 4rem;
-  position: relative; z-index: 1; width: 100%;
-}
+  /* Shimmer skeleton */
+  .skel {
+    background: linear-gradient(90deg, #ebeef0 25%, #f2f4f5 50%, #ebeef0 75%);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-.auth-header {
-  width: 100%; max-width: 400px;
-  text-align: center; margin-bottom: 1.25rem;
-  animation: fadeUp 0.35s ease forwards;
-}
-.auth-brand { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.1rem; }
-.auth-brand-mark {
-  width: 30px; height: 30px; border-radius: 8px; background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-}
-.auth-brand-text { font-size: 1rem; color: var(--text); letter-spacing: -0.01em; display:inline-flex; align-items:center; gap:0.4rem; }
-.auth-brand-text strong { font-weight: 700; }
-.brand-text-wrapper { display: inline-flex; align-items: center; gap: 0.4rem; }
-.auth-heading { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 0.35rem; }
-.auth-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+  /* Clerk host: hidden until loaded */
+  .clerk-host { display: none; }
+  .clerk-host.ready { display: block; animation: fadeIn 0.3s ease forwards; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-.reason-banner {
-  display: none; width: 100%; max-width: 400px;
-  background: var(--accent-light); border-radius: var(--radius-sm);
-  padding: 0.65rem 1rem; font-size: 0.8rem; color: var(--accent);
-  font-weight: 600; text-align: center; margin-bottom: 0.75rem;
-}
-.reason-banner.visible { display: block; }
+  /* Fade-up */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .fade-up { opacity: 0; animation: fadeUp 0.35s ease forwards; }
 
-/* ── Skeleton ── */
-.clerk-skeleton {
-  width: 100%; max-width: 400px;
-  background: white; border-radius: 20px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.10);
-  padding: 1.75rem;
-  animation: fadeUp 0.35s ease forwards 0.05s; opacity: 0;
-}
-.skel {
-  background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%);
-  background-size: 200% 100%;
-  border-radius: 8px;
-  animation: shimmer 1.4s infinite;
-}
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-.skel-btn { height: 44px; border-radius: 100px; margin-bottom: 0.65rem; }
-.skel-divider { height: 1px; margin: 1rem 0; background: var(--border); }
-.skel-label { height: 11px; width: 35%; border-radius: 6px; margin-bottom: 0.5rem; }
-.skel-input { height: 42px; border-radius: 10px; margin-bottom: 1rem; }
-.skel-submit { height: 44px; border-radius: 100px; margin-top: 0.25rem; }
-.skel-footer { height: 11px; width: 60%; border-radius: 6px; margin: 1rem auto 0; }
+  /* Reason banner */
+  #reasonBanner { display: none; }
+  #reasonBanner.visible { display: flex; }
 
-/* ── Clerk host (hidden until loaded) ── */
-.clerk-host {
-  width: 100%; max-width: 400px; display: none;
-  animation: fadeIn 0.3s ease forwards; opacity: 0;
-}
-.clerk-host.ready { display: block; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.auth-extras {
-  width: 100%; max-width: 400px; margin-top: 0.85rem;
-  animation: fadeUp 0.35s ease forwards 0.1s; opacity: 0;
-}
-.plans-nudge {
-  background: var(--accent-light); border-radius: var(--radius-sm);
-  padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.65rem;
-  font-size: 0.79rem; color: var(--text2);
-}
-.plans-nudge a { color: var(--accent); font-weight: 600; text-decoration: none; }
-.plans-nudge a:hover { text-decoration: underline; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-footer {
-  position: relative; z-index: 1;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 0.75rem;
-  max-width: 1100px; width: 100%; margin: 0 auto;
-  padding: 1.25rem; border-top: 1px solid rgba(0,0,0,0.08);
-}
-footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-.footer-logo { display: flex; align-items: center; gap: 0.4rem; text-decoration: none; }
-.footer-logo-mark { width: 20px; height: 20px; border-radius: 5px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-.footer-logo-text { font-size: 0.85rem; color: var(--text); }
-.footer-logo-text strong { font-weight: 700; }
-
-@media (max-width: 480px) {
-  .auth-wrap { padding: 1.25rem 0.75rem 3rem; }
-  .auth-heading { font-size: 1.35rem; }
-  .clerk-skeleton { padding: 1.25rem; }
-  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; }
-}
+  /* nav-root: hide until auth loads */
+  #nav-root * { visibility: hidden !important; }
 </style>
-<meta property="og:image" content="https://oktowatch.com/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
 </head>
-<body data-page="signin">
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col" data-page="signin">
 
 <div id="nav-root"></div>
 
-<div class="auth-wrap">
+<!-- Background blobs -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+  <div class="absolute -top-32 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+  <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-tertiary/5 rounded-full blur-3xl"></div>
+</div>
 
-  <div class="reason-banner" id="reasonBanner"></div>
+<!-- Main auth content -->
+<main class="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
 
-  <div class="auth-header">
-    <div class="auth-brand">
-      <div class="auth-brand-mark">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+  <!-- Reason banner (e.g. ?reason=pro) -->
+  <div id="reasonBanner"
+       class="fade-up w-full max-w-md mb-5 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 items-center gap-3 text-sm font-semibold text-primary"
+       style="animation-delay:0s;">
+    <span class="material-symbols-outlined text-[18px]">lock_open</span>
+    <span id="reasonText"></span>
+  </div>
+
+  <!-- Logo + heading -->
+  <div class="fade-up text-center mb-8 w-full max-w-md" style="animation-delay:0.02s;">
+    <!-- Logo -->
+    <a href="/index" class="inline-flex items-center gap-2 mb-6 group">
+      <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary-dim transition-colors">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="3" fill="white"/>
           <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
         </svg>
       </div>
-      <span class="auth-brand-text">Ok<strong>ToWatch</strong></span>
+      <span class="font-headline text-lg font-extrabold tracking-tighter text-on-surface">Ok<span class="text-primary">ToWatch</span></span>
+    </a>
+    <h1 class="font-headline text-3xl font-bold text-on-surface tracking-tight mb-2">Welcome back</h1>
+    <p class="text-on-surface-variant text-sm leading-relaxed">Sign in to access your family's movie guides and lists.</p>
+  </div>
+
+  <!-- Auth card -->
+  <div class="fade-up w-full max-w-md" style="animation-delay:0.06s;">
+    <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl shadow-[0_10px_40px_-10px_rgba(86,94,116,0.12)]">
+
+      <!-- Skeleton shown while Clerk loads -->
+      <div id="clerkSkeleton" class="p-8 space-y-4">
+        <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-2">Taking longer than usual… check your connection.</p>
+        <!-- Social button skeletons -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="skel h-11 rounded-xl"></div>
+          <div class="skel h-11 rounded-xl"></div>
+        </div>
+        <!-- Divider -->
+        <div class="relative flex items-center gap-3 py-1">
+          <div class="flex-1 h-px bg-outline-variant/20"></div>
+          <div class="skel h-3 w-24 rounded-full"></div>
+          <div class="flex-1 h-px bg-outline-variant/20"></div>
+        </div>
+        <!-- Field skeletons -->
+        <div class="skel h-3 w-28 rounded-full"></div>
+        <div class="skel h-11 rounded-xl"></div>
+        <div class="flex justify-between items-center">
+          <div class="skel h-3 w-20 rounded-full"></div>
+          <div class="skel h-3 w-24 rounded-full"></div>
+        </div>
+        <div class="skel h-11 rounded-xl"></div>
+        <!-- Submit skeleton -->
+        <div class="skel h-12 rounded-xl mt-2"></div>
+        <!-- Footer -->
+        <div class="skel h-3 w-48 rounded-full mx-auto mt-2"></div>
+      </div>
+
+      <!-- Clerk mounts here -->
+      <div class="clerk-host" id="clerk-signin"></div>
+
     </div>
-    <h1 class="auth-heading">Welcome back</h1>
-    <p class="auth-sub">Sign in to your dashboard, watchlists, and child profiles.</p>
   </div>
 
-  <!-- Skeleton shown while Clerk loads -->
-  <div class="clerk-skeleton" id="clerkSkeleton"><p class="slow-msg" style="display:none;text-align:center;font-size:0.78rem;color:var(--muted);margin-top:0.5rem;">Taking longer than usual… check your connection.</p>
-    <div class="skel skel-btn"></div>
-    <div class="skel skel-btn"></div>
-    <div class="skel-divider"></div>
-    <div class="skel skel-label"></div>
-    <div class="skel skel-input"></div>
-    <div class="skel skel-submit"></div>
-    <div class="skel skel-footer"></div>
-  </div>
-
-  <!-- Clerk mounts here, revealed after load -->
-  <div class="clerk-host" id="clerk-signin"></div>
-
-  <div class="auth-extras">
-    <div class="plans-nudge">
-      <span style="font-size:1.1rem;">✨</span>
-      <span>Sign in to your account. Enjoy unlimited searches, and upgrade to save lists and manage profiles.</span>
+  <!-- Plans nudge below card -->
+  <div class="fade-up w-full max-w-md mt-5" style="animation-delay:0.1s;">
+    <div class="flex items-center gap-3 bg-surface-container border border-outline-variant/15 rounded-xl px-4 py-3 text-sm text-on-surface-variant">
+      <span class="text-base flex-shrink-0">✨</span>
+      <span>Sign in to your account. Upgrade to <a href="/plans" class="text-primary font-semibold hover:underline underline-offset-2">Pro or Family</a> to save lists and manage profiles.</span>
     </div>
   </div>
 
-</div>
+</main>
 
-<footer>
-  <a class="footer-logo" href="/index">
-    <div class="footer-logo-mark">
-      <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
+<!-- Footer -->
+<footer class="relative z-10 border-t border-outline-variant/15 mt-4">
+  <div class="max-w-4xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
+    <a href="/index" class="flex items-center gap-2 text-on-surface no-underline">
+      <div class="w-5 h-5 rounded bg-primary flex items-center justify-center flex-shrink-0">
+        <svg width="9" height="9" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="3" fill="white"/>
+          <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <span class="text-xs font-semibold">Ok<strong>ToWatch</strong></span>
+    </a>
+    <div class="flex gap-5 flex-wrap">
+      <a href="/about"   class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">About</a>
+      <a href="/privacy" class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Privacy</a>
+      <a href="/plans"   class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Plans</a>
     </div>
-    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
-  </a>
-  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
-    <a href="/about">About</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/plans">Plans</a>
-  </div>
-  <p>© 2026 OkToWatch</p>
-  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
-    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
-    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
+    <p class="text-xs text-on-surface-variant">© 2026 OkToWatch</p>
   </div>
 </footer>
 
 <script>
 (function () {
-  const CLERK_PK     = 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA';
-  const CLERK_SCRIPT = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
-
   const params   = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect') || '/dashboard';
   const reason   = params.get('reason');
 
   if (reason === 'pro') {
-    const b = document.getElementById('reasonBanner');
-    b.textContent = '🔓 That feature is available with Pro or Family plans. Sign in to continue.';
-    b.classList.add('visible');
+    const banner = document.getElementById('reasonBanner');
+    document.getElementById('reasonText').textContent =
+      'That feature requires Pro or Family. Sign in to continue.';
+    banner.classList.add('visible');
   }
 
   function showClerk() {
@@ -244,24 +228,21 @@ footer a:hover { color: var(--accent); }
   }
 
   async function boot() {
-    // Show "taking longer than usual" after 3s
     const slowTimer = setTimeout(() => {
-      const sk = document.getElementById('clerkSkeleton');
+      const sk  = document.getElementById('clerkSkeleton');
       if (sk && sk.style.display !== 'none') {
         const msg = sk.querySelector('.slow-msg');
-        if (msg) msg.style.display = 'block';
+        if (msg) msg.classList.remove('hidden');
       }
     }, 3000);
-    // Script already loading from <head> — just await it
+
     await window.__clerkScriptPromise;
     clearTimeout(slowTimer);
     await window.Clerk.load();
 
-    // If already signed in, redirect based on plan params or to dashboard
     if (window.Clerk.user) {
       if (params.get('plan')) {
-        // User has plan selected — go to plans page to trigger checkout
-        const plan = params.get('plan');
+        const plan  = params.get('plan');
         const cycle = params.get('cycle') || 'monthly';
         window.location.href = `/plans?autoCheckout=${plan}&cycle=${cycle}`;
       } else {
@@ -271,34 +252,42 @@ footer a:hover { color: var(--accent); }
     }
 
     window.Clerk.mountSignIn(document.getElementById('clerk-signin'), {
-      afterSignInUrl: '/dashboard',
+      afterSignInUrl: redirect || '/dashboard',
       signUpUrl: '/signup',
       appearance: {
         variables: {
-          colorPrimary:    '#2a6b55',
+          colorPrimary:    '#565e74',
           colorBackground: '#ffffff',
-          colorText:       '#1a2420',
+          colorText:       '#2d3336',
           borderRadius:    '12px',
-          fontFamily:      'DM Sans, sans-serif',
+          fontFamily:      'Inter, sans-serif',
           fontSize:        '15px',
         },
         elements: {
-          card:              { boxShadow: '0 8px 40px rgba(0,0,0,0.10)', borderRadius: '20px' },
+          card:              { boxShadow: 'none', borderRadius: '0', padding: '2rem' },
           headerTitle:       { display: 'none' },
           headerSubtitle:    { display: 'none' },
-          formButtonPrimary: { backgroundColor: '#2a6b55', fontFamily: 'DM Sans, sans-serif', fontWeight: '700', borderRadius: '100px', textTransform: 'none' },
-          footerActionLink:  { color: '#2a6b55', fontWeight: '600' },
+          formButtonPrimary: {
+            backgroundColor: '#565e74',
+            fontFamily:      'Plus Jakarta Sans, sans-serif',
+            fontWeight:      '700',
+            borderRadius:    '12px',
+            textTransform:   'none',
+          },
+          footerActionLink:  { color: '#565e74', fontWeight: '600' },
+          socialButtonsBlockButton: { borderRadius: '12px' },
+          formFieldInput:    { borderRadius: '12px' },
         }
       }
     });
 
-    // Clerk doesn't have a reliable "mounted" callback, so we poll for the card
+    // Poll until card appears, then swap skeleton → real form
     const poll = setInterval(() => {
       const card = document.querySelector('#clerk-signin .cl-card, #clerk-signin [data-localization-key]');
       if (card) { clearInterval(poll); showClerk(); }
     }, 80);
 
-    // Fallback: show after 2.5s regardless
+    // Hard fallback after 2.5s
     setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);
   }
 
@@ -307,6 +296,6 @@ footer a:hover { color: var(--accent); }
     : boot();
 })();
 </script>
-<script src="/js/auth.js?v=20260403"></script>
+<script src="/js/auth.js?v=20260405"></script>
 </body>
 </html>
