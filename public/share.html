@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="OkToWatch">
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
-<title>Shared Breakdown — OkToWatch</title>
+<title>Shared Breakdown â€” OkToWatch</title>
 <meta name="description" content="A shared parental content breakdown from OkToWatch.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OkToWatch">
@@ -413,7 +413,7 @@ footer a:hover { color: var(--accent); }
     <div class="nav-logo">Ok<span>To</span>Watch</div>
   </div>
   <div class="nav-right">
-    <a href="/" class="nav-btn">← Home</a>
+    <a href="/" class="nav-btn">â† Home</a>
   </div>
 </nav>
 
@@ -422,7 +422,7 @@ footer a:hover { color: var(--accent); }
   <!-- LOADING -->
   <div id="loadingState">
     <div class="status-card">
-      <div class="status-icon">⏳</div>
+      <div class="status-icon">â³</div>
       <h2>Loading breakdown...</h2>
       <div class="loader" style="margin-top: 1.5rem;"></div>
     </div>
@@ -431,20 +431,20 @@ footer a:hover { color: var(--accent); }
   <!-- ERROR -->
   <div id="errorState">
     <div class="status-card">
-      <div class="status-icon">⚠️</div>
+      <div class="status-icon">âš ï¸</div>
       <h2>Oops, something went wrong</h2>
       <p id="errorMsg"></p>
-      <a href="/" class="nav-btn" style="display: inline-block;">← Back Home</a>
+      <a href="/" class="nav-btn" style="display: inline-block;">â† Back Home</a>
     </div>
   </div>
 
   <!-- EXPIRED -->
   <div id="expiredState">
     <div class="status-card">
-      <div class="status-icon">⏰</div>
+      <div class="status-icon">â°</div>
       <h2>Share link expired</h2>
       <p>This link is no longer valid (shares expire after 30 days).</p>
-      <a href="/" class="nav-btn" style="display: inline-block;">← Back Home</a>
+      <a href="/" class="nav-btn" style="display: inline-block;">â† Back Home</a>
     </div>
   </div>
 
@@ -454,7 +454,7 @@ footer a:hover { color: var(--accent); }
 
     <div class="result-card">
       <div class="poster-hero" id="posterHero">
-        <div class="poster-hero-fallback" id="posterFallback">🎬</div>
+        <div class="poster-hero-fallback" id="posterFallback">ðŸŽ¬</div>
         <img id="posterImg" alt="Poster" style="display:none;">
         <div class="poster-overlay"></div>
         <div class="poster-meta" id="posterMeta"></div>
@@ -476,9 +476,7 @@ footer a:hover { color: var(--accent); }
 
 </div>
 
-<footer>
-  <p>Shared via <a href="/">OkToWatch</a> — parental content guides.</p>
-</footer>
+<div id="footer-root"></div>
 
 <script>
 const SHARE_CATEGORIES = [
@@ -498,9 +496,9 @@ const LEVEL_COLORS = {
 };
 
 const VERDICT_ICONS = {
-  safe:   { icon: '✓', label: 'Safe' },
-  warn:   { icon: '⚠', label: 'Caution' },
-  danger: { icon: '✕', label: 'Not suitable' },
+  safe:   { icon: 'âœ“', label: 'Safe' },
+  warn:   { icon: 'âš ', label: 'Caution' },
+  danger: { icon: 'âœ•', label: 'Not suitable' },
 };
 
 let currentAudience = 'teens';
@@ -620,7 +618,7 @@ function renderContent() {
   }
 
   const mediaTypeLabel = shareData.media_type === 'tv' ? 'TV Series' : 'Movie';
-  const seasonLabel = shareData.season ? ` — Season ${shareData.season}` : '';
+  const seasonLabel = shareData.season ? ` â€” Season ${shareData.season}` : '';
   const yearText = analysisData.year ? ` (${analysisData.year})` : '';
 
   document.getElementById('posterMeta').innerHTML = `

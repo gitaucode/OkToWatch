@@ -3,101 +3,29 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Activity Log — OkToWatch</title>
+<title>Activity Log Ã¢â‚¬â€ OkToWatch</title>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#565e74"/>
 <meta name="description" content="Monitor your household's activity and search history."/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-tailwind.config = {
-    darkMode: "class",
-    theme: {
-        extend: {
-            "colors": {
-                "on-secondary-fixed": "#39404c",
-                "on-error": "#fff7f6",
-                "error-dim": "#4e0309",
-                "tertiary-fixed-dim": "#58e7ab",
-                "secondary-container": "#dce2f3",
-                "surface-container-lowest": "#ffffff",
-                "on-secondary-container": "#4b525f",
-                "error": "#9f403d",
-                "surface-container-highest": "#dde3e7",
-                "outline-variant": "#acb3b6",
-                "on-background": "#2d3336",
-                "surface-bright": "#f9f9fa",
-                "inverse-on-surface": "#9c9d9e",
-                "on-secondary-fixed-variant": "#555c69",
-                "tertiary-container": "#69f6b8",
-                "on-primary-fixed": "#373f54",
-                "surface": "#f9f9fa",
-                "on-primary-container": "#4a5167",
-                "surface-dim": "#d3dbdf",
-                "primary-fixed-dim": "#ccd4ee",
-                "primary-dim": "#4a5268",
-                "surface-container-high": "#e4e9ec",
-                "inverse-primary": "#dae2fd",
-                "on-tertiary-fixed-variant": "#006544",
-                "tertiary": "#006d4a",
-                "primary-container": "#dae2fd",
-                "on-primary": "#f7f7ff",
-                "background": "#f9f9fa",
-                "tertiary-fixed": "#69f6b8",
-                "surface-container-low": "#f2f4f5",
-                "surface-variant": "#dde3e7",
-                "surface-container": "#ebeef0",
-                "outline": "#757c7f",
-                "on-tertiary": "#e6ffee",
-                "on-tertiary-container": "#005a3c",
-                "on-surface": "#2d3336",
-                "primary-fixed": "#dae2fd",
-                "secondary": "#585f6d",
-                "surface-tint": "#565e74",
-                "on-error-container": "#752121",
-                "error-container": "#fe8983",
-                "on-surface-variant": "#596063",
-                "secondary-fixed": "#dce2f3",
-                "on-secondary": "#f8f8ff",
-                "primary": "#565e74",
-                "tertiary-dim": "#005f40",
-                "secondary-dim": "#4c5361",
-                "on-primary-fixed-variant": "#535b71",
-                "on-tertiary-fixed": "#00452d",
-                "secondary-fixed-dim": "#ced4e4",
-                "inverse-surface": "#0c0e0f"
-            },
-            "borderRadius": {
-                "DEFAULT": "0.125rem",
-                "lg": "0.25rem",
-                "xl": "0.5rem",
-                "full": "0.75rem"
-            },
-            "fontFamily": {
-                "headline": ["Plus Jakarta Sans"],
-                "body": ["Inter"],
-                "label": ["Inter"]
-            }
-        },
-    },
-}
-</script>
+<script src="/js/tailwind-theme.js"></script>
 <style>
 body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d3336; }
 .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
 .font-label { font-family: 'Inter', sans-serif; }
 .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
-/* ── Skeleton ── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Skeleton Ã¢â€â‚¬Ã¢â€â‚¬ */
 .skel { background: linear-gradient(90deg, #e4e9ec 25%, #f2f4f5 50%, #e4e9ec 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* ── Toast ── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Toast Ã¢â€â‚¬Ã¢â€â‚¬ */
 .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d3336; color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Modal overlay ── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Modal overlay Ã¢â€â‚¬Ã¢â€â‚¬ */
 .modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
 .modal-overlay.visible { display: flex; }
 .modal-sheet { background: white; border-radius: 20px; max-width: 400px; width: 90%; animation: scaleUp 0.15s ease forwards; padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
@@ -239,7 +167,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── API helpers ──────────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ API helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 async function _authHeaders() {
   const token = await window.Clerk.session.getToken();
   return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -247,7 +175,7 @@ async function _authHeaders() {
 async function apiGet(url) { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
 async function apiDelete(url) { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
 
-// ── Auth guard ───────────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Auth guard Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
     window.location.href = '/signin?redirect=/history';
@@ -256,7 +184,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   loadHistory();
 });
 
-// ── Load ─────────────────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Load Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 async function loadHistory() {
   try {
     [_history, _profiles] = await Promise.all([
@@ -396,7 +324,7 @@ function renderHistory() {
         </td>
         <td class="px-6 py-5 align-top">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded border border-outline-variant/10 ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? profile.emoji : '👤'}</div>
+            <div class="w-8 h-8 rounded border border-outline-variant/10 ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? profile.emoji : 'Ã°Å¸â€˜Â¤'}</div>
             <span class="text-[13px] font-semibold text-on-secondary-fixed">${profile ? profile.name : 'Main Account'}</span>
           </div>
         </td>
@@ -437,7 +365,7 @@ function loadMore() {
   renderHistory();
 }
 
-// ── Delete ────────────────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Delete Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function promptDelete(id) {
   _clearTarget = id;
   document.getElementById('clearModalTitle').textContent = 'Remove this record?';
@@ -460,7 +388,7 @@ function promptClearAll() {
 async function confirmClear() {
   const btn = document.getElementById('clearConfirmBtn');
   btn.disabled = true;
-  btn.textContent = 'Removing…';
+  btn.textContent = 'RemovingÃ¢â‚¬Â¦';
 
   try {
     if (_clearTarget) {
@@ -475,7 +403,7 @@ async function confirmClear() {
     closeModal();
     applyFilters();
   } catch (e) {
-    showToast('Failed to remove — try again');
+    showToast('Failed to remove Ã¢â‚¬â€ try again');
   } finally {
     btn.disabled = false;
   }

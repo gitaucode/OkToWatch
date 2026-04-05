@@ -7,119 +7,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-dim": "#d3dbdf",
-                        "tertiary": "#006d4a",
-                        "surface-variant": "#dde3e7",
-                        "secondary-fixed": "#dce2f3",
-                        "inverse-on-surface": "#9c9d9e",
-                        "tertiary-dim": "#005f40",
-                        "on-secondary-container": "#4b525f",
-                        "secondary-container": "#dce2f3",
-                        "inverse-primary": "#dae2fd",
-                        "outline": "#757c7f",
-                        "on-tertiary-container": "#005a3c",
-                        "error-container": "#fe8983",
-                        "surface-container-low": "#f2f4f5",
-                        "on-secondary-fixed-variant": "#555c69",
-                        "primary-fixed-dim": "#ccd4ee",
-                        "primary-container": "#dae2fd",
-                        "surface-container-highest": "#dde3e7",
-                        "primary": "#565e74",
-                        "on-primary": "#f7f7ff",
-                        "error-dim": "#4e0309",
-                        "on-tertiary": "#e6ffee",
-                        "surface-bright": "#f9f9fa",
-                        "on-primary-container": "#4a5167",
-                        "background": "#f9f9fa",
-                        "surface": "#f9f9fa",
-                        "surface-container-lowest": "#ffffff",
-                        "on-tertiary-fixed-variant": "#006544",
-                        "secondary": "#585f6d",
-                        "on-primary-fixed": "#373f54",
-                        "on-secondary-fixed": "#39404c",
-                        "tertiary-fixed": "#69f6b8",
-                        "on-error-container": "#752121",
-                        "on-secondary": "#f8f8ff",
-                        "outline-variant": "#acb3b6",
-                        "on-error": "#fff7f6",
-                        "on-primary-fixed-variant": "#535b71",
-                        "on-surface": "#2d3336",
-                        "tertiary-fixed-dim": "#58e7ab",
-                        "surface-tint": "#565e74",
-                        "on-tertiary-fixed": "#00452d",
-                        "on-background": "#2d3336",
-                        "inverse-surface": "#0c0e0f",
-                        "surface-container-high": "#e4e9ec",
-                        "secondary-dim": "#4c5361",
-                        "on-surface-variant": "#596063",
-                        "surface-container": "#ebeef0",
-                        "primary-dim": "#4a5268",
-                        "primary-fixed": "#dae2fd",
-                        "secondary-fixed-dim": "#ced4e4",
-                        "tertiary-container": "#69f6b8",
-                        "error": "#9f403d"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .brand-font, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: #565e74;
-            cursor: pointer;
-            box-shadow: 0 0 0 4px rgba(86, 94, 116, 0.1);
-            margin-top: -8px;
-        }
-        input[type="range"]::-webkit-slider-runnable-track {
-            height: 8px;
-            background: #ebeef0;
-            border-radius: 4px;
-        }
-
-        #nav-root * { visibility: hidden !important; }
-        #nav-root .cv-search-modal, #nav-root .cv-search-modal * { visibility: visible !important; }
-
-        .modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
-        .modal-overlay.visible { display: flex; }
-        
-        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a2420; color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        /* Dynamic Sidebar Active States */
-        .sidebar-item { transition: all 0.2s; cursor: pointer; }
-        .sidebar-item.active { background: white; color: #1a2420; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .dark .sidebar-item.active { background: #1e293b; color: white; }
-        .sidebar-item:not(.active):hover { background: rgba(0,0,0,0.03); }
-        .dark .sidebar-item:not(.active):hover { background: rgba(255,255,255,0.05); }
-
-        /* Scroll margin for sticky header */
-        section { scroll-margin-top: 100px; }
-    </style>
+    <script src="/js/tailwind-theme.js"></script>
+    
 </head>
 <body class="bg-background text-on-surface antialiased" data-page="settings">
 
@@ -230,7 +119,7 @@
                         </div>
                         <div class="text-right">
                             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Next Billing Date</p>
-                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/80">—</p>
+                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/80">â€”</p>
                         </div>
                     </div>
                     <div class="bg-surface-container-lowest p-6 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4 border border-outline-variant/10">
@@ -437,24 +326,7 @@
 </main>
 
 <!-- BottomNavBar (Mobile only) -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-4 z-50 border-t border-slate-200">
-    <a href="/discover" class="flex flex-col items-center text-slate-500 hover:text-slate-900 space-y-1">
-        <span class="material-symbols-outlined" data-icon="explore">explore</span>
-        <span class="text-[10px] font-bold font-headline uppercase">Discover</span>
-    </a>
-    <a href="/lists" class="flex flex-col items-center text-slate-500 hover:text-slate-900 space-y-1">
-        <span class="material-symbols-outlined" data-icon="bookmarks">bookmarks</span>
-        <span class="text-[10px] font-bold font-headline uppercase">Library</span>
-    </a>
-    <button onclick="selectNav('profile')" class="flex flex-col items-center text-primary space-y-1">
-        <span class="material-symbols-outlined text-[26px]" data-icon="settings">settings</span>
-        <span class="text-[10px] font-bold font-headline uppercase">Settings</span>
-    </button>
-    <a href="/dashboard" class="flex flex-col items-center text-slate-500 hover:text-slate-900 space-y-1">
-        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-        <span class="text-[10px] font-bold font-headline uppercase">Home</span>
-    </a>
-</nav>
+
 
 <div class="toast" id="toast"></div>
 
@@ -463,7 +335,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4 border border-outline-variant/10">
         <div class="flex justify-between items-center border-b border-surface-variant pb-3 mb-4">
             <h3 class="font-headline font-bold text-lg">Add New Profile</h3>
-            <button onclick="closeAddModal()" class="text-outline hover:text-on-surface">✕</button>
+            <button onclick="closeAddModal()" class="text-outline hover:text-on-surface">âœ•</button>
         </div>
         <div class="space-y-4">
             <div>
@@ -494,7 +366,7 @@
 
 <script src="/js/auth.js?v=20260405"></script>
 <script>
-    // ── NAVIGATION & TAB STATE ──
+    // â”€â”€ NAVIGATION & TAB STATE â”€â”€
     const SECTIONS = ['profile', 'subscription', 'notifications', 'security'];
     
     function selectNav(navId) {
@@ -543,7 +415,7 @@
         }
     }, {passive:true});
 
-    // ── GENERAL UTILS ──
+    // â”€â”€ GENERAL UTILS â”€â”€
     function showToast(msg, dur = 2500) {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -558,7 +430,7 @@
 
     let globalUser = null;
 
-    // ── BIND TO AUTH.JS ──
+    // â”€â”€ BIND TO AUTH.JS â”€â”€
     document.addEventListener('cv:auth', async ({ detail }) => {
         if (!detail.loggedIn) { window.location.href = '/signin?redirect=/settings'; return; }
         globalUser = detail.user;
@@ -574,7 +446,7 @@
         loadFamilyData();
     });
 
-    // ── PROFILE ENGINE ──
+    // â”€â”€ PROFILE ENGINE â”€â”€
     async function saveName() {
         const input = document.getElementById('inputDisplayName').value.trim();
         if (!input) return showToast("Name cannot be empty");
@@ -597,7 +469,7 @@
         finally { btn.innerHTML = oldHtml; }
     }
 
-    // ── SUBSCRIPTION ENGINE ──
+    // â”€â”€ SUBSCRIPTION ENGINE â”€â”€
     async function loadBilling() {
         try {
             const res = await fetch('/api/subscription-status', { headers: await authHeaders() });
@@ -628,7 +500,7 @@
         showToast(val ? "Weekly Digest Enabled" : "Digest Disabled");
     }
 
-    // ── DANGER ZONE ──
+    // â”€â”€ DANGER ZONE â”€â”€
     function openDeleteModal() { document.getElementById('deleteAccountModal').classList.add('visible'); }
     function closeDeleteModal() { document.getElementById('deleteAccountModal').classList.remove('visible'); }
     async function executeAccountDeletion() {
@@ -640,7 +512,7 @@
         } catch(e) { showToast("Failed to delete"); }
     }
 
-    // ── FAMILY TAB ENGINE ──
+    // â”€â”€ FAMILY TAB ENGINE â”€â”€
     let profiles = [];
     let activeProfileId = null;
 
@@ -673,7 +545,7 @@
             <div class="${wrapperClass}" onclick="selectProfileFamily('${p.id}')">
                 <div class="relative">
                     <div class="w-24 h-24 rounded-full overflow-hidden transition-all flex items-center justify-center bg-surface-variant text-5xl ${ringClasses}">
-                        ${p.emoji || '👧'}
+                        ${p.emoji || 'ðŸ‘§'}
                     </div>
                     ${isActive ? `
                     <div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-1 border-2 border-white shadow-sm">
@@ -845,7 +717,7 @@
         try {
             const res = await fetch('/api/profiles', {
                 method: 'POST', headers: await authHeaders(),
-                body: JSON.stringify({ name, age, emoji: '👦' })
+                body: JSON.stringify({ name, age, emoji: 'ðŸ‘¦' })
             });
             if (res.ok) {
                 const json = await res.json();

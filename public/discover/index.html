@@ -7,80 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      "colors": {
-        "surface-dim": "#d3dbdf","tertiary": "#006d4a","surface-variant": "#dde3e7",
-        "secondary-fixed": "#dce2f3","inverse-on-surface": "#9c9d9e","tertiary-dim": "#005f40",
-        "on-secondary-container": "#4b525f","secondary-container": "#dce2f3",
-        "inverse-primary": "#dae2fd","outline": "#757c7f","on-tertiary-container": "#005a3c",
-        "error-container": "#fe8983","surface-container-low": "#f2f4f5","on-secondary-fixed-variant": "#555c69",
-        "primary-fixed-dim": "#ccd4ee","primary-container": "#dae2fd","surface-container-highest": "#dde3e7",
-        "primary": "#565e74","on-primary": "#f7f7ff","error-dim": "#4e0309",
-        "on-tertiary": "#e6ffee","surface-bright": "#f9f9fa","on-primary-container": "#4a5167",
-        "background": "#f9f9fa","surface": "#f9f9fa","surface-container-lowest": "#ffffff",
-        "on-tertiary-fixed-variant": "#006544","secondary": "#585f6d","on-primary-fixed": "#373f54",
-        "on-secondary-fixed": "#39404c","tertiary-fixed": "#69f6b8","on-error-container": "#752121",
-        "on-secondary": "#f8f8ff","outline-variant": "#acb3b6","on-error": "#fff7f6",
-        "on-primary-fixed-variant": "#535b71","on-surface": "#2d3336","tertiary-fixed-dim": "#58e7ab",
-        "surface-tint": "#565e74","on-tertiary-fixed": "#00452d","on-background": "#2d3336",
-        "inverse-surface": "#0c0e0f","surface-container-high": "#e4e9ec","secondary-dim": "#4c5361",
-        "on-surface-variant": "#596063","surface-container": "#ebeef0","primary-dim": "#4a5268",
-        "primary-fixed": "#dae2fd","secondary-fixed-dim": "#ced4e4","tertiary-container": "#69f6b8",
-        "error": "#9f403d"
-      },
-      "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
-      "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Inter"], "label": ["Inter"] }
-    },
-  },
-}
-</script>
-<style>
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-  body { font-family: 'Inter', sans-serif; }
-  h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-  /* Suppress the injected cv-nav from auth.js */
-  #nav-root * { visibility: hidden !important; }
-  #nav-root .cv-search-modal,
-  #nav-root .cv-search-modal * { visibility: visible !important; }
-  .skel { background: linear-gradient(90deg, #e4e9ec 25%, #f2f4f5 50%, #e4e9ec 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 0.5rem; }
-  @keyframes shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
-</style>
+<script src="/js/tailwind-theme.js"></script>
+
 </head>
 <body class="bg-background text-on-surface min-h-screen flex flex-col" data-page="discover">
 
 <!-- Hidden Nav Root for auth.js to attach to -->
 <div id="nav-root"></div>
 
-<!-- TopNavBar Component -->
-<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
-  <nav class="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
-    <div class="flex items-center gap-8">
-      <span class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">OkToWatch</span>
-      <div class="hidden md:flex gap-6">
-        <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/dashboard">Dashboard</a>
-        <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/lists">Lists</a>
-        <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-headline font-bold tracking-tight" href="/discover">Discover</a>
-        <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-headline font-bold tracking-tight" href="/history">History</a>
-      </div>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="relative hidden lg:block">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline scale-75">search</span>
-        <input class="bg-surface-container-highest border border-outline/20 rounded-lg pl-10 pr-4 py-1.5 text-sm w-64 focus:bg-surface-container-lowest focus:ring-0 focus:outline-none transition-all cursor-pointer" type="text" placeholder="Search..." readonly onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" />
-      </div>
-      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all text-slate-700 dark:text-slate-200" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
-        <span class="material-symbols-outlined">search</span>
-      </button>
-      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all text-slate-700 dark:text-slate-200" onclick="window.location.href='/settings'">
-        <span class="material-symbols-outlined">account_circle</span>
-      </button>
-    </div>
-  </nav>
-</header>
+
 
 <!-- Main Content Layout -->
 <main class="pt-16 flex-grow flex w-full max-w-[1440px] mx-auto">
@@ -186,20 +121,7 @@ tailwind.config = {
 </main>
 
 <!-- Footer Component -->
-<footer class="w-full py-12 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-  <div class="max-w-[1440px] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-    <div class="flex flex-col items-center md:items-start gap-2">
-      <span class="text-lg font-semibold text-slate-900 dark:text-white">OkToWatch</span>
-      <p class="text-slate-600 dark:text-slate-400 font-body text-sm leading-relaxed">© 2026 OkToWatch. Data provided by TMDb.</p>
-    </div>
-    <div class="flex gap-8">
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="/about">About</a>
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="/privacy">Privacy</a>
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="#">Terms</a>
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm" href="#">TMDb Attribution</a>
-    </div>
-  </div>
-</footer>
+<div id="footer-root"></div>
 
 <script src="/js/auth.js?v=20260405"></script>
 <script>
@@ -281,7 +203,7 @@ tailwind.config = {
 
   function renderResults(results) {
     const list = results.map(item => {
-      const poster = item.poster_path ? `<img alt="${item.title}" class="w-20 h-[7.5rem] object-cover rounded-xl shrink-0" src="https://image.tmdb.org/t/p/w200${item.poster_path}"/>` : '<div class="w-20 h-[7.5rem] bg-surface-container-highest rounded-xl shrink-0 flex items-center justify-center text-3xl">🎬</div>';
+      const poster = item.poster_path ? `<img alt="${item.title}" class="w-20 h-[7.5rem] object-cover rounded-xl shrink-0" src="https://image.tmdb.org/t/p/w200${item.poster_path}"/>` : '<div class="w-20 h-[7.5rem] bg-surface-container-highest rounded-xl shrink-0 flex items-center justify-center text-3xl">ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¬</div>';
       const title = item.title || item.name;
       const year = (item.release_date || item.first_air_date || '').slice(0, 4);
       
