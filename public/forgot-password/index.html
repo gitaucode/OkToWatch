@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<!-- Clerk preload — start fetching before anything else -->
+<link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin/>
+<link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev"/>
+<link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin/>
+<script>
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
+  s.setAttribute('data-clerk-publishable-key', 'pk_test_dGhvcm91Z2gtYW50ZWF0ZXItMjAuY2xlcmsuYWNjb3VudHMuZGV2JA');
+  s.async = true;
+  window.__clerkScriptPromise = new Promise(function(res, rej) { s.onload = res; s.onerror = rej; });
+  document.head.appendChild(s);
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#565e74"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="OkToWatch"/>
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
+<title>Reset Password — OkToWatch</title>
+<meta name="description" content="Reset your OkToWatch password to regain access to your family's movie guides and watchlists."/>
+<meta property="og:image" content="https://oktowatch.com/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-fixed-variant": "#535b71", "outline-variant": "#acb3b6",
+          "inverse-primary": "#dae2fd", "error": "#9f403d",
+          "surface-container-high": "#e4e9ec", "primary-fixed-dim": "#ccd4ee",
+          "surface-bright": "#f9f9fa", "inverse-on-surface": "#9c9d9e",
+          "on-error": "#fff7f6", "on-tertiary-container": "#005a3c",
+          "background": "#f9f9fa", "tertiary-fixed": "#69f6b8",
+          "tertiary-container": "#69f6b8", "surface-dim": "#d3dbdf",
+          "primary-container": "#dae2fd", "surface-container-lowest": "#ffffff",
+          "error-container": "#fe8983", "on-error-container": "#752121",
+          "on-tertiary-fixed-variant": "#006544", "on-primary-fixed": "#373f54",
+          "tertiary-dim": "#005f40", "secondary-fixed": "#dce2f3",
+          "error-dim": "#4e0309", "secondary": "#585f6d", "outline": "#757c7f",
+          "on-secondary-container": "#4b525f", "inverse-surface": "#0c0e0f",
+          "on-secondary-fixed": "#39404c", "surface-container-low": "#f2f4f5",
+          "surface-container-highest": "#dde3e7", "on-surface": "#2d3336",
+          "secondary-dim": "#4c5361", "secondary-fixed-dim": "#ced4e4",
+          "on-primary": "#f7f7ff", "surface-tint": "#565e74",
+          "on-tertiary": "#e6ffee", "on-surface-variant": "#596063",
+          "on-secondary": "#f8f8ff", "on-background": "#2d3336",
+          "surface": "#f9f9fa", "on-secondary-fixed-variant": "#555c69",
+          "on-tertiary-fixed": "#00452d", "surface-container": "#ebeef0",
+          "surface-variant": "#dde3e7", "primary-dim": "#4a5268",
+          "secondary-container": "#dce2f3", "primary": "#565e74",
+          "on-primary-container": "#4a5167", "tertiary-fixed-dim": "#58e7ab",
+          "primary-fixed": "#dae2fd", "tertiary": "#006d4a"
+        },
+        "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Inter"], "label": ["Inter"] }
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  /* Shimmer skeleton */
+  .skel {
+    background: linear-gradient(90deg, #ebeef0 25%, #f2f4f5 50%, #ebeef0 75%);
+    background-size: 200% 100%; border-radius: 10px; animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* Clerk host: hidden until loaded */
+  .clerk-host { display: none; }
+  .clerk-host.ready { display: block; animation: fadeIn 0.3s ease forwards; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* Fade-up */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .fade-up { opacity: 0; animation: fadeUp 0.38s ease forwards; }
+
+  /* nav-root: minimal header, no full nav needed on this focus page */
+  #nav-root { display: none; }
+</style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col" data-page="forgot-password">
+
+<!-- Suppressed nav for this transactional focus page -->
+<div id="nav-root" aria-hidden="true"></div>
+
+<!-- Minimal focus header -->
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-outline-variant/10 h-16 flex items-center justify-center px-6">
+  <a href="/index" class="flex items-center gap-2 group">
+    <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary-dim transition-colors">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="3" fill="white"/>
+        <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
+      </svg>
+    </div>
+    <span class="font-headline text-lg font-extrabold tracking-tighter text-on-surface">Ok<span class="text-primary">ToWatch</span></span>
+  </a>
+</header>
+
+<!-- Background blobs -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+  <div class="absolute top-0 right-0 w-96 h-96 bg-primary-container/20 rounded-full blur-3xl opacity-50"></div>
+  <div class="absolute bottom-0 left-0 w-[50vw] h-[50vh] bg-tertiary-container/10 rounded-full blur-3xl opacity-30"></div>
+</div>
+
+<!-- Main content -->
+<main class="flex-1 flex items-center justify-center px-4 py-28 relative z-10">
+  <div class="w-full max-w-md">
+
+    <!-- Icon + Heading -->
+    <div class="fade-up text-center mb-8" style="animation-delay:0s;">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-5 mx-auto">
+        <span class="material-symbols-outlined text-[32px]" style="font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 48;">lock_reset</span>
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-3">Reset your password</h1>
+      <p class="text-on-surface-variant text-sm leading-relaxed max-w-xs mx-auto">
+        Enter the email address linked to your account and we'll send you a reset link.
+      </p>
+    </div>
+
+    <!-- Auth card -->
+    <div class="fade-up" style="animation-delay:0.06s;">
+      <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl shadow-[0_10px_40px_-10px_rgba(86,94,116,0.12)]">
+
+        <!-- Skeleton shown while Clerk loads -->
+        <div id="clerkSkeleton" class="p-8 space-y-5">
+          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
+          <div class="skel h-3 w-28 rounded-full"></div>
+          <div class="skel h-12 rounded-xl"></div>
+          <div class="skel h-12 rounded-xl mt-2"></div>
+          <div class="skel h-3 w-36 rounded-full mx-auto mt-4"></div>
+        </div>
+
+        <!-- Clerk mounts here -->
+        <div class="clerk-host" id="clerk-forgot"></div>
+
+      </div>
+    </div>
+
+    <!-- Back to sign in link -->
+    <div class="fade-up mt-6 text-center" style="animation-delay:0.1s;">
+      <a href="/signin" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-dim transition-colors group">
+        <span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+        Return to Sign In
+      </a>
+    </div>
+
+    <!-- Parental tip -->
+    <div class="fade-up mt-8 flex gap-4 p-5 bg-surface-container-low rounded-2xl border-l-4 border-tertiary" style="animation-delay:0.14s;">
+      <span class="material-symbols-outlined text-tertiary flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">lightbulb</span>
+      <div>
+        <h4 class="text-sm font-bold text-on-surface mb-1">Parental Tip</h4>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          Using a unique password for OkToWatch helps keep your family's safety filters and watchlists protected.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="relative z-10 border-t border-outline-variant/15">
+  <div class="max-w-4xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
+    <a href="/index" class="flex items-center gap-2 text-on-surface no-underline">
+      <div class="w-5 h-5 rounded bg-primary flex items-center justify-center flex-shrink-0">
+        <svg width="9" height="9" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="3" fill="white"/>
+          <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <span class="text-xs font-semibold">Ok<strong>ToWatch</strong></span>
+    </a>
+    <div class="flex gap-5 flex-wrap">
+      <a href="/about"   class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">About</a>
+      <a href="/privacy" class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Privacy</a>
+      <a href="/plans"   class="text-xs text-on-surface-variant hover:text-on-surface transition-colors">Plans</a>
+    </div>
+    <p class="text-xs text-on-surface-variant">© 2026 OkToWatch</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  function showClerk() {
+    document.getElementById('clerkSkeleton').style.display = 'none';
+    document.getElementById('clerk-forgot').classList.add('ready');
+  }
+
+  async function boot() {
+    const slowTimer = setTimeout(() => {
+      const sk = document.getElementById('clerkSkeleton');
+      if (sk && sk.style.display !== 'none') {
+        const msg = sk.querySelector('.slow-msg');
+        if (msg) msg.classList.remove('hidden');
+      }
+    }, 3000);
+
+    await window.__clerkScriptPromise;
+    clearTimeout(slowTimer);
+    await window.Clerk.load();
+
+    // If already signed in, no need to reset — go to dashboard
+    if (window.Clerk.user) {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Clerk's forgot password flow
+    window.Clerk.mountForgotPassword(document.getElementById('clerk-forgot'), {
+      signInUrl: '/signin',
+      appearance: {
+        variables: {
+          colorPrimary:    '#565e74',
+          colorBackground: '#ffffff',
+          colorText:       '#2d3336',
+          borderRadius:    '12px',
+          fontFamily:      'Inter, sans-serif',
+          fontSize:        '15px',
+        },
+        elements: {
+          card:              { boxShadow: 'none', borderRadius: '0', padding: '2rem' },
+          headerTitle:       { display: 'none' },
+          headerSubtitle:    { display: 'none' },
+          formButtonPrimary: {
+            backgroundColor: '#565e74',
+            fontFamily:      'Plus Jakarta Sans, sans-serif',
+            fontWeight:      '700',
+            borderRadius:    '12px',
+            textTransform:   'none',
+          },
+          footerActionLink:  { color: '#565e74', fontWeight: '600' },
+          formFieldInput:    { borderRadius: '12px' },
+        }
+      }
+    });
+
+    // Poll until Clerk card appears, then swap skeleton → real form
+    const poll = setInterval(() => {
+      const card = document.querySelector('#clerk-forgot .cl-card, #clerk-forgot [data-localization-key]');
+      if (card) { clearInterval(poll); showClerk(); }
+    }, 80);
+
+    // Hard fallback after 2.5s
+    setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);
+  }
+
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', boot)
+    : boot();
+})();
+</script>
+</body>
+</html>
