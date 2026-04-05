@@ -1,493 +1,860 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="OkToWatch">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
-<link rel="shortcut icon" href="/favicon.ico">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#565e74"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="OkToWatch"/>
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
 <title>My Lists — OkToWatch</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta name="description" content="Curate and manage your household's approved, blocked, and watchlist titles on OkToWatch."/>
+<meta property="og:image" content="https://oktowatch.com/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary-fixed-variant": "#535b71",
+          "outline-variant": "#acb3b6",
+          "inverse-primary": "#dae2fd",
+          "error": "#9f403d",
+          "surface-container-high": "#e4e9ec",
+          "primary-fixed-dim": "#ccd4ee",
+          "surface-bright": "#f9f9fa",
+          "inverse-on-surface": "#9c9d9e",
+          "on-error": "#fff7f6",
+          "on-tertiary-container": "#005a3c",
+          "background": "#f9f9fa",
+          "tertiary-fixed": "#69f6b8",
+          "tertiary-container": "#69f6b8",
+          "surface-dim": "#d3dbdf",
+          "primary-container": "#dae2fd",
+          "surface-container-lowest": "#ffffff",
+          "error-container": "#fe8983",
+          "on-error-container": "#752121",
+          "on-tertiary-fixed-variant": "#006544",
+          "on-primary-fixed": "#373f54",
+          "tertiary-dim": "#005f40",
+          "secondary-fixed": "#dce2f3",
+          "error-dim": "#4e0309",
+          "secondary": "#585f6d",
+          "outline": "#757c7f",
+          "on-secondary-container": "#4b525f",
+          "inverse-surface": "#0c0e0f",
+          "on-secondary-fixed": "#39404c",
+          "surface-container-low": "#f2f4f5",
+          "surface-container-highest": "#dde3e7",
+          "on-surface": "#2d3336",
+          "secondary-dim": "#4c5361",
+          "secondary-fixed-dim": "#ced4e4",
+          "on-primary": "#f7f7ff",
+          "surface-tint": "#565e74",
+          "on-tertiary": "#e6ffee",
+          "on-surface-variant": "#596063",
+          "on-secondary": "#f8f8ff",
+          "on-background": "#2d3336",
+          "surface": "#f9f9fa",
+          "on-secondary-fixed-variant": "#555c69",
+          "on-tertiary-fixed": "#00452d",
+          "surface-container": "#ebeef0",
+          "surface-variant": "#dde3e7",
+          "primary-dim": "#4a5268",
+          "secondary-container": "#dce2f3",
+          "primary": "#565e74",
+          "on-primary-container": "#4a5167",
+          "tertiary-fixed-dim": "#58e7ab",
+          "primary-fixed": "#dae2fd",
+          "tertiary": "#006d4a"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "fontFamily": {
+          "headline": ["Plus Jakarta Sans"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        }
+      },
+    },
+  }
+</script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
-  --safe: #2a7d52; --safe-bg: #e6f4ec;
-  --warn: #b07a10; --warn-bg: #fef6e4;
-  --danger: #c0392b; --danger-bg: #fdecea;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --radius: 16px; --radius-sm: 10px;
-}
-html { overflow-x: hidden; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
-.page-wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-/* ── Skeleton ── */
-.skel { background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-.skel-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 0.65rem; }
-.skel-line { height: 12px; border-radius: 6px; margin-bottom: 0.6rem; }
-#pageLoader { display: block; }
-#pageLoader.hidden { display: none; }
-#pageContent { display: none; }
-#pageContent.visible { display: block; }
+  /* ── Skeleton shimmer ── */
+  .skel {
+    background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 8px;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* ── Page header ── */
-.page-header {
-  margin-bottom: 1.25rem;
-  opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
-}
-.page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; }
-.page-header p  { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a2420; color: white;
+    padding: 0.65rem 1.25rem; border-radius: 100px;
+    font-size: 0.82rem; font-weight: 600;
+    opacity: 0; transition: all 0.25s; pointer-events: none;
+    z-index: 999; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Tabs ── */
-.tabs-row {
-  display: flex; gap: 0; margin-bottom: 1.25rem;
-  background: var(--surface); border-radius: var(--radius-sm);
-  box-shadow: var(--shadow); padding: 0.3rem;
-  opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
-}
-.tab-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.35rem;
-  background: transparent; border: none; padding: 0.6rem 0.5rem;
-  border-radius: 7px; font-family: 'DM Sans', sans-serif;
-  font-size: 0.8rem; font-weight: 600; color: var(--muted);
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.tab-btn:hover { color: var(--text); }
-.tab-btn.active { background: var(--accent); color: white; }
-.tab-btn .tab-count {
-  font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.3rem;
-  border-radius: 100px; min-width: 16px; text-align: center;
-  background: rgba(255,255,255,0.25);
-}
-.tab-btn:not(.active) .tab-count { background: var(--surface2); color: var(--muted); }
+  /* ── Modal overlays ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 800;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal-sheet {
+    background: white; border-radius: 20px;
+    max-width: 440px; width: calc(100% - 2rem);
+    animation: popIn 0.22s ease forwards;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
 
-/* ── Profile filter ── */
-.profile-filter {
-  display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem;
-  opacity: 0; animation: fadeUp 0.4s ease forwards 0.15s;
-}
-.profile-filter-btn {
-  background: var(--surface); border: 1.5px solid var(--border); color: var(--text2);
-  padding: 0.32rem 0.75rem; border-radius: 100px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 600;
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.profile-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-.profile-filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+  /* ── Sidebar nav active ── */
+  .side-link { transition: all 0.15s; }
+  .side-link.active {
+    background: white !important;
+    color: #2d3336 !important;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .side-link.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  }
 
-/* ── List ── */
-.list-items { opacity: 0; animation: fadeUp 0.4s ease forwards 0.2s; }
+  /* ── Tab underline active ── */
+  .tab-btn-v2 {
+    padding-bottom: 1rem; font-weight: 500;
+    color: #757c7f; border-bottom: 2px solid transparent;
+    background: none; border-top: none; border-left: none; border-right: none;
+    cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; font-size: 0.9rem;
+  }
+  .tab-btn-v2.active {
+    color: #565e74; font-weight: 700; border-bottom-color: #565e74;
+  }
+  .tab-btn-v2:not(.active):hover { color: #2d3336; }
 
-.list-item {
-  background: var(--surface); border-radius: var(--radius-sm);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  display: flex; align-items: center; gap: 1rem;
-  padding: 0.85rem 1rem; margin-bottom: 0.5rem;
-  cursor: pointer; transition: all 0.15s;
-  border: 1.5px solid transparent; position: relative;
-}
-.list-item:hover { border-color: var(--accent); transform: translateX(2px); }
-.list-poster {
-  width: 40px; min-width: 40px; height: 56px; border-radius: 6px;
-  overflow: hidden; background: var(--surface2);
-  display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
-}
-.list-poster img { width: 100%; height: 100%; object-fit: cover; }
-.list-info { flex: 1; min-width: 0; }
-.list-title { font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.list-meta  { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
-.list-note  { font-size: 0.72rem; color: var(--text2); font-style: italic; margin-top: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.list-tag {
-  font-size: 0.62rem; font-weight: 600; padding: 0.08rem 0.35rem;
-  border-radius: 100px; white-space: nowrap;
-}
-.tag-movie   { background: #e8f0fe; color: #3367d6; }
-.tag-tv      { background: #fef6e4; color: #b07a10; }
-.tag-profile { background: var(--accent-light); color: var(--accent); }
+  /* ── Profile filter pills ── */
+  .profile-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: white; border: 1.5px solid #acb3b6;
+    color: #596063; padding: 0.3rem 0.75rem;
+    border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+  }
+  .profile-pill:hover { border-color: #565e74; color: #565e74; }
+  .profile-pill.active { background: #565e74; border-color: #565e74; color: white; }
 
-.list-actions { display: flex; gap: 0.3rem; flex-shrink: 0; }
-.list-action-btn {
-  background: none; border: none; color: var(--muted); font-size: 0.85rem;
-  cursor: pointer; padding: 0.3rem; border-radius: 6px;
-  opacity: 0; transition: all 0.12s;
-}
-.list-item:hover .list-action-btn { opacity: 1; }
-.list-action-btn:hover { background: var(--surface2); color: var(--text); }
-.list-action-btn.delete:hover { color: var(--danger); background: var(--danger-bg); }
+  /* ── Grid view / List view toggle ── */
+  #listContainer.list-mode .movie-card {
+    display: flex; flex-direction: row; align-items: center;
+    gap: 1rem; border-radius: 12px; padding: 0.75rem 1rem;
+  }
+  #listContainer.list-mode .movie-card .card-poster-wrap {
+    width: 48px; min-width: 48px; height: 68px; border-radius: 6px; flex-shrink: 0;
+  }
+  #listContainer.list-mode .movie-card .card-poster-wrap img { border-radius: 6px; }
+  #listContainer.list-mode .movie-card .card-body { padding: 0; flex: 1; min-width: 0; }
+  #listContainer.list-mode .movie-card .card-hover-actions { display: none; }
+  #listContainer.list-mode .movie-card .card-list-actions { display: flex !important; }
+  #listContainer.list-mode .movie-card .card-safe-badge { top: 4px; right: 4px; font-size: 9px; padding: 1px 5px; }
 
-/* ── List type badge ── */
-.type-badge {
-  font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem;
-  border-radius: 100px; white-space: nowrap;
-}
-.badge-approved  { background: var(--safe-bg);  color: var(--safe); }
-.badge-blocked   { background: var(--danger-bg); color: var(--danger); }
-.badge-watchlater{ background: #e8f0fe; color: #3367d6; }
+  /* List mode card actions (always visible) */
+  .card-list-actions { display: none; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+  .card-list-action-btn {
+    background: #f2f4f5; border: none; color: #596063;
+    width: 32px; height: 32px; border-radius: 8px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s; flex-shrink: 0;
+  }
+  .card-list-action-btn:hover { background: #e4e9ec; color: #2d3336; }
+  .card-list-action-btn.danger:hover { background: #fee; color: #9f403d; }
 
-/* ── Empty state ── */
-.empty-state { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 3rem 2rem; text-align: center; }
-.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-.empty-state h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-.empty-state p  { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.25rem; }
-.btn-go { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--accent); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
-.btn-go:hover { opacity: 0.88; }
+  /* ── Fade-up animation for content ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .fade-up { opacity: 0; animation: fadeUp 0.35s ease forwards; }
 
-/* ── Toast ── */
-.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* ── nav-root reset: only the search modal should be visible during load ── */
+  #nav-root * { visibility: hidden !important; }
+  #nav-root .cv-search-modal,
+  #nav-root .cv-search-modal * { visibility: visible !important; }
 
-/* ── Modals ── */
-.modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
-.modal-overlay.visible { display: flex; }
-.modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; max-width: 480px; width: 100%; animation: slideUp 0.28s ease forwards; padding-bottom: env(safe-area-inset-bottom, 1rem); }
-.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0.75rem auto 0; }
-.modal-header { padding: 1rem 1.5rem 0.85rem; border-bottom: 1px solid var(--border); }
-.modal-header h3 { font-size: 1rem; font-weight: 700; }
-.modal-header p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
-.modal-body  { padding: 1.25rem 1.5rem; }
-.modal-footer { padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.field { margin-bottom: 1rem; }
-.field:last-child { margin-bottom: 0; }
-.field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 0.35rem; }
-.field textarea { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.2s; resize: vertical; min-height: 80px; }
-.field textarea:focus { border-color: var(--accent); background: white; }
-.btn-primary { background: var(--accent); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
-.btn-primary:hover { opacity: 0.88; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-ghost-modal { background: var(--surface2); color: var(--text2); border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; width: 100%; }
-.btn-ghost-modal:hover { background: #e8edeb; }
-.btn-danger { background: var(--danger); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
-.btn-danger:hover { opacity: 0.88; }
-
-/* ── Footer ── */
-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
-footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-.footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
-.footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-.footer-logo-text { font-size: 0.88rem; color: var(--text); display:inline-flex; align-items:center; gap:0.4rem; }
-.footer-logo-text strong { font-weight: 700; }
-
-@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-
-@media (max-width: 599px) {
-  .page-wrap { padding: 1.25rem 0.85rem 4rem; }
-  .page-header h1 { font-size: 1.25rem; }
-  .tab-btn { font-size: 0.72rem; padding: 0.55rem 0.3rem; }
-  .profile-filter { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-  .list-actions { gap: 0.2rem; }
-  footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
-}
-@media (max-width: 380px) {
-  .page-wrap { padding: 1rem 0.65rem 4rem; }
-  .tab-btn { font-size: 0.65rem; padding: 0.5rem 0.2rem; }
-}
+  /* ── Mobile bottom nav ── */
+  @media (max-width: 767px) { .main-content { padding-bottom: 5rem; } }
 </style>
-<meta property="og:image" content="https://oktowatch.com/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://oktowatch.com/og-image.png">
 </head>
-<body data-page="lists">
+<body class="bg-background text-on-surface antialiased" data-page="lists">
 
+<!-- Auth-injected Nav -->
 <div id="nav-root"></div>
 
-<div class="page-wrap">
-
-  <!-- Skeleton -->
-  <div id="pageLoader">
-    <div style="margin-bottom:1.25rem;">
-      <div class="skel skel-line" style="width:100px;height:20px;margin-bottom:0.4rem;"></div>
-      <div class="skel skel-line" style="width:160px;height:11px;margin-bottom:0;"></div>
+<!-- ════════════════════════════════════════════
+     SKELETON LOADER
+════════════════════════════════════════════ -->
+<div id="pageLoader" class="flex min-h-screen pt-14">
+  <!-- Skeleton sidebar -->
+  <aside class="hidden lg:flex flex-col p-6 space-y-3 h-screen w-64 bg-slate-50 fixed top-14">
+    <div class="skel h-14 w-full rounded-xl mb-4"></div>
+    <div class="skel h-10 w-full rounded-lg"></div>
+    <div class="skel h-10 w-full rounded-lg"></div>
+    <div class="skel h-10 w-full rounded-lg"></div>
+    <div class="skel h-10 w-full rounded-lg"></div>
+  </aside>
+  <!-- Skeleton main -->
+  <main class="flex-1 lg:ml-64 p-8 bg-background">
+    <div class="max-w-6xl mx-auto space-y-6">
+      <div class="skel h-10 w-48 rounded-xl"></div>
+      <div class="skel h-6 w-80 rounded-lg"></div>
+      <div class="skel h-10 w-64 rounded-xl mt-8"></div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-4">
+        <div class="skel aspect-[2/3] rounded-xl"></div>
+        <div class="skel aspect-[2/3] rounded-xl"></div>
+        <div class="skel aspect-[2/3] rounded-xl"></div>
+        <div class="skel aspect-[2/3] rounded-xl"></div>
+        <div class="skel aspect-[2/3] rounded-xl hidden xl:block"></div>
+      </div>
     </div>
-    <div class="skel-card" style="display:flex;gap:0.3rem;padding:0.3rem;">
-      <div class="skel" style="flex:1;height:38px;border-radius:7px;"></div>
-      <div class="skel" style="flex:1;height:38px;border-radius:7px;"></div>
-      <div class="skel" style="flex:1;height:38px;border-radius:7px;"></div>
-    </div>
-    <div style="margin-bottom:1rem;"></div>
-    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;margin-bottom:0.5rem;">
-      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
-      <div style="flex:1;"><div class="skel skel-line" style="width:60%;"></div><div class="skel skel-line" style="width:35%;margin-bottom:0;"></div></div>
-    </div>
-    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;margin-bottom:0.5rem;">
-      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
-      <div style="flex:1;"><div class="skel skel-line" style="width:45%;"></div><div class="skel skel-line" style="width:30%;margin-bottom:0;"></div></div>
-    </div>
-    <div class="skel-card" style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;">
-      <div class="skel" style="width:40px;min-width:40px;height:56px;border-radius:6px;"></div>
-      <div style="flex:1;"><div class="skel skel-line" style="width:70%;"></div><div class="skel skel-line" style="width:40%;margin-bottom:0;"></div></div>
-    </div>
-  </div>
-
-  <!-- Page content -->
-  <div id="pageContent">
-
-    <div class="page-header">
-      <h1>My Lists</h1>
-      <p id="listsSubtitle">Loading…</p>
-    </div>
-
-    <div class="tabs-row" id="tabsRow">
-      <button class="tab-btn active" data-tab="approved" onclick="setTab('approved',this)">
-        ✅ Approved <span class="tab-count" id="count-approved">0</span>
-      </button>
-      <button class="tab-btn" data-tab="blocked" onclick="setTab('blocked',this)">
-        🚫 Blocked <span class="tab-count" id="count-blocked">0</span>
-      </button>
-      <button class="tab-btn" data-tab="watchlater" onclick="setTab('watchlater',this)">
-        🕐 Watch Later <span class="tab-count" id="count-watchlater">0</span>
-      </button>
-    </div>
-
-    <div class="profile-filter" id="profileFilter"></div>
-
-    <div class="list-items" id="listItems"></div>
-
-  </div>
-
+  </main>
 </div>
 
-<footer>
-  <a class="footer-logo" href="/dashboard">
-    <div class="footer-logo-mark">
-      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="white"/><path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/></svg>
-    </div>
-    <span class="footer-logo-text">Ok<strong>ToWatch</strong></span>
-  </a>
-  <div style="display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;">
-    <a href="/about">About</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/plans">Plans</a>
-  </div>
-  <p>© 2026 OkToWatch</p>
-  <div style="width:100%;border-top:1px solid rgba(0,0,0,0.07);padding-top:0.75rem;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
-    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDb" style="height:12px;opacity:0.5;" loading="lazy">
-    <span style="font-size:0.68rem;color:var(--muted);">Movie &amp; TV data by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px;">TMDb</a>. Powered by AI.</span>
-  </div>
-</footer>
+<!-- ════════════════════════════════════════════
+     MAIN PAGE (shown after auth)
+════════════════════════════════════════════ -->
+<div id="pageContent" class="hidden flex min-h-screen pt-14">
 
-<div class="toast" id="toast"></div>
+  <!-- ── SideNavBar ── -->
+  <aside class="hidden lg:flex flex-col p-6 space-y-2 h-[calc(100vh-56px)] w-64 border-r-0 bg-slate-50 fixed top-14 overflow-y-auto">
+    <!-- Library header -->
+    <div class="flex items-center space-x-3 mb-6">
+      <div class="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-on-primary flex-shrink-0">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">verified_user</span>
+      </div>
+      <div class="min-w-0">
+        <h3 class="text-slate-900 font-bold font-headline text-sm">My Library</h3>
+        <p class="text-xs text-slate-500 truncate" id="sidebarSubtitle">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Nav links -->
+    <nav class="space-y-1">
+      <button class="side-link active flex items-center space-x-3 w-full px-4 py-3 text-slate-900 rounded-lg text-sm"
+              id="sideApproved" onclick="setTabFromSidebar('approved')">
+        <span class="material-symbols-outlined">verified</span>
+        <span>Approved <span id="sideCountApproved" class="ml-auto text-xs font-bold text-primary"></span></span>
+      </button>
+      <button class="side-link flex items-center space-x-3 w-full px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-lg text-sm"
+              id="sideBlocked" onclick="setTabFromSidebar('blocked')">
+        <span class="material-symbols-outlined">block</span>
+        <span>Blocked <span id="sideCountBlocked" class="ml-auto text-xs font-bold text-primary"></span></span>
+      </button>
+      <button class="side-link flex items-center space-x-3 w-full px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-lg text-sm"
+              id="sideWatched" onclick="setTabFromSidebar('watched')">
+        <span class="material-symbols-outlined">visibility</span>
+        <span>Watched</span>
+      </button>
+      <button class="side-link flex items-center space-x-3 w-full px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-lg text-sm"
+              id="sideWatchlater" onclick="setTabFromSidebar('watchlater')">
+        <span class="material-symbols-outlined">bookmark</span>
+        <span>Watchlist <span id="sideCountWatchlater" class="ml-auto text-xs font-bold text-primary"></span></span>
+      </button>
+    </nav>
+
+    <!-- Parental tip -->
+    <div class="mt-auto pt-6">
+      <div class="p-4 bg-surface-container-low rounded-xl">
+        <p class="text-xs font-bold text-primary mb-1 uppercase tracking-wider">Parental Tip</p>
+        <p class="text-xs leading-relaxed text-on-surface-variant">
+          Review the <a href="/search" class="underline underline-offset-2">Family Guide</a> for detailed content analysis of newer releases.
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content Area ── -->
+  <main class="flex-1 lg:ml-64 p-6 md:p-8 bg-background main-content">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Header -->
+      <header class="mb-10 fade-up">
+        <h1 class="text-4xl font-extrabold tracking-tighter text-on-surface mb-2">My Lists</h1>
+        <p class="text-on-surface-variant max-w-2xl text-base md:text-lg leading-relaxed" id="headerSubtitle">
+          Curate and manage your household's viewing experience.
+        </p>
+      </header>
+
+      <!-- Profile filter pills -->
+      <div class="flex flex-wrap gap-2 mb-6 fade-up" id="profileFilter" style="animation-delay:0.05s;"></div>
+
+      <!-- Tab bar + view toggles -->
+      <div class="flex items-center justify-between border-b border-outline-variant/30 mb-8 fade-up" style="animation-delay:0.1s;">
+        <div class="flex space-x-6">
+          <button class="tab-btn-v2 active" id="tabApproved" onclick="setTab('approved', this)">Approved Titles</button>
+          <button class="tab-btn-v2" id="tabBlocked"   onclick="setTab('blocked', this)">Blocked</button>
+          <button class="tab-btn-v2" id="tabWatchlater" onclick="setTab('watchlater', this)">Watchlist</button>
+        </div>
+        <div class="flex items-center space-x-1 pb-4">
+          <button id="btnGridView" onclick="setView('grid')" title="Grid view"
+                  class="p-2 text-primary transition-colors rounded-lg bg-primary/10">
+            <span class="material-symbols-outlined text-[20px]">grid_view</span>
+          </button>
+          <button id="btnListView" onclick="setView('list')" title="List view"
+                  class="p-2 text-outline hover:text-primary transition-colors rounded-lg">
+            <span class="material-symbols-outlined text-[20px]">list</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Movie bento grid / list -->
+      <section class="fade-up" style="animation-delay:0.15s;">
+        <div id="listContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- "Discover more content" prompt (shown when list has items) -->
+      <div id="discoverPrompt" class="hidden mt-16 p-10 md:p-12 rounded-3xl bg-surface-container-low text-center flex-col items-center max-w-2xl mx-auto fade-up" style="animation-delay:0.2s;">
+        <div class="w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center text-outline mb-6 mx-auto">
+          <span class="material-symbols-outlined text-4xl" style="font-variation-settings:'opsz' 48;">movie_filter</span>
+        </div>
+        <h2 class="text-2xl font-bold text-on-surface mb-3">Looking for more content?</h2>
+        <p class="text-on-surface-variant mb-8 leading-relaxed max-w-sm mx-auto">
+          Discover more titles that match your safety preferences and add them to your lists.
+        </p>
+        <a href="/discover"
+           class="inline-flex items-center gap-2 px-8 py-3 bg-primary text-on-primary font-bold rounded-full hover:bg-primary-dim transition-all active:scale-95 shadow-lg shadow-primary/20">
+          <span class="material-symbols-outlined text-[18px]">explore</span>
+          Discover Movies
+        </a>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MOBILE BOTTOM NAV
+════════════════════════════════════════════ -->
+<nav class="lg:hidden fixed bottom-0 w-full bg-white/90 backdrop-blur-md z-50 px-4 py-2 flex justify-around items-center border-t border-surface-container-high">
+  <a href="/dashboard" class="flex flex-col items-center text-outline py-1">
+    <span class="material-symbols-outlined text-[24px]">dashboard</span>
+    <span class="text-[10px] font-medium mt-0.5">Home</span>
+  </a>
+  <button onclick="setTabFromSidebar('approved')" class="flex flex-col items-center text-primary py-1">
+    <span class="material-symbols-outlined text-[24px]" style="font-variation-settings:'FILL' 1;">list</span>
+    <span class="text-[10px] font-bold mt-0.5">My Lists</span>
+  </button>
+  <a href="/discover" class="flex flex-col items-center text-outline py-1">
+    <span class="material-symbols-outlined text-[24px]">explore</span>
+    <span class="text-[10px] font-medium mt-0.5">Discover</span>
+  </a>
+  <a href="/settings" class="flex flex-col items-center text-outline py-1">
+    <span class="material-symbols-outlined text-[24px]">account_circle</span>
+    <span class="text-[10px] font-medium mt-0.5">Account</span>
+  </a>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
 
 <!-- Note edit modal -->
 <div class="modal-overlay" id="noteModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <h3>Edit Note</h3>
-      <p id="noteModalTitle"></p>
-    </div>
-    <div class="modal-body">
-      <div class="field">
-        <label>Note (optional)</label>
-        <textarea id="noteInput" placeholder="e.g. Great for family night, too scary for Emma…" maxlength="300"></textarea>
+  <div class="modal-sheet p-6">
+    <div class="flex justify-between items-start mb-5">
+      <div>
+        <h3 class="font-headline font-bold text-lg text-on-surface">Edit Note</h3>
+        <p class="text-sm text-on-surface-variant mt-0.5" id="noteModalTitle"></p>
       </div>
+      <button onclick="closeNoteModal()" class="text-outline hover:text-on-surface ml-4">
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
-    <div class="modal-footer">
-      <button class="btn-primary" id="noteSaveBtn" onclick="saveNote()">Save Note</button>
-      <button class="btn-ghost-modal" onclick="closeNoteModal()">Cancel</button>
+    <div class="mb-5">
+      <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Personal Note</label>
+      <textarea id="noteInput" maxlength="300" rows="3" placeholder="e.g. Great for family night, too scary for Emma…"
+                class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 text-sm font-body text-on-surface outline-none focus:border-primary resize-none transition-colors"></textarea>
     </div>
+    <div class="flex gap-3">
+      <button id="noteSaveBtn" onclick="saveNote()"
+              class="flex-1 py-3 bg-primary text-on-primary font-bold rounded-xl font-headline hover:bg-primary-dim transition-colors">
+        Save Note
+      </button>
+      <button onclick="closeNoteModal()"
+              class="px-5 py-3 bg-surface-container text-on-surface-variant font-semibold rounded-xl hover:bg-surface-container-high transition-colors">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Move to list modal -->
+<div class="modal-overlay" id="moveModal">
+  <div class="modal-sheet p-6">
+    <div class="flex justify-between items-start mb-5">
+      <div>
+        <h3 class="font-headline font-bold text-lg text-on-surface">Move to List</h3>
+        <p class="text-sm text-on-surface-variant mt-0.5" id="moveModalTitle"></p>
+      </div>
+      <button onclick="closeMoveModal()" class="text-outline hover:text-on-surface ml-4">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="space-y-3">
+      <button onclick="moveItem('approved')"
+              class="w-full flex items-center gap-3 p-4 rounded-xl border border-outline-variant/20 hover:bg-surface-container-low transition-colors text-left">
+        <span class="w-8 h-8 rounded-full bg-tertiary/15 flex items-center justify-center">
+          <span class="material-symbols-outlined text-tertiary text-[18px]">verified</span>
+        </span>
+        <div>
+          <p class="font-bold text-on-surface text-sm">Approved</p>
+          <p class="text-xs text-on-surface-variant">Mark as safe for the family</p>
+        </div>
+      </button>
+      <button onclick="moveItem('blocked')"
+              class="w-full flex items-center gap-3 p-4 rounded-xl border border-outline-variant/20 hover:bg-surface-container-low transition-colors text-left">
+        <span class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-error text-[18px]">block</span>
+        </span>
+        <div>
+          <p class="font-bold text-on-surface text-sm">Blocked</p>
+          <p class="text-xs text-on-surface-variant">Keep this off-limits for children</p>
+        </div>
+      </button>
+      <button onclick="moveItem('watchlater')"
+              class="w-full flex items-center gap-3 p-4 rounded-xl border border-outline-variant/20 hover:bg-surface-container-low transition-colors text-left">
+        <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary text-[18px]">bookmark</span>
+        </span>
+        <div>
+          <p class="font-bold text-on-surface text-sm">Watchlist</p>
+          <p class="text-xs text-on-surface-variant">Save to watch later</p>
+        </div>
+      </button>
+    </div>
+    <button onclick="closeMoveModal()"
+            class="w-full mt-4 py-3 text-on-surface-variant font-semibold rounded-xl hover:bg-surface-container transition-colors text-sm">
+      Cancel
+    </button>
   </div>
 </div>
 
 <!-- Delete confirm modal -->
 <div class="modal-overlay" id="deleteModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <h3>Remove from list?</h3>
-      <p id="deleteModalTitle"></p>
+  <div class="modal-sheet p-6 text-center">
+    <div class="w-14 h-14 rounded-full bg-error/10 flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-error text-[28px]">delete_forever</span>
     </div>
-    <div class="modal-footer">
-      <button class="btn-danger" id="deleteConfirmBtn" onclick="confirmDelete()">Remove</button>
-      <button class="btn-ghost-modal" onclick="closeDeleteModal()">Cancel</button>
+    <h3 class="font-headline font-bold text-lg mb-2 text-on-surface">Remove from list?</h3>
+    <p class="text-sm text-on-surface-variant mb-6 leading-relaxed" id="deleteModalTitle"></p>
+    <div class="flex gap-3">
+      <button onclick="closeDeleteModal()"
+              class="flex-1 py-3 bg-surface-container text-on-surface-variant font-semibold rounded-xl hover:bg-surface-container-high transition-colors">
+        Cancel
+      </button>
+      <button id="deleteConfirmBtn" onclick="confirmDelete()"
+              class="flex-1 py-3 bg-error text-white font-bold rounded-xl font-headline hover:opacity-90 transition-opacity">
+        Remove
+      </button>
     </div>
   </div>
 </div>
 
-<script>
-let _lists    = [];
-let _profiles = [];
-let _activeTab     = 'approved';
-let _activeProfile = 'all';
-let _editingId  = null;
-let _deletingId = null;
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-// ── Toast ─────────────────────────────────────────────────────────────────
-function showToast(msg) {
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script>
+// ── State ───────────────────────────────────────────────────────────────────
+let _lists       = [];
+let _profiles    = [];
+let _activeTab   = 'approved';
+let _activeProfile = 'all';
+let _viewMode    = 'grid'; // 'grid' | 'list'
+let _editingId   = null;
+let _movingId    = null;
+let _movingItem  = null;
+let _deletingId  = null;
+
+// ── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg, dur = 2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), dur);
 }
 
-// ── API helpers ───────────────────────────────────────────────────────────
+// ── API helpers ──────────────────────────────────────────────────────────────
 async function _authHeaders() {
   const token = await window.Clerk.session.getToken();
   return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
 }
-async function apiGet(url)        { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
-async function apiPost(url, body) { const h = await _authHeaders(); const r = await fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
-async function apiPut(url, body)  { const h = await _authHeaders(); const r = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
-async function apiDelete(url)     { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
+async function apiGet(url) {
+  const h = await _authHeaders();
+  const r = await fetch(url, { headers: h });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function apiPost(url, body) {
+  const h = await _authHeaders();
+  const r = await fetch(url, { method: 'POST', headers: h, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function apiPut(url, body) {
+  const h = await _authHeaders();
+  const r = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function apiDelete(url) {
+  const h = await _authHeaders();
+  const r = await fetch(url, { method: 'DELETE', headers: h });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
 
-// ── Auth guard ─────────────────────────────────────────────────────────────
+// ── Auth guard ───────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
     window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
     return;
   }
-  // Check URL tab param
+  // Respect ?tab= URL param
   const params = new URLSearchParams(window.location.search);
   const tabParam = params.get('tab');
-  if (['approved','blocked','watchlater'].includes(tabParam)) {
+  if (['approved', 'blocked', 'watchlater'].includes(tabParam)) {
     _activeTab = tabParam;
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.tab === tabParam);
-    });
   }
   loadLists();
 });
 
-// ── Load ──────────────────────────────────────────────────────────────────
+// ── Load data ────────────────────────────────────────────────────────────────
 async function loadLists() {
   try {
     [_lists, _profiles] = await Promise.all([
       apiGet('/api/lists'),
       apiGet('/api/profiles'),
     ]);
-  } catch (e) { console.error('Lists load error:', e); }
+  } catch (e) {
+    console.error('Lists load error:', e);
+  }
 
+  // Show content
   document.getElementById('pageLoader').classList.add('hidden');
-  document.getElementById('pageContent').classList.add('visible');
+  document.getElementById('pageContent').classList.remove('hidden');
+  document.getElementById('pageContent').classList.add('flex');
 
-  updateCounts();
+  updateSidebar();
+  updateHeaderSubtitle();
   renderProfileFilter();
-  renderList();
+  renderActiveTab();
 }
 
-function updateCounts() {
-  ['approved','blocked','watchlater'].forEach(t => {
-    const count = _lists.filter(l => l.list_type === t).length;
-    document.getElementById('count-' + t).textContent = count;
-  });
+// ── Sidebar counts + active state ────────────────────────────────────────────
+function updateSidebar() {
+  const countApproved  = _lists.filter(l => l.list_type === 'approved').length;
+  const countBlocked   = _lists.filter(l => l.list_type === 'blocked').length;
+  const countWatchlater = _lists.filter(l => l.list_type === 'watchlater').length;
   const total = _lists.length;
-  document.getElementById('listsSubtitle').textContent =
-    total === 0 ? 'No titles saved yet' : `${total} title${total !== 1 ? 's' : ''} across all lists`;
+
+  const sideEl = document.getElementById('sideCountApproved');
+  if (sideEl) sideEl.textContent = countApproved || '';
+  const sideBlEl = document.getElementById('sideCountBlocked');
+  if (sideBlEl) sideBlEl.textContent = countBlocked || '';
+  const sideWlEl = document.getElementById('sideCountWatchlater');
+  if (sideWlEl) sideWlEl.textContent = countWatchlater || '';
+
+  document.getElementById('sidebarSubtitle').textContent =
+    total === 0 ? 'No titles saved yet' : `Managing ${total} Title${total !== 1 ? 's' : ''}`;
+
+  // Sync sidebar active button
+  ['approved', 'blocked', 'watched', 'watchlater'].forEach(t => {
+    const btn = document.getElementById('side' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (btn) btn.classList.toggle('active', t === _activeTab);
+  });
+  // Sync top tabs
+  ['Approved', 'Blocked', 'Watchlater'].forEach(t => {
+    const btn = document.getElementById('tab' + t);
+    if (btn) btn.classList.toggle('active', t.toLowerCase() === _activeTab);
+  });
 }
 
-// ── Tabs ──────────────────────────────────────────────────────────────────
-function setTab(tab, btn) {
-  _activeTab     = tab;
+function updateHeaderSubtitle() {
+  const approved = _lists.filter(l => l.list_type === 'approved').length;
+  const blocked  = _lists.filter(l => l.list_type === 'blocked').length;
+  const el = document.getElementById('headerSubtitle');
+  if (approved === 0 && blocked === 0) {
+    el.textContent = "Curate and manage your household's viewing experience. Start by approving some titles.";
+  } else {
+    el.innerHTML = `Curate and manage your household's viewing experience. You have <span class="font-bold text-primary">${approved} approved title${approved !== 1 ? 's' : ''}</span>${blocked ? ` and <span class="font-bold text-error">${blocked} blocked</span>` : ''} across all profiles.`;
+  }
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function setTab(tab, btnEl) {
+  _activeTab = tab;
   _activeProfile = 'all';
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderProfileFilter();
+  // Update top tab buttons
+  document.querySelectorAll('.tab-btn-v2').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  // Reset profile pill to "All"
+  document.querySelectorAll('.profile-pill').forEach(p => p.classList.toggle('active', p.dataset.pid === 'all'));
+  updateSidebar();
   renderList();
 }
 
-// ── Profile filter ────────────────────────────────────────────────────────
+function setTabFromSidebar(tab) {
+  _activeTab = tab;
+  _activeProfile = 'all';
+  // Sync top tabs
+  document.querySelectorAll('.tab-btn-v2').forEach(b => {
+    b.classList.toggle('active', b.id.toLowerCase().includes(tab));
+  });
+  document.querySelectorAll('.profile-pill').forEach(p => p.classList.toggle('active', p.dataset.pid === 'all'));
+  updateSidebar();
+  renderList();
+}
+
+// ── Profile filter ────────────────────────────────────────────────────────────
 function renderProfileFilter() {
   const el = document.getElementById('profileFilter');
   if (!_profiles.length) { el.innerHTML = ''; return; }
 
-  let html = `<button class="profile-filter-btn active" data-pid="all" onclick="setProfileFilter('all',this)">All</button>`;
-  html += _profiles.map(p =>
-    `<button class="profile-filter-btn" data-pid="${p.id}" onclick="setProfileFilter('${p.id}',this)">${p.emoji} ${p.name}</button>`
-  ).join('');
+  let html = `<button class="profile-pill active" data-pid="all" onclick="setProfileFilter('all', this)">All Profiles</button>`;
+  _profiles.forEach(p => {
+    html += `<button class="profile-pill" data-pid="${p.id}" onclick="setProfileFilter('${p.id}', this)">${p.emoji || '👤'} ${p.name}</button>`;
+  });
   el.innerHTML = html;
 }
 
-function setProfileFilter(pid, btn) {
+function setProfileFilter(pid, btnEl) {
   _activeProfile = pid;
-  document.querySelectorAll('.profile-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.profile-pill').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
   renderList();
 }
 
-// ── Render ────────────────────────────────────────────────────────────────
+// ── View toggle (grid / list) ─────────────────────────────────────────────────
+function setView(mode) {
+  _viewMode = mode;
+  const container = document.getElementById('listContainer');
+  const btnGrid   = document.getElementById('btnGridView');
+  const btnList   = document.getElementById('btnListView');
+
+  if (mode === 'grid') {
+    container.classList.remove('list-mode');
+    container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5';
+    btnGrid.className = 'p-2 text-primary transition-colors rounded-lg bg-primary/10';
+    btnList.className  = 'p-2 text-outline hover:text-primary transition-colors rounded-lg';
+  } else {
+    container.className = 'list-mode flex flex-col gap-2';
+    btnList.className  = 'p-2 text-primary transition-colors rounded-lg bg-primary/10';
+    btnGrid.className  = 'p-2 text-outline hover:text-primary transition-colors rounded-lg';
+  }
+  renderList();
+}
+
+// ── Render the item list ──────────────────────────────────────────────────────
+function renderActiveTab() {
+  // Sync tab UI in case we entered with a ?tab= param
+  ['Approved', 'Blocked', 'Watchlater'].forEach(t => {
+    const btn = document.getElementById('tab' + t);
+    if (btn) btn.classList.toggle('active', t.toLowerCase() === _activeTab);
+  });
+  renderProfileFilter();
+  renderList();
+}
+
 function renderList() {
-  const el = document.getElementById('listItems');
+  const container = document.getElementById('listContainer');
+  const discover  = document.getElementById('discoverPrompt');
+
+  // Filter by tab + profile
   let items = _lists.filter(l => l.list_type === _activeTab);
   if (_activeProfile !== 'all') {
     items = items.filter(l => l.profile_id === _activeProfile);
   }
 
   if (!items.length) {
-    const emptyConfig = {
-      approved:   { icon: '✅', title: 'No approved titles yet', desc: 'When you mark a title as approved, it appears here.' },
-      blocked:    { icon: '🚫', title: 'No blocked titles yet',  desc: 'When you mark a title as off-limits, it appears here.' },
-      watchlater: { icon: '🕐', title: 'Nothing saved to watch later', desc: 'Save titles you want to revisit later.' },
+    // Empty state
+    const icons = { approved: 'verified', blocked: 'block', watchlater: 'bookmark' };
+    const titles = {
+      approved: 'No approved titles yet',
+      blocked: 'No blocked titles',
+      watchlater: 'Your watchlist is empty'
     };
-    const cfg = emptyConfig[_activeTab];
-    el.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">${cfg.icon}</div>
-        <h3>${cfg.title}</h3>
-        <p>${cfg.desc}</p>
-        <a class="btn-go" href="/index">🔍 Search titles</a>
+    const descs = {
+      approved: 'Mark titles as safe to watch and they\'ll appear here for all family members.',
+      blocked: 'Titles you\'ve marked as off-limits will appear here.',
+      watchlater: 'Save titles you want to research or watch later.'
+    };
+    container.innerHTML = `
+      <div class="col-span-full py-16 flex flex-col items-center text-center gap-4">
+        <div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center">
+          <span class="material-symbols-outlined text-4xl text-outline">${icons[_activeTab] || 'list'}</span>
+        </div>
+        <h3 class="font-headline font-bold text-xl text-on-surface">${titles[_activeTab] || 'Nothing here yet'}</h3>
+        <p class="text-on-surface-variant text-sm max-w-xs leading-relaxed">${descs[_activeTab] || ''}</p>
+        <a href="/discover" class="mt-2 inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary font-bold rounded-full hover:bg-primary-dim transition-all active:scale-95 text-sm shadow-md shadow-primary/20">
+          <span class="material-symbols-outlined text-[16px]">explore</span>
+          Discover Titles
+        </a>
       </div>`;
+    discover.classList.add('hidden');
     return;
   }
 
-  el.innerHTML = items.map(item => {
-    const profile = item.profile_id ? _profiles.find(p => p.id === item.profile_id) : null;
-    const poster  = item.poster
-      ? `<img src="${item.poster}" alt="${item.title}" loading="lazy">` : '🎬';
-    const typeTag = item.media_type === 'tv'
-      ? '<span class="list-tag tag-tv">TV</span>'
-      : '<span class="list-tag tag-movie">Film</span>';
-    const profileTag = profile
-      ? `<span class="list-tag tag-profile">${profile.emoji} ${profile.name}</span>` : '';
-    const noteHtml = item.note
-      ? `<div class="list-note">💬 ${item.note}</div>` : '';
-    return `
-      <div class="list-item" onclick="openTitle('${item.tmdb_id}','${item.media_type}')">
-        <div class="list-poster">${poster}</div>
-        <div class="list-info">
-          <div class="list-title">${item.title}</div>
-          <div class="list-meta">${item.year || ''}${item.year ? ' · ' : ''}${typeTag}${profileTag}</div>
-          ${noteHtml}
-        </div>
-        <div class="list-actions">
-          <button class="list-action-btn" onclick="openNote(event,'${item.id}','${item.title.replace(/'/g,"\\'")}','${(item.note||'').replace(/'/g,"\\'")}')" title="Edit note">✏️</button>
-          <button class="list-action-btn delete" onclick="promptDelete(event,'${item.id}','${item.title.replace(/'/g,"\\'")}')   " title="Remove">✕</button>
-        </div>
-      </div>`;
-  }).join('');
+  // Render cards
+  container.innerHTML = items.map(item => renderCard(item)).join('') + renderAddNewPlaceholder();
+
+  // Show discover prompt below grid when there are items
+  if (items.length < 8) {
+    discover.classList.remove('hidden');
+    discover.classList.add('flex');
+  } else {
+    discover.classList.add('hidden');
+  }
 }
 
-function openTitle(id, type) {
-  window.location.href = `/index?id=${id}&type=${type}`;
+function verdictBadgeHTML(listType) {
+  if (listType === 'approved') return `<span class="absolute top-3 right-3 bg-tertiary text-on-tertiary text-[10px] font-bold px-2 py-1 rounded tracking-widest uppercase card-safe-badge">SAFE</span>`;
+  if (listType === 'blocked')  return `<span class="absolute top-3 right-3 bg-error text-white text-[10px] font-bold px-2 py-1 rounded tracking-widest uppercase card-safe-badge">BLOCKED</span>`;
+  return `<span class="absolute top-3 right-3 bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-1 rounded tracking-widest uppercase card-safe-badge">WATCHLIST</span>`;
 }
 
-// ── Note modal ─────────────────────────────────────────────────────────────
-function openNote(e, id, title, existingNote) {
-  e.stopPropagation();
+function renderCard(item) {
+  const profile = item.profile_id ? _profiles.find(p => p.id === item.profile_id) : null;
+  const posterSrc = item.poster || '';
+  const posterHTML = posterSrc
+    ? `<img src="${posterSrc}" alt="${escAttr(item.title)}" class="object-cover w-full h-full" loading="lazy"/>`
+    : `<div class="w-full h-full flex items-center justify-center bg-surface-container text-5xl">🎬</div>`;
+
+  const typeLabel = item.media_type === 'tv' ? 'TV' : 'Film';
+  const typeBg    = item.media_type === 'tv' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700';
+  const yearStr   = item.year ? `<span class="font-medium">${item.year}</span><span>•</span>` : '';
+  const profileTag = profile ? `<span class="text-[10px] font-bold text-primary">• ${profile.emoji || ''} ${profile.name}</span>` : '';
+  const noteTitle = esc(item.title);
+  const noteVal   = esc(item.note || '');
+  const safeTitle = esc(item.title);
+
+  return `
+  <div class="movie-card group relative bg-surface-container-lowest rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-sm cursor-pointer"
+       onclick="openTitle('${item.tmdb_id}', '${item.media_type}')">
+    <div class="card-poster-wrap aspect-[2/3] overflow-hidden relative">
+      ${posterHTML}
+      ${verdictBadgeHTML(item.list_type)}
+
+      <!-- Grid hover actions -->
+      <div class="card-hover-actions absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4 space-x-3">
+        <button class="bg-white/20 backdrop-blur-md text-white p-2 rounded-full hover:bg-white/40 transition-colors"
+                onclick="event.stopPropagation(); openMoveModal('${item.id}', '${noteTitle}')"
+                title="Move to another list">
+          <span class="material-symbols-outlined text-[18px]">swap_horiz</span>
+        </button>
+        <button class="bg-white/20 backdrop-blur-md text-white p-2 rounded-full hover:bg-white/40 transition-colors"
+                onclick="event.stopPropagation(); openNoteModal('${item.id}', '${noteTitle}', '${noteVal}')"
+                title="Edit note">
+          <span class="material-symbols-outlined text-[18px]">edit_note</span>
+        </button>
+        <button class="bg-error/80 backdrop-blur-md text-white p-2 rounded-full hover:bg-error transition-colors"
+                onclick="event.stopPropagation(); promptDelete('${item.id}', '${safeTitle}')"
+                title="Remove">
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-3">
+      <h4 class="text-sm font-bold text-on-surface line-clamp-1 mb-1">${esc(item.title)}</h4>
+      <div class="flex items-center flex-wrap gap-1.5 text-[11px] text-outline">
+        ${yearStr}
+        <span class="${typeBg} px-1.5 py-0.5 rounded font-bold text-[10px]">${typeLabel}</span>
+        ${profileTag}
+      </div>
+      ${item.note ? `<p class="text-[11px] text-on-surface-variant mt-1.5 line-clamp-1 italic">💬 ${esc(item.note)}</p>` : ''}
+
+      <!-- List mode row actions (always visible in list view) -->
+      <div class="card-list-actions mt-2">
+        <button class="card-list-action-btn" onclick="event.stopPropagation(); openMoveModal('${item.id}', '${noteTitle}')" title="Move">
+          <span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+        </button>
+        <button class="card-list-action-btn" onclick="event.stopPropagation(); openNoteModal('${item.id}', '${noteTitle}', '${noteVal}')" title="Note">
+          <span class="material-symbols-outlined text-[16px]">edit_note</span>
+        </button>
+        <button class="card-list-action-btn danger" onclick="event.stopPropagation(); promptDelete('${item.id}', '${safeTitle}')" title="Remove">
+          <span class="material-symbols-outlined text-[16px]">delete</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAddNewPlaceholder() {
+  return `
+  <button onclick="window.location.href='/discover'"
+          class="group border-2 border-dashed border-outline-variant/50 rounded-xl flex flex-col items-center justify-center space-y-3 p-6 hover:border-primary transition-colors hover:bg-primary/5 min-h-[100px]">
+    <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-outline group-hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">add</span>
+    </div>
+    <span class="text-xs font-bold text-outline group-hover:text-primary text-center">Add Titles via Discover</span>
+  </button>`;
+}
+
+// ── Navigate to detail page ───────────────────────────────────────────────────
+function openTitle(tmdbId, mediaType) {
+  window.location.href = `/index?id=${tmdbId}&type=${mediaType}`;
+}
+
+// ── Note Modal ────────────────────────────────────────────────────────────────
+function openNoteModal(id, title, existingNote) {
   _editingId = id;
   document.getElementById('noteModalTitle').textContent = title;
   document.getElementById('noteInput').value = existingNote || '';
   document.getElementById('noteModal').classList.add('visible');
   document.body.style.overflow = 'hidden';
-  setTimeout(() => document.getElementById('noteInput').focus(), 300);
+  setTimeout(() => document.getElementById('noteInput').focus(), 200);
 }
 
 async function saveNote() {
   const btn  = document.getElementById('noteSaveBtn');
   const note = document.getElementById('noteInput').value.trim();
-  btn.disabled = true; btn.textContent = 'Saving…';
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
   try {
     const updated = await apiPut(`/api/lists?id=${_editingId}`, { note });
     const idx = _lists.findIndex(l => l.id === _editingId);
@@ -498,7 +865,8 @@ async function saveNote() {
   } catch (e) {
     showToast('Failed to save note');
   } finally {
-    btn.disabled = false; btn.textContent = 'Save Note';
+    btn.disabled = false;
+    btn.textContent = orig;
   }
 }
 
@@ -507,9 +875,50 @@ function closeNoteModal() {
   document.body.style.overflow = '';
 }
 
-// ── Delete modal ──────────────────────────────────────────────────────────
-function promptDelete(e, id, title) {
-  e.stopPropagation();
+// ── Move Modal ────────────────────────────────────────────────────────────────
+function openMoveModal(id, title) {
+  _movingId   = id;
+  _movingItem = _lists.find(l => l.id === id);
+  document.getElementById('moveModalTitle').textContent = title;
+  document.getElementById('moveModal').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+async function moveItem(newListType) {
+  if (!_movingItem) return;
+  const item = _movingItem;
+  closeMoveModal();
+  try {
+    const updated = await apiPost('/api/lists', {
+      tmdb_id:    item.tmdb_id,
+      media_type: item.media_type,
+      title:      item.title,
+      year:       item.year,
+      poster:     item.poster,
+      list_type:  newListType,
+      profile_id: item.profile_id,
+      note:       item.note,
+    });
+    const idx = _lists.findIndex(l => l.id === item.id);
+    if (idx !== -1) _lists[idx] = updated;
+    updateSidebar();
+    updateHeaderSubtitle();
+    renderList();
+    showToast(`Moved to ${newListType} ✓`);
+  } catch (e) {
+    showToast('Failed to move item');
+  }
+}
+
+function closeMoveModal() {
+  document.getElementById('moveModal').classList.remove('visible');
+  document.body.style.overflow = '';
+  _movingId = null;
+  _movingItem = null;
+}
+
+// ── Delete Modal ──────────────────────────────────────────────────────────────
+function promptDelete(id, title) {
   _deletingId = id;
   document.getElementById('deleteModalTitle').textContent = `"${title}" will be removed from this list.`;
   document.getElementById('deleteModal').classList.add('visible');
@@ -517,19 +926,23 @@ function promptDelete(e, id, title) {
 }
 
 async function confirmDelete() {
-  const btn = document.getElementById('deleteConfirmBtn');
-  btn.disabled = true; btn.textContent = 'Removing…';
+  const btn  = document.getElementById('deleteConfirmBtn');
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Removing…';
   try {
     await apiDelete(`/api/lists?id=${_deletingId}`);
     _lists = _lists.filter(l => l.id !== _deletingId);
-    updateCounts();
+    updateSidebar();
+    updateHeaderSubtitle();
     renderList();
     closeDeleteModal();
     showToast('Removed from list');
   } catch (e) {
     showToast('Failed to remove');
   } finally {
-    btn.disabled = false; btn.textContent = 'Remove';
+    btn.disabled = false;
+    btn.textContent = orig;
   }
 }
 
@@ -538,19 +951,37 @@ function closeDeleteModal() {
   document.body.style.overflow = '';
 }
 
-// Close modals on backdrop or Escape
-['noteModal','deleteModal'].forEach(id => {
+// ── Escape helpers ────────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+function escAttr(str) { return esc(str); }
+
+// ── Close modals on backdrop click or Escape ──────────────────────────────────
+['noteModal', 'moveModal', 'deleteModal'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => {
     if (e.target === document.getElementById(id)) {
-      if (id === 'noteModal') closeNoteModal(); else closeDeleteModal();
+      if (id === 'noteModal')   closeNoteModal();
+      if (id === 'moveModal')   closeMoveModal();
+      if (id === 'deleteModal') closeDeleteModal();
     }
   });
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeNoteModal(); closeDeleteModal(); }
+  if (e.key === 'Escape') {
+    closeNoteModal();
+    closeMoveModal();
+    closeDeleteModal();
+  }
 });
 </script>
-<script src="/js/auth.js?v=20260403"></script>
+
+<script src="/js/auth.js?v=20260405"></script>
 </body>
 </html>
-
