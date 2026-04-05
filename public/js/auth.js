@@ -605,63 +605,35 @@
   };
 
   window.cvOpenTitle = function(id, type) {
-    // Save to search history
+    // Save to search history before navigating
     try {
       let history = JSON.parse(localStorage.getItem('cvSearchHistory') || '[]');
-      // Get title from the clicked element
       const titleEl = event.target.closest('.cv-search-item').querySelector('.cv-search-item-title');
-      const metaEl = event.target.closest('.cv-search-item').querySelector('.cv-search-item-meta');
-      const title = titleEl.textContent;
-      const year = metaEl.textContent.split(' · ')[0];
-      const poster = event.target.closest('.cv-search-item').querySelector('img')?.src || null;
-      
+      const metaEl  = event.target.closest('.cv-search-item').querySelector('.cv-search-item-meta');
+      const title   = titleEl ? titleEl.textContent : '';
+      const year    = metaEl  ? metaEl.textContent.split(' · ')[0] : '';
+      const poster  = event.target.closest('.cv-search-item').querySelector('img')?.src || null;
+
       const item = { id, type, title, year, poster };
       history = [item, ...history.filter(h => h.id !== id)].slice(0, 10);
       localStorage.setItem('cvSearchHistory', JSON.stringify(history));
     } catch (e) {
       console.error('History save failed:', e);
     }
-    // Close the search modal
+
+    // Close search modal then navigate to V2 detail page — same as checkTitle() on dashboard
     cvCloseSearchModal();
-    
-    // Update URL without reloading (History API)
-    const url = new URL(window.location);
-    url.searchParams.set('searchId', id);
-    url.searchParams.set('searchType', type);
-    window.history.pushState({ panelOpen: true, id, type }, '', url);
-
-    // Lazy load or trigger panel
-    if (window.cvSearchPanel) {
-      window.cvSearchPanel.openTitle(id, type);
-    } else {
-      const overlay = document.createElement('div');
-      overlay.id = 'cvPanelGlobalOverlay';
-      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:9999;display:none;';
-      document.body.appendChild(overlay);
-
-      const script = document.createElement('script');
-      script.src = '/js/search-panel.js?v=' + Date.now(); // Cache bust for dev
-      script.onload = () => window.cvSearchPanel.openTitle(id, type);
-      document.body.appendChild(script);
-    }
+    window.location.href = `/index?id=${id}&type=${type}`;
   };
 
-  // Handle browser back/forward buttons
-  window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.panelOpen && window.cvSearchPanel) {
-      window.cvSearchPanel.openTitle(e.state.id, e.state.type);
-    } else if (window.cvSearchPanel) {
-      window.cvSearchPanel.close();
-    }
-  });
-
-  // Handle deep links on page load
+  // Handle deep links on page load (e.g. shared URLs with ?id= params)
   window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
-    const sId = params.get('searchId');
+    const sId   = params.get('searchId');
     const sType = params.get('searchType');
+    // If someone lands with legacy searchId params, redirect cleanly to detail page
     if (sId && sType) {
-      setTimeout(() => window.cvOpenTitle(sId, sType), 100);
+      window.location.replace(`/index?id=${sId}&type=${sType}`);
     }
   });
 
