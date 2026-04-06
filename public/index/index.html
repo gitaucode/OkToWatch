@@ -353,9 +353,14 @@ async function loadPage() {
     renderHero(_details, certRating);
 
     // Step 2 â€” Call analyze with full metadata (sequential, after we have details)
+    const _authHeaders = { 'Content-Type': 'application/json' };
+    try {
+      const _tok = await getToken();
+      if (_tok) _authHeaders['Authorization'] = 'Bearer ' + _tok;
+    } catch (e) {}
     const analyzeRes = await fetch('/api/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: _authHeaders,
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords, type: _type })
     });
 
