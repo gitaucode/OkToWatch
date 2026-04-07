@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,17 +20,24 @@
       --brand-dark: #136134;
       --brand-soft: #e4f4eb;
       --brand-softer: #f0faf4;
-      --shadow-sm: 0 2px 8px rgba(20,60,35,0.06);
-      --shadow: 0 8px 32px rgba(20,60,35,0.09);
-      --shadow-lg: 0 24px 64px rgba(20,60,35,0.13);
+      --shadow-sm: 0 2px 8px rgba(20, 60, 35, 0.06);
+      --shadow: 0 8px 32px rgba(20, 60, 35, 0.09);
+      --shadow-lg: 0 24px 64px rgba(20, 60, 35, 0.13);
       --radius: 20px;
       --radius-sm: 12px;
       --max: 1160px;
       --font: Helvetica Neue, Helvetica, Arial, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: var(--font);
@@ -39,9 +47,20 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-    button, input { font-family: var(--font); }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button,
+    input {
+      font-family: var(--font);
+    }
 
     .container {
       width: min(100% - 40px, var(--max));
@@ -50,76 +69,153 @@
 
     /* ─── NAV ─── */
     .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(245,249,246,0.96);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245, 249, 246, 0.96);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--line);
     }
+
     .topbar-inner {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-      gap: 16px; min-height: 64px;
+      gap: 16px;
+      min-height: 64px;
     }
+
     .logo {
-      display: inline-flex; align-items: center;
-      gap: 9px; font-weight: 700; font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+      font-size: 1rem;
       letter-spacing: -0.02em;
     }
+
     .logo-mark {
-      width: 34px; height: 34px; border-radius: 9px;
-      background: var(--brand); color: #fff;
-      font-weight: 800; font-size: 0.75rem;
-      display: grid; place-items: center; letter-spacing: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.75rem;
+      display: grid;
+      place-items: center;
+      letter-spacing: 0;
     }
+
     nav.nav {
-      display: flex; align-items: center;
-      gap: 28px; font-size: 0.88rem;
-      font-weight: 500; color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-soft);
     }
-    nav.nav a { transition: color 0.15s; }
-    nav.nav a:hover { color: var(--text); }
-    .nav-cta { display: flex; align-items: center; gap: 9px; }
+
+    nav.nav a {
+      transition: color 0.15s;
+    }
+
+    nav.nav a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
 
     /* ─── BUTTONS ─── */
     .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 7px; border-radius: 999px; padding: 10px 22px;
-      font-weight: 600; font-size: 0.88rem; cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
       border: 1.5px solid transparent;
-      transition: all 0.16s ease; text-decoration: none;
+      transition: all 0.16s ease;
+      text-decoration: none;
       letter-spacing: -0.01em;
     }
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary {
-      background: var(--brand); color: #fff;
-      box-shadow: 0 6px 18px rgba(26,138,71,0.25);
+
+    .btn:hover {
+      transform: translateY(-1px);
     }
-    .btn-primary:hover { background: var(--brand-dark); }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(26, 138, 71, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-dark);
+    }
+
     .btn-outline {
-      background: transparent; color: var(--text);
+      background: transparent;
+      color: var(--text);
       border-color: var(--line-strong);
     }
-    .btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+
+    .btn-outline:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+
     .btn-white {
-      background: #fff; color: var(--brand-dark);
+      background: #fff;
+      color: var(--brand-dark);
       font-weight: 700;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
     }
-    .btn-white:hover { background: #f0faf4; }
+
+    .btn-white:hover {
+      background: #f0faf4;
+    }
+
     .btn-ghost {
-      background: rgba(255,255,255,0.15); color: #fff;
-      border-color: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
     }
-    .btn-ghost:hover { background: rgba(255,255,255,0.25); }
-    .btn-lg { padding: 14px 32px; font-size: 0.96rem; font-weight: 700; }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-lg {
+      padding: 14px 32px;
+      font-size: 0.96rem;
+      font-weight: 700;
+    }
 
     /* ─── HERO ─── */
     @keyframes blink {
-      0%,100% { opacity:1; } 50% { opacity:0.3; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
     }
+
     .hero {
       padding: 34px 0 72px;
     }
+
     .hero-shell {
       background: #f0f4ee;
       min-height: min(86vh, 760px);
@@ -130,6 +226,7 @@
       border: 1px solid var(--line);
       box-shadow: var(--shadow-sm);
     }
+
     .hero-copy {
       flex: 1;
       max-width: 560px;
@@ -138,21 +235,32 @@
       justify-content: center;
       padding: 52px 24px 52px 56px;
     }
+
     .hero-badge {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 6px 14px; border-radius: 999px;
-      background: #fff; color: var(--brand-dark);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--brand-dark);
       border: 1px solid var(--line-strong);
-      font-size: 0.72rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       margin-bottom: 22px;
       width: fit-content;
     }
+
     .hero-badge-dot {
-      width: 7px; height: 7px; border-radius: 50%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
       background: var(--brand);
       animation: blink 2.4s ease-in-out infinite;
     }
+
     .hero h1 {
       font-size: clamp(2.7rem, 5vw, 4.2rem);
       font-weight: 800;
@@ -161,10 +269,12 @@
       color: var(--text);
       margin-bottom: 14px;
     }
+
     .hero h1 em {
       font-style: normal;
       color: var(--brand);
     }
+
     .hero-sub {
       font-size: 1rem;
       color: var(--text-soft);
@@ -178,8 +288,9 @@
       min-width: 0;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(19,97,52,0.08), rgba(19,97,52,0.18));
+      background: linear-gradient(135deg, rgba(19, 97, 52, 0.08), rgba(19, 97, 52, 0.18));
     }
+
     .hero-visual img {
       width: 100%;
       height: 100%;
@@ -188,17 +299,21 @@
       display: block;
       filter: saturate(0.88) hue-rotate(-10deg) brightness(0.92);
     }
+
     .hero-visual::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(240,244,238,0.32) 0%, rgba(240,244,238,0.04) 28%, rgba(19,97,52,0.16) 100%);
+      background: linear-gradient(90deg, rgba(240, 244, 238, 0.32) 0%, rgba(240, 244, 238, 0.04) 28%, rgba(19, 97, 52, 0.16) 100%);
       pointer-events: none;
     }
+
     /* ─── SEARCH WIDGET ─── */
     .search-outer {
-      max-width: 640px; margin: 0;
+      max-width: 640px;
+      margin: 0;
     }
+
     .search-widget {
       background: #fff;
       border: 1.5px solid var(--line-strong);
@@ -206,39 +321,102 @@
       box-shadow: var(--shadow-lg);
       overflow: hidden;
     }
+
     .sw-input-row {
-      display: flex; align-items: center;
-      gap: 10px; padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
     }
-    .sw-input-row svg { width: 18px; height: 18px; color: var(--text-muted); flex-shrink: 0; }
+
+    .sw-input-row svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
     .sw-field {
-      flex: 1; border: none; outline: none;
-      font-size: 1rem; color: var(--text);
-      background: transparent; font-family: var(--font);
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: var(--text);
+      background: transparent;
+      font-family: var(--font);
     }
-    .sw-field::placeholder { color: var(--text-muted); }
-    .sw-results { display: none; padding: 8px; border-top: 1px solid var(--line); }
-    .sw-results.visible { display: block; }
+
+    .sw-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    .sw-results {
+      display: none;
+      padding: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .sw-results.visible {
+      display: block;
+    }
+
     .sw-result {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px; border-radius: 10px; cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
       transition: background 0.12s;
     }
-    .sw-result:hover { background: var(--brand-softer); }
+
+    .sw-result:hover {
+      background: var(--brand-softer);
+    }
+
     .sw-thumb {
-      width: 38px; height: 38px; border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.65rem; font-weight: 800; color: var(--brand-dark); flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--brand-dark);
+      flex-shrink: 0;
     }
-    .sw-result-info { flex: 1; min-width: 0; }
-    .sw-result-info strong { display: block; font-size: 0.9rem; font-weight: 600; }
-    .sw-result-info span { font-size: 0.78rem; color: var(--text-soft); }
+
+    .sw-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sw-result-info strong {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .sw-result-info span {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+    }
+
     .sw-badge {
-      border-radius: 999px; padding: 4px 10px;
-      font-size: 0.7rem; font-weight: 800;
-      letter-spacing: 0.04em; white-space: nowrap;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
     }
-    .sw-no-results { padding: 16px; color: var(--text-soft); font-size: 0.88rem; }
+
+    .sw-no-results {
+      padding: 16px;
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
 
     /* ─── SOCIAL PROOF BAR ─── */
     .proof-bar {
@@ -246,85 +424,205 @@
       border-bottom: 1px solid var(--line);
       background: #fff;
     }
+
     .proof-bar-inner {
-      display: flex; align-items: center;
-      justify-content: center; gap: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
       flex-wrap: wrap;
     }
+
     .proof-item {
-      display: flex; align-items: center;
-      gap: 9px; font-size: 0.84rem;
-      color: var(--text-soft); font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.84rem;
+      color: var(--text-soft);
+      font-weight: 500;
     }
-    .proof-item svg { width: 16px; height: 16px; color: var(--brand); flex-shrink: 0; }
-    .proof-item strong { color: var(--text); font-weight: 700; }
-    .proof-divider { width: 1px; height: 18px; background: var(--line-strong); }
+
+    .proof-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--brand);
+      flex-shrink: 0;
+    }
+
+    .proof-item strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .proof-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--line-strong);
+    }
 
     .popular-section {
       padding: 28px 0 14px;
       background: #fff;
     }
+
     .popular-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
     }
+
     .popular-row {
-      display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 14px;
     }
+
     .popular-item {
-      display: block; background: #fff; border: 1px solid var(--line);
-      border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-sm);
+      display: block;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
       transition: box-shadow 0.2s, transform 0.2s;
     }
-    .popular-item:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+
+    .popular-item:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
     .popular-poster {
-      aspect-ratio: 2 / 3; background: linear-gradient(160deg, #e4f4eb, #c8e1d2);
+      aspect-ratio: 2 / 3;
+      background: linear-gradient(160deg, #e4f4eb, #c8e1d2);
       overflow: hidden;
     }
-    .popular-poster img { width: 100%; height: 100%; object-fit: cover; }
-    .popular-body { padding: 12px; }
-    .popular-title { font-size: 0.9rem; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
-    .popular-meta { font-size: 0.77rem; color: var(--text-soft); margin-bottom: 10px; }
-    .popular-row.loading .popular-item { pointer-events: none; }
-    .popular-row.loading .popular-poster, .popular-row.loading .popular-title, .popular-row.loading .popular-meta {
+
+    .popular-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .popular-body {
+      padding: 12px;
+    }
+
+    .popular-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .popular-meta {
+      font-size: 0.77rem;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .popular-row.loading .popular-item {
+      pointer-events: none;
+    }
+
+    .popular-row.loading .popular-poster,
+    .popular-row.loading .popular-title,
+    .popular-row.loading .popular-meta {
       background: linear-gradient(90deg, var(--surface-soft) 25%, #e8f1eb 50%, var(--surface-soft) 75%);
-      background-size: 200% 100%; animation: shimmer 1.2s infinite;
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
       color: transparent;
     }
-    .popular-row.loading .popular-poster img { display: none; }
-    .popular-row.loading .popular-title { height: 16px; border-radius: 6px; }
-    .popular-row.loading .popular-meta { height: 12px; border-radius: 6px; width: 70%; margin-bottom: 0; }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .popular-row.loading .popular-poster img {
+      display: none;
+    }
+
+    .popular-row.loading .popular-title {
+      height: 16px;
+      border-radius: 6px;
+    }
+
+    .popular-row.loading .popular-meta {
+      height: 12px;
+      border-radius: 6px;
+      width: 70%;
+      margin-bottom: 0;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
 
     /* ─── SECTION SHARED ─── */
-    .section { padding: 80px 0; }
+    .section {
+      padding: 80px 0;
+    }
+
     .section-label {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--brand);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand);
       margin-bottom: 12px;
     }
+
     .section-title {
       font-size: clamp(1.8rem, 3vw, 2.6rem);
-      font-weight: 700; letter-spacing: -0.03em;
-      line-height: 1.12; margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      margin-bottom: 16px;
     }
+
     .section-sub {
-      font-size: 1rem; color: var(--text-soft);
-      line-height: 1.72; max-width: 54ch;
+      font-size: 1rem;
+      color: var(--text-soft);
+      line-height: 1.72;
+      max-width: 54ch;
     }
 
     /* ─── BADGES ─── */
     .badge {
-      display: inline-flex; align-items: center;
-      border-radius: 999px; padding: 5px 11px;
-      font-size: 0.7rem; font-weight: 800;
-      letter-spacing: 0.04em; text-transform: uppercase;
-      border: 1px solid transparent; white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
     }
-    .badge-safe { background: #e3f5eb; border-color: #c4dfd0; color: var(--brand-dark); }
-    .badge-caution { background: #fff4dc; border-color: #eedcaa; color: #7d560d; }
-    .badge-danger { background: #fff0ee; border-color: #eecfca; color: #9a3f39; }
+
+    .badge-safe {
+      background: #e3f5eb;
+      border-color: #c4dfd0;
+      color: var(--brand-dark);
+    }
+
+    .badge-caution {
+      background: #fff4dc;
+      border-color: #eedcaa;
+      color: #7d560d;
+    }
+
+    .badge-danger {
+      background: #fff0ee;
+      border-color: #eecfca;
+      color: #9a3f39;
+    }
 
     /* ─── IMAGE SPLIT — alternating ─── */
     .img-split {
@@ -334,90 +632,174 @@
       align-items: stretch;
       min-height: 520px;
     }
-    .img-split.reverse { direction: rtl; }
-    .img-split.reverse > * { direction: ltr; }
+
+    .img-split.reverse {
+      direction: rtl;
+    }
+
+    .img-split.reverse>* {
+      direction: ltr;
+    }
+
     .img-split-photo {
-      position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
     }
+
     .img-split-photo img {
-      width: 100%; height: 100%; object-fit: cover;
-      display: block; transition: transform 0.6s ease;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
     }
-    .img-split:hover .img-split-photo img { transform: scale(1.03); }
+
+    .img-split:hover .img-split-photo img {
+      transform: scale(1.03);
+    }
+
     .img-split-content {
       padding: 72px 64px;
-      display: flex; flex-direction: column;
-      justify-content: center; gap: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
       background: #fff;
     }
-    .img-split-content .section-title { margin-bottom: 0; }
-    .img-split-content .section-sub { margin-bottom: 8px; }
+
+    .img-split-content .section-title {
+      margin-bottom: 0;
+    }
+
+    .img-split-content .section-sub {
+      margin-bottom: 8px;
+    }
 
     /* ─── FEATURE CHIPS ─── */
     .feature-chips {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
     }
+
     .feature-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 7px 13px; border-radius: 999px;
-      background: var(--brand-softer); border: 1px solid var(--line);
-      font-size: 0.8rem; font-weight: 600; color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--brand-softer);
+      border: 1px solid var(--line);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
     }
-    .feature-chip svg { width: 13px; height: 13px; color: var(--brand); }
+
+    .feature-chip svg {
+      width: 13px;
+      height: 13px;
+      color: var(--brand);
+    }
 
     /* ─── FULL-BLEED PHOTO SECTION ─── */
     .photo-full {
-      height: 480px; position: relative; overflow: hidden;
+      height: 480px;
+      position: relative;
+      overflow: hidden;
     }
+
     .photo-full img {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       object-position: center 40%;
     }
+
     .photo-full-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to right, rgba(10,40,20,0.78) 0%, rgba(10,40,20,0.2) 60%, transparent 100%);
-      display: flex; align-items: center;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(10, 40, 20, 0.78) 0%, rgba(10, 40, 20, 0.2) 60%, transparent 100%);
+      display: flex;
+      align-items: center;
     }
+
     .photo-full-text {
       padding: 0 max(32px, calc((100% - var(--max)) / 2 + 40px));
-      max-width: 600px; color: #fff;
+      max-width: 600px;
+      color: #fff;
     }
-    .photo-full-text .section-label { color: rgba(255,255,255,0.6); }
-    .photo-full-text .section-title { color: #fff; font-size: clamp(2rem, 3.5vw, 3rem); }
-    .photo-full-text .section-sub { color: rgba(255,255,255,0.8); max-width: 44ch; }
+
+    .photo-full-text .section-label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .photo-full-text .section-title {
+      color: #fff;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+    }
+
+    .photo-full-text .section-sub {
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 44ch;
+    }
 
     /* ─── 3-UP PHOTO GRID ─── */
-    .photo-grid-section { padding: 80px 0; background: #fff; }
+    .photo-grid-section {
+      padding: 80px 0;
+      background: #fff;
+    }
+
     .photo-trio {
       display: grid;
       grid-template-columns: 1.4fr 1fr 1fr;
       gap: 16px;
       height: 480px;
     }
+
     .photo-trio-item {
       border-radius: var(--radius);
-      overflow: hidden; position: relative;
+      overflow: hidden;
+      position: relative;
     }
+
     .photo-trio-item img {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       transition: transform 0.5s ease;
     }
-    .photo-trio-item:hover img { transform: scale(1.05); }
+
+    .photo-trio-item:hover img {
+      transform: scale(1.05);
+    }
+
     .photo-trio-caption {
-      position: absolute; bottom: 0; left: 0; right: 0;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       padding: 24px 20px 20px;
-      background: linear-gradient(to top, rgba(10,35,18,0.72) 0%, transparent 100%);
+      background: linear-gradient(to top, rgba(10, 35, 18, 0.72) 0%, transparent 100%);
       color: #fff;
     }
+
     .photo-trio-caption strong {
-      display: block; font-size: 0.9rem; font-weight: 700;
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
     }
+
     .photo-trio-caption span {
-      font-size: 0.78rem; opacity: 0.8;
+      font-size: 0.78rem;
+      opacity: 0.8;
     }
+
     .photo-trio-header {
       margin-bottom: 28px;
-      display: flex; justify-content: space-between; align-items: flex-end;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
     }
 
     /* ─── HOW IT WORKS ─── */
@@ -427,48 +809,111 @@
       border-bottom: 1px solid var(--line);
       padding: 80px 0;
     }
-    .how-inner { max-width: 860px; margin: 0 auto; text-align: center; }
-    .how-steps {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 0; margin-top: 52px; position: relative;
+
+    .how-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
     }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 52px;
+      position: relative;
+    }
+
     .how-steps::before {
       content: '';
-      position: absolute; top: 28px; left: calc(16.66% + 28px); right: calc(16.66% + 28px);
-      height: 1.5px; background: var(--line-strong);
+      position: absolute;
+      top: 28px;
+      left: calc(16.66% + 28px);
+      right: calc(16.66% + 28px);
+      height: 1.5px;
+      background: var(--line-strong);
     }
-    .how-step { padding: 0 20px; text-align: center; }
+
+    .how-step {
+      padding: 0 20px;
+      text-align: center;
+    }
+
     .step-num {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: var(--brand); color: #fff;
-      font-size: 1.3rem; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 24px; position: relative; z-index: 1;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
       box-shadow: 0 0 0 6px var(--surface-soft), 0 0 0 7px var(--line);
     }
-    .how-step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
-    .how-step p { color: var(--text-soft); font-size: 0.9rem; line-height: 1.65; }
+
+    .how-step h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .how-step p {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
 
     /* ─── METHODOLOGY ─── */
-    .method-section { padding: 80px 0; }
-    .method-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 20px; margin-top: 48px;
+    .method-section {
+      padding: 80px 0;
     }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+
     .method-card {
-      background: #fff; border: 1px solid var(--line);
-      border-radius: var(--radius); padding: 32px;
-      display: flex; flex-direction: column; gap: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
       transition: box-shadow 0.2s, transform 0.2s;
     }
-    .method-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+
+    .method-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
     .method-num {
-      font-size: 2.4rem; font-weight: 800;
-      color: var(--brand-soft); letter-spacing: -0.05em;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--brand-soft);
+      letter-spacing: -0.05em;
       line-height: 1;
     }
-    .method-card h3 { font-size: 1rem; font-weight: 700; }
-    .method-card p { color: var(--text-soft); font-size: 0.9rem; line-height: 1.68; }
+
+    .method-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .method-card p {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.68;
+    }
 
     /* ─── PICKS ─── */
     .picks-section {
@@ -476,53 +921,147 @@
       border-top: 1px solid var(--line);
       padding: 80px 0;
     }
+
     .pick-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 16px; margin-top: 36px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 36px;
     }
+
     .pick-card {
-      background: #fff; border: 1px solid var(--line);
-      border-radius: var(--radius); overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
       box-shadow: var(--shadow-sm);
       transition: box-shadow 0.2s, transform 0.2s;
     }
-    .pick-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
-    .poster {
-      aspect-ratio: 4/5; position: relative;
-      display: flex; flex-direction: column;
-      justify-content: space-between; padding: 14px;
+
+    .pick-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-3px);
     }
-    .poster-green  { background: linear-gradient(160deg, #dcf0e4, #b4dcc4); }
-    .poster-blue   { background: linear-gradient(160deg, #ddeaf9, #bbd2f0); }
-    .poster-amber  { background: linear-gradient(160deg, #fceedd, #f5d9b0); }
-    .poster-teal   { background: linear-gradient(160deg, #daf2ec, #b8e4d8); }
-    .poster-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.18; }
-    .poster-content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-    .poster small { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #3c6048; }
-    .poster h4 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em; color: #0f2018; margin: 0; }
-    .pick-body { padding: 14px 16px; }
-    .pick-meta { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-soft); margin-bottom: 7px; }
-    .pick-body p { color: var(--text-soft); font-size: 0.86rem; line-height: 1.6; }
+
+    .poster {
+      aspect-ratio: 4/5;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px;
+    }
+
+    .poster-green {
+      background: linear-gradient(160deg, #dcf0e4, #b4dcc4);
+    }
+
+    .poster-blue {
+      background: linear-gradient(160deg, #ddeaf9, #bbd2f0);
+    }
+
+    .poster-amber {
+      background: linear-gradient(160deg, #fceedd, #f5d9b0);
+    }
+
+    .poster-teal {
+      background: linear-gradient(160deg, #daf2ec, #b8e4d8);
+    }
+
+    .poster-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+    }
+
+    .poster-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .poster small {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #3c6048;
+    }
+
+    .poster h4 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0f2018;
+      margin: 0;
+    }
+
+    .pick-body {
+      padding: 14px 16px;
+    }
+
+    .pick-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-bottom: 7px;
+    }
+
+    .pick-body p {
+      color: var(--text-soft);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
 
     /* ─── STATS ─── */
-    .stats-section { padding: 80px 0; background: #fff; }
+    .stats-section {
+      padding: 80px 0;
+      background: #fff;
+    }
+
     .stats-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 2px; border: 1px solid var(--line);
-      border-radius: var(--radius); overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
       margin-top: 48px;
     }
+
     .stat {
       padding: 36px 32px;
-      background: #fff; border-right: 1px solid var(--line);
+      background: #fff;
+      border-right: 1px solid var(--line);
     }
-    .stat:last-child { border-right: none; }
+
+    .stat:last-child {
+      border-right: none;
+    }
+
     .stat strong {
-      display: block; font-size: 2.6rem; font-weight: 800;
-      letter-spacing: -0.05em; color: var(--brand-dark);
-      margin-bottom: 6px; line-height: 1;
+      display: block;
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: var(--brand-dark);
+      margin-bottom: 6px;
+      line-height: 1;
     }
-    .stat span { color: var(--text-soft); font-size: 0.88rem; line-height: 1.6; }
+
+    .stat span {
+      color: var(--text-soft);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
 
     /* ─── TESTIMONIALS ─── */
     .testimonials-section {
@@ -530,137 +1069,366 @@
       background: var(--surface-soft);
       border-top: 1px solid var(--line);
     }
+
     .testimonial-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr);
-      gap: 16px; margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 40px;
     }
+
     .testimonial {
-      background: #fff; border: 1px solid var(--line);
-      border-radius: var(--radius); padding: 32px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 32px;
       transition: box-shadow 0.2s;
     }
-    .testimonial:hover { box-shadow: var(--shadow); }
-    .t-stars { display: flex; gap: 3px; margin-bottom: 18px; }
-    .t-stars span { font-size: 0.9rem; }
+
+    .testimonial:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .t-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 18px;
+    }
+
+    .t-stars span {
+      font-size: 0.9rem;
+    }
+
     .testimonial p {
-      font-size: 1rem; line-height: 1.72;
-      color: var(--text); margin-bottom: 24px;
+      font-size: 1rem;
+      line-height: 1.72;
+      color: var(--text);
+      margin-bottom: 24px;
     }
-    .t-meta { display: flex; align-items: center; gap: 12px; }
+
+    .t-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .t-avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      object-fit: cover; border: 2px solid var(--line-strong);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--line-strong);
     }
-    .t-name { font-size: 0.88rem; font-weight: 700; }
-    .t-label { font-size: 0.8rem; color: var(--text-soft); }
+
+    .t-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .t-label {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
 
     /* ─── NEWSLETTER ─── */
-    .newsletter-section { padding: 80px 0; }
+    .newsletter-section {
+      padding: 80px 0;
+    }
+
     .newsletter-inner {
       background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
-      border-radius: 28px; padding: 64px;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 56px; align-items: center;
-      position: relative; overflow: hidden;
+      border-radius: 28px;
+      padding: 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
     }
+
     .newsletter-inner::before {
       content: '';
-      position: absolute; top: -80px; right: -80px;
-      width: 320px; height: 320px; border-radius: 50%;
-      background: rgba(255,255,255,0.06);
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
     }
+
     .newsletter-inner::after {
       content: '';
-      position: absolute; bottom: -60px; right: 180px;
-      width: 200px; height: 200px; border-radius: 50%;
-      background: rgba(255,255,255,0.04);
+      position: absolute;
+      bottom: -60px;
+      right: 180px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
     }
-    .newsletter-left { color: #fff; }
-    .newsletter-left .section-label { color: rgba(255,255,255,0.6); }
-    .newsletter-left .section-title { color: #fff; font-size: clamp(1.7rem, 2.5vw, 2.3rem); }
-    .newsletter-left .section-sub { color: rgba(255,255,255,0.78); }
-    .newsletter-right { display: flex; flex-direction: column; gap: 12px; }
+
+    .newsletter-left {
+      color: #fff;
+    }
+
+    .newsletter-left .section-label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .newsletter-left .section-title {
+      color: #fff;
+      font-size: clamp(1.7rem, 2.5vw, 2.3rem);
+    }
+
+    .newsletter-left .section-sub {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .newsletter-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
     .nl-input {
-      width: 100%; padding: 15px 20px;
-      border: 1.5px solid rgba(255,255,255,0.25);
-      border-radius: 12px; font-size: 0.96rem;
-      color: #fff; background: rgba(255,255,255,0.12);
-      outline: none; font-family: var(--font);
+      width: 100%;
+      padding: 15px 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      font-size: 0.96rem;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+      font-family: var(--font);
       transition: border-color 0.15s;
     }
-    .nl-input::placeholder { color: rgba(255,255,255,0.5); }
-    .nl-input:focus { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.18); }
+
+    .nl-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .nl-input:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
     .nl-btn {
-      width: 100%; padding: 15px;
-      border-radius: 12px; border: none;
-      background: #fff; color: var(--brand-dark);
-      font-size: 0.96rem; font-weight: 700;
-      cursor: pointer; font-family: var(--font);
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      background: #fff;
+      color: var(--brand-dark);
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
       transition: all 0.16s;
     }
-    .nl-btn:hover { background: #f0faf4; transform: translateY(-1px); }
-    .nl-note { font-size: 0.78rem; color: rgba(255,255,255,0.5); text-align: center; }
+
+    .nl-btn:hover {
+      background: #f0faf4;
+      transform: translateY(-1px);
+    }
+
+    .nl-note {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+    }
 
     /* ─── FINAL CTA ─── */
-    .final-cta-section { padding: 80px 0; }
-    .final-cta {
-      text-align: center; max-width: 560px; margin: 0 auto;
+    .final-cta-section {
+      padding: 80px 0;
     }
-    .final-cta .section-title { margin-bottom: 14px; }
-    .final-cta .section-sub { margin: 0 auto 36px; }
-    .final-cta-btns { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    .final-cta {
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .final-cta .section-title {
+      margin-bottom: 14px;
+    }
+
+    .final-cta .section-sub {
+      margin: 0 auto 36px;
+    }
+
+    .final-cta-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
     /* ─── FOOTER ─── */
     footer {
       border-top: 1px solid var(--line);
-      padding: 28px 0 36px; background: #fff;
+      padding: 28px 0 36px;
+      background: #fff;
     }
+
     .footer-inner {
-      display: flex; justify-content: space-between;
-      align-items: center; gap: 16px; flex-wrap: wrap;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
       padding-top: 0;
     }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-links a { color: var(--text-soft); font-size: 0.86rem; font-weight: 500; transition: color 0.15s; }
-    .footer-links a:hover { color: var(--text); }
-    footer span { color: var(--text-muted); font-size: 0.84rem; }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: var(--text-soft);
+      font-size: 0.86rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    footer span {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 1040px) {
-      .hero-shell { min-height: 0; }
-      .hero-copy { max-width: 100%; padding: 44px 24px 32px 40px; }
-      .hero-visual { min-height: 520px; }
-      .img-split { grid-template-columns: 1fr; min-height: auto; }
-      .img-split-photo { height: 360px; }
-      .img-split.reverse { direction: ltr; }
-      .pick-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .stat { border-bottom: 1px solid var(--line); }
-      .photo-trio { grid-template-columns: 1fr 1fr; height: auto; }
-      .photo-trio-item:last-child { display: none; }
-      .photo-trio-item { height: 260px; }
-      .method-grid { grid-template-columns: 1fr 1fr; }
-      .popular-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .newsletter-inner { grid-template-columns: 1fr; padding: 44px; }
+      .hero-shell {
+        min-height: 0;
+      }
+
+      .hero-copy {
+        max-width: 100%;
+        padding: 44px 24px 32px 40px;
+      }
+
+      .hero-visual {
+        min-height: 520px;
+      }
+
+      .img-split {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .img-split-photo {
+        height: 360px;
+      }
+
+      .img-split.reverse {
+        direction: ltr;
+      }
+
+      .pick-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .photo-trio {
+        grid-template-columns: 1fr 1fr;
+        height: auto;
+      }
+
+      .photo-trio-item:last-child {
+        display: none;
+      }
+
+      .photo-trio-item {
+        height: 260px;
+      }
+
+      .method-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .popular-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .newsletter-inner {
+        grid-template-columns: 1fr;
+        padding: 44px;
+      }
     }
 
     @media (max-width: 720px) {
-      nav.nav { display: none; }
-      .hero { padding: 56px 0 44px; }
-      .hero-shell { display: block; min-height: 0; }
-      .hero-copy { padding: 34px 24px; }
-      .hero h1 { font-size: clamp(2.5rem, 12vw, 3.7rem); }
-      .hero-sub { margin-bottom: 20px; }
+      nav.nav {
+        display: none;
+      }
+
+      .hero {
+        padding: 56px 0 44px;
+      }
+
+      .hero-shell {
+        display: block;
+        min-height: 0;
+      }
+
+      .hero-copy {
+        padding: 34px 24px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.5rem, 12vw, 3.7rem);
+      }
+
+      .hero-sub {
+        margin-bottom: 20px;
+      }
+
       .hero-visual {
         display: block;
         min-height: 260px;
       }
-      .section { padding: 52px 0; }
-      .img-split-content { padding: 40px 28px; }
-      .pick-grid, .stats-grid, .testimonial-grid, .how-steps, .method-grid { grid-template-columns: 1fr; }
-      .how-steps::before { display: none; }
-      .photo-full { height: 380px; }
-      .photo-trio { display: none; }
+
+      .section {
+        padding: 52px 0;
+      }
+
+      .img-split-content {
+        padding: 40px 28px;
+      }
+
+      .pick-grid,
+      .stats-grid,
+      .testimonial-grid,
+      .how-steps,
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .how-steps::before {
+        display: none;
+      }
+
+      .photo-full {
+        height: 380px;
+      }
+
+      .photo-trio {
+        display: none;
+      }
+
       .popular-row {
         display: grid;
         grid-auto-flow: column;
@@ -670,505 +1438,625 @@
         padding-bottom: 6px;
         scroll-snap-type: x proximity;
       }
-      .popular-item { scroll-snap-align: start; }
-      .proof-bar-inner { gap: 18px; }
-      .proof-divider { display: none; }
-      .newsletter-inner { padding: 32px 24px; }
-      .stats-grid { border: none; }
-      .stat { border: 1px solid var(--line); border-radius: var(--radius-sm); }
+
+      .popular-item {
+        scroll-snap-align: start;
+      }
+
+      .proof-bar-inner {
+        gap: 18px;
+      }
+
+      .proof-divider {
+        display: none;
+      }
+
+      .newsletter-inner {
+        padding: 32px 24px;
+      }
+
+      .stats-grid {
+        border: none;
+      }
+
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+      }
     }
   </style>
 </head>
+
 <body>
 
-<!-- ─── NAV ─── -->
-<header class="topbar">
-  <div class="container topbar-inner">
-    <a href="#" class="logo">
-      <span class="logo-mark">OK</span>
-      OkToWatch
-    </a>
-    <nav class="nav">
-      <a href="#how">How it works</a>
-      <a href="#picks">Safe picks</a>
-      <a href="#method">Our method</a>
-    </nav>
-    <div class="nav-cta">
-      <a href="/signin/" class="btn btn-outline">Log in</a>
-      <a href="/signup/" class="btn btn-primary">Try it free</a>
-    </div>
-  </div>
-</header>
-
-<main>
-
-<!-- ─── HERO ─── -->
-<section class="hero">
-  <div class="container hero-shell">
-    <div class="hero-copy">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        Trusted by 80,000+ parents
+  <!-- ─── NAV ─── -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="#" class="logo">
+        <span class="logo-mark">OK</span>
+        OkToWatch
+      </a>
+      <nav class="nav">
+        <a href="#how">How it works</a>
+        <a href="#picks">Safe picks</a>
+        <a href="#method">Our method</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="/signin/" class="btn btn-outline">Log in</a>
+        <a href="/signup/" class="btn btn-primary">Try it free</a>
       </div>
-      <h1>Know before<br>they <em>watch.</em></h1>
-      <p class="hero-sub">
-        Search any movie or show and get a clear, instant content breakdown for your kids.
-      </p>
+    </div>
+  </header>
 
-      <div class="search-outer">
-        <div class="search-widget">
-          <div class="sw-input-row">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input id="swField" class="sw-field" type="text" placeholder="Search any title…" autocomplete="off" />
+  <main>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero">
+      <div class="container hero-shell">
+        <div class="hero-copy">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Trusted by 80,000+ parents
           </div>
-          <div id="swResults" class="sw-results"></div>
+          <h1>Know before<br>they <em>watch.</em></h1>
+          <p class="hero-sub">
+            Search any movie or show and get a clear, instant content breakdown for your kids.
+          </p>
+
+          <div class="search-outer">
+            <div class="search-widget">
+              <div class="sw-input-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input id="swField" class="sw-field" type="text" placeholder="Search any title…" autocomplete="off" />
+              </div>
+              <div id="swResults" class="sw-results"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <img src="/images/hero-family.png" alt="">
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="hero-visual" aria-hidden="true">
-      <img src="/images/family-moments-green.png" alt="">
-    </div>
-  </div>
-</section>
-
-<!-- ─── PROOF BAR ─── -->
-<div class="proof-bar">
-  <div class="container proof-bar-inner">
-    <div class="proof-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span><strong>50,000+</strong> titles reviewed</span>
-    </div>
-    <div class="proof-divider"></div>
-    <div class="proof-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span>Results in <strong>under 10 seconds</strong></span>
-    </div>
-    <div class="proof-divider"></div>
-    <div class="proof-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span><strong>12,000+</strong> parent reviewers</span>
-    </div>
-    <div class="proof-divider"></div>
-    <div class="proof-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Reviewed by <strong>child psychologists</strong></span>
-    </div>
-  </div>
-
-</div>
-
-<section class="popular-section">
-  <div class="container">
-    <div class="popular-header">
-      <div>
-        <p class="section-label">Popular now</p>
-        <h2 class="section-title" style="margin-bottom:0">Popular with parents this week</h2>
-      </div>
-      <a href="/search/" class="btn btn-outline">Browse titles</a>
-    </div>
-    <div id="popularRow" class="popular-row loading">
-      <a class="popular-item" href="#"><div class="popular-poster"></div><div class="popular-body"><div class="popular-title">Loading</div><div class="popular-meta">Loading</div></div></a>
-      <a class="popular-item" href="#"><div class="popular-poster"></div><div class="popular-body"><div class="popular-title">Loading</div><div class="popular-meta">Loading</div></div></a>
-      <a class="popular-item" href="#"><div class="popular-poster"></div><div class="popular-body"><div class="popular-title">Loading</div><div class="popular-meta">Loading</div></div></a>
-      <a class="popular-item" href="#"><div class="popular-poster"></div><div class="popular-body"><div class="popular-title">Loading</div><div class="popular-meta">Loading</div></div></a>
-      <a class="popular-item" href="#"><div class="popular-poster"></div><div class="popular-body"><div class="popular-title">Loading</div><div class="popular-meta">Loading</div></div></a>
-    </div>
-  </div>
-</section>
-
-<!-- ─── IMAGE SPLIT 1: Family couch moment ─── -->
-<section class="img-split">
-  <div class="img-split-photo">
-    <img
-      src="/images/problem-family-green.png"
-      alt="Family laughing together watching TV on the couch"
-    />
-  </div>
-  <div class="img-split-content">
-    <p class="section-label">The problem</p>
-    <h2 class="section-title">Movie night shouldn't start with 20 minutes of research.</h2>
-    <p class="section-sub">Every parent knows it — kids on the couch, snacks ready, and you're deep in a forum trying to figure out if this show is actually okay. OkToWatch cuts that down to ten seconds.</p>
-    <div class="feature-chips">
-      <span class="feature-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        No more rabbit holes
-      </span>
-      <span class="feature-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        One clear answer
-      </span>
-      <span class="feature-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Works for games &amp; apps too
-      </span>
-    </div>
-    <div>
-      <a href="#" class="btn btn-primary">Check Your First Title</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─── HOW IT WORKS ─── -->
-<section id="how" class="how-section">
-  <div class="container">
-    <div class="how-inner">
-      <p class="section-label" style="text-align:center">How it works</p>
-      <h2 class="section-title" style="text-align:center">Three steps. Ten seconds.</h2>
-      <div class="how-steps">
-        <div class="how-step">
-          <div class="step-num">1</div>
-          <h3>Type any title</h3>
-          <p>Movies, shows, games, or apps — search our library of 50,000+ titles instantly.</p>
+    <!-- ─── PROOF BAR ─── -->
+    <div class="proof-bar">
+      <div class="container proof-bar-inner">
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span><strong>50,000+</strong> titles reviewed</span>
         </div>
-        <div class="how-step">
-          <div class="step-num">2</div>
-          <h3>See what's inside</h3>
-          <p>Violence, language, mature themes — clearly laid out. No walls of text required.</p>
+        <div class="proof-divider"></div>
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>Results in <strong>under 10 seconds</strong></span>
         </div>
-        <div class="how-step">
-          <div class="step-num">3</div>
-          <h3>Press play (or not)</h3>
-          <p>Green, yellow, or red. Make the call in seconds and get back to your family.</p>
+        <div class="proof-divider"></div>
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <span><strong>12,000+</strong> parent reviewers</span>
+        </div>
+        <div class="proof-divider"></div>
+        <div class="proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span>Reviewed by <strong>child psychologists</strong></span>
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- ─── IMAGE SPLIT 2: Parent & child (reversed) ─── -->
-<section class="img-split reverse">
-  <div class="img-split-photo">
-    <img
-      src="https://images.unsplash.com/photo-1581952976147-5a2d15560349?w=900&q=85&fit=crop&crop=faces"
-      alt="Parent and child sharing a moment with popcorn"
-    />
-  </div>
-  <div class="img-split-content">
-    <p class="section-label">For your whole family</p>
-    <h2 class="section-title">Matched to each child's age and comfort level.</h2>
-    <p class="section-sub">Create profiles for each of your kids. OkToWatch adjusts what "safe" means based on their age, sensitivities, and your own household rules — not some generic rating board's call.</p>
-    <div class="feature-chips">
-      <span class="feature-chip">Ages 2–5</span>
-      <span class="feature-chip">Ages 6–9</span>
-      <span class="feature-chip">Pre-teens 10–13</span>
-      <span class="feature-chip">Teens 14+</span>
     </div>
-    <div>
-      <a href="#" class="btn btn-primary">Set Up Family Profiles</a>
-    </div>
-  </div>
-</section>
 
-<!-- ─── 3-UP PHOTO GRID ─── -->
-<section class="photo-grid-section">
-  <div class="container">
-    <div class="photo-trio-header">
-      <div>
-        <p class="section-label">Real family moments</p>
-        <h2 class="section-title">More presence. Less second-guessing.</h2>
-      </div>
-      <a href="#" class="btn btn-outline">Read parent stories</a>
-    </div>
-    <div class="photo-trio">
-      <div class="photo-trio-item">
-        <img src="/images/family-moments-green.png" alt="Children laughing and having fun watching together" />
-        <div class="photo-trio-caption">
-          <strong>Friday nights sorted</strong>
-          <span>No more last-minute panic searches</span>
-        </div>
-      </div>
-      <div class="photo-trio-item">
-        <img src="/images/problem-family-green.png" alt="Diverse family watching TV together happily" />
-        <div class="photo-trio-caption">
-          <strong>Every family, every setup</strong>
-          <span>Works for all family dynamics</span>
-        </div>
-      </div>
-      <div class="photo-trio-item">
-        <img src="/images/family-moments-green.png" alt="Grandparent and grandchild watching together" />
-        <div class="photo-trio-caption">
-          <strong>Multi-generational households</strong>
-          <span>Safe picks for grandparents too</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── FULL-BLEED PHOTO with overlay ─── -->
-<div class="photo-full">
-  <img
-    src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1600&q=80&fit=crop&crop=center"
-    alt="Happy family, parents watching kids enjoy a movie"
-  />
-  <div class="photo-full-overlay">
-    <div class="photo-full-text">
-      <p class="section-label">The result</p>
-      <h2 class="section-title">"We're watching in 10 seconds now."</h2>
-      <p class="section-sub" style="margin-bottom: 28px;">I used to spend 15 minutes skimming forums while my kids complained. Now I type the name in, see the green light, and we're settled. — Sarah M., mum of two</p>
-      <a href="#" class="btn btn-white">Read more stories</a>
-    </div>
-  </div>
-</div>
-
-<!-- ─── SAFE PICKS ─── -->
-<section id="picks" class="picks-section">
-  <div class="container">
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 36px; flex-wrap: wrap; gap: 16px;">
-      <div>
-        <p class="section-label">Curated by mood</p>
-        <h2 class="section-title" style="margin-bottom:0">Tonight's safe picks</h2>
-      </div>
-      <a href="#" class="btn btn-outline">See all picks</a>
-    </div>
-    <div id="safePicksGrid" class="pick-grid">
-      <article class="pick-card">
-        <div class="poster poster-green"><div class="poster-content"><small>Loading</small><div><h4>Loading</h4><span class="badge badge-safe" style="margin-top:6px;width:fit-content;">Loading</span></div></div></div>
-        <div class="pick-body"><div class="pick-meta"><span>Loading</span></div><p>Loading...</p></div>
-      </article>
-      <article class="pick-card">
-        <div class="poster poster-blue"><div class="poster-content"><small>Loading</small><div><h4>Loading</h4><span class="badge badge-caution" style="margin-top:6px;width:fit-content;">Loading</span></div></div></div>
-        <div class="pick-body"><div class="pick-meta"><span>Loading</span></div><p>Loading...</p></div>
-      </article>
-      <article class="pick-card">
-        <div class="poster poster-amber"><div class="poster-content"><small>Loading</small><div><h4>Loading</h4><span class="badge badge-caution" style="margin-top:6px;width:fit-content;">Loading</span></div></div></div>
-        <div class="pick-body"><div class="pick-meta"><span>Loading</span></div><p>Loading...</p></div>
-      </article>
-      <article class="pick-card">
-        <div class="poster poster-teal"><div class="poster-content"><small>Loading</small><div><h4>Loading</h4><span class="badge badge-safe" style="margin-top:6px;width:fit-content;">Loading</span></div></div></div>
-        <div class="pick-body"><div class="pick-meta"><span>Loading</span></div><p>Loading...</p></div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ─── STATS ─── -->
-<section class="stats-section">
-  <div class="container">
-    <p class="section-label">By the numbers</p>
-    <div class="stats-grid">
-      <div class="stat">
-        <strong>50K+</strong>
-        <span>Titles reviewed across movies, shows, games, and apps.</span>
-      </div>
-      <div class="stat">
-        <strong>10 sec</strong>
-        <span>Average time from search to safety signal.</span>
-      </div>
-      <div class="stat">
-        <strong>12K+</strong>
-        <span>Verified parent reviewers contributing to ratings.</span>
-      </div>
-      <div class="stat">
-        <strong>4 age bands</strong>
-        <span>Custom safety thresholds for each stage of childhood.</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── METHODOLOGY ─── -->
-<section id="method" class="method-section">
-  <div class="container">
-    <p class="section-label">Transparency</p>
-    <h2 class="section-title">Who reviews these titles?</h2>
-    <p class="section-sub">Parents are right to be skeptical of algorithms. Every rating combines three independent sources.</p>
-    <div class="method-grid">
-      <div class="method-card">
-        <div class="method-num">01</div>
-        <h3>Verified parent reviewers</h3>
-        <p>Over 12,000 active parents flag specific content moments — not just vibes. Their notes appear directly in your breakdown so you see exactly what they saw.</p>
-      </div>
-      <div class="method-card">
-        <div class="method-num">02</div>
-        <h3>Child psychology guidance</h3>
-        <p>Our age-band criteria are shaped by child psychologists and educators — so ratings reflect emotional readiness, not just content categories from a rating board.</p>
-      </div>
-      <div class="method-card">
-        <div class="method-num">03</div>
-        <h3>Editorial human oversight</h3>
-        <p>Every title goes through an editorial review before publishing. No automated rating goes live without a human check. Ever.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── IMAGE SPLIT 3: Grandparent / diverse family ─── -->
-<section class="img-split" style="border-top: 1px solid var(--line);">
-  <div class="img-split-photo">
-    <img
-      src="/images/family-moments-green.png"
-      alt="Grandparents and grandchildren watching together"
-    />
-  </div>
-  <div class="img-split-content">
-    <p class="section-label">Every family, every dynamic</p>
-    <h2 class="section-title">Built for how families actually watch.</h2>
-    <p class="section-sub">Single parents. Multi-generational households. Co-parenting setups. OkToWatch doesn't assume a typical family — it works for yours.</p>
-    <div class="feature-chips">
-      <span class="feature-chip">Multiple child profiles</span>
-      <span class="feature-chip">Shareable watchlists</span>
-      <span class="feature-chip">Grandparent-friendly</span>
-    </div>
-    <div>
-      <a href="/signup/" class="btn btn-primary">Start Free — No Card Needed</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─── TESTIMONIALS ─── -->
-<section class="testimonials-section">
-  <div class="container">
-    <p class="section-label">Parent stories</p>
-    <h2 class="section-title">What families are saying</h2>
-    <div class="testimonial-grid">
-      <article class="testimonial">
-        <div class="t-stars">
-          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-        </div>
-        <p>"I used to spend 15 minutes skimming IMDb parent guides while my kids complained on the couch. Now I type the name in, see the green light, and we're watching in 10 seconds."</p>
-        <div class="t-meta">
-          <img class="t-avatar" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&q=80&fit=crop&crop=face" alt="Sarah M." />
+    <section class="popular-section">
+      <div class="container">
+        <div class="popular-header">
           <div>
-            <div class="t-name">Sarah M.</div>
-            <div class="t-label">Mum of two, aged 6 and 9</div>
+            <p class="section-label">Popular now</p>
+            <h2 class="section-title" style="margin-bottom:0">Popular with parents this week</h2>
+          </div>
+          <a href="/search/" class="btn btn-outline">Browse titles</a>
+        </div>
+        <div id="popularRow" class="popular-row loading">
+          <a class="popular-item" href="#">
+            <div class="popular-poster"></div>
+            <div class="popular-body">
+              <div class="popular-title">Loading</div>
+              <div class="popular-meta">Loading</div>
+            </div>
+          </a>
+          <a class="popular-item" href="#">
+            <div class="popular-poster"></div>
+            <div class="popular-body">
+              <div class="popular-title">Loading</div>
+              <div class="popular-meta">Loading</div>
+            </div>
+          </a>
+          <a class="popular-item" href="#">
+            <div class="popular-poster"></div>
+            <div class="popular-body">
+              <div class="popular-title">Loading</div>
+              <div class="popular-meta">Loading</div>
+            </div>
+          </a>
+          <a class="popular-item" href="#">
+            <div class="popular-poster"></div>
+            <div class="popular-body">
+              <div class="popular-title">Loading</div>
+              <div class="popular-meta">Loading</div>
+            </div>
+          </a>
+          <a class="popular-item" href="#">
+            <div class="popular-poster"></div>
+            <div class="popular-body">
+              <div class="popular-title">Loading</div>
+              <div class="popular-meta">Loading</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── IMAGE SPLIT 1: Family couch moment ─── -->
+    <section class="img-split">
+      <div class="img-split-photo">
+        <img src="/images/split1-problem-family.png" alt="Parent searching on phone while kids wait on the couch" />
+      </div>
+      <div class="img-split-content">
+        <p class="section-label">The problem</p>
+        <h2 class="section-title">Movie night shouldn't start with 20 minutes of research.</h2>
+        <p class="section-sub">Every parent knows it — kids on the couch, snacks ready, and you're deep in a forum
+          trying to figure out if this show is actually okay. OkToWatch cuts that down to ten seconds.</p>
+        <div class="feature-chips">
+          <span class="feature-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            No more rabbit holes
+          </span>
+          <span class="feature-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            One clear answer
+          </span>
+          <span class="feature-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Works for games &amp; apps too
+          </span>
+        </div>
+        <div>
+          <a href="#" class="btn btn-primary">Check Your First Title</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── HOW IT WORKS ─── -->
+    <section id="how" class="how-section">
+      <div class="container">
+        <div class="how-inner">
+          <p class="section-label" style="text-align:center">How it works</p>
+          <h2 class="section-title" style="text-align:center">Three steps. Ten seconds.</h2>
+          <div class="how-steps">
+            <div class="how-step">
+              <div class="step-num">1</div>
+              <h3>Type any title</h3>
+              <p>Movies, shows, games, or apps — search our library of 50,000+ titles instantly.</p>
+            </div>
+            <div class="how-step">
+              <div class="step-num">2</div>
+              <h3>See what's inside</h3>
+              <p>Violence, language, mature themes — clearly laid out. No walls of text required.</p>
+            </div>
+            <div class="how-step">
+              <div class="step-num">3</div>
+              <h3>Press play (or not)</h3>
+              <p>Green, yellow, or red. Make the call in seconds and get back to your family.</p>
+            </div>
           </div>
         </div>
-      </article>
-      <article class="testimonial">
-        <div class="t-stars">
-          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      </div>
+    </section>
+
+    <!-- ─── IMAGE SPLIT 2: Parent & child (reversed) ─── -->
+    <section class="img-split reverse">
+      <div class="img-split-photo">
+        <img src="/images/split2-parent-child.png" alt="Mother and son laughing together with popcorn" />
+      </div>
+      <div class="img-split-content">
+        <p class="section-label">For your whole family</p>
+        <h2 class="section-title">Matched to each child's age and comfort level.</h2>
+        <p class="section-sub">Create profiles for each of your kids. OkToWatch adjusts what "safe" means based on their
+          age, sensitivities, and your own household rules — not some generic rating board's call.</p>
+        <div class="feature-chips">
+          <span class="feature-chip">Ages 2–5</span>
+          <span class="feature-chip">Ages 6–9</span>
+          <span class="feature-chip">Pre-teens 10–13</span>
+          <span class="feature-chip">Teens 14+</span>
         </div>
-        <p>"The green, yellow, red system makes so much more sense than vague age ratings. My kids know it now too — they show me the green badge before asking to watch something new."</p>
-        <div class="t-meta">
-          <img class="t-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80&fit=crop&crop=face" alt="David K." />
+        <div>
+          <a href="#" class="btn btn-primary">Set Up Family Profiles</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 3-UP PHOTO GRID ─── -->
+    <section class="photo-grid-section">
+      <div class="container">
+        <div class="photo-trio-header">
           <div>
-            <div class="t-name">David K.</div>
-            <div class="t-label">Dad of three, family account user</div>
+            <p class="section-label">Real family moments</p>
+            <h2 class="section-title">More presence. Less second-guessing.</h2>
+          </div>
+          <a href="#" class="btn btn-outline">Read parent stories</a>
+        </div>
+        <div class="photo-trio">
+          <div class="photo-trio-item">
+            <img src="/images/trio1-kids-laughing.png" alt="Children laughing and having fun watching together" />
+            <div class="photo-trio-caption">
+              <strong>Friday nights sorted</strong>
+              <span>No more last-minute panic searches</span>
+            </div>
+          </div>
+          <div class="photo-trio-item">
+            <img src="/images/trio2-diverse-family.png" alt="Diverse family enjoying movie night together" />
+            <div class="photo-trio-caption">
+              <strong>Every family, every setup</strong>
+              <span>Works for all family dynamics</span>
+            </div>
+          </div>
+          <div class="photo-trio-item">
+            <img src="/images/trio3-grandparent.png" alt="Grandmother and granddaughter watching together" />
+            <div class="photo-trio-caption">
+              <strong>Multi-generational households</strong>
+              <span>Safe picks for the whole family</span>
+            </div>
           </div>
         </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ─── NEWSLETTER ─── -->
-<section class="newsletter-section">
-  <div class="container">
-    <div class="newsletter-inner">
-      <div class="newsletter-left">
-        <p class="section-label">Every Friday at 4 PM</p>
-        <h2 class="section-title">3 hand-picked titles. In your inbox before the weekend scramble.</h2>
-        <p class="section-sub">Age-appropriate, parent-approved picks — ready before the "what are we watching?" debate even starts.</p>
       </div>
-      <div class="newsletter-right">
-        <input type="email" class="nl-input" placeholder="Your email address" id="nlEmail" />
-        <button class="nl-btn" id="nlBtn">Send Me Friday Picks</button>
-        <p class="nl-note">No spam. Unsubscribe anytime.</p>
+    </section>
+
+    <!-- ─── FULL-BLEED PHOTO with overlay ─── -->
+    <div class="photo-full">
+      <img src="/images/fullbleed-family-quote.png" alt="Happy family enjoying a cozy movie night together" />
+      <div class="photo-full-overlay">
+        <div class="photo-full-text">
+          <p class="section-label">The result</p>
+          <h2 class="section-title">"We're watching in 10 seconds now."</h2>
+          <p class="section-sub" style="margin-bottom: 28px;">I used to spend 15 minutes skimming forums while my kids
+            complained. Now I type the name in, see the green light, and we're settled. — Sarah M., mum of two</p>
+          <a href="#" class="btn btn-white">Read more stories</a>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ─── FINAL CTA ─── -->
-<section class="final-cta-section">
-  <div class="container">
-    <div class="final-cta">
-      <p class="section-label">Get started</p>
-      <h2 class="section-title">Stop guessing.<br>Start knowing.</h2>
-      <p class="section-sub">One search. A clear answer. Movie night sorted.</p>
-      <div class="final-cta-btns">
-        <a href="#" class="btn btn-primary btn-lg">Search Your First Title</a>
-        <a href="#how" class="btn btn-outline btn-lg">How it works</a>
+    <!-- ─── SAFE PICKS ─── -->
+    <section id="picks" class="picks-section">
+      <div class="container">
+        <div
+          style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 36px; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <p class="section-label">Curated by mood</p>
+            <h2 class="section-title" style="margin-bottom:0">Tonight's safe picks</h2>
+          </div>
+          <a href="#" class="btn btn-outline">See all picks</a>
+        </div>
+        <div id="safePicksGrid" class="pick-grid">
+          <article class="pick-card">
+            <div class="poster poster-green">
+              <div class="poster-content"><small>Loading</small>
+                <div>
+                  <h4>Loading</h4><span class="badge badge-safe"
+                    style="margin-top:6px;width:fit-content;">Loading</span>
+                </div>
+              </div>
+            </div>
+            <div class="pick-body">
+              <div class="pick-meta"><span>Loading</span></div>
+              <p>Loading...</p>
+            </div>
+          </article>
+          <article class="pick-card">
+            <div class="poster poster-blue">
+              <div class="poster-content"><small>Loading</small>
+                <div>
+                  <h4>Loading</h4><span class="badge badge-caution"
+                    style="margin-top:6px;width:fit-content;">Loading</span>
+                </div>
+              </div>
+            </div>
+            <div class="pick-body">
+              <div class="pick-meta"><span>Loading</span></div>
+              <p>Loading...</p>
+            </div>
+          </article>
+          <article class="pick-card">
+            <div class="poster poster-amber">
+              <div class="poster-content"><small>Loading</small>
+                <div>
+                  <h4>Loading</h4><span class="badge badge-caution"
+                    style="margin-top:6px;width:fit-content;">Loading</span>
+                </div>
+              </div>
+            </div>
+            <div class="pick-body">
+              <div class="pick-meta"><span>Loading</span></div>
+              <p>Loading...</p>
+            </div>
+          </article>
+          <article class="pick-card">
+            <div class="poster poster-teal">
+              <div class="poster-content"><small>Loading</small>
+                <div>
+                  <h4>Loading</h4><span class="badge badge-safe"
+                    style="margin-top:6px;width:fit-content;">Loading</span>
+                </div>
+              </div>
+            </div>
+            <div class="pick-body">
+              <div class="pick-meta"><span>Loading</span></div>
+              <p>Loading...</p>
+            </div>
+          </article>
+        </div>
       </div>
+    </section>
+
+    <!-- ─── STATS ─── -->
+    <section class="stats-section">
+      <div class="container">
+        <p class="section-label">By the numbers</p>
+        <div class="stats-grid">
+          <div class="stat">
+            <strong>50K+</strong>
+            <span>Titles reviewed across movies, shows, games, and apps.</span>
+          </div>
+          <div class="stat">
+            <strong>10 sec</strong>
+            <span>Average time from search to safety signal.</span>
+          </div>
+          <div class="stat">
+            <strong>12K+</strong>
+            <span>Verified parent reviewers contributing to ratings.</span>
+          </div>
+          <div class="stat">
+            <strong>4 age bands</strong>
+            <span>Custom safety thresholds for each stage of childhood.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── METHODOLOGY ─── -->
+    <section id="method" class="method-section">
+      <div class="container">
+        <p class="section-label">Transparency</p>
+        <h2 class="section-title">Who reviews these titles?</h2>
+        <p class="section-sub">Parents are right to be skeptical of algorithms. Every rating combines three independent
+          sources.</p>
+        <div class="method-grid">
+          <div class="method-card">
+            <div class="method-num">01</div>
+            <h3>Verified parent reviewers</h3>
+            <p>Over 12,000 active parents flag specific content moments — not just vibes. Their notes appear directly in
+              your breakdown so you see exactly what they saw.</p>
+          </div>
+          <div class="method-card">
+            <div class="method-num">02</div>
+            <h3>Child psychology guidance</h3>
+            <p>Our age-band criteria are shaped by child psychologists and educators — so ratings reflect emotional
+              readiness, not just content categories from a rating board.</p>
+          </div>
+          <div class="method-card">
+            <div class="method-num">03</div>
+            <h3>Editorial human oversight</h3>
+            <p>Every title goes through an editorial review before publishing. No automated rating goes live without a
+              human check. Ever.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── IMAGE SPLIT 3: Grandparent / diverse family ─── -->
+    <section class="img-split" style="border-top: 1px solid var(--line);">
+      <div class="img-split-photo">
+        <img src="/images/split3-multigenerational.png"
+          alt="Multi-generational diverse family watching content together" />
+      </div>
+      <div class="img-split-content">
+        <p class="section-label">Every family, every dynamic</p>
+        <h2 class="section-title">Built for how families actually watch.</h2>
+        <p class="section-sub">Single parents. Multi-generational households. Co-parenting setups. OkToWatch doesn't
+          assume a typical family — it works for yours.</p>
+        <div class="feature-chips">
+          <span class="feature-chip">Multiple child profiles</span>
+          <span class="feature-chip">Shareable watchlists</span>
+          <span class="feature-chip">Grandparent-friendly</span>
+        </div>
+        <div>
+          <a href="/signup/" class="btn btn-primary">Start Free — No Card Needed</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TESTIMONIALS ─── -->
+    <section class="testimonials-section">
+      <div class="container">
+        <p class="section-label">Parent stories</p>
+        <h2 class="section-title">What families are saying</h2>
+        <div class="testimonial-grid">
+          <article class="testimonial">
+            <div class="t-stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p>"I used to spend 15 minutes skimming IMDb parent guides while my kids complained on the couch. Now I type
+              the name in, see the green light, and we're watching in 10 seconds."</p>
+            <div class="t-meta">
+              <img class="t-avatar" src="/images/avatar-sarah.png" alt="Sarah M." />
+              <div>
+                <div class="t-name">Sarah M.</div>
+                <div class="t-label">Mum of two, aged 6 and 9</div>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial">
+            <div class="t-stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p>"The green, yellow, red system makes so much more sense than vague age ratings. My kids know it now too —
+              they show me the green badge before asking to watch something new."</p>
+            <div class="t-meta">
+              <img class="t-avatar" src="/images/avatar-david.png" alt="David K." />
+              <div>
+                <div class="t-name">David K.</div>
+                <div class="t-label">Dad of three, family account user</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── NEWSLETTER ─── -->
+    <section class="newsletter-section">
+      <div class="container">
+        <div class="newsletter-inner">
+          <div class="newsletter-left">
+            <p class="section-label">Every Friday at 4 PM</p>
+            <h2 class="section-title">3 hand-picked titles. In your inbox before the weekend scramble.</h2>
+            <p class="section-sub">Age-appropriate, parent-approved picks — ready before the "what are we watching?"
+              debate even starts.</p>
+          </div>
+          <div class="newsletter-right">
+            <input type="email" class="nl-input" placeholder="Your email address" id="nlEmail" />
+            <button class="nl-btn" id="nlBtn">Send Me Friday Picks</button>
+            <p class="nl-note">No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── FINAL CTA ─── -->
+    <section class="final-cta-section">
+      <div class="container">
+        <div class="final-cta">
+          <p class="section-label">Get started</p>
+          <h2 class="section-title">Stop guessing.<br>Start knowing.</h2>
+          <p class="section-sub">One search. A clear answer. Movie night sorted.</p>
+          <div class="final-cta-btns">
+            <a href="#" class="btn btn-primary btn-lg">Search Your First Title</a>
+            <a href="#how" class="btn btn-outline btn-lg">How it works</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="container footer-inner">
+      <a href="#" class="logo">
+        <span class="logo-mark" style="width:30px;height:30px;font-size:0.7rem;">OK</span>
+        OkToWatch
+      </a>
+      <div class="footer-links">
+        <a href="#">About</a>
+        <a href="#">Our Method</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+      <span>© 2026 OkToWatch</span>
     </div>
-  </div>
-</section>
+  </footer>
 
-</main>
+  <script>
+    const HOME_FALLBACK = {
+      trending: [
+        { title: 'Inside Out 2', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Big feelings, gentle tone, family-friendly emotional themes.' },
+        { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'Very parent-friendly, calm humor, easy family watch.' },
+        { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Adventure with mild peril and strong family themes.' },
+        { title: 'Minecraft', type: 'Game', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Creative and social, but online play needs parent awareness.' },
+        { title: 'Wednesday', type: 'TV Show', age_guidance: 'Teens', safety_label: 'Caution', summary: 'Dark humor, creepy tone, better for older kids.' }
+      ],
+      safe_picks: [
+        { title: 'Inside Out 2', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Emotional but family-friendly, with themes most kids can handle well.' },
+        { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'Reliable pick for younger kids and one of the easiest family watches.' },
+        { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Adventure, music, and mild peril without pushing too far.' },
+        { title: 'The Wild Robot', type: 'Movie', age_guidance: 'Ages 7+', safety_label: 'Safe', summary: 'Warm-hearted story with action moments that stay manageable for most families.' }
+      ],
+      popular: [
+        { title: 'Inside Out 2', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'One of the most recognizable family titles right now.' },
+        { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'A dependable option for family co-viewing.' },
+        { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Still a strong family-night favorite.' },
+        { title: 'Wednesday', type: 'TV Show', age_guidance: 'Teens', safety_label: 'Caution', summary: 'Popular older-kid and teen pick.' },
+        { title: 'Minecraft', type: 'Game', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Huge recognition value for parents with gaming kids.' }
+      ]
+    };
 
-<!-- ─── FOOTER ─── -->
-<footer>
-  <div class="container footer-inner">
-    <a href="#" class="logo">
-      <span class="logo-mark" style="width:30px;height:30px;font-size:0.7rem;">OK</span>
-      OkToWatch
-    </a>
-    <div class="footer-links">
-      <a href="#">About</a>
-      <a href="#">Our Method</a>
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Contact</a>
-    </div>
-    <span>© 2026 OkToWatch</span>
-  </div>
-</footer>
+    const field = document.getElementById('swField');
+    const results = document.getElementById('swResults');
+    const safePicksGrid = document.getElementById('safePicksGrid');
+    const popularRow = document.getElementById('popularRow');
+    let homeData = HOME_FALLBACK;
 
-<script>
-  const HOME_FALLBACK = {
-    trending: [
-      { title:'Inside Out 2', type:'Movie', age_guidance:'Ages 6+', safety_label:'Safe', summary:'Big feelings, gentle tone, family-friendly emotional themes.' },
-      { title:'Bluey', type:'TV Show', age_guidance:'Ages 3+', safety_label:'Safe', summary:'Very parent-friendly, calm humor, easy family watch.' },
-      { title:'Moana', type:'Movie', age_guidance:'Ages 6+', safety_label:'Safe', summary:'Adventure with mild peril and strong family themes.' },
-      { title:'Minecraft', type:'Game', age_guidance:'Ages 8+', safety_label:'Caution', summary:'Creative and social, but online play needs parent awareness.' },
-      { title:'Wednesday', type:'TV Show', age_guidance:'Teens', safety_label:'Caution', summary:'Dark humor, creepy tone, better for older kids.' }
-    ],
-    safe_picks: [
-      { title:'Inside Out 2', type:'Movie', age_guidance:'Ages 6+', safety_label:'Safe', summary:'Emotional but family-friendly, with themes most kids can handle well.' },
-      { title:'Bluey', type:'TV Show', age_guidance:'Ages 3+', safety_label:'Safe', summary:'Reliable pick for younger kids and one of the easiest family watches.' },
-      { title:'Moana', type:'Movie', age_guidance:'Ages 6+', safety_label:'Safe', summary:'Adventure, music, and mild peril without pushing too far.' },
-      { title:'The Wild Robot', type:'Movie', age_guidance:'Ages 7+', safety_label:'Safe', summary:'Warm-hearted story with action moments that stay manageable for most families.' }
-    ],
-    popular: [
-      { title:'Inside Out 2', type:'Movie', age_guidance:'Ages 6+', safety_label:'Safe', summary:'One of the most recognizable family titles right now.' },
-      { title:'Bluey', type:'TV Show', age_guidance:'Ages 3+', safety_label:'Safe', summary:'A dependable option for family co-viewing.' },
-      { title:'Moana', type:'Movie', age_guidance:'Ages 6+', safety_label:'Safe', summary:'Still a strong family-night favorite.' },
-      { title:'Wednesday', type:'TV Show', age_guidance:'Teens', safety_label:'Caution', summary:'Popular older-kid and teen pick.' },
-      { title:'Minecraft', type:'Game', age_guidance:'Ages 8+', safety_label:'Caution', summary:'Huge recognition value for parents with gaming kids.' }
-    ]
-  };
+    function initials(t) { return t.split(' ').map(w => w[0]).join('').slice(0, 3).toUpperCase(); }
+    function escapeHtml(text) {
+      return String(text || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function slugTitle(title) { return `/search/?q=${encodeURIComponent(title)}`; }
+    function posterUrl(path) { return path ? `https://image.tmdb.org/t/p/w500${path}` : ''; }
+    function badgeClass(label) {
+      const value = String(label || '').toLowerCase();
+      if (value.includes('safe')) return 'badge-safe';
+      if (value.includes('caution')) return 'badge-caution';
+      return 'badge-danger';
+    }
+    function posterTone(index) {
+      return ['poster-green', 'poster-blue', 'poster-amber', 'poster-teal'][index % 4];
+    }
 
-  const field = document.getElementById('swField');
-  const results = document.getElementById('swResults');
-  const safePicksGrid = document.getElementById('safePicksGrid');
-  const popularRow = document.getElementById('popularRow');
-  let homeData = HOME_FALLBACK;
+    function uniqByTitle(items) {
+      return items.filter((item, index, arr) => arr.findIndex(other => other.title === item.title) === index);
+    }
 
-  function initials(t) { return t.split(' ').map(w => w[0]).join('').slice(0,3).toUpperCase(); }
-  function escapeHtml(text) {
-    return String(text || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-  }
-  function slugTitle(title) { return `/search/?q=${encodeURIComponent(title)}`; }
-  function posterUrl(path) { return path ? `https://image.tmdb.org/t/p/w500${path}` : ''; }
-  function badgeClass(label) {
-    const value = String(label || '').toLowerCase();
-    if (value.includes('safe')) return 'badge-safe';
-    if (value.includes('caution')) return 'badge-caution';
-    return 'badge-danger';
-  }
-  function posterTone(index) {
-    return ['poster-green', 'poster-blue', 'poster-amber', 'poster-teal'][index % 4];
-  }
+    function getSearchPool() {
+      return uniqByTitle([...homeData.trending, ...homeData.safe_picks, ...homeData.popular]);
+    }
 
-  function uniqByTitle(items) {
-    return items.filter((item, index, arr) => arr.findIndex(other => other.title === item.title) === index);
-  }
+    function render(q) {
+      const query = String(q || '').trim().toLowerCase();
+      const pool = getSearchPool();
+      const hits = query
+        ? pool.filter(item => item.title.toLowerCase().includes(query))
+        : pool.slice(0, 6);
 
-  function getSearchPool() {
-    return uniqByTitle([...homeData.trending, ...homeData.safe_picks, ...homeData.popular]);
-  }
-
-  function render(q) {
-    const query = String(q || '').trim().toLowerCase();
-    const pool = getSearchPool();
-    const hits = query
-      ? pool.filter(item => item.title.toLowerCase().includes(query))
-      : pool.slice(0, 6);
-
-    results.innerHTML = hits.length
-      ? hits.slice(0, 6).map(item => `
+      results.innerHTML = hits.length
+        ? hits.slice(0, 6).map(item => `
           <a class="sw-result" href="${slugTitle(item.title)}">
             <div class="sw-thumb" style="background:${item.poster_path ? 'transparent' : 'linear-gradient(135deg,#dcf0e4,#b4dcc4)'}">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="${escapeHtml(item.title)} poster" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">` : initials(item.title)}</div>
             <div class="sw-result-info">
@@ -1176,13 +2064,13 @@
               <span>${escapeHtml(item.type)}${item.age_guidance ? ` · ${escapeHtml(item.age_guidance)}` : ''}</span>
             </div>
           </a>`).join('')
-      : '<div class="sw-no-results">No matches found.</div>';
+        : '<div class="sw-no-results">No matches found.</div>';
 
-    results.classList.toggle('visible', hits.length > 0 || !!query);
-  }
+      results.classList.toggle('visible', hits.length > 0 || !!query);
+    }
 
-  function renderSafePicks(items) {
-    safePicksGrid.innerHTML = items.slice(0, 4).map((item, index) => `
+    function renderSafePicks(items) {
+      safePicksGrid.innerHTML = items.slice(0, 4).map((item, index) => `
       <article class="pick-card">
         <a href="${slugTitle(item.title)}">
           <div class="poster ${posterTone(index)}">
@@ -1201,11 +2089,11 @@
           </div>
         </a>
       </article>`).join('');
-  }
+    }
 
-  function renderPopular(items) {
-    popularRow.classList.remove('loading');
-    popularRow.innerHTML = items.slice(0, 5).map(item => `
+    function renderPopular(items) {
+      popularRow.classList.remove('loading');
+      popularRow.innerHTML = items.slice(0, 5).map(item => `
       <a class="popular-item" href="${slugTitle(item.title)}">
         <div class="popular-poster">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="${escapeHtml(item.title)} poster">` : `<div style="width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,#dcf0e4,#b4dcc4);font-weight:800;color:#136134;font-size:.9rem;text-align:center;padding:12px;">${escapeHtml(item.title)}</div>`}</div>
         <div class="popular-body">
@@ -1214,66 +2102,67 @@
           <span class="badge ${badgeClass(item.safety_label)}">${escapeHtml(item.safety_label)}</span>
         </div>
       </a>`).join('');
-  }
+    }
 
-  async function loadHomeContent() {
-    renderSafePicks(homeData.safe_picks);
-    renderPopular(homeData.popular);
-
-    try {
-      const contentRes = await fetch('/api/home/content', { headers: { 'Accept': 'application/json' } });
-
-      if (!contentRes.ok) throw new Error('Failed to load homepage content');
-      const data = await contentRes.json();
-      homeData = {
-        trending: Array.isArray(data.trending) && data.trending.length ? data.trending : HOME_FALLBACK.trending,
-        safe_picks: Array.isArray(data.safe_picks) && data.safe_picks.length ? data.safe_picks : HOME_FALLBACK.safe_picks,
-        popular: Array.isArray(data.popular) && data.popular.length ? data.popular : HOME_FALLBACK.popular,
-      };
+    async function loadHomeContent() {
       renderSafePicks(homeData.safe_picks);
       renderPopular(homeData.popular);
-    } catch (error) {
-      homeData = HOME_FALLBACK;
-    }
-  }
 
-  function submitSearch() {
-    const q = field.value.trim();
-    if (!q) return field.focus();
-    window.location.href = slugTitle(q);
-  }
+      try {
+        const contentRes = await fetch('/api/home/content', { headers: { 'Accept': 'application/json' } });
 
-  field.addEventListener('focus', () => render(field.value));
-  field.addEventListener('input', () => render(field.value));
-  field.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      submitSearch();
+        if (!contentRes.ok) throw new Error('Failed to load homepage content');
+        const data = await contentRes.json();
+        homeData = {
+          trending: Array.isArray(data.trending) && data.trending.length ? data.trending : HOME_FALLBACK.trending,
+          safe_picks: Array.isArray(data.safe_picks) && data.safe_picks.length ? data.safe_picks : HOME_FALLBACK.safe_picks,
+          popular: Array.isArray(data.popular) && data.popular.length ? data.popular : HOME_FALLBACK.popular,
+        };
+        renderSafePicks(homeData.safe_picks);
+        renderPopular(homeData.popular);
+      } catch (error) {
+        homeData = HOME_FALLBACK;
+      }
     }
-  });
-  document.addEventListener('click', (event) => {
-    if (!event.target.closest('.search-widget')) {
-      results.classList.remove('visible');
-    }
-  });
 
-  document.getElementById('nlBtn').addEventListener('click', function() {
-    const input = document.getElementById('nlEmail');
-    if (input.value.includes('@')) {
-      input.value = '';
-      input.placeholder = "✓ You're on the list — see you Friday!";
-      this.textContent = '✓ Subscribed!';
-      this.style.background = '#e3f5eb';
-      this.style.color = 'var(--brand-dark)';
-    } else {
-      input.style.borderColor = 'rgba(255,100,80,0.7)';
-      input.focus();
-      setTimeout(() => input.style.borderColor = '', 1600);
+    function submitSearch() {
+      const q = field.value.trim();
+      if (!q) return field.focus();
+      window.location.href = slugTitle(q);
     }
-  });
 
-  loadHomeContent();
-</script>
+    field.addEventListener('focus', () => render(field.value));
+    field.addEventListener('input', () => render(field.value));
+    field.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitSearch();
+      }
+    });
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.search-widget')) {
+        results.classList.remove('visible');
+      }
+    });
+
+    document.getElementById('nlBtn').addEventListener('click', function () {
+      const input = document.getElementById('nlEmail');
+      if (input.value.includes('@')) {
+        input.value = '';
+        input.placeholder = "✓ You're on the list — see you Friday!";
+        this.textContent = '✓ Subscribed!';
+        this.style.background = '#e3f5eb';
+        this.style.color = 'var(--brand-dark)';
+      } else {
+        input.style.borderColor = 'rgba(255,100,80,0.7)';
+        input.focus();
+        setTimeout(() => input.style.borderColor = '', 1600);
+      }
+    });
+
+    loadHomeContent();
+  </script>
 
 </body>
+
 </html>
