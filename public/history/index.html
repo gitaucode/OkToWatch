@@ -3,438 +3,444 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Activity Log — OkToWatch</title>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#565e74"/>
-<meta name="description" content="Monitor your household's activity and search history."/>
+<title>Activity Log — OkToWatch</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="/js/tailwind-theme.js"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-dim":"#d3dbdf","tertiary":"#006d4a","surface-variant":"#dde3e7",
+        "secondary-fixed":"#dce2f3","on-secondary-container":"#4b525f",
+        "secondary-container":"#dce2f3","inverse-primary":"#dae2fd","outline":"#757c7f",
+        "on-tertiary-container":"#005a3c","error-container":"#fe8983",
+        "surface-container-low":"#f2f4f5","primary-fixed-dim":"#ccd4ee",
+        "primary-container":"#dae2fd","surface-container-highest":"#dde3e7",
+        "primary":"#565e74","on-primary":"#f7f7ff","on-tertiary":"#e6ffee",
+        "surface-bright":"#f9f9fa","on-primary-container":"#4a5167",
+        "background":"#f9f9fa","surface":"#f9f9fa","surface-container-lowest":"#ffffff",
+        "secondary":"#585f6d","on-secondary":"#f8f8ff","outline-variant":"#acb3b6",
+        "on-error":"#fff7f6","on-surface":"#2d3336","surface-tint":"#565e74",
+        "on-background":"#2d3336","inverse-surface":"#0c0e0f",
+        "surface-container-high":"#e4e9ec","on-surface-variant":"#596063",
+        "surface-container":"#ebeef0","primary-dim":"#4a5268","primary-fixed":"#dae2fd",
+        "tertiary-container":"#69f6b8","error":"#9f403d"
+      },
+      borderRadius: { DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem" },
+      fontFamily: { headline:["Plus Jakarta Sans"],body:["Inter"],label:["Inter"] }
+    }
+  }
+}
+</script>
 <style>
-body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d3336; }
-.font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-.font-label { font-family: 'Inter', sans-serif; }
-.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-
-/* â–â‚¬â–â‚¬ Skeleton â–â‚¬â–â‚¬ */
-.skel { background: linear-gradient(90deg, #e4e9ec 25%, #f2f4f5 50%, #e4e9ec 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-/* â–â‚¬â–â‚¬ Toast â–â‚¬â–â‚¬ */
-.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d3336; color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* â–â‚¬â–â‚¬ Modal overlay â–â‚¬â–â‚¬ */
-.modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
-.modal-overlay.visible { display: flex; }
-.modal-sheet { background: white; border-radius: 20px; max-width: 400px; width: 90%; animation: scaleUp 0.15s ease forwards; padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
-@keyframes scaleUp { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
-
-.history-shell table td, .history-shell table th { vertical-align: top; }
-#historyList tr:last-child td { border-bottom: 0; }
-#loadMoreWrap button { background: #ebeef0; }
-#loadMoreWrap button:hover { background: #dde3e7; }
-
+  body { font-family:'Inter',sans-serif; }
+  h1,h2,h3,.font-headline { font-family:'Plus Jakarta Sans',sans-serif; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .hide-scrollbar::-webkit-scrollbar { display:none; }
+  .hide-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+  /* Skeleton */
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .skel { background:linear-gradient(90deg,#e4e9ec 25%,#f2f4f5 50%,#e4e9ec 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:0.5rem; }
+  /* Page swap */
+  #pageLoader { display:block; }
+  #pageLoader.hidden { display:none; }
+  #pageContent { display:none; }
+  #pageContent.visible { display:block; }
+  /* Toast */
+  .toast { position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,26,24,0.92);color:white;backdrop-filter:blur(12px);padding:0.65rem 1.25rem;border-radius:100px;font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.25s ease;pointer-events:none;z-index:999;white-space:nowrap; }
+  .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+  /* Table */
+  .activity-table { width:100%;border-collapse:collapse; }
+  .activity-table td { padding:1rem;border-bottom:1px solid #dde3e7; }
+  .activity-table tbody tr:hover { background-color:#f2f4f5; }
+  .outcome-badge { display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600; }
+  .outcome-allowed { background:#d4f1e7;color:#005a3c; }
+  .outcome-approved { background:#c8e6d9;color:#004d39; }
+  .outcome-blocked { background:#ffcccb;color:#9f403d; }
+  .outcome-flagged { background:#fff4d6;color:#f57f17; }
 </style>
 </head>
-<body class="bg-background" data-page="history">
+<body class="bg-background text-on-surface" data-page="dashboard">
 
 <div id="nav-root"></div>
 
-<main class="pt-16 pb-12 px-8 max-w-6xl mx-auto">
-
-<div id="pageLoader" class="animate-pulse space-y-8">
-  <div class="space-y-3">
-    <div class="h-10 w-48 bg-surface-container-high rounded-lg"></div>
-    <div class="h-4 w-72 bg-surface-container rounded-lg"></div>
+<!-- ── Skeleton loader ──────────────────────────────────────────────────── -->
+<div id="pageLoader">
+  <div class="pt-16 pb-6 max-w-5xl mx-auto px-8 space-y-8">
+    <div class="skel h-10 w-64 rounded"></div>
+    <div class="space-y-4">
+      <div class="flex gap-4"><div class="skel h-10 w-40 rounded-xl"></div><div class="skel h-10 w-40 rounded-xl"></div></div>
+      <div class="border border-outline-variant/20 rounded-2xl">
+        <div style="height:300px" class="skel"></div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="skel h-32 rounded-xl"></div>
+      <div class="skel h-32 rounded-xl"></div>
+      <div class="skel h-32 rounded-xl"></div>
+    </div>
   </div>
-  <div class="h-16 w-full bg-surface-container-low rounded-xl"></div>
-  <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/15 p-6 h-96"></div>
 </div>
 
-<div id="pageContent" class="history-shell" style="display:none;">
+<!-- ── Page content ─────────────────────────────────────────────────────── -->
+<div id="pageContent">
+<main class="pt-16 pb-12 max-w-5xl mx-auto px-8 space-y-8">
 
-  <header class="mb-8">
-    <h1 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface mb-2">Activity Log</h1>
-    <p class="text-on-surface-variant body-md opacity-70" id="historySubtitle">Loading...</p>
+  <!-- ── Header ────────────────────────────────────────────────────────── -->
+  <header class="space-y-2">
+    <h1 class="text-3xl font-bold tracking-tight">Activity Log</h1>
+    <p class="text-on-surface-variant">Track search history and verdict results for each family member</p>
   </header>
 
-  <!-- Control Bar -->
-  <section class="mb-6 bg-surface-container-low p-4 rounded-xl flex flex-wrap gap-4 items-center justify-between">
-    <div class="flex gap-4 items-center flex-wrap">
-      <div class="relative w-full md:w-auto">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">filter_list</span>
-        <select id="profileFilter" onchange="applyFilters()" class="pl-10 pr-8 py-2 w-full md:w-auto bg-surface-container-lowest border border-outline-variant/20 text-sm font-semibold text-on-surface rounded-lg focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">
-          <option value="all">All Profiles</option>
-        </select>
-      </div>
-      <div class="relative w-full md:w-auto">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">calendar_today</span>
-        <select id="typeFilter" onchange="applyFilters()" class="pl-10 pr-8 py-2 w-full md:w-auto bg-surface-container-lowest border border-outline-variant/20 text-sm font-semibold text-on-surface rounded-lg focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">
-          <option value="all">All Time</option>
-          <option value="movie">Movies only</option>
-          <option value="tv">TV only</option>
-        </select>
-      </div>
+  <!-- ── Filters ────────────────────────────────────────────────────────── -->
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Profile filter -->
+    <div class="flex-1">
+      <label class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase">Child Profile</label>
+      <select id="profileFilter" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:border-primary transition-colors" onchange="applyFilters()">
+        <option value="">All profiles</option>
+      </select>
     </div>
-    <div class="flex items-center justify-end w-full md:w-auto gap-4">
-      <div class="flex items-center gap-3">
-        <span class="text-xs font-bold text-outline-variant uppercase tracking-widest">Live View</span>
-        <div class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
-      </div>
-      <button onclick="promptClearAll()" class="text-error font-bold text-sm bg-error/10 px-4 py-2 rounded-lg hover:bg-error/20 transition-all font-label whitespace-nowrap">
-        Clear History
-      </button>
+    <!-- Date range filter -->
+    <div class="flex-1">
+      <label class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase">Time Period</label>
+      <select id="dateFilter" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:border-primary transition-colors" onchange="applyFilters()">
+        <option value="7">Last 7 Days</option>
+        <option value="1">Today</option>
+        <option value="30">This Month</option>
+        <option value="all">All Time</option>
+      </select>
     </div>
-  </section>
-
-  <!-- Activity Table -->
-  <div class="bg-surface-container-lowest rounded-xl overflow-hidden mb-8">
-    <table class="w-full text-left border-collapse">
-      <thead>
-        <tr class="bg-surface-container text-on-surface-variant uppercase text-[10px] font-bold tracking-[0.1em]">
-          <th class="px-6 py-4 whitespace-nowrap">Timestamp</th>
-          <th class="px-6 py-4 whitespace-nowrap">Profile</th>
-          <th class="px-6 py-4 whitespace-nowrap">Activity Description</th>
-          <th class="px-6 py-4 whitespace-nowrap">Outcome</th>
-          <th class="px-6 py-4 text-right">Details</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-surface-container-low" id="historyList">
-      </tbody>
-    </table>
-    <div id="loadMoreWrap" class="p-6 text-center border-t border-surface-container-low hidden">
-      <button class="px-6 py-2.5 bg-surface-container font-semibold text-sm rounded-lg hover:bg-surface-container-highest transition-colors" onclick="loadMore()">Load older activity</button>
-    </div>
+    <button onclick="resetFilters()" class="md:mt-6 px-4 py-2.5 rounded-xl font-medium text-sm bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors">Reset</button>
   </div>
 
-  <!-- Insights Bento Grid -->
-  <section class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between border border-outline-variant/10">
-      <div>
-        <h3 class="text-xs font-bold text-outline uppercase tracking-widest mb-4">Safety Health</h3>
-        <div class="text-3xl font-headline font-extrabold text-tertiary">98%</div>
-        <p class="text-sm text-on-surface-variant mt-2 font-medium">of requests this week were within safe boundaries.</p>
-      </div>
-      <div class="mt-8 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-        <div class="h-full bg-tertiary w-[98%] rounded-full"></div>
-      </div>
-    </div>
-    
-    <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
-      <h3 class="text-xs font-bold text-outline uppercase tracking-widest mb-5">Most Queried</h3>
-      <div class="space-y-3" id="recentTitlesGrid">
-         <p class="text-sm text-on-surface-variant italic">No searches yet.</p>
-      </div>
-    </div>
-    
-    <div class="bg-primary text-on-primary p-6 rounded-xl flex flex-col justify-between relative overflow-hidden shadow-md">
-      <div class="relative z-10">
-        <h3 class="text-xs font-bold opacity-70 uppercase tracking-widest mb-4">Quick Action</h3>
-        <p class="text-lg font-headline font-semibold mb-6">Update restrictions for your family?</p>
-        <a href="/settings" class="inline-block bg-white text-primary px-5 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:scale-[1.02] active:scale-95 transition-transform no-underline">
-          Review Profile
-        </a>
-      </div>
-      <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-9xl opacity-[0.07] rotate-[-5deg]" style="font-variation-settings:'FILL' 1;">manage_accounts</span>
+  <!-- ── Activity Table ────────────────────────────────────────────────── -->
+  <section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="activity-table">
+        <thead class="bg-surface-container-low text-on-surface-variant text-xs font-bold uppercase tracking-wide border-b border-outline-variant/20">
+          <tr>
+            <td class="w-32">Timestamp</td>
+            <td class="w-32">Profile</td>
+            <td class="flex-1">Activity</td>
+            <td class="w-24">Outcome</td>
+            <td class="w-20">Details</td>
+          </tr>
+        </thead>
+        <tbody id="activityTable" class="text-sm">
+          <tr><td colspan="5" class="text-center py-8 text-on-surface-variant">Loading activity…</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
-</div>
+  <!-- ── Insights Grid ────────────────────────────────────────────────── -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Safety Health metric -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold uppercase text-on-surface-variant">Safety Health</span>
+        <span class="material-symbols-outlined text-tertiary text-xl" style="font-variation-settings:'FILL' 1;">verified</span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="text-4xl font-extrabold text-tertiary" id="healthPercent">—</span>
+        <span class="text-on-surface-variant text-sm">% approved</span>
+      </div>
+      <p class="text-xs text-on-surface-variant pt-2">Ratio of approved vs blocked verdicts</p>
+    </div>
+
+    <!-- Top Queried Items -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-4">
+      <span class="text-xs font-bold uppercase text-on-surface-variant">Top Searched</span>
+      <div id="topQueries" class="space-y-3">
+        <p class="text-sm text-on-surface-variant">No activity yet</p>
+      </div>
+    </div>
+
+    <!-- Action Items -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-4">
+      <span class="text-xs font-bold uppercase text-on-surface-variant">Action Items</span>
+      <div id="actionItems" class="space-y-3">
+        <p class="text-sm text-on-surface-variant">No flagged items</p>
+      </div>
+    </div>
+  </section>
 
 </main>
 
+<!-- Footer -->
+<div id="footer-root"></div>
+</div><!-- end #pageContent -->
+
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Clear confirm modal -->
-<div class="modal-overlay" id="clearModal">
-  <div class="modal-sheet">
-    <h3 class="text-xl font-headline font-extrabold text-on-surface mb-2" id="clearModalTitle">Clear history?</h3>
-    <p class="text-on-surface-variant text-sm mb-8" id="clearModalSub">This can't be undone.</p>
-    <div class="flex flex-col gap-3">
-      <button class="w-full bg-error hover:bg-error-dim text-white font-bold py-3 rounded-xl transition-colors text-sm" id="clearConfirmBtn" onclick="confirmClear()">Remove</button>
-      <button class="w-full bg-surface-container-highest hover:bg-surface-dim text-on-surface font-semibold py-3 rounded-xl transition-colors text-sm" onclick="closeModal()">Cancel</button>
-    </div>
-  </div>
-</div>
-
 <script>
-let _history  = [];
-let _profiles = [];
-let _clearTarget = null;
-const PAGE_SIZE = 30;
-let _page = 1;
+// State
+let _profiles=[], _activity=[], _filtered=[];
+let _currentProfileId='', _currentDays=7;
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+// Toast
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// Auth/API helpers  
+async function getToken(){
+  if(!window.Clerk?.session)return null;
+  try{return await window.Clerk.session.getToken();}
+  catch(e){console.error('Failed to get token:',e);return null;}
 }
 
-// â–â‚¬â–â‚¬ API helpers â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
-async function _authHeaders() {
-  const token = await window.Clerk.session.getToken();
-  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+async function apiGet(url){
+  const token=await getToken();if(!token){console.error('No auth token');return null;}
+  try{
+    const res=await fetch(url,{headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}});
+    if(!res.ok){console.error(`API error ${res.status}:`,url);return null;}
+    return res.json();
+  }catch(e){console.error('API fetch error:',e);return null;}
 }
-async function apiGet(url) { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
-async function apiDelete(url) { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
 
-// â–â‚¬â–â‚¬ Auth guard â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
-document.addEventListener('cv:auth', ({ detail }) => {
-  if (!detail.loggedIn) {
-    window.location.href = '/signin?redirect=/history';
-    return;
-  }
-  loadHistory();
+// Auth guard
+let _authReceived=false;
+document.addEventListener('cv:auth',({detail})=>{
+  _authReceived=true;
+  if(!detail.loggedIn){window.location.href='/signin?redirect=/dashboard';return;}
+  loadDashboard(detail.user);
 });
+setTimeout(()=>{
+  if(_authReceived)return;
+  document.getElementById('pageLoader').classList.add('hidden');
+  document.getElementById('pageContent').classList.add('visible');
+},12000);
 
-// â–â‚¬â–â‚¬ Load â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
-async function loadHistory() {
-  try {
-    [_history, _profiles] = await Promise.all([
-      apiGet('/api/history?limit=500'),
-      apiGet('/api/profiles').catch(() => []),
-    ]);
-  } catch (e) {
-    console.error('History load error:', e);
+// ────────────────────────────────────────────────────────────────────
+// LOAD DASHBOARD - Main initialization
+// ────────────────────────────────────────────────────────────────────
+async function loadDashboard(user){
+  try{
+    // REAL API CALL: Fetch child profiles
+    const profilesRes=await apiGet('/api/profiles');
+    _profiles=profilesRes||[];
+    
+    // REAL API CALL: Fetch activity/history
+    const historyRes=await apiGet('/api/history');
+    _activity=historyRes||[];
+    
+    // Populate profile dropdown
+    const profileSelect=document.getElementById('profileFilter');
+    profileSelect.innerHTML='<option value="">All profiles</option>';
+    _profiles.forEach(p=>{
+      const opt=document.createElement('option');
+      opt.value=p.id;
+      opt.textContent=p.name||'Profile';
+      profileSelect.appendChild(opt);
+    });
+    
+    // Hide loader, show content
+    document.getElementById('pageLoader').classList.add('hidden');
+    document.getElementById('pageContent').classList.add('visible');
+    
+    // Render initial state
+    applyFilters();
+  }catch(e){
+    console.error('Dashboard load error:',e);
+    document.getElementById('pageLoader').classList.add('hidden');
+    document.getElementById('pageContent').classList.add('visible');
+    showToast('Could not load activity data');
   }
+}
 
-  // Populate profile filter
-  const pSelect = document.getElementById('profileFilter');
-  pSelect.innerHTML = '<option value="all">All Profiles</option>';
-  _profiles.forEach(p => {
-    pSelect.innerHTML += `<option value="${p.id}">${p.emoji} ${p.name}</option>`;
+// ────────────────────────────────────────────────────────────────────
+// FILTERS - Apply profile and date range
+// ────────────────────────────────────────────────────────────────────
+function applyFilters(){
+  _currentProfileId=document.getElementById('profileFilter').value||'';
+  const dateRange=document.getElementById('dateFilter').value;
+  _currentDays=dateRange==='all'?null:parseInt(dateRange);
+  
+  // Filter by profile and date
+  const now=new Date();
+  const cutoffDate=_currentDays===null?null:new Date(now.getTime()-_currentDays*24*60*60*1000);
+  
+  _filtered=_activity.filter(item=>{
+    if(!item.created_at)return false;
+    const itemDate=new Date(item.created_at);
+    if(cutoffDate && itemDate<cutoffDate)return false;
+    if(_currentProfileId && item.profile_id!==_currentProfileId)return false;
+    return true;
   });
+  
+  // Sort newest first
+  _filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  
+  // Render results
+  renderActivityTable();
+  updateInsights();
+}
 
-  document.getElementById('pageLoader').style.display = 'none';
-  document.getElementById('pageContent').style.display = 'block';
+function resetFilters(){
+  document.getElementById('profileFilter').value='';
+  document.getElementById('dateFilter').value='7';
   applyFilters();
 }
 
-function filtered_history() {
-  const pFilter = document.getElementById('profileFilter').value;
-  const tFilter = document.getElementById('typeFilter').value;
-  return _history.filter(h => {
-    if (pFilter !== 'all' && String(h.profile_id) !== String(pFilter)) return false;
-    if (tFilter !== 'all' && h.media_type !== tFilter) return false;
-    return true;
-  });
-}
-
-function applyFilters() {
-  _page = 1;
-  const filtered = filtered_history();
-  const total = _history.length;
+// ────────────────────────────────────────────────────────────────────
+// RENDER - Activity table
+// ────────────────────────────────────────────────────────────────────
+function renderActivityTable(){
+  const tbody=document.getElementById('activityTable');
   
-  if (total === 0) {
-    document.getElementById('historySubtitle').textContent = 'No activity yet.';
-  } else {
-    document.getElementById('historySubtitle').textContent = `Showing ${filtered.length} of ${total} total searches.`;
-  }
-  
-  // Render insights
-  renderInsights();
-  
-  // Render table
-  renderHistory();
-}
-
-function formatTimeAgo(dateIso) {
-  const d = new Date(dateIso);
-  const diffMs = new Date() - d;
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHrs = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHrs / 24);
-  
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins} mins ago`;
-  if (diffHrs < 24) return `${diffHrs} hour${diffHrs > 1 ? 's' : ''} ago`;
-  if (diffDays === 1) return 'Yesterday';
-  return `${diffDays} days ago`;
-}
-
-function formatTimestamp(dateIso) {
-  const d = new Date(dateIso);
-  const now = new Date();
-  const diff = now - d;
-  const days = Math.floor(diff / 86400000);
-  
-  const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  
-  if (days === 0 && d.getDate() === now.getDate()) return `Today, ${time}`;
-  if (days === 1 || (days === 0 && d.getDate() !== now.getDate())) return `Yesterday, ${time}`;
-  return `${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}, ${time}`;
-}
-
-
-function renderInsights() {
-  const rGrid = document.getElementById('recentTitlesGrid');
-  const counts = new Map();
-
-  for (const item of _history) {
-    if (!item.title) continue;
-    const key = `${item.title}__${item.media_type || 'movie'}`;
-    if (!counts.has(key)) {
-      counts.set(key, { title: item.title, media_type: item.media_type || 'movie', count: 0 });
-    }
-    counts.get(key).count += 1;
-  }
-
-  const topTitles = [...counts.values()]
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 3);
-
-  if (!topTitles.length) {
-    rGrid.innerHTML = '<p class="text-sm text-on-surface-variant italic">No searches yet.</p>';
-  } else {
-    rGrid.innerHTML = topTitles.map(t => `
-      <div class="flex justify-between items-center">
-        <span class="text-sm font-medium truncate max-w-[180px]">${t.title}</span>
-        <span class="text-xs font-bold px-2 py-1 bg-surface-container-highest rounded">${t.count} search${t.count === 1 ? '' : 'es'}</span>
-      </div>
-    `).join('');
-  }
-}
-
-
-
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  const items = filtered_history();
-
-  if (!items.length) {
-    list.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-on-surface-variant">No activity matching these filters.</td></tr>`;
-    document.getElementById('loadMoreWrap').style.display = 'none';
+  if(!_filtered.length){
+    tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-on-surface-variant">No activity for selected filters</td></tr>';
     return;
   }
-
-  const visible = items.slice(0, _page * PAGE_SIZE);
-
-  list.innerHTML = visible.map(item => {
-    const profile = item.profile_id ? _profiles.find(p => String(p.id) === String(item.profile_id)) : null;
-
-    const outcomeHtml = `
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high text-on-surface text-xs font-bold">
-        <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">manage_search</span>
-        Searched
-      </div>`;
-
-    const colors = [
-      'bg-primary-container text-primary',
-      'bg-tertiary-container text-on-tertiary-container',
-      'bg-secondary-container text-secondary'
-    ];
-    const pColor = profile ? colors[(profile.id || 0) % 3] : 'bg-surface-container-high text-on-surface';
-    const profileLabel = profile ? `${profile.name}${profile.age ? ` (${profile.age})` : ''}` : 'Main Account';
-
+  
+  tbody.innerHTML=_filtered.map(item=>{
+    const profileName=getProfileName(item.profile_id);
+    const timestamp=formatTime(item.created_at);
+    const outcome=item.verdict||'unknown';
+    const badgeClass=getOutcomeBadgeClass(outcome);
+    const outcomeLbl=getOutcomeLabel(outcome);
+    const title=item.title||item.query||'(Unknown)';
+    
     return `
-      <tr class="hover:bg-surface-container-low/50 transition-colors group">
-        <td class="px-6 py-5 align-top">
-          <div class="text-sm font-medium text-on-surface">${formatTimestamp(item.searched_at)}</div>
-          <div class="text-[11px] text-outline">${formatTimeAgo(item.searched_at)}</div>
-        </td>
-        <td class="px-6 py-5 align-top">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? (profile.emoji || profile.name?.[0] || 'P') : '👤'}</div>
-            <span class="text-sm font-semibold">${profileLabel}</span>
+      <tr>
+        <td class="text-xs text-on-surface-variant">${timestamp}</td>
+        <td>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-sm flex-shrink-0">${getProfileEmoji(item.profile_id)}</div>
+            <span class="text-xs font-medium">${escapeHtml(profileName)}</span>
           </div>
         </td>
-        <td class="px-6 py-5 align-top">
-          <div class="text-sm text-on-surface max-w-md">
-            Searched for <span class="font-bold italic cursor-pointer hover:text-primary transition-colors" onclick="openTitle('${item.tmdb_id}','${item.media_type}')">"${item.title}"</span>
-          </div>
-          <div class="flex gap-2 mt-1">
-            ${item.year ? `<span class="px-1.5 py-0.5 rounded-sm bg-surface-container text-on-surface-variant text-[10px] font-bold uppercase">${item.year}</span>` : ''}
-            <span class="px-1.5 py-0.5 rounded-sm bg-surface-container text-on-surface-variant text-[10px] font-bold uppercase">${item.media_type === 'tv' ? 'TV' : 'Movie'}</span>
+        <td>
+          <div class="space-y-1">
+            <p class="text-sm font-medium">${escapeHtml(title)}</p>
+            <p class="text-xs text-on-surface-variant">${item.media_type==='movie'?'Movie':'TV Series'}</p>
           </div>
         </td>
-        <td class="px-6 py-5 align-top">
-          ${outcomeHtml}
+        <td>
+          <span class="outcome-badge ${badgeClass}">${outcomeLbl}</span>
         </td>
-        <td class="px-6 py-5 text-right align-top">
-          <div class="flex items-center justify-end gap-1">
-            <button onclick="promptDelete('${item.id}')" class="text-outline hover:text-error p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Delete record">
-              <span class="material-symbols-outlined text-[18px]">delete</span>
-            </button>
-            <button onclick="openTitle('${item.tmdb_id}', '${item.media_type}')" class="text-primary hover:text-primary-dim p-2 rounded-full transition-colors">
-              <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-          </div>
+        <td>
+          <button onclick="alert('Details for: '+${JSON.stringify(title)})" class="text-xs font-medium text-primary hover:underline">View</button>
         </td>
-      </tr>`;
+      </tr>
+    `;
   }).join('');
-
-  document.getElementById('loadMoreWrap').style.display = visible.length < items.length ? 'block' : 'none';
 }
 
-
-function openTitle(id, type) {
-  window.location.href = `/index?id=${id}&type=${type}`;
-}
-
-function loadMore() {
-  _page++;
-  renderHistory();
-}
-
-// â–â‚¬â–â‚¬ Delete â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
-function promptDelete(id) {
-  _clearTarget = id;
-  document.getElementById('clearModalTitle').textContent = 'Remove this record?';
-  document.getElementById('clearModalSub').textContent = 'It will be removed from your activity log forever.';
-  document.getElementById('clearConfirmBtn').textContent = 'Remove Record';
-  document.getElementById('clearModal').classList.add('visible');
-  document.body.style.overflow = 'hidden';
-}
-
-function promptClearAll() {
-  if (!_history.length) { showToast('History is already empty'); return; }
-  _clearTarget = null;
-  document.getElementById('clearModalTitle').textContent = 'Clear all history?';
-  document.getElementById('clearModalSub').textContent = `This will remove all ${_history.length} records. This can't be undone.`;
-  document.getElementById('clearConfirmBtn').textContent = 'Clear All';
-  document.getElementById('clearModal').classList.add('visible');
-  document.body.style.overflow = 'hidden';
-}
-
-async function confirmClear() {
-  const btn = document.getElementById('clearConfirmBtn');
-  btn.disabled = true;
-  btn.textContent = 'Removing…';
-
-  try {
-    if (_clearTarget) {
-      await apiDelete(`/api/history?id=${_clearTarget}`);
-      _history = _history.filter(h => h.id !== _clearTarget);
-      showToast('Record removed');
-    } else {
-      await apiDelete('/api/history');
-      _history = [];
-      showToast('Activity cleared');
-    }
-    closeModal();
-    applyFilters();
-  } catch (e) {
-    showToast('Failed to remove. Try again');
-  } finally {
-    btn.disabled = false;
+// ────────────────────────────────────────────────────────────────────
+// INSIGHTS - Safety health, top queries, action items
+// ────────────────────────────────────────────────────────────────────
+function updateInsights(){
+  // Safety Health: % approved of all verdicts
+  const total=_filtered.length;
+  const approved=_filtered.filter(i=>i.verdict==='approved'||i.verdict==='allowed').length;
+  const healthPercent=total>0?Math.round((approved/total)*100):0;
+  document.getElementById('healthPercent').textContent=healthPercent+'%';
+  
+  // Top Queried: Most searched titles
+  const queryCount={};
+  _filtered.forEach(item=>{
+    const key=item.title||item.query||'Unknown';
+    queryCount[key]=(queryCount[key]||0)+1;
+  });
+  const topQueries=Object.entries(queryCount)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,3);
+  
+  const topQueriesEl=document.getElementById('topQueries');
+  if(topQueries.length){
+    topQueriesEl.innerHTML=topQueries.map(([q,count])=>`
+      <div class="flex justify-between items-center">
+        <span class="text-sm">${escapeHtml(q)}</span>
+        <span class="text-xs font-bold text-primary bg-primary-container px-2 py-1 rounded">${count}x</span>
+      </div>
+    `).join('');
+  }else{
+    topQueriesEl.innerHTML='<p class="text-sm text-on-surface-variant">No data yet</p>';
+  }
+  
+  // Action Items: Flagged verdicts
+  const flagged=_filtered.filter(i=>i.verdict==='blocked');
+  const actionItemsEl=document.getElementById('actionItems');
+  if(flagged.length){
+    actionItemsEl.innerHTML=flagged.slice(0,3).map(item=>`
+      <div class="flex gap-2">
+        <span class="material-symbols-outlined text-error text-lg">do_not_disturb_on</span>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium truncate">${escapeHtml(item.title||'')}</p>
+          <p class="text-xs text-on-surface-variant">${getProfileName(item.profile_id)}</p>
+        </div>
+      </div>
+    `).join('');
+  }else{
+    actionItemsEl.innerHTML='<p class="text-sm text-on-surface-variant">No blocked items</p>';
   }
 }
 
-function closeModal() {
-  document.getElementById('clearModal').classList.remove('visible');
-  document.body.style.overflow = '';
+// ────────────────────────────────────────────────────────────────────
+// HELPERS
+// ────────────────────────────────────────────────────────────────────
+function getProfileName(profileId){
+  if(!profileId)return 'Unknown';
+  const p=_profiles.find(x=>x.id===profileId);
+  return p?.name||'Unknown';
 }
 
-document.getElementById('clearModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('clearModal')) closeModal();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-</script>
-<div id="footer-root"></div>
+function getProfileEmoji(profileId){
+  if(!profileId)return '👤';
+  const p=_profiles.find(x=>x.id===profileId);
+  return p?.emoji||'👤';
+}
 
+function formatTime(isoStr){
+  if(!isoStr)return '—';
+  const date=new Date(isoStr);
+  const now=new Date();
+  const diff=(now-date)/(1000*60);
+  
+  if(diff<1)return 'Now';
+  if(diff<60)return Math.floor(diff)+'m ago';
+  if(diff<1440)return Math.floor(diff/60)+'h ago';
+  
+  return date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function getOutcomeBadgeClass(verdict){
+  const map={
+    'allowed':'outcome-allowed',
+    'approved':'outcome-approved',
+    'blocked':'outcome-blocked',
+    'flagged':'outcome-flagged'
+  };
+  return map[verdict]||'outcome-allowed';
+}
+
+function getOutcomeLabel(verdict){
+  const map={
+    'allowed':'Allowed',
+    'approved':'Approved',
+    'blocked':'Blocked',
+    'flagged':'Flagged'
+  };
+  return map[verdict]||'Allowed';
+}
+
+function escapeHtml(s){
+  if(!s)return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+</script>
 <script src="/js/auth.js?v=20260406"></script>
 </body>
 </html>
