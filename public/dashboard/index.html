@@ -5,7 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#565e74"/>
-<title>Dashboard â€” OkToWatch</title>
+<title>Dashboard — OkToWatch</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -59,44 +59,17 @@ tailwind.config = {
   .modal-overlay { display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center; }
   .modal-overlay.visible { display:flex; }
   .modal-sheet { animation:slideUp 0.32s ease forwards;max-height:90vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,1rem); }
-  /* Suppress the injected cv-nav from auth.js (pinned in off-screen #nav-root) */
-  #nav-root * { visibility:hidden!important; }
-  #nav-root .cv-search-modal,
-  #nav-root .cv-search-modal * { visibility:visible!important; }
 </style>
 </head>
 <body class="bg-background text-on-surface" data-page="dashboard">
 
-<!-- â”€â”€ Top Nav (exact original design) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
-  <div class="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
-    <div class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter font-['Plus_Jakarta_Sans']">OkToWatch</div>
-    <div class="hidden md:flex items-center gap-8">
-      <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/dashboard">Dashboard</a>
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/lists">Lists</a>
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/discover">Discover</a>
-      <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/history">History</a>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="relative group hidden lg:block">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-        <input class="pl-10 pr-4 py-1.5 bg-surface-container-highest border-none rounded-full text-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all w-64 cursor-pointer" placeholder="Search movies..." readonly onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" type="text"/>
-      </div>
-      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
-        <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">search</span>
-      </button>
-      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.location.href='/settings'">
-        <span class="material-symbols-outlined text-slate-700 dark:text-slate-200" id="navAccountIcon">account_circle</span>
-      </button>
-    </div>
-  </div>
-</nav>
+<div id="nav-root"></div>
 
-<!-- â”€â”€ Skeleton loader â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Skeleton loader ──────────────────────────────────────────────────── -->
 <div id="pageLoader">
-  <div class="pt-24 pb-12 max-w-[1440px] mx-auto px-8 grid grid-cols-12 gap-8">
+  <div class="pt-16 pb-6 max-w-6xl mx-auto px-8 grid grid-cols-12 gap-8">
     <!-- Sidebar skel -->
-    <div class="col-span-12 lg:col-span-3 space-y-8">
+    <div class="col-span-12 lg:col-span-3 space-y-4">
       <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15 space-y-4">
         <div class="skel h-3 w-32"></div>
         <div class="flex items-center gap-3"><div class="skel w-10 h-10 rounded-full"></div><div class="flex-1 space-y-2"><div class="skel h-3 w-3/4"></div><div class="skel h-2 w-1/2"></div></div></div>
@@ -107,27 +80,27 @@ tailwind.config = {
       <div class="bg-surface-container-low p-6 rounded-xl space-y-3"><div class="skel h-3 w-28"></div><div class="skel h-5 rounded"></div><div class="skel h-5 rounded"></div><div class="skel h-5 rounded"></div></div>
     </div>
     <!-- Main skel -->
-    <div class="col-span-12 lg:col-span-9 space-y-12">
+    <div class="col-span-12 lg:col-span-9 space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="skel h-40 rounded-2xl"></div><div class="skel h-40 rounded-2xl"></div><div class="skel h-40 rounded-2xl"></div>
+        <div class="skel h-24 rounded-2xl"></div><div class="skel h-24 rounded-2xl"></div><div class="skel h-24 rounded-2xl"></div>
       </div>
       <div class="space-y-8"><div class="skel h-8 w-48 rounded"></div><div class="grid grid-cols-2 md:grid-cols-4 gap-6"><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div></div></div>
     </div>
   </div>
 </div>
 
-<!-- â”€â”€ Page content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Page content ─────────────────────────────────────────────────────── -->
 <div id="pageContent">
-<main class="pt-24 pb-12 max-w-[1440px] mx-auto px-8 grid grid-cols-12 gap-8">
+<main class="pt-16 pb-12 max-w-[1440px] mx-auto px-8 grid grid-cols-12 gap-8">
 
-  <!-- â”€â”€ Left Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── Left Sidebar ───────────────────────────────────────────────────── -->
   <aside class="col-span-12 lg:col-span-3 space-y-8">
 
     <!-- Family Profiles -->
-    <section class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">Family Profiles <span id="profilesPremiumBadge" class="hidden text-[10px] font-bold text-primary bg-primary-container px-2 py-0.5 rounded-full ml-1 normal-case tracking-normal">Pro</span></h3>
-      <div class="space-y-4" id="profilesGrid">
-        <p class="text-xs text-on-surface-variant">Loading profilesâ€¦</p>
+    <section class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/15">
+      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Family Profiles <span id="profilesPremiumBadge" class="hidden text-[10px] font-bold text-primary bg-primary-container px-2 py-0.5 rounded-full ml-1 normal-case tracking-normal">Pro</span></h3>
+      <div class="space-y-2" id="profilesGrid">
+        <p class="text-xs text-on-surface-variant">Loading profiles…</p>
       </div>
     </section>
 
@@ -135,15 +108,15 @@ tailwind.config = {
     <section class="space-y-3">
       <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant px-2">Quick Actions</h3>
       <div class="flex flex-col gap-2">
-        <button class="flex items-center gap-4 p-4 bg-primary text-on-primary rounded-xl hover:opacity-90 transition-opacity shadow-sm" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
+        <button class="flex items-center gap-2.5 py-2 px-3 bg-primary text-on-primary rounded-xl hover:opacity-90 transition-opacity shadow-sm" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
           <span class="material-symbols-outlined">search</span>
           <span class="font-semibold text-sm">New Search</span>
         </button>
-        <a class="flex items-center gap-4 p-4 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors no-underline" href="/discover">
+        <a class="flex items-center gap-2.5 py-2 px-3 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors no-underline" href="/discover">
           <span class="material-symbols-outlined text-tertiary">verified_user</span>
           <span class="font-semibold text-sm">Find Safe Content</span>
         </a>
-        <a class="flex items-center gap-4 p-4 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors no-underline" href="/lists?tab=approved">
+        <a class="flex items-center gap-2.5 py-2 px-3 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors no-underline" href="/lists?tab=approved">
           <span class="material-symbols-outlined text-primary">playlist_add_check</span>
           <span class="font-semibold text-sm">Approved List</span>
         </a>
@@ -151,39 +124,39 @@ tailwind.config = {
     </section>
 
     <!-- Recent Searches (exact original structure) -->
-    <section class="bg-surface-container-low p-6 rounded-xl">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Recent Searches</h3>
+    <section class="bg-surface-container-low p-4 rounded-xl">
+      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Recent Searches</h3>
       <div id="dashRecent" class="space-y-3">
         <p class="text-sm text-on-surface-variant">Your recent searches will appear here.</p>
-        <button class="text-sm text-primary font-medium bg-transparent border-none cursor-pointer p-0 hover:underline" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">Search now â†’</button>
+        <button class="text-sm text-primary font-medium bg-transparent border-none cursor-pointer p-0 hover:underline" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">Search now →</button>
       </div>
     </section>
 
   </aside>
 
-  <!-- â”€â”€ Main Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── Main Content ───────────────────────────────────────────────────── -->
   <div class="col-span-12 lg:col-span-9 space-y-12">
 
     <!-- Hero / Quick Stats Bento (exact original) -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <a href="/history" class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-40 no-underline text-on-surface hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary text-3xl">fact_check</span>
+      <a href="/history" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary text-2xl">fact_check</span>
         <div>
-          <h4 class="text-3xl font-extrabold tracking-tight" id="statSearches">â€”</h4>
+          <h4 class="text-2xl font-extrabold tracking-tight" id="statSearches">–</h4>
           <p class="text-on-surface-variant text-sm font-medium">Checked</p>
         </div>
       </a>
-      <a href="/lists?tab=approved" class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-40 no-underline text-on-surface hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings:'FILL' 1;">recommend</span>
+      <a href="/lists?tab=approved" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-tertiary text-2xl" style="font-variation-settings:'FILL' 1;">recommend</span>
         <div>
-          <h4 class="text-3xl font-extrabold tracking-tight text-tertiary" id="statApproved">â€”</h4>
+          <h4 class="text-2xl font-extrabold tracking-tight text-tertiary" id="statApproved">–</h4>
           <p class="text-on-surface-variant text-sm font-medium">Given the OK</p>
         </div>
       </a>
-      <a href="/lists?tab=blocked" class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-40 no-underline text-on-surface hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-error text-3xl">do_not_disturb_on</span>
+      <a href="/lists?tab=blocked" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-error text-2xl">do_not_disturb_on</span>
         <div>
-          <h4 class="text-3xl font-extrabold tracking-tight text-error" id="statBlocked">â€”</h4>
+          <h4 class="text-2xl font-extrabold tracking-tight text-error" id="statBlocked">–</h4>
           <p class="text-on-surface-variant text-sm font-medium">Off-limits</p>
         </div>
       </a>
@@ -191,9 +164,9 @@ tailwind.config = {
 
     <!-- Trending Section (exact original structure + Movies/TV toggle) -->
     <section>
-      <div class="flex justify-between items-end mb-8">
+      <div class="flex justify-between items-end mb-4">
         <div>
-          <h2 class="text-3xl font-extrabold tracking-tighter" id="trendingLabel">Trending Now</h2>
+          <h2 class="text-xl font-extrabold tracking-tighter" id="trendingLabel">Trending Now</h2>
           <p class="text-on-surface-variant font-medium">Safety-first curation for your evening</p>
         </div>
         <div class="flex items-center gap-3">
@@ -207,7 +180,7 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- 4-col card grid â€” exact original card markup rendered by JS -->
+      <!-- 4-col card grid — exact original card markup rendered by JS -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="trendingGrid">
         <!-- skeleton cards -->
         <div class="group"><div class="skel rounded-xl mb-4" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
@@ -245,7 +218,7 @@ tailwind.config = {
     <div class="w-9 h-1 bg-slate-200 rounded-full mx-auto mt-3"></div>
     <div class="flex items-center justify-between px-6 pt-4 pb-3 border-b border-slate-100">
       <h3 class="text-base font-bold font-['Plus_Jakarta_Sans']">Add Child Profile</h3>
-      <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm flex items-center justify-center" onclick="closeModal()">âœ•</button>
+      <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm flex items-center justify-center" onclick="closeModal()">✕</button>
     </div>
     <div class="p-6 space-y-4">
       <div><label class="block text-xs font-semibold text-slate-600 mb-1.5">Child's name</label><input type="text" id="newName" placeholder="e.g. Emma" maxlength="20" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition-all"/></div>
@@ -265,13 +238,13 @@ tailwind.config = {
     <div class="w-9 h-1 bg-slate-200 rounded-full mx-auto mt-3"></div>
     <div class="flex items-center justify-between px-6 pt-4 pb-3 border-b border-slate-100">
       <h3 class="text-base font-bold font-['Plus_Jakarta_Sans']">Upgrade to Pro</h3>
-      <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm flex items-center justify-center" onclick="closeUpgradeModal()">âœ•</button>
+      <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm flex items-center justify-center" onclick="closeUpgradeModal()">✕</button>
     </div>
     <div class="p-6 text-center">
-      <div class="text-4xl mb-3" id="upgradeFeatureIcon">ðŸ’Ž</div>
+      <div class="text-4xl mb-3" id="upgradeFeatureIcon">💎</div>
       <h2 class="text-base font-bold mb-2 font-['Plus_Jakarta_Sans']" id="upgradeFeatureTitle">Save Child Profiles</h2>
       <p class="text-sm text-slate-500 leading-relaxed mb-4" id="upgradeFeatureDesc">Create and manage child profiles with age-appropriate content recommendations.</p>
-      <div class="bg-slate-50 rounded-xl p-4 text-left"><div class="text-xs font-bold text-slate-600 mb-2">Pro plan includes:</div><ul class="text-sm text-slate-600 space-y-1"><li>âœ… Up to 2 child profiles</li><li>âœ… Synced search history</li><li>âœ… Save approved/blocked lists</li><li>âœ… Season-level analysis</li></ul></div>
+      <div class="bg-slate-50 rounded-xl p-4 text-left"><div class="text-xs font-bold text-slate-600 mb-2">Pro plan includes:</div><ul class="text-sm text-slate-600 space-y-1"><li>✅ Up to 2 child profiles</li><li>✅ Synced search history</li><li>✅ Save approved/blocked lists</li><li>✅ Season-level analysis</li></ul></div>
     </div>
     <div class="px-6 pb-6 flex flex-col gap-2">
       <a href="/plans" class="w-full block text-center py-2.5 bg-primary text-on-primary rounded-full font-semibold text-sm hover:opacity-90 transition-opacity no-underline">Upgrade</a>
@@ -280,13 +253,10 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- auth.js injects its nav + search modal into this off-screen container.
-     position:fixed search modal escapes overflow:hidden and works normally. -->
-<div id="nav-root" style="position:absolute;top:0;left:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true"></div>
 
 <script>
-const EMOJIS = ['ðŸ‘§','ðŸ‘¦','ðŸ§’','ðŸ‘¶','ðŸŒŸ','ðŸ¦','ðŸ¼','ðŸ¦Š','ðŸ¸','ðŸ¨','ðŸš€','âš½','ðŸŽ®','ðŸŽ¨','ðŸŽµ','ðŸ¦‹'];
-let selectedEmoji='ðŸ‘§', _profiles=[], _history=[], _lists=[];
+const EMOJIS = ['👧','👦','🧒','👶','🌟','🦁','🐼','🦊','🐸','🐨','🚀','⚽','🎮','🎨','🎵','🦋'];
+let selectedEmoji='👧', _profiles=[], _history=[], _lists=[];
 
 // Toast
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
@@ -309,14 +279,14 @@ document.addEventListener('cv:auth',({detail})=>{
   }
   loadDashboard(detail.user);
   const p=new URLSearchParams(window.location.search);
-  if(p.get('checkout')==='success'){showToast('ðŸŽ‰ Welcome to '+(detail.isFamily?'Family':'Pro')+' plan!');history.replaceState({},'','/dashboard');}
+  if(p.get('checkout')==='success'){showToast('🎉 Welcome to '+(detail.isFamily?'Family':'Pro')+' plan!');history.replaceState({},'','/dashboard');}
   else if(p.get('checkout')==='cancelled'){showToast('Checkout was cancelled.');history.replaceState({},'','/dashboard');}
 });
 setTimeout(()=>{
   if(_authReceived)return;
   document.getElementById('pageLoader').classList.add('hidden');
   document.getElementById('pageContent').classList.add('visible');
-  document.getElementById('statSearches').textContent='â€”';
+  document.getElementById('statSearches').textContent='—';
 },12000);
 
 // Load dashboard
@@ -342,7 +312,7 @@ function animateNum(id,target){
   const t=setInterval(()=>{n=Math.min(n+step,target);el.textContent=n;if(n>=target)clearInterval(t);},40);
 }
 
-// Filter label â†’ matches design reference colours
+// Filter label → matches design reference colours
 function filterInfo(age){
   if(!age||age<=0) return{label:'No filter',cls:'text-on-surface-variant'};
   if(age<=7)  return{label:'Strict Filters',cls:'text-error'};
@@ -354,7 +324,7 @@ function filterInfo(age){
 // Active profile
 function getActive(){return sessionStorage.getItem('cv_active_profile');}
 
-// Render profiles â€” exact original card markup
+// Render profiles — exact original card markup
 function renderProfiles(){
   const active=getActive(), grid=document.getElementById('profilesGrid'), tier=window.userTier||'free';
   let html='';
@@ -363,7 +333,7 @@ function renderProfiles(){
       const fi=filterInfo(p.age);
       const isActive=p.id===active;
       return `<div class="flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer border ${isActive?'border-primary/30 bg-primary-container/30':'border-transparent hover:bg-surface-container-low hover:border-outline-variant/20'}" onclick="setActive('${p.id}')">
-        <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-xl flex-shrink-0 overflow-hidden">${p.emoji||'ðŸ‘§'}</div>
+        <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-xl flex-shrink-0 overflow-hidden">${p.emoji||'👧'}</div>
         <div>
           <p class="text-sm font-semibold">${esc(p.name)} (${p.age})</p>
           <p class="text-[10px] ${fi.cls} font-medium">${fi.label}</p>
@@ -375,7 +345,7 @@ function renderProfiles(){
   }
   if(_profiles.length<5){
     const addAction=tier==='free'
-      ?`showUpgradeModal('child-profiles','ðŸ‘¨â€ðŸ‘©â€ðŸ‘§','Save Child Profiles','Create and manage up to 2 child profiles with age-appropriate content recommendations.')`
+      ?`showUpgradeModal('child-profiles','👨‍👩‍👧','Save Child Profiles','Create and manage up to 2 child profiles with age-appropriate content recommendations.')`
       :`openModal()`;
     html+=`<button class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant hover:text-primary hover:border-primary transition-all" onclick="${addAction}">
       <span class="material-symbols-outlined text-sm">add</span>
@@ -392,7 +362,7 @@ function setActive(id){
   if(p){showToast('Checking for '+p.name+' '+(p.emoji||''));loadTrending(_trendType);}
 }
 
-// Recent searches â€” exact original row markup
+// Recent searches — exact original row markup
 function renderRecent(){
   const el=document.getElementById('dashRecent');
   const recent=_history.slice(0,5);
@@ -447,7 +417,7 @@ async function loadTrending(type='movie'){
   }
 }
 
-// Trend card â€” exact original card markup from dasboardv2.html
+// Trend card — exact original card markup from dasboardv2.html
 function trendCard(item,type){
   const title=item.title||item.name||'Unknown';
   const year=(item.release_date||item.first_air_date||'').slice(0,4);
@@ -457,20 +427,20 @@ function trendCard(item,type){
   const badgeClass=cert.cls==='red'?'bg-error text-on-error':cert.cls==='green'?'bg-tertiary text-on-tertiary':'bg-surface-container-lowest/90 backdrop-blur text-on-surface';
   const poster=item.poster_path
     ?`<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://image.tmdb.org/t/p/w342${item.poster_path}" alt="${esc(title)}" loading="lazy">`
-    :`<div class="w-full h-full flex items-center justify-center text-4xl bg-surface-dim">ðŸŽ¬</div>`;
+    :`<div class="w-full h-full flex items-center justify-center text-4xl bg-surface-dim">🎬</div>`;
   const verdict=_verdictData[item.id];
   const genre=getGenreLabel(item,type);
   return `<div class="group cursor-pointer" onclick="checkTitle(${item.id},'${type}','${esc(title)}')">
     <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-4 bg-surface-dim">
       ${poster}
       <div class="absolute top-3 left-3 px-2 py-1 ${badgeClass} rounded text-[10px] font-extrabold uppercase tracking-widest">${cert.label}</div>
-      ${cached?'<span class="absolute top-3 right-3 bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">âœ“</span>':''}
+      ${cached?'<span class="absolute top-3 right-3 bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">✓</span>':''}
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-        <button class="w-full py-2 bg-white text-black font-bold text-xs rounded-lg">${cached?'âœ“ View analysis':'Details'}</button>
+        <button class="w-full py-2 bg-white text-black font-bold text-xs rounded-lg">${cached?'✓ View analysis':'Details'}</button>
       </div>
     </div>
     <h3 class="font-bold text-sm leading-tight mb-1">${esc(title)}</h3>
-    <p class="text-[11px] text-on-surface-variant font-medium">${genre}${year?' â€¢ '+year:''}</p>
+    <p class="text-[11px] text-on-surface-variant font-medium">${genre}${year?' • '+year:''}</p>
   </div>`;
 }
 
@@ -521,7 +491,7 @@ document.getElementById('upgradeModal').addEventListener('click',e=>{if(e.target
 
 // Add profile modal
 function openModal(){
-  selectedEmoji='ðŸ‘§';
+  selectedEmoji='👧';
   document.getElementById('newName').value='';
   document.getElementById('newAge').value='';
   document.getElementById('emojiGrid').innerHTML=EMOJIS.map(e=>`<button class="text-2xl p-1.5 rounded-lg border-2 ${e===selectedEmoji?'border-primary bg-primary-container':'border-transparent bg-slate-100'} transition-all" onclick="pickEmoji('${e}',this)">${e}</button>`).join('');
@@ -539,10 +509,10 @@ async function saveProfile(){
   const name=document.getElementById('newName').value.trim();
   const age=parseInt(document.getElementById('newAge').value);
   if(!name){showToast('Please enter a name');return;}
-  if(!age||age<1||age>17){showToast('Please enter a valid age (1â€“17)');return;}
+  if(!age||age<1||age>17){showToast('Please enter a valid age (1–17)');return;}
   const btn=document.getElementById('saveProfileBtn');
-  btn.disabled=true;btn.textContent='Addingâ€¦';
-  try{const p=await apiPost('/api/profiles',{name,age,emoji:selectedEmoji});_profiles.push(p);closeModal();renderProfiles();showToast(name+"'s profile added âœ“");}
+  btn.disabled=true;btn.textContent='Adding…';
+  try{const p=await apiPost('/api/profiles',{name,age,emoji:selectedEmoji});_profiles.push(p);closeModal();renderProfiles();showToast(name+"'s profile added ✓");}
   catch(e){showToast(e.message==='403'?'Max 5 profiles reached':'Failed to save profile');}
   finally{btn.disabled=false;btn.textContent='Add Profile';}
 }
@@ -552,6 +522,6 @@ document.addEventListener('keydown',e=>{
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();window.cvOpenSearchModal&&window.cvOpenSearchModal();}
 });
 </script>
-<script src="/js/auth.js?v=20260403_2"></script>
+<script src="/js/auth.js?v=20260406"></script>
 </body>
 </html>

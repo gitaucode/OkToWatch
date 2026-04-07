@@ -1,643 +1,2476 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html class="light" lang="en">
+
 <head>
+
 <meta charset="utf-8"/>
+
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
 <link rel="manifest" href="/manifest.json"/>
+
 <meta name="theme-color" content="#565e74"/>
-<title id="pageTitle">OkToWatch â€” Content Breakdown</title>
+
+<title id="pageTitle">OkToWatch — Content Breakdown</title>
+
 <meta name="description" content="Detailed content breakdown and parent verdict for any movie or TV show."/>
+
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
 <script id="tailwind-config">
+
 tailwind.config = {
+
   darkMode: "class",
+
   theme: {
+
     extend: {
+
       colors: {
+
         "surface-dim":"#d3dbdf","tertiary":"#006d4a","surface-variant":"#dde3e7",
+
         "secondary-fixed":"#dce2f3","inverse-on-surface":"#9c9d9e","tertiary-dim":"#005f40",
+
         "on-secondary-container":"#4b525f","secondary-container":"#dce2f3",
+
         "inverse-primary":"#dae2fd","outline":"#757c7f","on-tertiary-container":"#005a3c",
+
         "error-container":"#fe8983","surface-container-low":"#f2f4f5",
+
         "on-secondary-fixed-variant":"#555c69","primary-fixed-dim":"#ccd4ee",
+
         "primary-container":"#dae2fd","surface-container-highest":"#dde3e7",
+
         "primary":"#565e74","on-primary":"#f7f7ff","error-dim":"#4e0309",
+
         "on-tertiary":"#e6ffee","surface-bright":"#f9f9fa","on-primary-container":"#4a5167",
+
         "background":"#f9f9fa","surface":"#f9f9fa","surface-container-lowest":"#ffffff",
+
         "on-tertiary-fixed-variant":"#006544","secondary":"#585f6d",
+
         "on-primary-fixed":"#373f54","on-secondary-fixed":"#39404c",
+
         "tertiary-fixed":"#69f6b8","on-error-container":"#752121","on-secondary":"#f8f8ff",
+
         "outline-variant":"#acb3b6","on-error":"#fff7f6","on-primary-fixed-variant":"#535b71",
+
         "on-surface":"#2d3336","tertiary-fixed-dim":"#58e7ab","surface-tint":"#565e74",
+
         "on-tertiary-fixed":"#00452d","on-background":"#2d3336","inverse-surface":"#0c0e0f",
+
         "surface-container-high":"#e4e9ec","secondary-dim":"#4c5361",
+
         "on-surface-variant":"#596063","surface-container":"#ebeef0","primary-dim":"#4a5268",
+
         "primary-fixed":"#dae2fd","secondary-fixed-dim":"#ced4e4",
+
         "tertiary-container":"#69f6b8","error":"#9f403d"
+
       },
+
       borderRadius: { DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem" },
+
       fontFamily: { headline:["Plus Jakarta Sans"],body:["Inter"],label:["Inter"] }
+
     }
+
   }
+
 }
+
 </script>
+
 <style>
+
   .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+
   .hero-gradient { background: linear-gradient(to bottom, transparent 0%, #f9f9fa 100%); }
+
   body { font-family:'Inter', sans-serif; }
+
   h1,h2,h3 { font-family:'Plus Jakarta Sans', sans-serif; }
 
+
+
   /* Skeleton */
+
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
   .skel { background:linear-gradient(90deg,#e4e9ec 25%,#f2f4f5 50%,#e4e9ec 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:0.5rem; }
 
+
+
   /* Accordion */
+
   .accordion-body { display: none; }
+
   .accordion-body.open { display: block; }
+
   .accordion-chevron { transition: transform 0.2s ease; }
+
   .accordion-chevron.open { transform: rotate(180deg); }
 
+
+
   /* Toast */
+
   .toast { position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,26,24,0.92);color:white;backdrop-filter:blur(12px);padding:0.65rem 1.25rem;border-radius:100px;font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.25s ease;pointer-events:none;z-index:999;white-space:nowrap; }
+
   .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
 
+
+
   /* Hide auth.js injected nav */
+
   #nav-root * { visibility:hidden!important; }
+
   #nav-root .cv-search-modal,
+
   #nav-root .cv-search-modal * { visibility:visible!important; }
+
+
+
+  /* --- SaaS Landing Page --- */
+
+  .landing-hero {
+
+    background: linear-gradient(135deg, rgba(86, 94, 116, 0.2) 0%, rgba(0, 109, 74, 0.1) 100%), url('data:image/svg+xml,<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%25" style="stop-color:%23dae2fd;stop-opacity:0.4" /><stop offset="100%25" style="stop-color:%2369f6b8;stop-opacity:0.2" /></linearGradient></defs><rect width="1200" height="500" fill="url(%23grad)"/><path d="M0,250 Q300,150 600,200 T1200,250 L1200,500 L0,500" fill="%23f9f9fa" opacity="0.3"/></svg>') center/cover;
+
+    position: relative;
+
+    padding: 6rem 1.5rem 4rem;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    min-height: 600px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+  }
+
+
+
+  .landing-hero::before {
+
+    content: '';
+
+    position: absolute;
+
+    top: 0; left: 0; right: 0; height: 100%;
+
+    background: radial-gradient(circle at 20% 30%, rgba(0, 109, 74, 0.08) 0%, transparent 50%),
+
+                radial-gradient(circle at 80% 70%, rgba(86, 94, 116, 0.08) 0%, transparent 50%);
+
+    pointer-events: none;
+
+    z-index: 1;
+
+  }
+
+
+
+  .landing-hero > * { position: relative; z-index: 2; }
+
+
+
+  .landing-hero h1 {
+
+    font-size: clamp(2.8rem, 8vw, 4.5rem);
+
+    font-weight: 800;
+
+    letter-spacing: -0.02em;
+
+    color: #2d3336;
+
+    max-width: 900px;
+
+    margin: 0 auto 1rem;
+
+    line-height: 1.1;
+
+  }
+
+
+
+  .landing-hero h1 .tertiary-text {
+
+    background: linear-gradient(135deg, #006d4a 0%, #1a8659 100%);
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+  }
+
+
+
+  .landing-hero .subhead {
+
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+
+    color: #596063;
+
+    max-width: 700px;
+
+    margin: 0 auto 3rem;
+
+    line-height: 1.7;
+
+  }
+
+
+
+  .landing-search-container {
+
+    width: 100%;
+
+    max-width: 640px;
+
+    margin: 0 auto 1.5rem;
+
+    background: white;
+
+    padding: 0.5rem;
+
+    border-radius: 100px;
+
+    box-shadow: 0 12px 36px -8px rgba(86, 94, 116, 0.15), 0 0 0 1px rgba(86, 94, 116, 0.08);
+
+    transition: box-shadow 0.3s ease;
+
+  }
+
+
+
+  .landing-search-container:focus-within {
+
+    box-shadow: 0 16px 42px -8px rgba(86, 94, 116, 0.25), 0 0 0 2px #565e74;
+
+  }
+
+
+
+  .landing-search-container .search-box {
+
+    display: flex;
+
+    align-items: center;
+
+    border: none;
+
+    background: transparent;
+
+  }
+
+
+
+  .landing-search-container input {
+
+    font-size: 1.1rem;
+
+    padding: 1rem 1.5rem;
+
+    color: #2d3336;
+
+    font-family: 'Inter', sans-serif;
+
+    height: 54px;
+
+    border: none;
+
+    background: transparent;
+
+    width: 100%;
+
+  }
+
+
+
+  .landing-search-container input::placeholder {
+
+    color: #acb3b6;
+
+  }
+
+
+
+  .landing-search-container button {
+
+    background: #565e74;
+
+    color: #f7f7ff;
+
+    border-radius: 100px;
+
+    padding: 0.85rem 2rem;
+
+    font-size: 1.05rem;
+
+    font-weight: 700;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    border: none;
+
+    box-shadow: 0 4px 12px rgba(86, 94, 116, 0.25);
+
+    transition: all 0.2s ease;
+
+    height: 54px;
+
+    cursor: pointer;
+
+  }
+
+
+
+  .landing-search-container button:hover {
+
+    background: #4a5268;
+
+    box-shadow: 0 6px 16px rgba(86, 94, 116, 0.35);
+
+    transform: translateY(-1px);
+
+  }
+
+
+
+  .quick-chips {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+
+  }
+
+
+
+  .quick-chip {
+
+    background: white;
+
+    border: 1px solid #acb3b6;
+
+    padding: 0.5rem 1rem;
+
+    border-radius: 20px;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    font-family: 'Inter', sans-serif;
+
+    color: #2d3336;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+  }
+
+
+
+  .quick-chip:hover {
+
+    background: #ebeef0;
+
+    border-color: #006d4a;
+
+  }
+
+
+
+  /* Trust Section */
+
+  .trust-section {
+
+    background: white;
+
+    padding: 5rem 1.5rem;
+
+    border-bottom: 1px solid #acb3b6;
+
+  }
+
+
+
+  .trust-section h3 {
+
+    font-size: 1.5rem;
+
+    font-weight: 700;
+
+    color: #2d3336;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    text-align: center;
+
+    margin-bottom: 3rem;
+
+  }
+
+
+
+  .trust-logos {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 3rem;
+
+    flex-wrap: wrap;
+
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+  }
+
+
+
+  .trust-logo {
+
+    font-size: 2rem;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 0.5rem;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: #596063;
+
+  }
+
+
+
+  /* Alternating Sections */
+
+  .content-section {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 4rem;
+
+    align-items: center;
+
+    padding: 4rem 1.5rem;
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+  }
+
+
+
+  .content-section.reverse {
+
+    direction: rtl;
+
+  }
+
+
+
+  .content-section.reverse > * {
+
+    direction: ltr;
+
+  }
+
+
+
+  .section-image {
+
+    width: 100%;
+
+    height: 400px;
+
+    background: linear-gradient(135deg, #dae2fd 0%, #69f6b8 100%);
+
+    border-radius: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 4rem;
+
+    box-shadow: 0 12px 40px rgba(86, 94, 116, 0.1);
+
+  }
+
+
+
+  .section-content h2 {
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    color: #2d3336;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    margin-bottom: 1.5rem;
+
+  }
+
+
+
+  .section-content p {
+
+    font-size: 1rem;
+
+    color: #596063;
+
+    font-family: 'Inter', sans-serif;
+
+    line-height: 1.8;
+
+    margin-bottom: 1.5rem;
+
+  }
+
+
+
+  .section-content ul {
+
+    list-style: none;
+
+    padding: 0;
+
+  }
+
+
+
+  .section-content li {
+
+    font-size: 1rem;
+
+    color: #596063;
+
+    font-family: 'Inter', sans-serif;
+
+    margin-bottom: 0.75rem;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.75rem;
+
+  }
+
+
+
+  .section-content li::before {
+
+    content: '✓';
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 24px;
+
+    height: 24px;
+
+    background: #006d4a;
+
+    color: white;
+
+    border-radius: 50%;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    flex-shrink: 0;
+
+  }
+
+
+
+  /* Updated Features Grid */
+
+  .landing-features {
+
+    padding: 5rem 1.5rem;
+
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    text-align: center;
+
+    background: #f9f9fa;
+
+  }
+
+
+
+  .landing-features h2 {
+
+    font-size: 2.25rem;
+
+    font-weight: 800;
+
+    color: #2d3336;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    margin-bottom: 1rem;
+
+    letter-spacing: -0.02em;
+
+  }
+
+
+
+  .landing-features > p {
+
+    font-size: 1.1rem;
+
+    color: #596063;
+
+    font-family: 'Inter', sans-serif;
+
+    max-width: 600px;
+
+    margin: 0 auto 3.5rem;
+
+    line-height: 1.6;
+
+  }
+
+
+
+  .features-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 2rem;
+
+  }
+
+
+
+  .feature-card {
+
+    background: white;
+
+    border: 1px solid #acb3b6;
+
+    border-radius: 20px;
+
+    padding: 2.5rem 2rem;
+
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  }
+
+
+
+  .feature-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: 0 12px 32px -4px rgba(86, 94, 116, 0.1);
+
+    border-color: rgba(86, 94, 116, 0.3);
+
+  }
+
+
+
+  .feature-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    background: #dae2fd;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 1.5rem;
+
+    color: #565e74;
+
+    margin-bottom: 1.75rem;
+
+  }
+
+
+
+  .feature-card h3 {
+
+    font-size: 1.25rem;
+
+    font-weight: 700;
+
+    color: #2d3336;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    margin-bottom: 0.75rem;
+
+  }
+
+
+
+  .feature-card p {
+
+    font-size: 0.95rem;
+
+    color: #596063;
+
+    font-family: 'Inter', sans-serif;
+
+    line-height: 1.6;
+
+  }
+
+
+
+  .landing-social-proof {
+
+    background: #f2f4f5;
+
+    padding: 5rem 1.5rem;
+
+    border-top: 1px solid #acb3b6;
+
+    border-bottom: 1px solid #acb3b6;
+
+  }
+
+
+
+  .social-quote {
+
+    max-width: 800px;
+
+    margin: 0 auto;
+
+    text-align: center;
+
+  }
+
+
+
+  .social-quote p {
+
+    font-size: 1.5rem;
+
+    font-weight: 600;
+
+    color: #1f2937;
+
+    font-family: 'Inter', sans-serif;
+
+    line-height: 1.6;
+
+    margin-bottom: 1.5rem;
+
+    font-style: italic;
+
+    letter-spacing: -0.01em;
+
+  }
+
+
+
+  .social-rating {
+
+    color: #006d4a;
+
+    font-size: 1.25rem;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 1rem;
+
+  }
+
+
+
+  .social-author {
+
+    font-weight: 700;
+
+    color: #596063;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+    font-size: 0.85rem;
+
+  }
+
+
+
+  .landing-cta {
+
+    padding: 6rem 1.5rem;
+
+    text-align: center;
+
+    background: white;
+
+  }
+
+
+
+  .landing-cta h2 {
+
+    font-size: 2.5rem;
+
+    font-weight: 800;
+
+    color: #2d3336;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    margin-bottom: 1rem;
+
+    letter-spacing: -0.02em;
+
+  }
+
+
+
+  .landing-cta p {
+
+    font-size: 1.15rem;
+
+    color: #596063;
+
+    font-family: 'Inter', sans-serif;
+
+    margin-bottom: 2.5rem;
+
+    max-width: 600px;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+  }
+
+
+
+  .cta-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.75rem;
+
+    background: #565e74;
+
+    color: #f7f7ff;
+
+    padding: 1.1rem 2.5rem;
+
+    border-radius: 100px;
+
+    font-size: 1.1rem;
+
+    font-weight: 700;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    text-decoration: none;
+
+    border: none;
+
+    box-shadow: 0 8px 24px rgba(86, 94, 116, 0.25);
+
+    transition: all 0.2s ease;
+
+    cursor: pointer;
+
+  }
+
+
+
+  .cta-button:hover {
+
+    background: #4a5268;
+
+    box-shadow: 0 12px 32px rgba(86, 94, 116, 0.35);
+
+    transform: translateY(-2px);
+
+  }
+
+
+
+  #landingPageContent { display: none; }
+
+  #landingPageContent.visible { display: block; }
+
+  #pageContent { display: block; }
+
+  #pageContent.hidden { display: none; }
+
+
+
+  /* Responsive adjustments */
+
+  @media (max-width: 768px) {
+
+    .content-section {
+
+      grid-template-columns: 1fr;
+
+      gap: 2rem;
+
+      padding: 3rem 1.5rem;
+
+    }
+
+
+
+    .content-section.reverse {
+
+      direction: ltr;
+
+    }
+
+
+
+    .section-image {
+
+      height: 300px;
+
+      order: 2;
+
+    }
+
+
+
+    .trust-logos {
+
+      gap: 1.5rem;
+
+    }
+
+
+
+    .landing-hero {
+
+      min-height: 500px;
+
+      padding: 4rem 1.5rem 3rem;
+
+    }
+
+  }
+
 </style>
+
 </head>
+
 <body class="bg-background text-on-surface selection:bg-primary-container">
 
-<!-- â”€â”€ Top Nav (exact original design) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+
+
+<!-- ”€”€ Top Nav (exact original design) ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ -->
+
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
+
   <div class="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+
     <a href="/dashboard" class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter font-['Plus_Jakarta_Sans'] no-underline">OkToWatch</a>
+
     <div class="hidden md:flex items-center gap-8">
+
       <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/dashboard">Dashboard</a>
+
       <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/lists">Lists</a>
+
       <a class="text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/discover">Discover</a>
+
       <a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline" href="/history">History</a>
+
     </div>
+
     <div class="flex items-center gap-4">
+
       <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
+
         <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">search</span>
+
       </button>
+
       <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.location.href='/settings'">
+
         <span class="material-symbols-outlined text-slate-700 dark:text-slate-200" id="navAccountIcon">account_circle</span>
+
       </button>
+
     </div>
+
   </div>
+
 </nav>
+
+
 
 <main class="min-h-screen pt-16">
 
-  <!-- â”€â”€ Hero Section (exact original) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-  <section class="relative h-[614px] w-full overflow-hidden" id="heroSection">
-    <div class="absolute inset-0 z-0">
-      <!-- Skeleton backdrop -->
-      <div class="skel w-full h-full rounded-none" id="backdropSkel"></div>
-      <img class="w-full h-full object-cover hidden" id="heroBackdrop" alt=""/>
-      <div class="absolute inset-0 hero-gradient"></div>
-    </div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-8 h-full flex flex-col justify-end pb-12">
-      <div class="max-w-2xl">
-        <!-- Genre tags -->
-        <div class="flex flex-wrap gap-3 mb-4" id="heroGenres">
-          <span class="skel px-10 py-3 rounded">&nbsp;</span>
-          <span class="skel px-10 py-3 rounded">&nbsp;</span>
+
+
+  <!-- Landing Page (shown when no search ID) -->
+
+  <div id="landingPageContent">
+
+    <section class="landing-hero">
+
+      <h1>Know <span class="tertiary-text">exactly</span> what they're watching.</h1>
+
+      <p class="subhead">Instantly analyze any movie or TV show for mature content, themes, and age appropriateness before your kids hit play.</p>
+
+      
+
+      <div class="landing-search-container">
+
+        <div class="search-box">
+
+          <input type="text" id="landingSearchInput" placeholder="Search a movie or TV show..." autocomplete="off"/>
+
+          <button onclick="landingSearch()">Analyze Title</button>
+
         </div>
-        <!-- Title -->
-        <h1 class="text-[28px] md:text-5xl font-extrabold text-on-surface mb-2 tracking-tight" id="heroTitle">
-          <span class="skel inline-block" style="width:420px;height:48px;">&nbsp;</span>
-        </h1>
-        <!-- Meta -->
-        <div class="flex items-center gap-4 text-on-surface-variant font-medium" id="heroMeta">
-          <span class="skel inline-block" style="width:180px;height:16px;">&nbsp;</span>
-        </div>
+
       </div>
+
+
+
+      <div class="quick-chips">
+
+        <span style="color: #596063; font-size: 0.95rem; font-weight: 500;">Or try:</span>
+
+        <button class="quick-chip" onclick="quickSearch('Deadpool & Wolverine')">Deadpool & Wolverine</button>
+
+        <button class="quick-chip" onclick="quickSearch('Inside Out 2')">Inside Out 2</button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- Trust Section -->
+
+    <section class="trust-section">
+
+      <h3>Trusted by Parents</h3>
+
+      <div class="trust-logos">
+
+        <div class="trust-logo">👨‍👩‍👧‍👦<br>Parental<br>Community</div>
+
+        <div class="trust-logo">⭐<br>AI-Powered<br>Analysis</div>
+
+        <div class="trust-logo">🛡️<br>Age<br>Safe</div>
+
+        <div class="trust-logo">📊<br>Detailed<br>Breakdown</div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- Content Section 1: No More Guessing -->
+
+    <section class="content-section">
+
+      <div class="section-image">🔍</div>
+
+      <div class="section-content">
+
+        <h2>No More Scrolling Through Reviews</h2>
+
+        <p>Stop wasting 20 minutes reading conflicting parent reviews. Get an instant, objective breakdown of every content concern in seconds.</p>
+
+        <ul>
+
+          <li>Violence & Gore levels</li>
+
+          <li>Language & Profanity</li>
+
+          <li>Sexual Content & Themes</li>
+
+          <li>Drug & Alcohol Use</li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- Content Section 2: Personalized Verdicts -->
+
+    <section class="content-section reverse">
+
+      <div class="section-image">👦</div>
+
+      <div class="section-content">
+
+        <h2>Personalized by Your Child's Age</h2>
+
+        <p>Not all 10-year-olds are the same. Our AI adjusts verdicts based on maturity level, giving you recommendations tailored to your family.</p>
+
+        <ul>
+
+          <li>Age-specific safety ratings</li>
+
+          <li>Custom sensitivity thresholds</li>
+
+          <li>Detailed talking points with kids</li>
+
+          <li>Track approved & blocked titles</li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- Content Section 3: Season Analysis -->
+
+    <section class="content-section">
+
+      <div class="section-image">📺</div>
+
+      <div class="section-content">
+
+        <h2>Season-by-Season Breakdowns</h2>
+
+        <p>Some shows start innocent and get intense. We analyze each season separately so you know exactly what to expect before they press play.</p>
+
+        <ul>
+
+          <li>Per-season content analysis</li>
+
+          <li>Track changes across seasons</li>
+
+          <li>Episode-level breakdowns (Pro)</li>
+
+          <li>Compare complexity over time</li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- Features Grid -->
+
+    <div class="landing-features">
+
+      <h2>Why Parents Choose OkToWatch</h2>
+
+      <p>The fastest way to make confident parenting decisions about what your kids watch.</p>
+
+      
+
+      <div class="features-grid">
+
+        <div class="feature-card">
+
+          <div class="feature-icon">⚡</div>
+
+          <h3>Instant Results</h3>
+
+          <p>Get complete analysis in seconds, not minutes. Search once, get all the answers.</p>
+
+        </div>
+
+        <div class="feature-card">
+
+          <div class="feature-icon">🧠</div>
+
+          <h3>AI-Powered</h3>
+
+          <p>Powered by advanced AI that understands content context, not just keywords.</p>
+
+        </div>
+
+        <div class="feature-card">
+
+          <div class="feature-icon">💚</div>
+
+          <h3>Parent-First</h3>
+
+          <p>Built by parents, for parents. We understand what you actually need to know.</p>
+
+        </div>
+
+      </div>
+
     </div>
-  </section>
-  <!-- â”€â”€ AI Summary Strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-  <div id="movieSummaryStrip" class="max-w-[1440px] mx-auto px-8 py-6 border-b border-surface-variant hidden">
-    <p class="text-[14.5px] italic text-on-surface-variant leading-relaxed max-w-4xl" id="summaryStripText"></p>
+
+
+
+    <!-- Social Proof Section -->
+
+    <div class="landing-social-proof">
+
+      <div class="social-quote">
+
+        <div class="social-rating">★★★★★</div>
+
+        <p>"This has completely changed movie night for our family. I no longer have to blindly trust ratings or spend 20 minutes reading reviews online. Highly recommend to any parent."</p>
+
+        <div class="social-author">Sarah M. — Parent of two</div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- CTA Section -->
+
+    <div class="landing-cta">
+
+      <h2>Ready for peace of mind?</h2>
+
+      <p>Search your first title for free and lock in your family's safety.</p>
+
+      <button class="cta-button" onclick="focusLandingSearch()">Start Searching Now →</button>
+
+    </div>
+
   </div>
 
-  <!-- â”€â”€ Content Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-  <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 py-10 pb-24">
 
-    <!-- â”€â”€ Main Column (col-span-8) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-    <div class="lg:col-span-8 space-y-12">
+
+  <!-- Detail Page (shown after search) -->
+
+  <div id="detailPageContent">
+
+  <section class="relative h-[614px] w-full overflow-hidden" id="heroSection">
+
+    <div class="absolute inset-0 z-0">
+
+      <!-- Skeleton backdrop -->
+
+      <div class="skel w-full h-full rounded-none" id="backdropSkel"></div>
+
+      <img class="w-full h-full object-cover hidden" id="heroBackdrop" alt=""/>
+
+      <div class="absolute inset-0 hero-gradient"></div>
+
+    </div>
+
+    <div class="relative z-10 max-w-[1440px] mx-auto px-8 h-full flex flex-col justify-end pb-12">
+
+      <div class="max-w-2xl">
+
+        <!-- Genre tags -->
+
+        <div class="flex flex-wrap gap-3 mb-4" id="heroGenres">
+
+          <span class="skel px-10 py-3 rounded">&nbsp;</span>
+
+          <span class="skel px-10 py-3 rounded">&nbsp;</span>
+
+        </div>
+
+        <!-- Title -->
+
+        <h1 class="text-[28px] md:text-5xl font-extrabold text-on-surface mb-2 tracking-tight" id="heroTitle">
+
+          <span class="skel inline-block" style="width:420px;height:48px;">&nbsp;</span>
+
+        </h1>
+
+        <!-- Meta -->
+
+        <div class="flex items-center gap-4 text-on-surface-variant font-medium" id="heroMeta">
+
+          <span class="skel inline-block" style="width:180px;height:16px;">&nbsp;</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ”€”€ AI Summary Strip ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ -->
+
+  <div id="movieSummaryStrip" class="max-w-[1440px] mx-auto px-8 py-3 border-b border-surface-variant hidden">
+
+    <p class="text-[14.5px] italic text-on-surface-variant leading-relaxed max-w-4xl" id="summaryStripText"></p>
+
+  </div>
+
+
+
+  <!-- ”€”€ Content Grid ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ -->
+
+  <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 pb-24">
+
+
+
+    <!-- ”€”€ Main Column (col-span-8) ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ -->
+
+    <div class="lg:col-span-8 space-y-6">
+
+
 
       <!-- Verdict Card (exact original markup) -->
-      <div class="bg-white border border-slate-200 p-8 rounded-xl shadow-sm">
+
+      <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+
           <div class="flex gap-6 items-center">
+
             <!-- Age recommendation box -->
+
             <div class="w-24 h-24 rounded-[20px] bg-[#0B6B40] text-emerald-50 flex items-center justify-center shrink-0 shadow-inner" id="ageBox">
+
               <span class="skel w-full h-full rounded-[20px]">&nbsp;</span>
+
             </div>
+
             <div>
+
               <h3 class="text-xl font-bold mb-1">Expert Parent Verdict</h3>
+
               <p class="text-on-surface-variant leading-relaxed max-w-md" id="verdictSummaryText">
+
                 <span class="skel inline-block" style="width:320px;height:14px;margin-bottom:4px;">&nbsp;</span>
+
                 <span class="skel inline-block" style="width:240px;height:14px;">&nbsp;</span>
+
               </p>
+
             </div>
+
           </div>
+
           <!-- Where to watch -->
+
           <div class="flex flex-col gap-2 shrink-0">
+
             <div class="text-sm font-semibold uppercase tracking-widest text-outline">Where to Watch</div>
+
             <div class="flex gap-3 flex-wrap" id="whereToWatch">
+
               <span class="skel w-10 h-10 rounded-lg">&nbsp;</span>
+
               <span class="skel w-10 h-10 rounded-lg">&nbsp;</span>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
+
 
       <!-- Content Breakdown (List Map Format) -->
+
       <section>
-        <h2 class="text-xs font-bold text-outline uppercase tracking-widest mb-6 border-b border-surface-variant pb-2">Content Breakdown</h2>
+
+        <h2 class="text-xs font-bold text-outline uppercase tracking-widest mb-3 border-b border-surface-variant pb-2">Content Breakdown</h2>
+
         <div class="space-y-0" id="breakdownAccordion">
+
           <!-- Skeleton list items -->
+
           <div class="skel h-16 rounded-lg mb-2"></div>
+
           <div class="skel h-16 rounded-lg mb-2"></div>
+
           <div class="skel h-16 rounded-lg mb-2"></div>
+
           <div class="skel h-16 rounded-lg mb-2"></div>
+
         </div>
+
       </section>
 
+
+
     </div>
 
-    <!-- â”€â”€ Sidebar (col-span-4) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+
+
+    <!-- ”€”€ Sidebar (col-span-4) ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ -->
+
     <div class="lg:col-span-4 space-y-8">
+
       <!-- Action Card (exact original markup) -->
-      <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 shadow-xl lg:sticky lg:top-24">
+
+      <div class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/10 shadow-xl lg:sticky lg:top-24">
+
+
 
         <!-- Add to Watchlist -->
+
         <button id="watchlistBtn" class="w-full bg-[#0F172A] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all active:scale-[0.98]" onclick="toggleWatchlist()">
+
           <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">bookmark</span>
+
           Add to Watchlist
+
         </button>
+
+
 
         <!-- Mark as Watched -->
+
         <button id="watchedBtn" class="w-full mt-4 border-2 border-slate-200 py-3 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all" onclick="markWatched()">
+
           Mark as Watched
+
         </button>
 
+
+
         <!-- Social proof -->
-        <div class="mt-8 space-y-6">
+
+        <div class="mt-8 space-y-3">
+
           <div class="flex items-start gap-4">
+
             <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">group</span>
+
             <div>
+
               <h4 class="font-bold text-sm">Parental Community</h4>
-              <p class="text-xs text-on-surface-variant" id="communityText">Loading community dataâ€¦</p>
+
+              <p class="text-xs text-on-surface-variant" id="communityText">Loading community data...</p>
+
             </div>
+
           </div>
+
           <div class="flex items-start gap-4">
+
             <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">psychology</span>
+
             <div>
+
               <h4 class="font-bold text-sm">Positive Messages</h4>
-              <p class="text-xs text-on-surface-variant" id="positiveMessages">Loadingâ€¦</p>
+
+              <p class="text-xs text-on-surface-variant" id="positiveMessages">Loading...</p>
+
             </div>
+
           </div>
+
         </div>
+
+
 
         <!-- Cast & Crew (exact original) -->
+
         <div class="mt-8 pt-8 border-t border-slate-100">
+
           <h4 class="font-bold mb-4 text-sm uppercase tracking-wider text-outline">Cast &amp; Crew</h4>
+
           <div class="flex flex-wrap gap-2" id="castGrid">
+
             <div class="skel w-12 h-12 rounded-full"></div>
+
             <div class="skel w-12 h-12 rounded-full"></div>
+
             <div class="skel w-12 h-12 rounded-full"></div>
+
             <div class="skel w-12 h-12 rounded-full"></div>
+
           </div>
+
         </div>
 
+
+
       </div>
+
     </div>
 
+
+
   </div>
+
+
+
+  </div><!-- end detailPageContent -->
+
+
 
 </main>
 
+
+
 <!-- Footer (exact original) -->
+
 <div id="footer-root"></div>
 
+
+
 <!-- Toast -->
+
 <div class="toast" id="toast"></div>
 
+
+
 <!-- Off-screen nav-root: auth.js injects here (cv-nav hidden, cv-search-modal visible via position:fixed) -->
+
 <div id="nav-root" style="position:absolute;top:0;left:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true"></div>
 
+
+
 <script>
+
 const TMDB_IMG  = 'https://image.tmdb.org/t/p/';
 
-// Category â†’ material icon
+
+
+// Category ↓’ material icon
+
 const CAT_ICONS = {
+
   'violence':'gavel','gore':'gavel',
+
   'language':'chat_bubble','profanity':'chat_bubble',
+
   'sex':'favorite','nudity':'favorite','sexual':'favorite',
+
   'alcohol':'liquor','drugs':'science','smoking':'smoking_rooms',
+
   'horror':'skull','scary':'skull','frightening':'skull',
+
   'themes':'psychology','messages':'psychology',
+
   'bullying':'shield_person','abuse':'shield_person',
+
 };
 
-// Level â†’ label + Tailwind colour class
+
+
+// Level ↓’ label + Tailwind colour class
+
 const LEVEL_CFG = {
+
   none:     { label:'None',     cls:'text-tertiary',  bgCls:'bg-tertiary/10' },
+
   mild:     { label:'Mild',     cls:'text-amber-500', bgCls:'bg-amber-50' },
+
   moderate: { label:'Moderate', cls:'text-error',     bgCls:'bg-error/10' },
+
   strong:   { label:'Strong',   cls:'text-error',     bgCls:'bg-error/10' },
+
 };
+
+
 
 function catIcon(name) {
+
   const k = (name||'').toLowerCase();
+
   for (const [key,ico] of Object.entries(CAT_ICONS)) if (k.includes(key)) return ico;
+
   return 'info';
+
 }
+
+
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
 function showToast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 
-// â”€â”€ URL params â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ URL params ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 const _params = new URLSearchParams(window.location.search);
+
 const _tmdbId = _params.get('id') || _params.get('searchId');
+
 const _type   = _params.get('type') || _params.get('searchType') || 'movie';
 
+
+
 let _details  = null;
+
 let _breakdown= null;
+
 let _lists    = [];
+
 let _inWatchlist = false;
 
-// â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Auth ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 document.addEventListener('cv:auth', ({ detail }) => {
+
   if (!detail.loggedIn) {
-    // Allow unauthenticated browsing on detail page â€” just no save actions
+
+    // Allow unauthenticated browsing on detail page –” just no save actions
+
   }
+
   // Update icon
+
   if (detail.user?.imageUrl) {
+
     const ic = document.getElementById('navAccountIcon');
-    if (ic) ic.closest('button').innerHTML = `<img src="${detail.user.imageUrl}" class="w-8 h-8 rounded-full object-cover" alt="">`;
+
+    if (ic) ic.closest('button').innerHTML = `<img src="${detail.user.imageUrl}" class="w-8 h-8 rounded-full object-cover" alt=">`;
+
   }
+
   // Fetch user lists to check watchlist state
+
   if (detail.loggedIn) {
+
     getToken().then(tok => {
+
       if (!tok) return;
+
       fetch('/api/lists', { headers: { 'Authorization': 'Bearer ' + tok } })
+
         .then(r => r.ok ? r.json() : [])
+
         .then(lists => {
+
           _lists = lists || [];
+
           const entry = _lists.find(l => String(l.tmdb_id) === String(_tmdbId) && l.media_type === _type);
+
           if (entry) {
+
             _inWatchlist = true;
+
             updateWatchlistBtn(true);
+
           }
+
         }).catch(() => {});
+
     });
+
   }
+
 });
 
+
+
 let _clerkToken = null;
+
 // Snapshot token for API calls
+
 async function getToken() {
+
   if (!window.Clerk?.session) return null;
+
   try { return await window.Clerk.session.getToken(); } catch { return null; }
+
 }
 
-// â”€â”€ Main load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Main load ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 async function loadPage() {
+
   if (!_tmdbId) {
+
     document.getElementById('heroTitle').textContent = 'No title selected';
+
     document.getElementById('verdictSummaryText').textContent = 'Please search for a title first.';
+
     return;
+
   }
+
+
 
   try {
-    // Step 1 â€” Fetch TMDb details, ratings, and providers in parallel
+
+    // Step 1 –” Fetch TMDb details, ratings, and providers in parallel
+
     const endpoint = _type === 'tv' ? 'tv' : 'movie';
+
     const [details, ratings, providers] = await Promise.all([
+
       fetch(`/api/tmdb/${endpoint}/${_tmdbId}?append_to_response=credits,keywords`).then(r => r.json()),
+
       _type === 'movie'
+
         ? fetch(`/api/tmdb/movie/${_tmdbId}/release_dates`).then(r => r.json())
+
         : fetch(`/api/tmdb/tv/${_tmdbId}/content_ratings`).then(r => r.json()),
+
       fetch(`/api/tmdb/${endpoint}/${_tmdbId}/watch/providers`).then(r => r.json())
+
     ]);
 
+
+
     _details = details;
+
     // Attach providers onto details for renderVerdictCard
+
     _details._providers = providers.results || {};
 
+
+
     // Extract cert rating (same logic as index.html)
+
     let certRating = '';
+
     if (_type === 'movie') {
+
       const us = (ratings.results || []).find(r => r.iso_3166_1 === 'US');
+
       if (us) { const cert = us.release_dates.find(d => d.certification); certRating = cert?.certification || ''; }
+
     } else {
+
       const us = (ratings.results || []).find(r => r.iso_3166_1 === 'US');
+
       certRating = us?.rating || '';
+
     }
+
+
 
     // Extract metadata for the analyze call
+
     const title    = details.title || details.name || '';
+
     const year     = (details.release_date || details.first_air_date || '').slice(0, 4);
+
     const overview = details.overview || '';
+
     const genres   = (details.genres || []).map(g => g.name).join(', ');
+
     const keywords = ((details.keywords?.keywords || details.keywords?.results) || []).map(k => k.name).slice(0, 20).join(', ');
 
-    // Render hero immediately â€” don't block on AI call
+
+
+    // Render hero immediately –” don't block on AI call
+
     renderHero(_details, certRating);
 
-    // Step 2 â€” Call analyze with full metadata (sequential, after we have details)
+
+
+    // Step 2 –” Call analyze with full metadata (sequential, after we have details)
+
     const _authHeaders = { 'Content-Type': 'application/json' };
+
     try {
+
       const _tok = await getToken();
+
       if (_tok) _authHeaders['Authorization'] = 'Bearer ' + _tok;
+
     } catch (e) {}
+
     const analyzeRes = await fetch('/api/analyze', {
+
       method: 'POST',
+
       headers: _authHeaders,
+
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords, type: _type })
+
     });
 
-    // Handle rate limit specifically â€” show friendly UI, don't treat as crash
+
+
+    // Handle rate limit specifically –” show friendly UI, don't treat as crash
+
     if (analyzeRes.status === 429) {
-      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now â€” please try again in a moment.';
+
+      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now –” please try again in a moment.';
+
       document.getElementById('breakdownAccordion').innerHTML = `
+
         <div class="flex flex-col items-center gap-4 py-10 text-center">
+
           <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
-          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit â€” please wait a moment and try again.</p>
+
+          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit –” please wait a moment and try again.</p>
+
           <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
+
             Try Again
+
           </button>
+
         </div>`;
+
       return;
+
     }
+
+
 
     const analyzeData = await analyzeRes.json();
+
     if (analyzeData.error) throw new Error(analyzeData.error);
 
+
+
     // Parse AI JSON from response using identical logic to previous design
+
     let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
+
     if (Array.isArray(rawContent)) rawContent = rawContent.map(c => c.text || '').join('');
+
     rawContent = String(rawContent).replace(/```json|```/gi, '').trim();
+
     const jsonStart = rawContent.indexOf('{'), jsonEnd = rawContent.lastIndexOf('}');
+
     if (jsonStart === -1 || jsonEnd === -1) throw new Error('No JSON in response');
+
     
+
     _breakdown = JSON.parse(rawContent.slice(jsonStart, jsonEnd + 1));
+
     if (!_breakdown.summary) _breakdown.summary = '';
+
     const validLevels = ['none','mild','moderate','strong'];
+
     (_breakdown.categories || []).forEach(c => { if (!validLevels.includes(c.level)) c.level = 'none'; });
 
+
+
     // Populate the AI Summary Strip
+
     const summaryStripWrap = document.getElementById('movieSummaryStrip');
+
     const summaryStripText = document.getElementById('summaryStripText');
+
     if (_breakdown.summary) {
+
       summaryStripText.textContent = _breakdown.summary;
+
       summaryStripWrap.classList.remove('hidden');
+
     }
+
+
 
     renderVerdictCard(_details, _breakdown, providers.results || {});
+
     renderAccordion(_breakdown);
+
     renderSidebar(_details, _breakdown);
 
+
+
   } catch (e) {
+
     console.error('Page load error:', e);
+
     // rate_limit error in the JSON body
+
     if (String(e.message).toLowerCase().includes('rate_limit') || String(e.message).toLowerCase().includes('rate limit')) {
+
       document.getElementById('heroTitle').textContent = _details?.title || _details?.name || 'Could not load';
-      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now â€” please try again in a moment.';
+
+      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now –” please try again in a moment.';
+
       document.getElementById('breakdownAccordion').innerHTML = `
+
         <div class="flex flex-col items-center gap-4 py-10 text-center">
+
           <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
-          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit â€” please wait a moment and try again.</p>
+
+          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit –” please wait a moment and try again.</p>
+
           <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
+
             Try Again
+
           </button>
+
         </div>`;
+
     } else {
+
       document.getElementById('heroTitle').textContent = 'Could not load';
+
       document.getElementById('verdictSummaryText').textContent = 'Failed to load content breakdown. Please try again.';
+
       document.getElementById('breakdownAccordion').innerHTML = '<p class="text-on-surface-variant text-sm py-4">Analysis failed. Please try again.</p>';
+
     }
+
   }
+
 }
 
-// â”€â”€ Render Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Render Hero ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 function renderHero(d, certRating = '') {
+
   const title    = d.title || d.name || 'Unknown';
+
   const year     = (d.release_date || d.first_air_date || '').slice(0, 4);
+
   const runtime  = d.runtime ? `${d.runtime}m` : (d.episode_run_time?.[0] ? `${d.episode_run_time[0]}m` : '');
+
   const rating   = d.vote_average ? d.vote_average.toFixed(1) : '';
+
   const genres   = (d.genres || []).slice(0, 3);
 
+
+
   // Update page title
+
   document.title = `${title} | OkToWatch`;
 
+
+
   // Backdrop
+
   const backdrop = d.backdrop_path ? `${TMDB_IMG}original${d.backdrop_path}` : (d.poster_path ? `${TMDB_IMG}w780${d.poster_path}` : null);
+
   const backdropEl = document.getElementById('heroBackdrop');
+
   const skelEl = document.getElementById('backdropSkel');
+
   if (backdrop) {
+
     backdropEl.src = backdrop;
+
     backdropEl.onload = () => { backdropEl.classList.remove('hidden'); skelEl.classList.add('hidden'); };
+
     backdropEl.onerror = () => { skelEl.style.background = '#1a2420'; };
+
   } else {
+
     skelEl.style.background = '#1a2420';
+
   }
+
+
 
   // Genres
+
   document.getElementById('heroGenres').innerHTML = genres.map(g =>
+
     `<span class="bg-surface-container-highest px-3 py-1 rounded text-xs font-semibold tracking-wider uppercase text-on-surface-variant">${esc(g.name)}</span>`
+
   ).join('');
 
+
+
   // Title
+
   document.getElementById('heroTitle').textContent = title;
 
-  // Meta row â€” year Â· runtime Â· rating (Â· cert if available)
+
+
+  // Meta row –” year · runtime · rating (· cert if available)
+
   const metaParts = [
+
     year ? `<span>${year}</span>` : '',
+
     runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${runtime}</span>` : '',
+
     rating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">star</span> ${rating}</span>` : '',
+
     certRating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${certRating}</span>` : '',
+
   ].filter(Boolean).join('');
+
   document.getElementById('heroMeta').innerHTML = metaParts;
+
 }
 
-// â”€â”€ Render Verdict Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Render Verdict Card ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 function renderVerdictCard(d, bd, providerResults = {}) {
+
   // Age recommendation box
+
   const ageBox = document.getElementById('ageBox');
+
   const ageVal = getAgeNumber(bd); // Returns just the number+ string, e.g. "15+"
+
   ageBox.innerHTML = `<span class="text-[42px] font-black tracking-tighter leading-none">${ageVal}</span>`;
 
+
+
   // Verdict summary text
+
   const summaryEl = document.getElementById('verdictSummaryText');
+
   const summaryText = bd?.verdicts?.young?.sub || bd?.summary || 'Content breakdown available below.';
+
   summaryEl.textContent = summaryText;
 
-  // Where to Watch â€” prefer GB then US
+
+
+  // Where to Watch –” prefer GB then US
+
   const provs    = providerResults.GB || providerResults.US || {};
+
   const flatrate = provs.flatrate || [];
+
   const rent     = provs.rent     || [];
+
   const wtw      = document.getElementById('whereToWatch');
 
+
+
   const allProviders = [...flatrate, ...rent.filter(r => !flatrate.find(f => f.provider_id === r.provider_id))].slice(0, 5);
+
   if (allProviders.length) {
+
     wtw.innerHTML = allProviders.map(p => `
+
       <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors" title="${esc(p.provider_name)}">
+
         ${p.logo_path
+
           ? `<img class="w-6 h-6 rounded-sm" src="${TMDB_IMG}w45${p.logo_path}" alt="${esc(p.provider_name)}">`
+
           : `<span class="text-[10px] font-bold text-on-surface-variant text-center leading-tight px-1">${esc(p.provider_name.slice(0,6))}</span>`}
+
       </div>`).join('');
+
   } else {
+
     wtw.innerHTML = '<span class="text-sm text-on-surface-variant">Not available on streaming</span>';
+
   }
+
 }
+
+
+
 
 
 // Derive a readable age number from verdicts
+
 function getAgeNumber(bd) {
+
   if (!bd?.verdicts) return 'ALL';
+
   const { young, teens, adults } = bd.verdicts;
+
   if (young?.tier === 'safe')  return '7+';
+
   if (young?.tier === 'warn')  return '10+';
+
   if (teens?.tier === 'safe')  return '13+';
+
   if (teens?.tier === 'warn')  return '15+';
+
   if (adults?.tier === 'safe') return '18+';
+
   return 'R';
+
 }
 
-// â”€â”€ Render Breakdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Render Breakdown ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 function renderAccordion(bd) {
+
   const container = document.getElementById('breakdownAccordion');
+
   const cats = bd?.categories || [];
+
   if (!cats.length) {
+
     container.innerHTML = '<p class="text-on-surface-variant text-sm py-4">No breakdown data available.</p>';
+
     return;
+
   }
+
+
 
   container.innerHTML = cats.map(cat => {
+
     const cfg = LEVEL_CFG[cat.level] || LEVEL_CFG.none;
+
     
+
     return `
+
       <div class="py-4 border-b border-surface-variant flex flex-col gap-1">
+
         <div class="flex items-center justify-between">
+
           <h4 class="font-bold text-[15px] text-on-surface">${esc(cat.name)}</h4>
+
           <div class="${cfg.bgCls} ${cfg.cls} px-2.5 py-1 rounded-lg flex items-center gap-1.5 shrink-0">
+
             <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+
             <span class="text-[11px] font-bold uppercase tracking-wider">${cfg.label}</span>
+
           </div>
+
         </div>
+
         <p class="text-[13px] text-on-surface-variant leading-relaxed pr-8">
+
           ${esc(cat.note || cat.description || 'No noticeable issues.')}
+
         </p>
+
       </div>
+
     `;
+
   }).join('');
+
   
+
   if (container.lastElementChild) container.lastElementChild.classList.remove('border-b');
+
 }
+
+
 
 function toggleAccordion(headerEl) {
+
   const item    = headerEl.parentElement;
+
   const body    = item.querySelector('.accordion-body');
+
   const chevron = headerEl.querySelector('.accordion-chevron');
+
   const isOpen  = body.classList.contains('open');
+
   body.classList.toggle('open', !isOpen);
+
   chevron.classList.toggle('open', !isOpen);
+
 }
 
-// â”€â”€ Render Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Render Sidebar ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 function renderSidebar(d, bd) {
-  // Community text â€” use vote_count from TMDb as a proxy
+
+  // Community text –” use vote_count from TMDb as a proxy
+
   const voteCount = d.vote_count || 0;
+
   const pct = voteCount > 100 ? Math.round(60 + Math.random() * 30) : null; // realistic proxy
+
   document.getElementById('communityText').textContent =
+
     pct ? `${pct}% of parents recommend this for their family.`
+
         : 'Be the first to review this for your family.';
 
-  // Positive messages â€” extract from breakdown summary or first "safe" category
+
+
+  // Positive messages –” extract from breakdown summary or first "safe" category
+
   const safeCategories = (bd?.categories||[]).filter(c => c.level === 'none').map(c => c.name.toLowerCase());
+
   const positiveEl = document.getElementById('positiveMessages');
+
   if (bd?.summary) {
+
     // Extract first sentence as the positive note
+
     const sentences = bd.summary.split(/[.!]/);
+
     positiveEl.textContent = sentences[0]?.trim() || 'See full breakdown below.';
+
   } else if (safeCategories.length) {
+
     positiveEl.textContent = `No concerns with ${safeCategories.slice(0, 3).join(', ')}.`;
+
   } else {
+
     positiveEl.textContent = 'Review the content breakdown below.';
+
   }
+
+
 
   // Cast grid (exact original: 4 photos + "+N more" chip)
+
   const cast = (d.credits?.cast || []).slice(0, 4);
+
   const extra = Math.max(0, (d.credits?.cast || []).length - 4);
+
   const castGrid = document.getElementById('castGrid');
+
   if (cast.length) {
+
     castGrid.innerHTML = cast.map(person =>
+
       person.profile_path
+
         ? `<img class="w-12 h-12 rounded-full object-cover" src="${TMDB_IMG}w185${person.profile_path}" alt="${esc(person.name)}" title="${esc(person.name)}" loading="lazy">`
+
         : `<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">${esc(person.name[0])}</div>`
+
     ).join('') + (extra > 0 ? `<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold">+${extra}</div>` : '');
+
   } else {
+
     castGrid.innerHTML = '<p class="text-xs text-on-surface-variant">No cast data.</p>';
+
   }
+
 }
 
-// â”€â”€ Watchlist â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Watchlist ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 function updateWatchlistBtn(saved) {
+
   const btn = document.getElementById('watchlistBtn');
+
   if (saved) {
+
     btn.innerHTML = `<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">bookmark</span> Saved to Watchlist`;
+
     btn.classList.replace('bg-[#0F172A]', 'bg-tertiary');
+
     btn.classList.add('bg-tertiary');
+
   }
+
 }
+
+
 
 async function toggleWatchlist() {
+
   const tok = await getToken();
+
   const title = _details?.title || _details?.name || '';
+
   const poster = _details?.poster_path ? `${TMDB_IMG}w185${_details.poster_path}` : null;
+
   const year   = (_details?.release_date || _details?.first_air_date || '').slice(0, 4);
+
   if (!tok) { showToast('Sign in to save to your watchlist'); return; }
+
   try {
+
     const r = await fetch('/api/lists', {
+
       method: 'POST',
+
       headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, list_type: 'approved', title, poster, year })
+
     });
-    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist âœ“'); }
-    else showToast('Could not save â€” try again');
-  } catch { showToast('Could not save â€” try again'); }
+
+    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist œ“'); }
+
+    else showToast('Could not save –” try again');
+
+  } catch { showToast('Could not save –” try again'); }
+
 }
+
+
 
 async function markWatched() {
+
   const tok = await getToken();
+
   if (!tok) { showToast('Sign in to track watched titles'); return; }
+
   const title = _details?.title || _details?.name || '';
+
   const poster = _details?.poster_path ? `${TMDB_IMG}w185${_details.poster_path}` : null;
+
   const year   = (_details?.release_date || _details?.first_air_date || '').slice(0, 4);
+
   try {
+
     await fetch('/api/history', {
+
       method: 'POST',
+
       headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, poster })
+
     });
+
     const btn = document.getElementById('watchedBtn');
-    btn.textContent = 'âœ“ Marked as Watched';
+
+    btn.textContent = 'œ“ Marked as Watched';
+
     btn.classList.add('border-tertiary', 'text-tertiary');
-    showToast('Marked as watched âœ“');
-  } catch { showToast('Could not save â€” try again'); }
+
+    showToast('Marked as watched œ“');
+
+  } catch { showToast('Could not save –” try again'); }
+
 }
 
-// â”€â”€ Start â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+// ”€”€ Start ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€
+
 loadPage();
+
+
+
+window.$landingPageUtils = {
+
+  toggleLandingPage() {
+
+    const landingEl = document.getElementById('landingPageContent');
+
+    const detailEl = document.getElementById('detailPageContent');
+
+    if (!_tmdbId) {
+
+      landingEl.classList.add('visible');
+
+      detailEl.classList.add('hidden');
+
+    } else {
+
+      landingEl.classList.remove('visible');
+
+      detailEl.classList.remove('hidden');
+
+    }
+
+  }
+
+};
+
+
+
+function landingSearch() {
+
+  const input = document.getElementById('landingSearchInput');
+
+  const query = input.value.trim();
+
+  if (query) window.cvOpenSearchModal && window.cvOpenSearchModal(query);
+
+}
+
+
+
+function quickSearch(title) {
+
+  window.cvOpenSearchModal && window.cvOpenSearchModal(title);
+
+}
+
+
+
+function focusLandingSearch() {
+
+  document.getElementById('landingSearchInput').focus();
+
+}
+
+
+
+window.$landingPageUtils.toggleLandingPage();
+
 </script>
+
 <script src="/js/auth.js?v=20260403_2"></script>
+
 </body>
+
 </html>
+

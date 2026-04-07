@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Activity Log Ã¢â‚¬â€ OkToWatch</title>
+<title>Activity Log — OkToWatch</title>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#565e74"/>
 <meta name="description" content="Monitor your household's activity and search history."/>
@@ -17,26 +17,32 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
 .font-label { font-family: 'Inter', sans-serif; }
 .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Skeleton Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* â–â‚¬â–â‚¬ Skeleton â–â‚¬â–â‚¬ */
 .skel { background: linear-gradient(90deg, #e4e9ec 25%, #f2f4f5 50%, #e4e9ec 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Toast Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* â–â‚¬â–â‚¬ Toast â–â‚¬â–â‚¬ */
 .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: #2d3336; color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Modal overlay Ã¢â€â‚¬Ã¢â€â‚¬ */
+/* â–â‚¬â–â‚¬ Modal overlay â–â‚¬â–â‚¬ */
 .modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
 .modal-overlay.visible { display: flex; }
 .modal-sheet { background: white; border-radius: 20px; max-width: 400px; width: 90%; animation: scaleUp 0.15s ease forwards; padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
 @keyframes scaleUp { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+
+.history-shell table td, .history-shell table th { vertical-align: top; }
+#historyList tr:last-child td { border-bottom: 0; }
+#loadMoreWrap button { background: #ebeef0; }
+#loadMoreWrap button:hover { background: #dde3e7; }
+
 </style>
 </head>
 <body class="bg-background" data-page="history">
 
 <div id="nav-root"></div>
 
-<main class="pt-10 md:pt-16 pb-20 px-6 max-w-[1200px] mx-auto">
+<main class="pt-24 pb-20 px-6 max-w-7xl mx-auto">
 
 <div id="pageLoader" class="animate-pulse space-y-8">
   <div class="space-y-3">
@@ -47,16 +53,16 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
   <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/15 p-6 h-96"></div>
 </div>
 
-<div id="pageContent" style="display:none;">
+<div id="pageContent" class="history-shell" style="display:none;">
 
-  <header class="mb-8 md:mb-10 mt-6">
-    <h1 class="text-3xl md:text-4xl font-headline font-extrabold tracking-tight text-on-surface mb-2">Activity Log</h1>
-    <p class="text-on-surface-variant font-body opacity-80" id="historySubtitle">Loading...</p>
+  <header class="mb-12">
+    <h1 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface mb-2">Activity Log</h1>
+    <p class="text-on-surface-variant body-md opacity-70" id="historySubtitle">Loading...</p>
   </header>
 
   <!-- Control Bar -->
-  <section class="mb-6 bg-surface-container-low p-3 md:p-4 rounded-xl flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-    <div class="flex gap-4 items-center w-full md:w-auto">
+  <section class="mb-8 bg-surface-container-low p-4 rounded-xl flex flex-wrap gap-4 items-center justify-between">
+    <div class="flex gap-4 items-center flex-wrap">
       <div class="relative w-full md:w-auto">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">filter_list</span>
         <select id="profileFilter" onchange="applyFilters()" class="pl-10 pr-8 py-2 w-full md:w-auto bg-surface-container-lowest border border-outline-variant/20 text-sm font-semibold text-on-surface rounded-lg focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">
@@ -64,17 +70,17 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
         </select>
       </div>
       <div class="relative w-full md:w-auto">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">category</span>
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">calendar_today</span>
         <select id="typeFilter" onchange="applyFilters()" class="pl-10 pr-8 py-2 w-full md:w-auto bg-surface-container-lowest border border-outline-variant/20 text-sm font-semibold text-on-surface rounded-lg focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">
-          <option value="all">All Types</option>
-          <option value="movie">Movies</option>
-          <option value="tv">TV Shows</option>
+          <option value="all">All Time</option>
+          <option value="movie">Movies only</option>
+          <option value="tv">TV only</option>
         </select>
       </div>
     </div>
     <div class="flex items-center justify-end w-full md:w-auto gap-4">
-      <div class="hidden md:flex items-center gap-2">
-        <span class="text-[10px] font-bold text-outline-variant uppercase tracking-widest">Live View</span>
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-bold text-outline-variant uppercase tracking-widest">Live View</span>
         <div class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
       </div>
       <button onclick="promptClearAll()" class="text-error font-bold text-sm bg-error/10 px-4 py-2 rounded-lg hover:bg-error/20 transition-all font-label whitespace-nowrap">
@@ -84,15 +90,15 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
   </section>
 
   <!-- Activity Table -->
-  <div class="bg-surface-container-lowest rounded-xl overflow-x-auto shadow-sm border border-outline-variant/15 mb-10">
-    <table class="w-full text-left border-collapse min-w-[700px]">
+  <div class="bg-surface-container-lowest rounded-xl overflow-hidden mb-10">
+    <table class="w-full text-left border-collapse">
       <thead>
-        <tr class="bg-surface-container/50 text-on-surface-variant uppercase text-[10px] font-extrabold tracking-[0.1em] border-b border-outline-variant/20">
+        <tr class="bg-surface-container text-on-surface-variant uppercase text-[10px] font-bold tracking-[0.1em]">
           <th class="px-6 py-4 whitespace-nowrap">Timestamp</th>
           <th class="px-6 py-4 whitespace-nowrap">Profile</th>
           <th class="px-6 py-4 whitespace-nowrap">Activity Description</th>
           <th class="px-6 py-4 whitespace-nowrap">Outcome</th>
-          <th class="px-6 py-4 text-right"></th>
+          <th class="px-6 py-4 text-right">Details</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-surface-container-low" id="historyList">
@@ -104,12 +110,12 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
   </div>
 
   <!-- Insights Bento Grid -->
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between border border-outline-variant/10">
       <div>
         <h3 class="text-xs font-bold text-outline uppercase tracking-widest mb-4">Safety Health</h3>
-        <div class="text-4xl font-headline font-extrabold text-tertiary">98%</div>
-        <p class="text-sm text-on-surface-variant mt-2 font-medium">of searches this week were within safe boundaries.</p>
+        <div class="text-3xl font-headline font-extrabold text-tertiary">98%</div>
+        <p class="text-sm text-on-surface-variant mt-2 font-medium">of requests this week were within safe boundaries.</p>
       </div>
       <div class="mt-8 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
         <div class="h-full bg-tertiary w-[98%] rounded-full"></div>
@@ -117,7 +123,7 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
     </div>
     
     <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
-      <h3 class="text-xs font-bold text-outline uppercase tracking-widest mb-5">Recent Titles</h3>
+      <h3 class="text-xs font-bold text-outline uppercase tracking-widest mb-5">Most Queried</h3>
       <div class="space-y-3" id="recentTitlesGrid">
          <p class="text-sm text-on-surface-variant italic">No searches yet.</p>
       </div>
@@ -126,9 +132,9 @@ body { font-family: 'Inter', sans-serif; background-color: #f9f9fa; color: #2d33
     <div class="bg-primary text-on-primary p-6 rounded-xl flex flex-col justify-between relative overflow-hidden shadow-md">
       <div class="relative z-10">
         <h3 class="text-xs font-bold opacity-70 uppercase tracking-widest mb-4">Quick Action</h3>
-        <p class="text-lg font-headline font-semibold mb-6">Manage what your family can watch.</p>
+        <p class="text-lg font-headline font-semibold mb-6">Update restrictions for your family?</p>
         <a href="/settings" class="inline-block bg-white text-primary px-5 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:scale-[1.02] active:scale-95 transition-transform no-underline">
-          Review Profiles
+          Review Profile
         </a>
       </div>
       <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-9xl opacity-[0.07] rotate-[-5deg]" style="font-variation-settings:'FILL' 1;">manage_accounts</span>
@@ -167,7 +173,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ API helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// â–â‚¬â–â‚¬ API helpers â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
 async function _authHeaders() {
   const token = await window.Clerk.session.getToken();
   return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -175,7 +181,7 @@ async function _authHeaders() {
 async function apiGet(url) { const h = await _authHeaders(); const r = await fetch(url, { headers: h }); if (!r.ok) throw new Error(r.status); return r.json(); }
 async function apiDelete(url) { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Auth guard Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// â–â‚¬â–â‚¬ Auth guard â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
     window.location.href = '/signin?redirect=/history';
@@ -184,7 +190,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   loadHistory();
 });
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Load Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// â–â‚¬â–â‚¬ Load â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
 async function loadHistory() {
   try {
     [_history, _profiles] = await Promise.all([
@@ -262,33 +268,37 @@ function formatTimestamp(dateIso) {
   return `${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}, ${time}`;
 }
 
+
 function renderInsights() {
-  // Grab top 3 unique titles for 'Recent Titles' instead of mocked queries
   const rGrid = document.getElementById('recentTitlesGrid');
-  const uniqueTitles = [];
-  const seen = new Set();
-  
+  const counts = new Map();
+
   for (const item of _history) {
-    if (!seen.has(item.title) && item.title) {
-        seen.add(item.title);
-        uniqueTitles.push(item);
-        if (uniqueTitles.length === 3) break;
+    if (!item.title) continue;
+    const key = `${item.title}__${item.media_type || 'movie'}`;
+    if (!counts.has(key)) {
+      counts.set(key, { title: item.title, media_type: item.media_type || 'movie', count: 0 });
     }
+    counts.get(key).count += 1;
   }
-  
-  if (uniqueTitles.length === 0) {
+
+  const topTitles = [...counts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+
+  if (!topTitles.length) {
     rGrid.innerHTML = '<p class="text-sm text-on-surface-variant italic">No searches yet.</p>';
   } else {
-    rGrid.innerHTML = uniqueTitles.map(t => {
-      const typeLabel = t.media_type === 'tv' ? 'TV' : 'Movie';
-      return `
-      <div class="flex justify-between items-center bg-surface-container-lowest p-2 rounded border border-outline-variant/10">
-        <span class="text-sm font-semibold truncate max-w-[180px]">${t.title}</span>
-        <span class="text-[10px] font-bold px-2 py-1 bg-surface-container-high text-on-surface rounded uppercase tracking-wider">${typeLabel}</span>
-      </div>`;
-    }).join('');
+    rGrid.innerHTML = topTitles.map(t => `
+      <div class="flex justify-between items-center">
+        <span class="text-sm font-medium truncate max-w-[180px]">${t.title}</span>
+        <span class="text-xs font-bold px-2 py-1 bg-surface-container-highest rounded">${t.count} search${t.count === 1 ? '' : 'es'}</span>
+      </div>
+    `).join('');
   }
 }
+
+
 
 function renderHistory() {
   const list = document.getElementById('historyList');
@@ -301,40 +311,43 @@ function renderHistory() {
   }
 
   const visible = items.slice(0, _page * PAGE_SIZE);
-  
+
   list.innerHTML = visible.map(item => {
     const profile = item.profile_id ? _profiles.find(p => String(p.id) === String(item.profile_id)) : null;
-    
-    // Outcome tag (since we don't have block logs, we show "Searched" or "Viewed")
+
     const outcomeHtml = `
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface text-xs font-bold">
-        <span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high text-on-surface text-xs font-bold">
+        <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">manage_search</span>
         Searched
       </div>`;
-      
-    // Profile box colors
-    const colors = ['bg-primary-container text-primary', 'bg-tertiary-container text-on-tertiary-container', 'bg-secondary-container text-secondary'];
+
+    const colors = [
+      'bg-primary-container text-primary',
+      'bg-tertiary-container text-on-tertiary-container',
+      'bg-secondary-container text-secondary'
+    ];
     const pColor = profile ? colors[(profile.id || 0) % 3] : 'bg-surface-container-high text-on-surface';
+    const profileLabel = profile ? `${profile.name}${profile.age ? ` (${profile.age})` : ''}` : 'Main Account';
 
     return `
-      <tr class="hover:bg-surface-container/30 transition-colors group">
+      <tr class="hover:bg-surface-container-low/50 transition-colors group">
         <td class="px-6 py-5 align-top">
-          <div class="text-[13px] font-bold text-on-surface">${formatTimestamp(item.searched_at)}</div>
-          <div class="text-[11px] font-semibold text-outline-variant mt-0.5">${formatTimeAgo(item.searched_at)}</div>
+          <div class="text-sm font-medium text-on-surface">${formatTimestamp(item.searched_at)}</div>
+          <div class="text-[11px] text-outline">${formatTimeAgo(item.searched_at)}</div>
         </td>
         <td class="px-6 py-5 align-top">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded border border-outline-variant/10 ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? profile.emoji : 'Ã°Å¸â€˜Â¤'}</div>
-            <span class="text-[13px] font-semibold text-on-secondary-fixed">${profile ? profile.name : 'Main Account'}</span>
+            <div class="w-8 h-8 rounded-lg ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? (profile.emoji || profile.name?.[0] || 'P') : '👤'}</div>
+            <span class="text-sm font-semibold">${profileLabel}</span>
           </div>
         </td>
         <td class="px-6 py-5 align-top">
-          <div class="text-[13px] text-on-surface max-w-[280px] break-words leading-snug">
-              Searched for <span class="font-extrabold italic cursor-pointer hover:text-primary transition-colors hover:underline" onclick="openTitle('${item.tmdb_id}','${item.media_type}')">"${item.title}"</span>
+          <div class="text-sm text-on-surface max-w-md">
+            Searched for <span class="font-bold italic cursor-pointer hover:text-primary transition-colors" onclick="openTitle('${item.tmdb_id}','${item.media_type}')">"${item.title}"</span>
           </div>
-          <div class="flex gap-2 mt-1.5">
-            ${item.year ? `<span class="px-1.5 py-0.5 rounded-[4px] bg-surface-container-highest text-on-surface-variant text-[10px] font-bold uppercase">${item.year}</span>` : ''}
-            <span class="px-1.5 py-0.5 rounded-[4px] border border-outline-variant/20 text-on-surface text-[10px] font-bold uppercase">${item.media_type === 'tv' ? 'TV' : 'Film'}</span>
+          <div class="flex gap-2 mt-1">
+            ${item.year ? `<span class="px-1.5 py-0.5 rounded-sm bg-surface-container text-on-surface-variant text-[10px] font-bold uppercase">${item.year}</span>` : ''}
+            <span class="px-1.5 py-0.5 rounded-sm bg-surface-container text-on-surface-variant text-[10px] font-bold uppercase">${item.media_type === 'tv' ? 'TV' : 'Movie'}</span>
           </div>
         </td>
         <td class="px-6 py-5 align-top">
@@ -342,12 +355,12 @@ function renderHistory() {
         </td>
         <td class="px-6 py-5 text-right align-top">
           <div class="flex items-center justify-end gap-1">
-             <button onclick="promptDelete('${item.id}')" class="text-outline-variant hover:text-error p-1.5 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Delete record">
-                <span class="material-symbols-outlined text-[18px]">delete</span>
-             </button>
-             <button onclick="openTitle('${item.tmdb_id}', '${item.media_type}')" class="text-primary hover:text-primary-dim p-1.5 hover:bg-primary/5 rounded-full transition-colors">
-                <span class="material-symbols-outlined">chevron_right</span>
-             </button>
+            <button onclick="promptDelete('${item.id}')" class="text-outline hover:text-error p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Delete record">
+              <span class="material-symbols-outlined text-[18px]">delete</span>
+            </button>
+            <button onclick="openTitle('${item.tmdb_id}', '${item.media_type}')" class="text-primary hover:text-primary-dim p-2 rounded-full transition-colors">
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
           </div>
         </td>
       </tr>`;
@@ -355,6 +368,7 @@ function renderHistory() {
 
   document.getElementById('loadMoreWrap').style.display = visible.length < items.length ? 'block' : 'none';
 }
+
 
 function openTitle(id, type) {
   window.location.href = `/index?id=${id}&type=${type}`;
@@ -365,7 +379,7 @@ function loadMore() {
   renderHistory();
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Delete Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// â–â‚¬â–â‚¬ Delete â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬â–â‚¬
 function promptDelete(id) {
   _clearTarget = id;
   document.getElementById('clearModalTitle').textContent = 'Remove this record?';
@@ -388,7 +402,7 @@ function promptClearAll() {
 async function confirmClear() {
   const btn = document.getElementById('clearConfirmBtn');
   btn.disabled = true;
-  btn.textContent = 'RemovingÃ¢â‚¬Â¦';
+  btn.textContent = 'Removing…';
 
   try {
     if (_clearTarget) {
@@ -403,7 +417,7 @@ async function confirmClear() {
     closeModal();
     applyFilters();
   } catch (e) {
-    showToast('Failed to remove Ã¢â‚¬â€ try again');
+    showToast('Failed to remove. Try again');
   } finally {
     btn.disabled = false;
   }
@@ -419,6 +433,8 @@ document.getElementById('clearModal').addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
-<script src="/js/auth.js?v=20260405"></script>
+<div id="footer-root"></div>
+
+<script src="/js/auth.js?v=20260406"></script>
 </body>
 </html>

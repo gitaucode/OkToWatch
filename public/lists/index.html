@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
-<title>My Lists â€” OkToWatch</title>
+<title>My Lists — OkToWatch</title>
 <meta name="description" content="Curate and manage your household's approved, blocked, and watchlist titles on OkToWatch."/>
 <meta property="og:image" content="https://oktowatch.com/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
@@ -23,18 +23,198 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="/js/tailwind-theme.js"></script>
 
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .main-content {
+    padding-bottom: 2rem;
+  }
+
+  .tab-btn-v2 {
+    position: relative;
+    padding-bottom: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgb(117 124 127);
+    transition: color 180ms ease;
+    border-bottom: 2px solid transparent;
+  }
+  .tab-btn-v2:hover {
+    color: rgb(45 51 54);
+  }
+  .tab-btn-v2.active {
+    color: rgb(86 94 116);
+    font-weight: 700;
+    border-bottom-color: rgb(86 94 116);
+  }
+
+  .side-link {
+    transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+  .side-link:hover {
+    background: rgb(241 245 249);
+    color: rgb(15 23 42);
+  }
+  .side-link.active {
+    background: #ffffff;
+    color: rgb(15 23 42);
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  }
+  .side-link.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  }
+
+  .profile-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 9999px;
+    background: rgb(235 238 240);
+    color: rgb(89 96 99);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+  .profile-pill:hover {
+    background: rgb(228 233 236);
+    color: rgb(45 51 54);
+  }
+  .profile-pill.active {
+    background: rgb(86 94 116);
+    color: rgb(247 247 255);
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 400ms ease forwards;
+  }
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .skel {
+    background: linear-gradient(90deg, rgba(221,227,231,0.9) 25%, rgba(242,244,245,1) 50%, rgba(221,227,231,0.9) 75%);
+    background-size: 200% 100%;
+    animation: skelShimmer 1.2s ease-in-out infinite;
+  }
+  @keyframes skelShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(12, 14, 15, 0.45);
+    backdrop-filter: blur(6px);
+    z-index: 70;
+  }
+  .modal-overlay.visible {
+    display: flex;
+  }
+  .modal-sheet {
+    width: min(100%, 32rem);
+    border-radius: 1.25rem;
+    background: #ffffff;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%) translateY(16px);
+    opacity: 0;
+    pointer-events: none;
+    background: rgb(45 51 54);
+    color: #fff;
+    padding: 0.85rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 80;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .list-mode .list-card {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 0.75rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  }
+  .list-mode .list-card-poster {
+    width: 96px;
+    aspect-ratio: 2 / 3;
+    border-radius: 0.875rem;
+    overflow: hidden;
+  }
+
+  @media (max-width: 1023px) {
+    .main-content {
+      padding-bottom: 5.5rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .tab-btn-v2 {
+      font-size: 0.875rem;
+      padding-bottom: 0.875rem;
+    }
+    .modal-sheet {
+      width: 100%;
+      border-radius: 1rem;
+    }
+    .toast {
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      transform: translateY(16px);
+      text-align: center;
+      border-radius: 1rem;
+    }
+    .toast.show {
+      transform: translateY(0);
+    }
+  }
+</style>
+
+
 </head>
 <body class="bg-background text-on-surface antialiased" data-page="lists">
 
 <!-- Auth-injected Nav -->
 <div id="nav-root"></div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SKELETON LOADER
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-<div id="pageLoader" class="flex min-h-screen pt-14">
+-->
+<div id="pageLoader" class="flex min-h-screen pt-16">
   <!-- Skeleton sidebar -->
-  <aside class="hidden lg:flex flex-col p-6 space-y-3 h-screen w-64 bg-slate-50 fixed top-14">
+  <aside class="hidden lg:flex flex-col p-6 space-y-3 h-screen w-64 bg-slate-50 fixed top-16">
     <div class="skel h-14 w-full rounded-xl mb-4"></div>
     <div class="skel h-10 w-full rounded-lg"></div>
     <div class="skel h-10 w-full rounded-lg"></div>
@@ -42,7 +222,7 @@
     <div class="skel h-10 w-full rounded-lg"></div>
   </aside>
   <!-- Skeleton main -->
-  <main class="flex-1 lg:ml-64 p-8 bg-background">
+  <main class="flex-1 lg:ml-64 p-4 bg-background">
     <div class="max-w-6xl mx-auto space-y-6">
       <div class="skel h-10 w-48 rounded-xl"></div>
       <div class="skel h-6 w-80 rounded-lg"></div>
@@ -58,15 +238,15 @@
   </main>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MAIN PAGE (shown after auth)
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-<div id="pageContent" class="hidden flex min-h-screen pt-14">
+-->
+<div id="pageContent" class="hidden flex min-h-screen pt-16">
 
-  <!-- â”€â”€ SideNavBar â”€â”€ -->
-  <aside class="hidden lg:flex flex-col p-6 space-y-2 h-[calc(100vh-56px)] w-64 border-r-0 bg-slate-50 fixed top-14 overflow-y-auto">
+  <!-- ── SideNavBar ── -->
+  <aside class="hidden lg:flex flex-col p-6 space-y-2 h-[calc(100vh-64px)] w-64 border-r-0 bg-slate-50 fixed top-16 overflow-y-auto">
     <!-- Library header -->
-    <div class="flex items-center space-x-3 mb-6">
+    <div class="flex items-center space-x-3 mb-3">
       <div class="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-on-primary flex-shrink-0">
         <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">verified_user</span>
       </div>
@@ -111,7 +291,7 @@
     </div>
   </aside>
 
-  <!-- â”€â”€ Main Content Area â”€â”€ -->
+  <!-- ── Main Content Area ── -->
   <main class="flex-1 lg:ml-64 p-6 md:p-8 bg-background main-content">
     <div class="max-w-6xl mx-auto">
 
@@ -172,14 +352,14 @@
   </main>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MOBILE BOTTOM NAV
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+-->
 
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MODALS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+-->
 
 <!-- Note edit modal -->
 <div class="modal-overlay" id="noteModal">
@@ -195,7 +375,7 @@
     </div>
     <div class="mb-5">
       <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Personal Note</label>
-      <textarea id="noteInput" maxlength="300" rows="3" placeholder="e.g. Great for family night, too scary for Emmaâ€¦"
+      <textarea id="noteInput" maxlength="300" rows="3" placeholder="e.g. Great for family night, too scary for Emma…"
                 class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 text-sm font-body text-on-surface outline-none focus:border-primary resize-none transition-colors"></textarea>
     </div>
     <div class="flex gap-3">
@@ -286,11 +466,11 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SCRIPTS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+-->
 <script>
-// â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── State ───────────────────────────────────────────────────────────────────
 let _lists       = [];
 let _profiles    = [];
 let _activeTab   = 'approved';
@@ -301,7 +481,7 @@ let _movingId    = null;
 let _movingItem  = null;
 let _deletingId  = null;
 
-// â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg, dur = 2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -309,7 +489,7 @@ function showToast(msg, dur = 2500) {
   setTimeout(() => t.classList.remove('show'), dur);
 }
 
-// â”€â”€ API helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── API helpers ──────────────────────────────────────────────────────────────
 async function _authHeaders() {
   const token = await window.Clerk.session.getToken();
   return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -339,7 +519,7 @@ async function apiDelete(url) {
   return r.json();
 }
 
-// â”€â”€ Auth guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Auth guard ───────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
     window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
@@ -354,7 +534,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   loadLists();
 });
 
-// â”€â”€ Load data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Load data ────────────────────────────────────────────────────────────────
 async function loadLists() {
   try {
     [_lists, _profiles] = await Promise.all([
@@ -376,7 +556,7 @@ async function loadLists() {
   renderActiveTab();
 }
 
-// â”€â”€ Sidebar counts + active state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Sidebar counts + active state ────────────────────────────────────────────
 function updateSidebar() {
   const countApproved  = _lists.filter(l => l.list_type === 'approved').length;
   const countBlocked   = _lists.filter(l => l.list_type === 'blocked').length;
@@ -416,7 +596,7 @@ function updateHeaderSubtitle() {
   }
 }
 
-// â”€â”€ Tab switching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Tab switching ─────────────────────────────────────────────────────────────
 function setTab(tab, btnEl) {
   _activeTab = tab;
   _activeProfile = 'all';
@@ -441,14 +621,14 @@ function setTabFromSidebar(tab) {
   renderList();
 }
 
-// â”€â”€ Profile filter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Profile filter ────────────────────────────────────────────────────────────
 function renderProfileFilter() {
   const el = document.getElementById('profileFilter');
   if (!_profiles.length) { el.innerHTML = ''; return; }
 
   let html = `<button class="profile-pill active" data-pid="all" onclick="setProfileFilter('all', this)">All Profiles</button>`;
   _profiles.forEach(p => {
-    html += `<button class="profile-pill" data-pid="${p.id}" onclick="setProfileFilter('${p.id}', this)">${p.emoji || 'ðŸ‘¤'} ${p.name}</button>`;
+    html += `<button class="profile-pill" data-pid="${p.id}" onclick="setProfileFilter('${p.id}', this)">${p.emoji || '👤'} ${p.name}</button>`;
   });
   el.innerHTML = html;
 }
@@ -460,7 +640,7 @@ function setProfileFilter(pid, btnEl) {
   renderList();
 }
 
-// â”€â”€ View toggle (grid / list) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── View toggle (grid / list) ─────────────────────────────────────────────────
 function setView(mode) {
   _viewMode = mode;
   const container = document.getElementById('listContainer');
@@ -480,7 +660,7 @@ function setView(mode) {
   renderList();
 }
 
-// â”€â”€ Render the item list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render the item list ──────────────────────────────────────────────────────
 function renderActiveTab() {
   // Sync tab UI in case we entered with a ?tab= param
   ['Approved', 'Blocked', 'Watchlater'].forEach(t => {
@@ -553,12 +733,12 @@ function renderCard(item) {
   const posterSrc = item.poster || '';
   const posterHTML = posterSrc
     ? `<img src="${posterSrc}" alt="${escAttr(item.title)}" class="object-cover w-full h-full" loading="lazy"/>`
-    : `<div class="w-full h-full flex items-center justify-center bg-surface-container text-5xl">ðŸŽ¬</div>`;
+    : `<div class="w-full h-full flex items-center justify-center bg-surface-container text-5xl">🎬</div>`;
 
   const typeLabel = item.media_type === 'tv' ? 'TV' : 'Film';
   const typeBg    = item.media_type === 'tv' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700';
-  const yearStr   = item.year ? `<span class="font-medium">${item.year}</span><span>â€¢</span>` : '';
-  const profileTag = profile ? `<span class="text-[10px] font-bold text-primary">â€¢ ${profile.emoji || ''} ${profile.name}</span>` : '';
+  const yearStr   = item.year ? `<span class="font-medium">${item.year}</span><span>•</span>` : '';
+  const profileTag = profile ? `<span class="text-[10px] font-bold text-primary">• ${profile.emoji || ''} ${profile.name}</span>` : '';
   const noteTitle = esc(item.title);
   const noteVal   = esc(item.note || '');
   const safeTitle = esc(item.title);
@@ -597,7 +777,7 @@ function renderCard(item) {
         <span class="${typeBg} px-1.5 py-0.5 rounded font-bold text-[10px]">${typeLabel}</span>
         ${profileTag}
       </div>
-      ${item.note ? `<p class="text-[11px] text-on-surface-variant mt-1.5 line-clamp-1 italic">ðŸ’¬ ${esc(item.note)}</p>` : ''}
+      ${item.note ? `<p class="text-[11px] text-on-surface-variant mt-1.5 line-clamp-1 italic">💬 ${esc(item.note)}</p>` : ''}
 
       <!-- List mode row actions (always visible in list view) -->
       <div class="card-list-actions mt-2">
@@ -626,12 +806,12 @@ function renderAddNewPlaceholder() {
   </button>`;
 }
 
-// â”€â”€ Navigate to detail page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Navigate to detail page ───────────────────────────────────────────────────
 function openTitle(tmdbId, mediaType) {
   window.location.href = `/index?id=${tmdbId}&type=${mediaType}`;
 }
 
-// â”€â”€ Note Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Note Modal ────────────────────────────────────────────────────────────────
 function openNoteModal(id, title, existingNote) {
   _editingId = id;
   document.getElementById('noteModalTitle').textContent = title;
@@ -646,14 +826,14 @@ async function saveNote() {
   const note = document.getElementById('noteInput').value.trim();
   const orig = btn.textContent;
   btn.disabled = true;
-  btn.textContent = 'Savingâ€¦';
+  btn.textContent = 'Saving…';
   try {
     const updated = await apiPut(`/api/lists?id=${_editingId}`, { note });
     const idx = _lists.findIndex(l => l.id === _editingId);
     if (idx !== -1) _lists[idx] = updated;
     closeNoteModal();
     renderList();
-    showToast('Note saved âœ“');
+    showToast('Note saved ✓');
   } catch (e) {
     showToast('Failed to save note');
   } finally {
@@ -667,7 +847,7 @@ function closeNoteModal() {
   document.body.style.overflow = '';
 }
 
-// â”€â”€ Move Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Move Modal ────────────────────────────────────────────────────────────────
 function openMoveModal(id, title) {
   _movingId   = id;
   _movingItem = _lists.find(l => l.id === id);
@@ -696,7 +876,7 @@ async function moveItem(newListType) {
     updateSidebar();
     updateHeaderSubtitle();
     renderList();
-    showToast(`Moved to ${newListType} âœ“`);
+    showToast(`Moved to ${newListType} ✓`);
   } catch (e) {
     showToast('Failed to move item');
   }
@@ -709,7 +889,7 @@ function closeMoveModal() {
   _movingItem = null;
 }
 
-// â”€â”€ Delete Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Delete Modal ──────────────────────────────────────────────────────────────
 function promptDelete(id, title) {
   _deletingId = id;
   document.getElementById('deleteModalTitle').textContent = `"${title}" will be removed from this list.`;
@@ -721,7 +901,7 @@ async function confirmDelete() {
   const btn  = document.getElementById('deleteConfirmBtn');
   const orig = btn.textContent;
   btn.disabled = true;
-  btn.textContent = 'Removingâ€¦';
+  btn.textContent = 'Removing…';
   try {
     await apiDelete(`/api/lists?id=${_deletingId}`);
     _lists = _lists.filter(l => l.id !== _deletingId);
@@ -743,7 +923,7 @@ function closeDeleteModal() {
   document.body.style.overflow = '';
 }
 
-// â”€â”€ Escape helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Escape helpers ────────────────────────────────────────────────────────────
 function esc(str) {
   if (!str) return '';
   return String(str)
@@ -755,7 +935,7 @@ function esc(str) {
 }
 function escAttr(str) { return esc(str); }
 
-// â”€â”€ Close modals on backdrop click or Escape â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Close modals on backdrop click or Escape ──────────────────────────────────
 ['noteModal', 'moveModal', 'deleteModal'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => {
     if (e.target === document.getElementById(id)) {
@@ -774,6 +954,8 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
-<script src="/js/auth.js?v=20260405"></script>
+<div id="footer-root"></div>
+
+<script src="/js/auth.js?v=20260406"></script>
 </body>
 </html>

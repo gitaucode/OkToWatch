@@ -1,0 +1,766 @@
+diff --git a/public/dashboard/dasboardv2.html b/public/dashboard/dasboardv2.html
+index ebd4547..a579a8d 100644
+--- a/public/dashboard/dasboardv2.html
++++ b/public/dashboard/dasboardv2.html
+@@ -74,7 +74,7 @@
+     <section class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
+       <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">Family Profiles <span id="profilesPremiumBadge" class="hidden text-[10px] font-bold text-primary bg-primary-container px-2 py-0.5 rounded-full ml-1 normal-case tracking-normal">Pro</span></h3>
+       <div class="space-y-4" id="profilesGrid">
+-        <p class="text-xs text-on-surface-variant">Loading profilesÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦</p>
++        <p class="text-xs text-on-surface-variant">Loading profiles…</p>
+       </div>
+     </section>
+ 
+@@ -218,7 +218,7 @@
+       <div class="text-4xl mb-3" id="upgradeFeatureIcon">ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã…Â½</div>
+       <h2 class="text-base font-bold mb-2 font-['Plus_Jakarta_Sans']" id="upgradeFeatureTitle">Save Child Profiles</h2>
+       <p class="text-sm text-slate-500 leading-relaxed mb-4" id="upgradeFeatureDesc">Create and manage child profiles with age-appropriate content recommendations.</p>
+-      <div class="bg-slate-50 rounded-xl p-4 text-left"><div class="text-xs font-bold text-slate-600 mb-2">Pro plan includes:</div><ul class="text-sm text-slate-600 space-y-1"><li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Up to 2 child profiles</li><li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Synced search history</li><li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Save approved/blocked lists</li><li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Season-level analysis</li></ul></div>
++      <div class="bg-slate-50 rounded-xl p-4 text-left"><div class="text-xs font-bold text-slate-600 mb-2">Pro plan includes:</div><ul class="text-sm text-slate-600 space-y-1"><li>ÃƒÂ¢Ã…â€œ… Up to 2 child profiles</li><li>ÃƒÂ¢Ã…â€œ… Synced search history</li><li>ÃƒÂ¢Ã…â€œ… Save approved/blocked lists</li><li>ÃƒÂ¢Ã…â€œ… Season-level analysis</li></ul></div>
+     </div>
+     <div class="px-6 pb-6 flex flex-col gap-2">
+       <a href="/plans" class="w-full block text-center py-2.5 bg-primary text-on-primary rounded-full font-semibold text-sm hover:opacity-90 transition-opacity no-underline">Upgrade</a>
+@@ -411,9 +411,9 @@ function trendCard(item,type){
+     <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-4 bg-surface-dim">
+       ${poster}
+       <div class="absolute top-3 left-3 px-2 py-1 ${badgeClass} rounded text-[10px] font-extrabold uppercase tracking-widest">${cert.label}</div>
+-      ${cached?'<span class="absolute top-3 right-3 bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“</span>':''}
++      ${cached?'<span class="absolute top-3 right-3 bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">✓</span>':''}
+       <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+-        <button class="w-full py-2 bg-white text-black font-bold text-xs rounded-lg">${cached?'ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ View analysis':'Details'}</button>
++        <button class="w-full py-2 bg-white text-black font-bold text-xs rounded-lg">${cached?'✓ View analysis':'Details'}</button>
+       </div>
+     </div>
+     <h3 class="font-bold text-sm leading-tight mb-1">${esc(title)}</h3>
+@@ -488,8 +488,8 @@ async function saveProfile(){
+   if(!name){showToast('Please enter a name');return;}
+   if(!age||age<1||age>17){showToast('Please enter a valid age (1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“17)');return;}
+   const btn=document.getElementById('saveProfileBtn');
+-  btn.disabled=true;btn.textContent='AddingÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦';
+-  try{const p=await apiPost('/api/profiles',{name,age,emoji:selectedEmoji});_profiles.push(p);closeModal();renderProfiles();showToast(name+"'s profile added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“");}
++  btn.disabled=true;btn.textContent='Adding…';
++  try{const p=await apiPost('/api/profiles',{name,age,emoji:selectedEmoji});_profiles.push(p);closeModal();renderProfiles();showToast(name+"'s profile added ✓");}
+   catch(e){showToast(e.message==='403'?'Max 5 profiles reached':'Failed to save profile');}
+   finally{btn.disabled=false;btn.textContent='Add Profile';}
+ }
+diff --git a/public/forgot-password/index.html b/public/forgot-password/index.html
+index 420c3cd..73ce575 100644
+--- a/public/forgot-password/index.html
++++ b/public/forgot-password/index.html
+@@ -106,7 +106,7 @@
+ 
+         <!-- Skeleton shown while Clerk loads -->
+         <div id="clerkSkeleton" class="p-8 space-y-5">
+-          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usualÃ¢â‚¬Â¦ check your connection.</p>
++          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
+           <div class="skel h-3 w-28 rounded-full"></div>
+           <div class="skel h-12 rounded-xl"></div>
+           <div class="skel h-12 rounded-xl mt-2"></div>
+@@ -199,7 +199,7 @@
+       }
+     });
+ 
+-    // Poll until Clerk card appears, then swap skeleton Ã¢â€ â€™ real form
++    // Poll until Clerk card appears, then swap skeleton → real form
+     const poll = setInterval(() => {
+       const card = document.querySelector('#clerk-forgot .cl-card, #clerk-forgot [data-localization-key]');
+       if (card) { clearInterval(poll); showClerk(); }
+diff --git a/public/history/index.html b/public/history/index.html
+index a375881..c1525e2 100644
+--- a/public/history/index.html
++++ b/public/history/index.html
+@@ -324,7 +324,7 @@ function renderHistory() {
+         </td>
+         <td class="px-6 py-5 align-top">
+           <div class="flex items-center gap-3">
+-            <div class="w-8 h-8 rounded border border-outline-variant/10 ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? profile.emoji : 'Ã°Å¸â€˜Â¤'}</div>
++            <div class="w-8 h-8 rounded border border-outline-variant/10 ${pColor} flex items-center justify-center font-bold text-xs shrink-0">${profile ? profile.emoji : '👤'}</div>
+             <span class="text-[13px] font-semibold text-on-secondary-fixed">${profile ? profile.name : 'Main Account'}</span>
+           </div>
+         </td>
+@@ -388,7 +388,7 @@ function promptClearAll() {
+ async function confirmClear() {
+   const btn = document.getElementById('clearConfirmBtn');
+   btn.disabled = true;
+-  btn.textContent = 'RemovingÃ¢â‚¬Â¦';
++  btn.textContent = 'Removing…';
+ 
+   try {
+     if (_clearTarget) {
+diff --git a/public/index.html b/public/index.html
+index 4c28569..4e5ae98 100644
+--- a/public/index.html
++++ b/public/index.html
+@@ -505,6 +505,286 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
+ .embed-mode footer { display: none !important; }
+ .embed-mode .page-wrap { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+ .embed-mode .result-section { margin-top: 0; padding-top: 0; }
++/* --- SaaS Landing Page Redesign --- */
++#landing-saas {
++  font-family: 'DM Sans', sans-serif;
++  color: #111827;
++  background: #ffffff;
++}
++
++.saas-hero-container {
++  max-width: 100% !important;
++  padding: 0 !important;
++}
++
++.saas-hero {
++  position: relative;
++  width: 100%;
++  min-height: 540px;
++  background: linear-gradient(180deg, rgba(234, 244, 240, 0.6) 0%, rgba(255, 255, 255, 1) 100%);
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  justify-content: center;
++  padding: 5rem 1.5rem 3rem;
++  text-align: center;
++  overflow: hidden;
++}
++
++.saas-hero::before {
++  content: '';
++  position: absolute;
++  top: 0; left: 0; right: 0; height: 100%;
++  background: radial-gradient(circle at 50% -20%, rgba(42, 107, 85, 0.08) 0%, transparent 60%);
++  pointer-events: none;
++}
++
++.saas-hero h1 {
++  font-size: clamp(2.4rem, 7vw, 3.8rem);
++  font-weight: 800;
++  letter-spacing: -0.04em;
++  color: #111827;
++  max-width: 800px;
++  margin: 0 auto 1.25rem;
++  line-height: 1.1;
++  position: relative;
++  z-index: 2;
++  opacity: 1 !important;
++  animation: none !important;
++}
++
++.saas-hero h1 span.green-gradient {
++  background: linear-gradient(135deg, #2a6b55 0%, #3b8a6d 100%);
++  -webkit-background-clip: text;
++  background-clip: text;
++  -webkit-text-fill-color: transparent;
++  color: #2a6b55;
++  display: inline-block;
++}
++
++.saas-hero p.subhead {
++  font-size: clamp(1.1rem, 3vw, 1.25rem);
++  color: #4b5563;
++  max-width: 600px;
++  margin: 0 auto 2.5rem;
++  line-height: 1.6;
++  position: relative;
++  z-index: 2;
++}
++
++.saas-hero .search-wrap {
++  width: 100% !important;
++  max-width: 640px !important;
++}
++
++.saas-search-container {
++  width: 100%;
++  position: relative;
++  z-index: 10;
++  background: white;
++  padding: 0.5rem;
++  border-radius: 100px;
++  box-shadow: 0 12px 36px -8px rgba(42, 107, 85, 0.15), 0 0 0 1px rgba(42,107,85,0.08);
++  transition: box-shadow 0.3s ease, border-color 0.3s ease;
++}
++
++.saas-search-container:focus-within {
++  box-shadow: 0 16px 42px -8px rgba(42, 107, 85, 0.25), 0 0 0 2px #2a6b55;
++}
++
++.saas-search-container .search-box {
++  border: none !important;
++  box-shadow: none !important;
++  background: transparent !important;
++  display: flex;
++  align-items: center;
++  width: 100%;
++  border-radius: 0;
++}
++
++.saas-search-container .search-box input {
++  font-size: 1.1rem;
++  padding: 1rem 1.5rem;
++  color: #111827;
++  height: 54px;
++}
++
++.saas-search-container .search-box input::placeholder {
++  color: #9ca3af;
++}
++
++.saas-search-container .search-btn {
++  background: #2a6b55;
++  color: white;
++  border-radius: 100px;
++  padding: 0.85rem 2rem;
++  font-size: 1.05rem;
++  font-weight: 700;
++  margin: 0;
++  box-shadow: 0 4px 12px rgba(42, 107, 85, 0.25);
++  transition: all 0.2s ease;
++  height: 54px;
++}
++
++.saas-search-container .search-btn:hover {
++  background: #1f5542;
++  box-shadow: 0 6px 16px rgba(42, 107, 85, 0.35);
++  transform: translateY(-1px);
++}
++
++.saas-section {
++  padding: 5rem 1.5rem;
++  max-width: 1000px;
++  margin: 0 auto;
++  text-align: center;
++}
++
++.saas-section-title {
++  font-size: 2.25rem;
++  font-weight: 800;
++  color: #111827;
++  margin-bottom: 1rem;
++  letter-spacing: -0.02em;
++}
++
++.saas-section-subtitle {
++  font-size: 1.1rem;
++  color: #6b7280;
++  max-width: 600px;
++  margin: 0 auto 3.5rem;
++  line-height: 1.6;
++}
++
++.saas-grid {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
++  gap: 2rem;
++  text-align: left;
++}
++
++.saas-feature-card {
++  background: white;
++  border: 1px solid #e5e7eb;
++  border-radius: 20px;
++  padding: 2.5rem 2rem;
++  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
++  transition: transform 0.3s ease, box-shadow 0.3s ease;
++}
++
++.saas-feature-card:hover {
++  transform: translateY(-4px);
++  box-shadow: 0 12px 32px -4px rgba(42, 107, 85, 0.1);
++  border-color: rgba(42, 107, 85, 0.3);
++}
++
++.saas-feature-icon {
++  width: 52px;
++  height: 52px;
++  background: #f0fdf4;
++  border-radius: 14px;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  font-size: 1.5rem;
++  color: #2a6b55;
++  margin-bottom: 1.75rem;
++}
++
++.saas-feature-card h3 {
++  font-size: 1.25rem;
++  font-weight: 700;
++  color: #111827;
++  margin-bottom: 0.75rem;
++}
++
++.saas-feature-card p {
++  font-size: 0.95rem;
++  color: #4b5563;
++  line-height: 1.6;
++}
++
++.saas-social-proof {
++  background: #f8fafc;
++  padding: 5rem 1.5rem;
++  margin-top: 2rem;
++  border-top: 1px solid #e5e7eb;
++  border-bottom: 1px solid #e5e7eb;
++}
++
++.saas-quote {
++  max-width: 800px;
++  margin: 0 auto;
++  text-align: center;
++}
++
++.saas-quote p {
++  font-size: 1.5rem;
++  font-weight: 600;
++  color: #1f2937;
++  line-height: 1.6;
++  margin-bottom: 1.5rem;
++  font-style: italic;
++  letter-spacing: -0.01em;
++}
++
++.saas-rating {
++  color: #2a6b55;
++  font-size: 1.25rem;
++  letter-spacing: 4px;
++  margin-bottom: 1rem;
++}
++
++.saas-author {
++  font-weight: 700;
++  color: #6b7280;
++  text-transform: uppercase;
++  letter-spacing: 0.05em;
++  font-size: 0.85rem;
++}
++
++.saas-cta {
++  padding: 6rem 1.5rem;
++  text-align: center;
++  background: white;
++}
++
++.saas-cta h2 {
++  font-size: 2.5rem;
++  font-weight: 800;
++  color: #111827;
++  margin-bottom: 1rem;
++  letter-spacing: -0.03em;
++}
++
++.saas-cta p {
++  font-size: 1.15rem;
++  color: #6b7280;
++  margin-bottom: 2.5rem;
++  max-width: 600px;
++  margin-left: auto;
++  margin-right: auto;
++}
++
++.saas-cta-btn {
++  display: inline-flex;
++  align-items: center;
++  gap: 0.75rem;
++  background: #2a6b55;
++  color: white;
++  padding: 1.1rem 2.5rem;
++  border-radius: 100px;
++  font-size: 1.1rem;
++  font-weight: 700;
++  text-decoration: none;
++  box-shadow: 0 8px 24px rgba(42, 107, 85, 0.25);
++  transition: all 0.2s ease;
++}
++
++.saas-cta-btn:hover {
++  background: #1f5542;
++  box-shadow: 0 12px 32px rgba(42, 107, 85, 0.35);
++  transform: translateY(-2px);
++}
+ </style>
+ </head>
+ <body data-page="search">
+@@ -538,35 +818,70 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
+ 
+ 
+ <div class="page-wrap" id="pageWrap">
+-  <div id="heroSection" style="padding: 1rem 1.5rem">
+-    <div class="hero" style="text-align: left;">
+-      <h1 style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 1; animation: none;">ðŸ” Search any title</h1>
+-      <div class="search-wrap" style="opacity: 1; animation: none; margin: 0;">
+-        <div class="suggestions-wrap">
+-          <div class="search-box" style="border-color: var(--border);">
+-            <input type="text" id="searchInput" placeholder="Search any movie or TV show..." autocomplete="off"/>
+-            <button class="search-btn" id="searchBtn" onclick="doSearch()">Check â†’</button>
++  <div id="heroSection" class="saas-hero-container">
++    <div class="saas-hero">
++      <h1>Know <span class="green-gradient">exactly</span> what they're watching.</h1>
++      <p class="subhead">Instantly analyze any movie or TV show for mature content, themes, and age appropriateness before your kids hit play.</p>
++      <div class="search-wrap" style="opacity: 1; animation: none; margin: 0; width: 100%;">
++        <div class="saas-search-container">
++          <div class="suggestions-wrap">
++            <div class="search-box">
++              <input type="text" id="searchInput" placeholder="Search a movie or TV show..." autocomplete="off"/>
++              <button class="search-btn" id="searchBtn" onclick="doSearch()">Analyze Title</button>
++            </div>
++            <div class="suggestions" id="suggestions"></div>
+           </div>
+-          <div class="suggestions" id="suggestions"></div>
+         </div>
++        <div class="quick-row" id="quickRow" style="margin-top: 1.5rem;">
++          <span class="quick-label">Or try:</span>
++          <button class="quick-chip" onclick="heroInput.value='Deadpool & Wolverine'; doSearch()">Deadpool & Wolverine</button>
++          <button class="quick-chip" onclick="heroInput.value='Inside Out 2'; doSearch()">Inside Out 2</button>
++        </div>
++        <div class="recent-searches-row" id="recentSearchesRow"></div>
+       </div>
+     </div>
+   </div>
+ 
+-  <div id="trendingEmptyState" style="padding: 1rem 1.5rem;">
+-    <div class="recently-viewed-label" style="font-size:0.75rem; letter-spacing:0.05em; color:var(--muted); margin-bottom:0.75rem; font-weight:700;">SUGGESTED TITLES</div>
+-    <div class="recent-grid">
+-      <div class="recent-item" onclick="heroInput.value='Deadpool & Wolverine'; doSearch()">
+-        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" alt="Deadpool & Wolverine"></div>
+-        <div class="recent-info"><div class="recent-title">Deadpool & Wolverine</div><div class="recent-year">2024</div></div>
++  <div id="trendingEmptyState" style="padding: 0; width: 100%;">
++    <div id="landing-saas">
++      <!-- Value Prop / Features -->
++      <div class="saas-section">
++        <h2 class="saas-section-title">No more scrolling IMDb parents guides.</h2>
++        <p class="saas-section-subtitle">OkToWatch gives you a fast, objective breakdown of content so you can make informed decisions in seconds, not minutes.</p>
++        
++        <div class="saas-grid">
++          <div class="saas-feature-card">
++            <div class="saas-feature-icon">🔍</div>
++            <h3>Instant AI Breakdowns</h3>
++            <p>Get a comprehensive summary of violence, language, drug use, and sexual content for any title, generated instantly.</p>
++          </div>
++          <div class="saas-feature-card">
++            <div class="saas-feature-icon">👦</div>
++            <h3>Personalized by Age</h3>
++            <p>Tell us your child's age, and we'll adjust our safety verdicts and priority warnings specifically for them.</p>
++          </div>
++          <div class="saas-feature-card">
++            <div class="saas-feature-icon">📺</div>
++            <h3>Season-by-Season Analysis</h3>
++            <p>A show might be mild in Season 1 but intense by Season 4. Get exact breakdowns for the specific season they want to watch.</p>
++          </div>
++        </div>
+       </div>
+-      <div class="recent-item" onclick="heroInput.value='Inside Out 2'; doSearch()">
+-        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" alt="Inside Out 2"></div>
+-        <div class="recent-info"><div class="recent-title">Inside Out 2</div><div class="recent-year">2024</div></div>
++
++      <!-- Social Proof -->
++      <div class="saas-social-proof">
++        <div class="saas-quote">
++          <div class="saas-rating">★★★★★</div>
++          <p>"This has completely changed movie night for our family. I no longer have to blindly trust ratings or spend 20 minutes reading reviews online. Highly recommend to any parent."</p>
++          <div class="saas-author">Sarah M. — Parent of two</div>
++        </div>
+       </div>
+-      <div class="recent-item" onclick="heroInput.value='Bluey'; type='tv'; doSearch()">
+-        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/c77zPIfa8W5PZgQ6W08f1sA84Yw.jpg" alt="Bluey"></div>
+-        <div class="recent-info"><div class="recent-title">Bluey</div><div class="recent-year">2018</div></div>
++
++      <!-- Final CTA -->
++      <div class="saas-cta">
++        <h2>Ready for peace of mind?</h2>
++        <p>Search your first title for free and lock in your family's safety.</p>
++        <a href="#" onclick="goHome(); setTimeout(() => heroInput.focus(), 100); return false;" class="saas-cta-btn">Start searching now →</a>
+       </div>
+     </div>
+   </div>
+diff --git a/public/index/indexv2.html b/public/index/indexv2.html
+index 26f669c..4bc496c 100644
+--- a/public/index/indexv2.html
++++ b/public/index/indexv2.html
+@@ -138,14 +138,14 @@
+             <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">group</span>
+             <div>
+               <h4 class="font-bold text-sm">Parental Community</h4>
+-              <p class="text-xs text-on-surface-variant" id="communityText">Loading community dataÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦</p>
++              <p class="text-xs text-on-surface-variant" id="communityText">Loading community data…</p>
+             </div>
+           </div>
+           <div class="flex items-start gap-4">
+             <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">psychology</span>
+             <div>
+               <h4 class="font-bold text-sm">Positive Messages</h4>
+-              <p class="text-xs text-on-surface-variant" id="positiveMessages">LoadingÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦</p>
++              <p class="text-xs text-on-surface-variant" id="positiveMessages">Loading…</p>
+             </div>
+           </div>
+         </div>
+@@ -372,7 +372,7 @@ function renderHero(d, certRating = '') {
+   // Title
+   document.getElementById('heroTitle').textContent = title;
+ 
+-  // Meta row ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â year Ãƒâ€šÃ‚Â· runtime Ãƒâ€šÃ‚Â· rating (Ãƒâ€šÃ‚Â· cert if available)
++  // Meta row ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â year · runtime · rating (· cert if available)
+   const metaParts = [
+     year ? `<span>${year}</span>` : '',
+     runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${runtime}</span>` : '',
+@@ -525,7 +525,7 @@ async function toggleWatchlist() {
+       headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
+       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, list_type: 'approved', title, poster, year })
+     });
+-    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“'); }
++    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist ✓'); }
+     else showToast('Could not save ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â try again');
+   } catch { showToast('Could not save ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â try again'); }
+ }
+@@ -543,9 +543,9 @@ async function markWatched() {
+       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, poster })
+     });
+     const btn = document.getElementById('watchedBtn');
+-    btn.textContent = 'ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Marked as Watched';
++    btn.textContent = '✓ Marked as Watched';
+     btn.classList.add('border-tertiary', 'text-tertiary');
+-    showToast('Marked as watched ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“');
++    showToast('Marked as watched ✓');
+   } catch { showToast('Could not save ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â try again'); }
+ }
+ 
+diff --git a/public/js/auth.js b/public/js/auth.js
+index a2b6fe6..bf5e2b9 100644
+--- a/public/js/auth.js
++++ b/public/js/auth.js
+@@ -534,7 +534,7 @@
+             <div class="cv-search-item-poster">${item.poster ? `<img src="${item.poster}" alt="">` : 'ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¬'}</div>
+             <div class="cv-search-item-info">
+               <div class="cv-search-item-title">${item.title}</div>
+-              <div class="cv-search-item-meta">${item.year || ''} Ãƒâ€šÃ‚Â· ${item.type === 'tv' ? 'TV' : 'Movie'}</div>
++              <div class="cv-search-item-meta">${item.year || ''} · ${item.type === 'tv' ? 'TV' : 'Movie'}</div>
+             </div>
+           </button>
+         `).join('');
+@@ -559,7 +559,7 @@
+               <div class="cv-search-item-poster">${r.poster_path ? `<img src="https://image.tmdb.org/t/p/w92${r.poster_path}" alt="">` : 'ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¬'}</div>
+               <div class="cv-search-item-info">
+                 <div class="cv-search-item-title">${title}</div>
+-                <div class="cv-search-item-meta">${year}${year ? ' Ãƒâ€šÃ‚Â· ' : ''}${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
++                <div class="cv-search-item-meta">${year}${year ? ' · ' : ''}${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+               </div>
+             </button>
+           `}).join('');
+@@ -611,7 +611,7 @@
+       const titleEl = event.target.closest('.cv-search-item').querySelector('.cv-search-item-title');
+       const metaEl  = event.target.closest('.cv-search-item').querySelector('.cv-search-item-meta');
+       const title   = titleEl ? titleEl.textContent : '';
+-      const year    = metaEl  ? metaEl.textContent.split(' Ãƒâ€šÃ‚Â· ')[0] : '';
++      const year    = metaEl  ? metaEl.textContent.split(' · ')[0] : '';
+       const poster  = event.target.closest('.cv-search-item').querySelector('img')?.src || null;
+ 
+       const item = { id, type, title, year, poster };
+diff --git a/public/plans/index.html b/public/plans/index.html
+index 1a44e46..7a91e46 100644
+--- a/public/plans/index.html
++++ b/public/plans/index.html
+@@ -112,7 +112,7 @@
+       <p class="font-headline font-bold text-on-surface">You're on Pro</p>
+       <p class="text-sm text-on-surface-variant">Saved lists, up to 2 child profiles, synced history, and more.</p>
+     </div>
+-    <a href="/settings" class="ml-auto text-sm font-bold text-primary hover:underline underline-offset-2 flex-shrink-0">Manage Ã¢â€ â€™</a>
++    <a href="/settings" class="ml-auto text-sm font-bold text-primary hover:underline underline-offset-2 flex-shrink-0">Manage →</a>
+   </div>
+   <div id="familyCurrentBanner"
+        class="fade-up mb-10 bg-purple-50 border border-purple-200 rounded-2xl p-5 items-center gap-4"
+@@ -124,7 +124,7 @@
+       <p class="font-headline font-bold text-on-surface">You're on Family</p>
+       <p class="text-sm text-on-surface-variant">Up to 5 profiles, shared watchlists, and all Pro features.</p>
+     </div>
+-    <a href="/settings" class="ml-auto text-sm font-bold text-purple-700 hover:underline underline-offset-2 flex-shrink-0">Manage Ã¢â€ â€™</a>
++    <a href="/settings" class="ml-auto text-sm font-bold text-purple-700 hover:underline underline-offset-2 flex-shrink-0">Manage →</a>
+   </div>
+ 
+   <!-- Heading -->
+@@ -161,7 +161,7 @@
+       <div class="mb-1">
+         <span class="text-4xl font-extrabold tracking-tight text-on-surface-variant">$0</span>
+       </div>
+-      <p class="text-sm text-on-surface-variant mb-6">Forever free Ã‚Â· no card needed</p>
++      <p class="text-sm text-on-surface-variant mb-6">Forever free · no card needed</p>
+ 
+       <ul class="space-y-3 flex-1 mb-8">
+         <li class="flex items-start gap-2.5 text-sm text-on-surface-variant">
+@@ -210,7 +210,7 @@
+         <span class="text-4xl font-extrabold tracking-tight text-on-surface" id="proPrice">$4.99</span>
+         <span class="text-on-surface-variant text-sm mb-1.5" id="proPeriod">/mo</span>
+       </div>
+-      <p class="text-sm text-on-surface-variant mb-6" id="proAlt">Billed monthly Ã‚Â· cancel anytime</p>
++      <p class="text-sm text-on-surface-variant mb-6" id="proAlt">Billed monthly · cancel anytime</p>
+ 
+       <ul class="space-y-3 flex-1 mb-8">
+         <li class="flex items-start gap-2.5 text-sm text-on-surface">
+@@ -256,7 +256,7 @@
+         <span class="text-4xl font-extrabold tracking-tight text-on-surface" id="familyPrice">$7.99</span>
+         <span class="text-on-surface-variant text-sm mb-1.5" id="familyPeriod">/mo</span>
+       </div>
+-      <p class="text-sm text-on-surface-variant mb-6" id="familyAlt">Billed monthly Ã‚Â· cancel anytime</p>
++      <p class="text-sm text-on-surface-variant mb-6" id="familyAlt">Billed monthly · cancel anytime</p>
+ 
+       <ul class="space-y-3 flex-1 mb-8">
+         <li class="flex items-start gap-2.5 text-sm text-on-surface">
+@@ -311,27 +311,27 @@
+       <!-- Rows -->
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Unlimited searches (no account)</span>
+-        <span class="text-center text-base">Ã¢Å“â€¦</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Full AI content breakdown</span>
+-        <span class="text-center text-base">Ã¢Å“â€¦</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Share report links</span>
+-        <span class="text-center text-base">Ã¢Å“â€¦</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Synced search history</span>
+-        <span class="text-center text-base">Ã¢Å“â€¦</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Approved / Blocked / Watchlist</span>
+-        <span class="text-center text-base">Ã¢Å“â€¦</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Season-level TV analysis</span>
+-        <span class="text-center text-base">Ã¢Å“â€¦</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-base">✅</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Child profiles</span>
+@@ -345,15 +345,15 @@
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Shared family watchlists</span>
+-        <span class="text-center text-outline">Ã¢â‚¬â€</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-outline">Ã¢â‚¬â€</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5 border-b border-outline-variant/10">
+         <span class="text-sm text-on-surface-variant">Per-child content thresholds</span>
+-        <span class="text-center text-outline">Ã¢â‚¬â€</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-outline">Ã¢â‚¬â€</span><span class="text-center text-base">✅</span>
+       </div>
+       <div class="compare-row grid grid-cols-[1fr_80px_80px] px-6 py-3.5">
+         <span class="text-sm text-on-surface-variant">Priority support</span>
+-        <span class="text-center text-outline">Ã¢â‚¬â€</span><span class="text-center text-base">Ã¢Å“â€¦</span>
++        <span class="text-center text-outline">Ã¢â‚¬â€</span><span class="text-center text-base">✅</span>
+       </div>
+     </div>
+   </div>
+@@ -474,17 +474,17 @@ function setBilling(mode) {
+   if (_isYearly) {
+     document.getElementById('proPrice').textContent   = `$${PRICES.pro.yearly}`;
+     document.getElementById('proPeriod').textContent  = '/yr';
+-    document.getElementById('proAlt').textContent     = `Billed annually Ã‚Â· $${PRICES.pro.yearly}/yr`;
++    document.getElementById('proAlt').textContent     = `Billed annually · $${PRICES.pro.yearly}/yr`;
+     document.getElementById('familyPrice').textContent = `$${PRICES.family.yearly}`;
+     document.getElementById('familyPeriod').textContent = '/yr';
+-    document.getElementById('familyAlt').textContent  = `Billed annually Ã‚Â· $${PRICES.family.yearly}/yr`;
++    document.getElementById('familyAlt').textContent  = `Billed annually · $${PRICES.family.yearly}/yr`;
+   } else {
+     document.getElementById('proPrice').textContent   = `$${PRICES.pro.monthly}`;
+     document.getElementById('proPeriod').textContent  = '/mo';
+-    document.getElementById('proAlt').textContent     = 'Billed monthly Ã‚Â· cancel anytime';
++    document.getElementById('proAlt').textContent     = 'Billed monthly · cancel anytime';
+     document.getElementById('familyPrice').textContent = `$${PRICES.family.monthly}`;
+     document.getElementById('familyPeriod').textContent = '/mo';
+-    document.getElementById('familyAlt').textContent  = 'Billed monthly Ã‚Â· cancel anytime';
++    document.getElementById('familyAlt').textContent  = 'Billed monthly · cancel anytime';
+   }
+ }
+ 
+@@ -507,7 +507,7 @@ async function handleUpgrade(plan) {
+   const btn = document.getElementById(plan === 'pro' ? 'proCta' : 'familyCta');
+   const origText = btn.textContent;
+   btn.disabled = true;
+-  btn.textContent = 'RedirectingÃ¢â‚¬Â¦';
++  btn.textContent = 'Redirecting…';
+ 
+   try {
+     const token = await window.Clerk.session.getToken();
+@@ -544,14 +544,14 @@ document.addEventListener('cv:auth', ({ detail }) => {
+ 
+   if (isFamily) {
+     document.getElementById('familyCurrentBanner').classList.add('visible');
+-    famCta.textContent = 'Current plan Ã¢Å“â€œ';
++    famCta.textContent = 'Current plan ✓';
+     famCta.style.background = '#efe9f8';
+     famCta.style.color = '#7b5ea7';
+     famCta.onclick = null;
+     proCta.textContent = 'Downgrade to Pro';
+   } else if (isPro) {
+     document.getElementById('proCurrentBanner').classList.add('visible');
+-    proCta.textContent = 'Current plan Ã¢Å“â€œ';
++    proCta.textContent = 'Current plan ✓';
+     proCta.className = 'w-full py-3 font-bold rounded-xl font-headline text-sm bg-primary/10 text-primary border border-primary/20 cursor-default';
+     proCta.onclick = null;
+     famCta.textContent = 'Upgrade to Family';
+diff --git a/public/signin/index.html b/public/signin/index.html
+index 286e682..c3dba9e 100644
+--- a/public/signin/index.html
++++ b/public/signin/index.html
+@@ -110,7 +110,7 @@
+ 
+       <!-- Skeleton shown while Clerk loads -->
+       <div id="clerkSkeleton" class="p-8 space-y-4">
+-        <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-2">Taking longer than usualÃ¢â‚¬Â¦ check your connection.</p>
++        <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-2">Taking longer than usual… check your connection.</p>
+         <!-- Social button skeletons -->
+         <div class="grid grid-cols-2 gap-3">
+           <div class="skel h-11 rounded-xl"></div>
+@@ -145,7 +145,7 @@
+   <!-- Plans nudge below card -->
+   <div class="fade-up w-full max-w-md mt-5" style="animation-delay:0.1s;">
+     <div class="flex items-center gap-3 bg-surface-container border border-outline-variant/15 rounded-xl px-4 py-3 text-sm text-on-surface-variant">
+-      <span class="text-base flex-shrink-0">Ã¢Å“Â¨</span>
++      <span class="text-base flex-shrink-0">✨</span>
+       <span>Sign in to your account. Upgrade to <a href="/plans" class="text-primary font-semibold hover:underline underline-offset-2">Pro or Family</a> to save lists and manage profiles.</span>
+     </div>
+   </div>
+@@ -227,7 +227,7 @@
+       }
+     });
+ 
+-    // Poll until card appears, then swap skeleton Ã¢â€ â€™ real form
++    // Poll until card appears, then swap skeleton → real form
+     const poll = setInterval(() => {
+       const card = document.querySelector('#clerk-signin .cl-card, #clerk-signin [data-localization-key]');
+       if (card) { clearInterval(poll); showClerk(); }
+diff --git a/public/signup/index.html b/public/signup/index.html
+index a95aa2c..fe21bc4 100644
+--- a/public/signup/index.html
++++ b/public/signup/index.html
+@@ -104,7 +104,7 @@
+ 
+         <!-- Skeleton shown while Clerk loads -->
+         <div id="clerkSkeleton" class="p-8 md:p-10 space-y-5">
+-          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usualÃ¢â‚¬Â¦ check your connection.</p>
++          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
+           <!-- Social skeletons -->
+           <div class="grid grid-cols-2 gap-4">
+             <div class="skel h-11 rounded-xl"></div>
+@@ -148,7 +148,7 @@
+     <!-- Pro nudge -->
+     <div class="fade-up mt-4" style="animation-delay:0.13s;">
+       <div class="flex items-center gap-3 bg-surface-container border border-outline-variant/15 rounded-xl px-4 py-3 text-sm text-on-surface-variant">
+-        <span class="text-base flex-shrink-0">Ã°Å¸Å’Å¸</span>
++        <span class="text-base flex-shrink-0">🌟</span>
+         <span>Upgrade to <a href="/plans" class="text-primary font-semibold hover:underline underline-offset-2">Pro or Family</a> to save lists, manage child profiles, and unlock family sharing.</span>
+       </div>
+     </div>
+@@ -228,7 +228,7 @@
+       }
+     });
+ 
+-    // Poll until Clerk card appears, then swap skeleton Ã¢â€ â€™ real form
++    // Poll until Clerk card appears, then swap skeleton → real form
+     const poll = setInterval(() => {
+       const card = document.querySelector('#clerk-signup .cl-card, #clerk-signup [data-localization-key]');
+       if (card) { clearInterval(poll); showClerk(); }
