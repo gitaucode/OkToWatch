@@ -218,9 +218,9 @@
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SKELETON LOADER
 -->
-<div id="pageLoader" class="flex min-h-screen pt-16">
+<div id="pageLoader" class="flex min-h-screen">
   <!-- Skeleton sidebar -->
-  <aside class="hidden lg:flex flex-col p-6 space-y-3 h-screen w-64 bg-slate-50 fixed top-16">
+  <aside class="hidden lg:flex flex-col p-6 space-y-3 w-64 bg-slate-50 sticky top-16 overflow-y-auto h-fit">
     <div class="skel h-14 w-full rounded-xl mb-4"></div>
     <div class="skel h-10 w-full rounded-lg"></div>
     <div class="skel h-10 w-full rounded-lg"></div>
@@ -228,7 +228,7 @@
     <div class="skel h-10 w-full rounded-lg"></div>
   </aside>
   <!-- Skeleton main -->
-  <main class="flex-1 lg:ml-64 p-4 bg-background">
+  <main class="flex-1 lg:ml-64 p-4 bg-background pt-16">
     <div class="max-w-6xl mx-auto space-y-6">
       <div class="skel h-10 w-48 rounded-xl"></div>
       <div class="skel h-6 w-80 rounded-lg"></div>
@@ -247,10 +247,10 @@
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MAIN PAGE (shown after auth)
 -->
-<div id="pageContent" class="hidden flex min-h-screen pt-16">
+<div id="pageContent" class="hidden flex min-h-screen">
 
   <!-- ── SideNavBar ── -->
-  <aside class="hidden lg:flex flex-col p-6 space-y-2 h-[calc(100vh-64px)] w-64 border-r-0 bg-slate-50 fixed top-16 overflow-y-auto">
+  <aside class="hidden lg:flex flex-col p-6 space-y-2 w-64 border-r-0 bg-slate-50 sticky top-16 overflow-y-auto h-fit">
     <!-- Library header -->
     <div class="flex items-center space-x-3 mb-3">
       <div class="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-on-primary flex-shrink-0">
@@ -298,7 +298,7 @@
   </aside>
 
   <!-- ── Main Content Area ── -->
-  <main class="flex-1 lg:ml-64 p-6 md:p-8 bg-background main-content">
+  <main class="flex-1 lg:ml-64 p-6 md:p-8 bg-background main-content pt-16">
     <div class="max-w-6xl mx-auto">
 
       <!-- Header -->
