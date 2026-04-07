@@ -82,7 +82,7 @@ tailwind.config = {
     <!-- Main skel -->
     <div class="col-span-12 lg:col-span-9 space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="skel h-24 rounded-2xl"></div><div class="skel h-24 rounded-2xl"></div><div class="skel h-24 rounded-2xl"></div>
+        <div class="skel min-h-24 rounded-2xl"></div><div class="skel min-h-24 rounded-2xl"></div><div class="skel min-h-24 rounded-2xl"></div>
       </div>
       <div class="space-y-8"><div class="skel h-8 w-48 rounded"></div><div class="grid grid-cols-2 md:grid-cols-4 gap-6"><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div></div></div>
     </div>
@@ -139,21 +139,21 @@ tailwind.config = {
 
     <!-- Hero / Quick Stats Bento (exact original) -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <a href="/history" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
+      <a href="/history" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between min-h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
         <span class="material-symbols-outlined text-primary text-2xl">fact_check</span>
         <div>
           <h4 class="text-2xl font-extrabold tracking-tight" id="statSearches">–</h4>
           <p class="text-on-surface-variant text-sm font-medium">Checked</p>
         </div>
       </a>
-      <a href="/lists?tab=approved" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
+      <a href="/lists?tab=approved" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between min-h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
         <span class="material-symbols-outlined text-tertiary text-2xl" style="font-variation-settings:'FILL' 1;">recommend</span>
         <div>
           <h4 class="text-2xl font-extrabold tracking-tight text-tertiary" id="statApproved">–</h4>
           <p class="text-on-surface-variant text-sm font-medium">Given the OK</p>
         </div>
       </a>
-      <a href="/lists?tab=blocked" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
+      <a href="/lists?tab=blocked" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between min-h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
         <span class="material-symbols-outlined text-error text-2xl">do_not_disturb_on</span>
         <div>
           <h4 class="text-2xl font-extrabold tracking-tight text-error" id="statBlocked">–</h4>
