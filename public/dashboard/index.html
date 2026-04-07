@@ -5,7 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#565e74"/>
-<title>Dashboard — OkToWatch</title>
+<title>Activity Log — OkToWatch</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -54,11 +54,15 @@ tailwind.config = {
   /* Toast */
   .toast { position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,26,24,0.92);color:white;backdrop-filter:blur(12px);padding:0.65rem 1.25rem;border-radius:100px;font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.25s ease;pointer-events:none;z-index:999;white-space:nowrap; }
   .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
-  /* Modals */
-  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-  .modal-overlay { display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center; }
-  .modal-overlay.visible { display:flex; }
-  .modal-sheet { animation:slideUp 0.32s ease forwards;max-height:90vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,1rem); }
+  /* Table */
+  .activity-table { width:100%;border-collapse:collapse; }
+  .activity-table td { padding:1rem;border-bottom:1px solid #dde3e7; }
+  .activity-table tbody tr:hover { background-color:#f2f4f5; }
+  .outcome-badge { display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600; }
+  .outcome-allowed { background:#d4f1e7;color:#005a3c; }
+  .outcome-approved { background:#c8e6d9;color:#004d39; }
+  .outcome-blocked { background:#ffcccb;color:#9f403d; }
+  .outcome-flagged { background:#fff4d6;color:#f57f17; }
 </style>
 </head>
 <body class="bg-background text-on-surface" data-page="dashboard">
@@ -67,460 +71,375 @@ tailwind.config = {
 
 <!-- ── Skeleton loader ──────────────────────────────────────────────────── -->
 <div id="pageLoader">
-  <div class="pt-16 pb-6 max-w-6xl mx-auto px-8 grid grid-cols-12 gap-8">
-    <!-- Sidebar skel -->
-    <div class="col-span-12 lg:col-span-3 space-y-4">
-      <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15 space-y-4">
-        <div class="skel h-3 w-32"></div>
-        <div class="flex items-center gap-3"><div class="skel w-10 h-10 rounded-full"></div><div class="flex-1 space-y-2"><div class="skel h-3 w-3/4"></div><div class="skel h-2 w-1/2"></div></div></div>
-        <div class="flex items-center gap-3"><div class="skel w-10 h-10 rounded-full"></div><div class="flex-1 space-y-2"><div class="skel h-3 w-3/4"></div><div class="skel h-2 w-1/2"></div></div></div>
-        <div class="skel h-10 rounded-xl"></div>
+  <div class="pt-16 pb-6 max-w-5xl mx-auto px-8 space-y-8">
+    <div class="skel h-10 w-64 rounded"></div>
+    <div class="space-y-4">
+      <div class="flex gap-4"><div class="skel h-10 w-40 rounded-xl"></div><div class="skel h-10 w-40 rounded-xl"></div></div>
+      <div class="border border-outline-variant/20 rounded-2xl">
+        <div style="height:300px" class="skel"></div>
       </div>
-      <div class="space-y-3"><div class="skel h-3 w-24"></div><div class="skel h-13 rounded-xl" style="height:52px"></div><div class="skel rounded-xl" style="height:52px"></div><div class="skel rounded-xl" style="height:52px"></div></div>
-      <div class="bg-surface-container-low p-6 rounded-xl space-y-3"><div class="skel h-3 w-28"></div><div class="skel h-5 rounded"></div><div class="skel h-5 rounded"></div><div class="skel h-5 rounded"></div></div>
     </div>
-    <!-- Main skel -->
-    <div class="col-span-12 lg:col-span-9 space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="skel min-h-24 rounded-2xl"></div><div class="skel min-h-24 rounded-2xl"></div><div class="skel min-h-24 rounded-2xl"></div>
-      </div>
-      <div class="space-y-8"><div class="skel h-8 w-48 rounded"></div><div class="grid grid-cols-2 md:grid-cols-4 gap-6"><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div><div class="skel rounded-xl" style="aspect-ratio:2/3"></div></div></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="skel h-32 rounded-xl"></div>
+      <div class="skel h-32 rounded-xl"></div>
+      <div class="skel h-32 rounded-xl"></div>
     </div>
   </div>
 </div>
 
 <!-- ── Page content ─────────────────────────────────────────────────────── -->
 <div id="pageContent">
-<main class="pt-16 pb-12 max-w-6xl mx-auto px-8 grid grid-cols-12 gap-8">
+<main class="pt-16 pb-12 max-w-5xl mx-auto px-8 space-y-8">
 
-  <!-- ── Left Sidebar ───────────────────────────────────────────────────── -->
-  <aside class="col-span-12 lg:col-span-3 space-y-8">
+  <!-- ── Header ────────────────────────────────────────────────────────── -->
+  <header class="space-y-2">
+    <h1 class="text-3xl font-bold tracking-tight">Activity Log</h1>
+    <p class="text-on-surface-variant">Track search history and verdict results for each family member</p>
+  </header>
 
-    <!-- Family Profiles -->
-    <section class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/15">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Family Profiles <span id="profilesPremiumBadge" class="hidden text-[10px] font-bold text-primary bg-primary-container px-2 py-0.5 rounded-full ml-1 normal-case tracking-normal">Pro</span></h3>
-      <div class="space-y-2" id="profilesGrid">
-        <p class="text-xs text-on-surface-variant">Loading profiles…</p>
-      </div>
-    </section>
-
-    <!-- Quick Actions (exact original structure) -->
-    <section class="space-y-3">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant px-2">Quick Actions</h3>
-      <div class="flex flex-col gap-2">
-        <button class="flex items-center gap-2.5 py-2 px-3 bg-primary text-on-primary rounded-xl hover:opacity-90 transition-opacity shadow-sm" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
-          <span class="material-symbols-outlined">search</span>
-          <span class="font-semibold text-sm">New Search</span>
-        </button>
-        <a class="flex items-center gap-2.5 py-2 px-3 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors no-underline" href="/discover">
-          <span class="material-symbols-outlined text-tertiary">verified_user</span>
-          <span class="font-semibold text-sm">Find Safe Content</span>
-        </a>
-        <a class="flex items-center gap-2.5 py-2 px-3 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors no-underline" href="/lists?tab=approved">
-          <span class="material-symbols-outlined text-primary">playlist_add_check</span>
-          <span class="font-semibold text-sm">Approved List</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- Recent Searches (exact original structure) -->
-    <section class="bg-surface-container-low p-4 rounded-xl">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Recent Searches</h3>
-      <div id="dashRecent" class="space-y-3">
-        <p class="text-sm text-on-surface-variant">Your recent searches will appear here.</p>
-        <button class="text-sm text-primary font-medium bg-transparent border-none cursor-pointer p-0 hover:underline" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">Search now →</button>
-      </div>
-    </section>
-
-  </aside>
-
-  <!-- ── Main Content ───────────────────────────────────────────────────── -->
-  <div class="col-span-12 lg:col-span-9 space-y-12">
-
-    <!-- Hero / Quick Stats Bento (exact original) -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <a href="/history" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between min-h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary text-2xl">fact_check</span>
-        <div>
-          <h4 class="text-2xl font-extrabold tracking-tight" id="statSearches">–</h4>
-          <p class="text-on-surface-variant text-sm font-medium">Checked</p>
-        </div>
-      </a>
-      <a href="/lists?tab=approved" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between min-h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-tertiary text-2xl" style="font-variation-settings:'FILL' 1;">recommend</span>
-        <div>
-          <h4 class="text-2xl font-extrabold tracking-tight text-tertiary" id="statApproved">–</h4>
-          <p class="text-on-surface-variant text-sm font-medium">Given the OK</p>
-        </div>
-      </a>
-      <a href="/lists?tab=blocked" class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/15 flex flex-col justify-between min-h-24 no-underline text-on-surface hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-error text-2xl">do_not_disturb_on</span>
-        <div>
-          <h4 class="text-2xl font-extrabold tracking-tight text-error" id="statBlocked">–</h4>
-          <p class="text-on-surface-variant text-sm font-medium">Off-limits</p>
-        </div>
-      </a>
-    </section>
-
-    <!-- Trending Section (exact original structure + Movies/TV toggle) -->
-    <section>
-      <div class="flex justify-between items-end mb-4">
-        <div>
-          <h2 class="text-xl font-extrabold tracking-tighter" id="trendingLabel">Trending Now</h2>
-          <p class="text-on-surface-variant font-medium">Safety-first curation for your evening</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex gap-1 bg-surface-container-high rounded-full p-1">
-            <button id="tabMovies" onclick="switchTrend('movie')" class="text-xs font-semibold px-4 py-1.5 rounded-full bg-white text-on-surface shadow-sm transition-all">Movies</button>
-            <button id="tabTV"     onclick="switchTrend('tv')"    class="text-xs font-semibold px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface transition-all">TV</button>
-          </div>
-          <a href="/discover" class="text-sm font-bold text-primary flex items-center gap-1 group no-underline">
-            View All <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- 4-col card grid — exact original card markup rendered by JS -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="trendingGrid">
-        <!-- skeleton cards -->
-        <div class="group"><div class="skel rounded-xl mb-4" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
-        <div class="group"><div class="skel rounded-xl mb-4" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
-        <div class="group"><div class="skel rounded-xl mb-4" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
-        <div class="group"><div class="skel rounded-xl mb-4" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
-      </div>
-    </section>
-
-    <!-- Parent Tip (exact original) -->
-    <section class="relative bg-tertiary text-on-tertiary p-10 rounded-2xl overflow-hidden">
-      <div class="relative z-10 max-w-xl">
-        <h3 class="text-2xl font-bold tracking-tight mb-2">Did you know?</h3>
-        <p class="text-on-tertiary/80 leading-relaxed mb-6">You can set individual "Quiet Hours" for each child profile. This restricts movie discovery to purely educational content after 8:00 PM.</p>
-        <a href="/settings" class="px-6 py-2 bg-on-tertiary text-tertiary font-bold text-sm rounded-lg hover:bg-white transition-colors no-underline inline-block">Adjust Schedule</a>
-      </div>
-      <div class="absolute right-0 bottom-0 opacity-10 translate-y-1/4 pointer-events-none">
-        <span class="material-symbols-outlined text-[200px]" style="font-variation-settings:'FILL' 1;">lightbulb</span>
-      </div>
-    </section>
-
+  <!-- ── Filters ────────────────────────────────────────────────────────── -->
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Profile filter -->
+    <div class="flex-1">
+      <label class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase">Child Profile</label>
+      <select id="profileFilter" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:border-primary transition-colors" onchange="applyFilters()">
+        <option value="">All profiles</option>
+      </select>
+    </div>
+    <!-- Date range filter -->
+    <div class="flex-1">
+      <label class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase">Time Period</label>
+      <select id="dateFilter" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:border-primary transition-colors" onchange="applyFilters()">
+        <option value="7">Last 7 Days</option>
+        <option value="1">Today</option>
+        <option value="30">This Month</option>
+        <option value="all">All Time</option>
+      </select>
+    </div>
+    <button onclick="resetFilters()" class="md:mt-6 px-4 py-2.5 rounded-xl font-medium text-sm bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors">Reset</button>
   </div>
+
+  <!-- ── Activity Table ────────────────────────────────────────────────── -->
+  <section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="activity-table">
+        <thead class="bg-surface-container-low text-on-surface-variant text-xs font-bold uppercase tracking-wide border-b border-outline-variant/20">
+          <tr>
+            <td class="w-32">Timestamp</td>
+            <td class="w-32">Profile</td>
+            <td class="flex-1">Activity</td>
+            <td class="w-24">Outcome</td>
+            <td class="w-20">Details</td>
+          </tr>
+        </thead>
+        <tbody id="activityTable" class="text-sm">
+          <tr><td colspan="5" class="text-center py-8 text-on-surface-variant">Loading activity…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Insights Grid ────────────────────────────────────────────────── -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Safety Health metric -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold uppercase text-on-surface-variant">Safety Health</span>
+        <span class="material-symbols-outlined text-tertiary text-xl" style="font-variation-settings:'FILL' 1;">verified</span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="text-4xl font-extrabold text-tertiary" id="healthPercent">—</span>
+        <span class="text-on-surface-variant text-sm">% approved</span>
+      </div>
+      <p class="text-xs text-on-surface-variant pt-2">Ratio of approved vs blocked verdicts</p>
+    </div>
+
+    <!-- Top Queried Items -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-4">
+      <span class="text-xs font-bold uppercase text-on-surface-variant">Top Searched</span>
+      <div id="topQueries" class="space-y-3">
+        <p class="text-sm text-on-surface-variant">No activity yet</p>
+      </div>
+    </div>
+
+    <!-- Action Items -->
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-4">
+      <span class="text-xs font-bold uppercase text-on-surface-variant">Action Items</span>
+      <div id="actionItems" class="space-y-3">
+        <p class="text-sm text-on-surface-variant">No flagged items</p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<!-- Footer (exact original) -->
+<!-- Footer -->
 <div id="footer-root"></div>
 </div><!-- end #pageContent -->
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Add Profile Modal -->
-<div class="modal-overlay" id="addModal">
-  <div class="modal-sheet bg-white rounded-t-2xl max-w-sm w-full mx-auto">
-    <div class="w-9 h-1 bg-slate-200 rounded-full mx-auto mt-3"></div>
-    <div class="flex items-center justify-between px-6 pt-4 pb-3 border-b border-slate-100">
-      <h3 class="text-base font-bold font-['Plus_Jakarta_Sans']">Add Child Profile</h3>
-      <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm flex items-center justify-center" onclick="closeModal()">✕</button>
-    </div>
-    <div class="p-6 space-y-4">
-      <div><label class="block text-xs font-semibold text-slate-600 mb-1.5">Child's name</label><input type="text" id="newName" placeholder="e.g. Emma" maxlength="20" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition-all"/></div>
-      <div><label class="block text-xs font-semibold text-slate-600 mb-1.5">Age</label><input type="number" id="newAge" placeholder="e.g. 8" min="1" max="17" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition-all"/></div>
-      <div><label class="block text-xs font-semibold text-slate-600 mb-2">Pick an emoji</label><div class="flex flex-wrap gap-2" id="emojiGrid"></div></div>
-    </div>
-    <div class="px-6 pb-6 flex flex-col gap-2">
-      <button id="saveProfileBtn" onclick="saveProfile()" class="w-full py-2.5 bg-primary text-on-primary rounded-full font-semibold text-sm hover:opacity-90 transition-opacity">Add Profile</button>
-      <button onclick="closeModal()" class="w-full py-2.5 bg-slate-100 text-slate-700 rounded-full font-semibold text-sm hover:bg-slate-200 transition-colors">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- Upgrade Modal -->
-<div class="modal-overlay" id="upgradeModal">
-  <div class="modal-sheet bg-white rounded-t-2xl max-w-sm w-full mx-auto">
-    <div class="w-9 h-1 bg-slate-200 rounded-full mx-auto mt-3"></div>
-    <div class="flex items-center justify-between px-6 pt-4 pb-3 border-b border-slate-100">
-      <h3 class="text-base font-bold font-['Plus_Jakarta_Sans']">Upgrade to Pro</h3>
-      <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm flex items-center justify-center" onclick="closeUpgradeModal()">✕</button>
-    </div>
-    <div class="p-6 text-center">
-      <div class="text-4xl mb-3" id="upgradeFeatureIcon">💎</div>
-      <h2 class="text-base font-bold mb-2 font-['Plus_Jakarta_Sans']" id="upgradeFeatureTitle">Save Child Profiles</h2>
-      <p class="text-sm text-slate-500 leading-relaxed mb-4" id="upgradeFeatureDesc">Create and manage child profiles with age-appropriate content recommendations.</p>
-      <div class="bg-slate-50 rounded-xl p-4 text-left"><div class="text-xs font-bold text-slate-600 mb-2">Pro plan includes:</div><ul class="text-sm text-slate-600 space-y-1"><li>✅ Up to 2 child profiles</li><li>✅ Synced search history</li><li>✅ Save approved/blocked lists</li><li>✅ Season-level analysis</li></ul></div>
-    </div>
-    <div class="px-6 pb-6 flex flex-col gap-2">
-      <a href="/plans" class="w-full block text-center py-2.5 bg-primary text-on-primary rounded-full font-semibold text-sm hover:opacity-90 transition-opacity no-underline">Upgrade</a>
-      <button onclick="closeUpgradeModal()" class="w-full py-2.5 bg-slate-100 text-slate-700 rounded-full font-semibold text-sm hover:bg-slate-200 transition-colors">Maybe later</button>
-    </div>
-  </div>
-</div>
-
-
 <script>
-const EMOJIS = ['👧','👦','🧒','👶','🌟','🦁','🐼','🦊','🐸','🐨','🚀','⚽','🎮','🎨','🎵','🦋'];
-let selectedEmoji='👧', _profiles=[], _history=[], _lists=[];
+// State
+let _profiles=[], _activity=[], _filtered=[];
+let _currentProfileId='', _currentDays=7;
 
 // Toast
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-// API
-async function _h(){const tk=await window.Clerk.session.getToken();return{'Authorization':'Bearer '+tk,'Content-Type':'application/json'};}
-async function apiGet(u){const h=await _h();const r=await fetch(u,{headers:h});if(!r.ok)throw new Error(r.status);return r.json();}
-async function apiPost(u,b){const h=await _h();const r=await fetch(u,{method:'POST',headers:h,body:JSON.stringify(b)});if(!r.ok)throw new Error(r.status);return r.json();}
+// Auth/API helpers  
+async function getToken(){
+  if(!window.Clerk?.session)return null;
+  try{return await window.Clerk.session.getToken();}
+  catch(e){console.error('Failed to get token:',e);return null;}
+}
+
+async function apiGet(url){
+  const token=await getToken();if(!token){console.error('No auth token');return null;}
+  try{
+    const res=await fetch(url,{headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}});
+    if(!res.ok){console.error(`API error ${res.status}:`,url);return null;}
+    return res.json();
+  }catch(e){console.error('API fetch error:',e);return null;}
+}
 
 // Auth guard
 let _authReceived=false;
 document.addEventListener('cv:auth',({detail})=>{
   _authReceived=true;
   if(!detail.loggedIn){window.location.href='/signin?redirect=/dashboard';return;}
-  window.userTier=detail.tier||(detail.isFamily?'family':detail.isPro?'pro':'free');
-  // Update nav account icon with avatar if available
-  if(detail.user?.imageUrl){
-    const ic=document.getElementById('navAccountIcon');
-    if(ic){ic.closest('button').innerHTML=`<img src="${detail.user.imageUrl}" class="w-8 h-8 rounded-full object-cover" alt="">`;}
-  }
   loadDashboard(detail.user);
-  const p=new URLSearchParams(window.location.search);
-  if(p.get('checkout')==='success'){showToast('🎉 Welcome to '+(detail.isFamily?'Family':'Pro')+' plan!');history.replaceState({},'','/dashboard');}
-  else if(p.get('checkout')==='cancelled'){showToast('Checkout was cancelled.');history.replaceState({},'','/dashboard');}
 });
 setTimeout(()=>{
   if(_authReceived)return;
   document.getElementById('pageLoader').classList.add('hidden');
   document.getElementById('pageContent').classList.add('visible');
-  document.getElementById('statSearches').textContent='—';
 },12000);
 
-// Load dashboard
+// ────────────────────────────────────────────────────────────────────
+// LOAD DASHBOARD - Main initialization
+// ────────────────────────────────────────────────────────────────────
 async function loadDashboard(user){
-  try{[_profiles,_history,_lists]=await Promise.all([apiGet('/api/profiles'),apiGet('/api/history'),apiGet('/api/lists')]);}
-  catch(e){console.error('Dashboard load error:',e);}
-  document.getElementById('pageLoader').classList.add('hidden');
-  document.getElementById('pageContent').classList.add('visible');
-  animateNum('statSearches',_history.length);
-  animateNum('statApproved',_lists.filter(l=>l.list_type==='approved').length);
-  animateNum('statBlocked', _lists.filter(l=>l.list_type==='blocked').length);
-  renderProfiles();
-  renderRecent();
-  loadTrending('movie');
-  if((window.userTier||'free')==='free') document.getElementById('profilesPremiumBadge').classList.remove('hidden');
-}
-
-// Animated counter
-function animateNum(id,target){
-  const el=document.getElementById(id);if(!el)return;
-  if(!target){el.textContent='0';return;}
-  let n=0;const step=Math.ceil(target/20);
-  const t=setInterval(()=>{n=Math.min(n+step,target);el.textContent=n;if(n>=target)clearInterval(t);},40);
-}
-
-// Filter label → matches design reference colours
-function filterInfo(age){
-  if(!age||age<=0) return{label:'No filter',cls:'text-on-surface-variant'};
-  if(age<=7)  return{label:'Strict Filters',cls:'text-error'};
-  if(age<=11) return{label:'Moderate Filters',cls:'text-tertiary'};
-  if(age<=14) return{label:'Teen Access',cls:'text-secondary'};
-  return{label:'Teen Access',cls:'text-secondary'};
-}
-
-// Active profile
-function getActive(){return sessionStorage.getItem('cv_active_profile');}
-
-// Render profiles — exact original card markup
-function renderProfiles(){
-  const active=getActive(), grid=document.getElementById('profilesGrid'), tier=window.userTier||'free';
-  let html='';
-  if(_profiles.length){
-    html=_profiles.map(p=>{
-      const fi=filterInfo(p.age);
-      const isActive=p.id===active;
-      return `<div class="flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer border ${isActive?'border-primary/30 bg-primary-container/30':'border-transparent hover:bg-surface-container-low hover:border-outline-variant/20'}" onclick="setActive('${p.id}')">
-        <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-xl flex-shrink-0 overflow-hidden">${p.emoji||'👧'}</div>
-        <div>
-          <p class="text-sm font-semibold">${esc(p.name)} (${p.age})</p>
-          <p class="text-[10px] ${fi.cls} font-medium">${fi.label}</p>
-        </div>
-      </div>`;
-    }).join('');
-  } else {
-    html=`<p class="text-xs text-on-surface-variant leading-relaxed">Add a child profile to get age-specific verdicts.</p>`;
+  try{
+    // REAL API CALL: Fetch child profiles
+    const profilesRes=await apiGet('/api/profiles');
+    _profiles=profilesRes||[];
+    
+    // REAL API CALL: Fetch activity/history
+    const historyRes=await apiGet('/api/history');
+    _activity=historyRes||[];
+    
+    // Populate profile dropdown
+    const profileSelect=document.getElementById('profileFilter');
+    profileSelect.innerHTML='<option value="">All profiles</option>';
+    _profiles.forEach(p=>{
+      const opt=document.createElement('option');
+      opt.value=p.id;
+      opt.textContent=p.name||'Profile';
+      profileSelect.appendChild(opt);
+    });
+    
+    // Hide loader, show content
+    document.getElementById('pageLoader').classList.add('hidden');
+    document.getElementById('pageContent').classList.add('visible');
+    
+    // Render initial state
+    applyFilters();
+  }catch(e){
+    console.error('Dashboard load error:',e);
+    document.getElementById('pageLoader').classList.add('hidden');
+    document.getElementById('pageContent').classList.add('visible');
+    showToast('Could not load activity data');
   }
-  if(_profiles.length<5){
-    const addAction=tier==='free'
-      ?`showUpgradeModal('child-profiles','👨‍👩‍👧','Save Child Profiles','Create and manage up to 2 child profiles with age-appropriate content recommendations.')`
-      :`openModal()`;
-    html+=`<button class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant hover:text-primary hover:border-primary transition-all" onclick="${addAction}">
-      <span class="material-symbols-outlined text-sm">add</span>
-      <span class="text-xs font-bold">Add child</span>
-    </button>`;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// FILTERS - Apply profile and date range
+// ────────────────────────────────────────────────────────────────────
+function applyFilters(){
+  _currentProfileId=document.getElementById('profileFilter').value||'';
+  const dateRange=document.getElementById('dateFilter').value;
+  _currentDays=dateRange==='all'?null:parseInt(dateRange);
+  
+  // Filter by profile and date
+  const now=new Date();
+  const cutoffDate=_currentDays===null?null:new Date(now.getTime()-_currentDays*24*60*60*1000);
+  
+  _filtered=_activity.filter(item=>{
+    if(!item.created_at)return false;
+    const itemDate=new Date(item.created_at);
+    if(cutoffDate && itemDate<cutoffDate)return false;
+    if(_currentProfileId && item.profile_id!==_currentProfileId)return false;
+    return true;
+  });
+  
+  // Sort newest first
+  _filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  
+  // Render results
+  renderActivityTable();
+  updateInsights();
+}
+
+function resetFilters(){
+  document.getElementById('profileFilter').value='';
+  document.getElementById('dateFilter').value='7';
+  applyFilters();
+}
+
+// ────────────────────────────────────────────────────────────────────
+// RENDER - Activity table
+// ────────────────────────────────────────────────────────────────────
+function renderActivityTable(){
+  const tbody=document.getElementById('activityTable');
+  
+  if(!_filtered.length){
+    tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-on-surface-variant">No activity for selected filters</td></tr>';
+    return;
   }
-  grid.innerHTML=html;
-}
-
-function setActive(id){
-  sessionStorage.setItem('cv_active_profile',id);
-  renderProfiles();
-  const p=_profiles.find(p=>p.id===id);
-  if(p){showToast('Checking for '+p.name+' '+(p.emoji||''));loadTrending(_trendType);}
-}
-
-// Recent searches — exact original row markup
-function renderRecent(){
-  const el=document.getElementById('dashRecent');
-  const recent=_history.slice(0,5);
-  if(!recent.length)return;
-  el.innerHTML=recent.map(r=>{
-    const listEntry=_lists.find(l=>String(l.tmdb_id)===String(r.tmdb_id)&&l.media_type===r.media_type);
-    const icon=listEntry?(listEntry.list_type==='approved'?'check_circle':'block'):'history';
-    const iconCls=listEntry?(listEntry.list_type==='approved'?'text-tertiary':'text-error'):'text-outline opacity-0 group-hover:opacity-100';
-    return `<div class="flex items-center justify-between text-sm group cursor-pointer" onclick="location.href='/index?id=${r.tmdb_id}&type=${r.media_type}'">
-      <span class="text-on-surface-variant group-hover:text-primary transition-colors truncate">${esc(r.title)}</span>
-      <span class="material-symbols-outlined text-xs ${iconCls} flex-shrink-0 ml-1">${icon}</span>
-    </div>`;
+  
+  tbody.innerHTML=_filtered.map(item=>{
+    const profileName=getProfileName(item.profile_id);
+    const timestamp=formatTime(item.created_at);
+    const outcome=item.verdict||'unknown';
+    const badgeClass=getOutcomeBadgeClass(outcome);
+    const outcomeLbl=getOutcomeLabel(outcome);
+    const title=item.title||item.query||'(Unknown)';
+    
+    return `
+      <tr>
+        <td class="text-xs text-on-surface-variant">${timestamp}</td>
+        <td>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-sm flex-shrink-0">${getProfileEmoji(item.profile_id)}</div>
+            <span class="text-xs font-medium">${escapeHtml(profileName)}</span>
+          </div>
+        </td>
+        <td>
+          <div class="space-y-1">
+            <p class="text-sm font-medium">${escapeHtml(title)}</p>
+            <p class="text-xs text-on-surface-variant">${item.media_type==='movie'?'Movie':'TV Series'}</p>
+          </div>
+        </td>
+        <td>
+          <span class="outcome-badge ${badgeClass}">${outcomeLbl}</span>
+        </td>
+        <td>
+          <button onclick="alert('Details for: '+${JSON.stringify(title)})" class="text-xs font-medium text-primary hover:underline">View</button>
+        </td>
+      </tr>
+    `;
   }).join('');
 }
 
-// Trending
-let _trendType='movie', _cachedIds=new Set(), _verdictData={};
-async function loadTrending(type='movie'){
-  _trendType=type;
-  const grid=document.getElementById('trendingGrid');
-  const active=getActive(), profile=_profiles.find(p=>p.id===active);
-  const label=document.getElementById('trendingLabel');
-  if(label) label.textContent=profile?'Top picks for '+profile.name+' '+(profile.emoji||''):'Trending Now';
-
-  // skeleton
-  grid.innerHTML=Array(4).fill(`<div class="group"><div class="skel rounded-xl mb-4" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>`).join('');
-
-  try{
-    let apiUrl=`/api/tmdb/trending/${type}/week`;
-    if(profile){
-      let c='';
-      if(type==='movie'){
-        if(profile.age<=7)c='&certification_country=US&certification.lte=G&with_genres=10751,16';
-        else if(profile.age<=11)c='&certification_country=US&certification.lte=PG&with_genres=10751';
-        else if(profile.age<=14)c='&certification_country=US&certification.lte=PG-13';
-      }else{
-        if(profile.age<=7)c='&with_genres=10762,16';
-        else if(profile.age<=11)c='&with_genres=10762';
-        else if(profile.age<=14)c='&with_genres=10759';
-      }
-      apiUrl=`/api/tmdb/discover/${type}?include_adult=false&sort_by=popularity.desc&vote_count.gte=50${c}`;
-    }
-    const[trendRes,cacheRes]=await Promise.all([fetch(apiUrl),fetch(`/api/tmdb/cache-ids?type=${type}`).catch(()=>null)]);
-    const data=await trendRes.json();
-    const items=(data.results||[]).slice(0,4);
-    if(cacheRes?.ok){const cached=await cacheRes.json();_cachedIds=new Set((cached||[]).map(String));}
-    if(!items.length){grid.innerHTML='<p class="col-span-full text-sm text-on-surface-variant text-center py-8">Could not load trending titles.</p>';return;}
-    try{const vr=await fetch(`/api/verdicts?ids=${items.map(i=>i.id).join(',')}`);if(vr.ok)_verdictData=await vr.json();}catch(e){}
-    grid.innerHTML=items.map(item=>trendCard(item,type)).join('');
-  }catch(e){
-    grid.innerHTML='<p class="col-span-full text-sm text-on-surface-variant text-center py-8">Could not load trending titles.</p>';
+// ────────────────────────────────────────────────────────────────────
+// INSIGHTS - Safety health, top queries, action items
+// ────────────────────────────────────────────────────────────────────
+function updateInsights(){
+  // Safety Health: % approved of all verdicts
+  const total=_filtered.length;
+  const approved=_filtered.filter(i=>i.verdict==='approved'||i.verdict==='allowed').length;
+  const healthPercent=total>0?Math.round((approved/total)*100):0;
+  document.getElementById('healthPercent').textContent=healthPercent+'%';
+  
+  // Top Queried: Most searched titles
+  const queryCount={};
+  _filtered.forEach(item=>{
+    const key=item.title||item.query||'Unknown';
+    queryCount[key]=(queryCount[key]||0)+1;
+  });
+  const topQueries=Object.entries(queryCount)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,3);
+  
+  const topQueriesEl=document.getElementById('topQueries');
+  if(topQueries.length){
+    topQueriesEl.innerHTML=topQueries.map(([q,count])=>`
+      <div class="flex justify-between items-center">
+        <span class="text-sm">${escapeHtml(q)}</span>
+        <span class="text-xs font-bold text-primary bg-primary-container px-2 py-1 rounded">${count}x</span>
+      </div>
+    `).join('');
+  }else{
+    topQueriesEl.innerHTML='<p class="text-sm text-on-surface-variant">No data yet</p>';
+  }
+  
+  // Action Items: Flagged verdicts
+  const flagged=_filtered.filter(i=>i.verdict==='blocked');
+  const actionItemsEl=document.getElementById('actionItems');
+  if(flagged.length){
+    actionItemsEl.innerHTML=flagged.slice(0,3).map(item=>`
+      <div class="flex gap-2">
+        <span class="material-symbols-outlined text-error text-lg">do_not_disturb_on</span>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium truncate">${escapeHtml(item.title||'')}</p>
+          <p class="text-xs text-on-surface-variant">${getProfileName(item.profile_id)}</p>
+        </div>
+      </div>
+    `).join('');
+  }else{
+    actionItemsEl.innerHTML='<p class="text-sm text-on-surface-variant">No blocked items</p>';
   }
 }
 
-// Trend card — exact original card markup from dasboardv2.html
-function trendCard(item,type){
-  const title=item.title||item.name||'Unknown';
-  const year=(item.release_date||item.first_air_date||'').slice(0,4);
-  const cert=getCert(item);
-  const cached=_cachedIds.has(String(item.id));
-  // Badge colour exactly as original: 7+ uses surface/90, 13+ uses error, ALL uses tertiary
-  const badgeClass=cert.cls==='red'?'bg-error text-on-error':cert.cls==='green'?'bg-tertiary text-on-tertiary':'bg-surface-container-lowest/90 backdrop-blur text-on-surface';
-  const poster=item.poster_path
-    ?`<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://image.tmdb.org/t/p/w342${item.poster_path}" alt="${esc(title)}" loading="lazy">`
-    :`<div class="w-full h-full flex items-center justify-center text-4xl bg-surface-dim">🎬</div>`;
-  const verdict=_verdictData[item.id];
-  const genre=getGenreLabel(item,type);
-  return `<div class="group cursor-pointer" onclick="checkTitle(${item.id},'${type}','${esc(title)}')">
-    <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-4 bg-surface-dim">
-      ${poster}
-      <div class="absolute top-3 left-3 px-2 py-1 ${badgeClass} rounded text-[10px] font-extrabold uppercase tracking-widest">${cert.label}</div>
-      ${cached?'<span class="absolute top-3 right-3 bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">✓</span>':''}
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-        <button class="w-full py-2 bg-white text-black font-bold text-xs rounded-lg">${cached?'✓ View analysis':'Details'}</button>
-      </div>
-    </div>
-    <h3 class="font-bold text-sm leading-tight mb-1">${esc(title)}</h3>
-    <p class="text-[11px] text-on-surface-variant font-medium">${genre}${year?' • '+year:''}</p>
-  </div>`;
+// ────────────────────────────────────────────────────────────────────
+// HELPERS
+// ────────────────────────────────────────────────────────────────────
+function getProfileName(profileId){
+  if(!profileId)return 'Unknown';
+  const p=_profiles.find(x=>x.id===profileId);
+  return p?.name||'Unknown';
 }
 
-function getCert(item){
-  const g=item.genre_ids||[];
-  const isKids=g.includes(10751)||g.includes(16);
-  if(item.adult)return{label:'R+',cls:'red'};
-  if(isKids)return{label:'ALL',cls:'green'};
-  if(g.includes(27)||g.includes(53))return{label:'15+',cls:'red'};
-  if(g.includes(28)||g.includes(80))return{label:'13+',cls:'red'};
-  return{label:'7+',cls:'neutral'};
+function getProfileEmoji(profileId){
+  if(!profileId)return '👤';
+  const p=_profiles.find(x=>x.id===profileId);
+  return p?.emoji||'👤';
 }
 
-function getGenreLabel(item,type){
-  const g=item.genre_ids||[];
-  if(g.includes(16))return'Animation';
-  if(g.includes(10751))return'Family';
-  if(g.includes(28))return'Action';
-  if(g.includes(35))return'Comedy';
-  if(g.includes(18))return'Drama';
-  if(g.includes(878))return'Sci-Fi';
-  if(g.includes(27))return'Horror';
-  if(g.includes(53))return'Thriller';
-  return type==='tv'?'TV Series':'Movie';
+function formatTime(isoStr){
+  if(!isoStr)return '—';
+  const date=new Date(isoStr);
+  const now=new Date();
+  const diff=(now-date)/(1000*60);
+  
+  if(diff<1)return 'Now';
+  if(diff<60)return Math.floor(diff)+'m ago';
+  if(diff<1440)return Math.floor(diff/60)+'h ago';
+  
+  return date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-function switchTrend(type){
-  const on='text-xs font-semibold px-4 py-1.5 rounded-full bg-white text-on-surface shadow-sm transition-all';
-  const off='text-xs font-semibold px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface transition-all';
-  document.getElementById('tabMovies').className=type==='movie'?on:off;
-  document.getElementById('tabTV').className=type==='tv'?on:off;
-  loadTrending(type);
+function getOutcomeBadgeClass(verdict){
+  const map={
+    'allowed':'outcome-allowed',
+    'approved':'outcome-approved',
+    'blocked':'outcome-blocked',
+    'flagged':'outcome-flagged'
+  };
+  return map[verdict]||'outcome-allowed';
 }
 
-function checkTitle(id,type){window.location.href=`/index?id=${id}&type=${type}`;}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function getOutcomeLabel(verdict){
+  const map={
+    'allowed':'Allowed',
+    'approved':'Approved',
+    'blocked':'Blocked',
+    'flagged':'Flagged'
+  };
+  return map[verdict]||'Allowed';
+}
 
-// Upgrade modal
-function showUpgradeModal(f,icon,title,desc){
-  document.getElementById('upgradeFeatureIcon').textContent=icon;
-  document.getElementById('upgradeFeatureTitle').textContent=title;
-  document.getElementById('upgradeFeatureDesc').textContent=desc;
-  document.getElementById('upgradeModal').classList.add('visible');
-  document.body.style.overflow='hidden';
+function escapeHtml(s){
+  if(!s)return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 }
-function closeUpgradeModal(){document.getElementById('upgradeModal').classList.remove('visible');document.body.style.overflow='';}
-document.getElementById('upgradeModal').addEventListener('click',e=>{if(e.target===document.getElementById('upgradeModal'))closeUpgradeModal();});
-
-// Add profile modal
-function openModal(){
-  selectedEmoji='👧';
-  document.getElementById('newName').value='';
-  document.getElementById('newAge').value='';
-  document.getElementById('emojiGrid').innerHTML=EMOJIS.map(e=>`<button class="text-2xl p-1.5 rounded-lg border-2 ${e===selectedEmoji?'border-primary bg-primary-container':'border-transparent bg-slate-100'} transition-all" onclick="pickEmoji('${e}',this)">${e}</button>`).join('');
-  document.getElementById('addModal').classList.add('visible');
-  document.body.style.overflow='hidden';
-  setTimeout(()=>document.getElementById('newName').focus(),300);
-}
-function closeModal(){document.getElementById('addModal').classList.remove('visible');document.body.style.overflow='';}
-function pickEmoji(e,btn){
-  selectedEmoji=e;
-  document.querySelectorAll('#emojiGrid button').forEach(b=>b.className='text-2xl p-1.5 rounded-lg border-2 border-transparent bg-slate-100 transition-all');
-  btn.className='text-2xl p-1.5 rounded-lg border-2 border-primary bg-primary-container transition-all';
-}
-async function saveProfile(){
-  const name=document.getElementById('newName').value.trim();
-  const age=parseInt(document.getElementById('newAge').value);
-  if(!name){showToast('Please enter a name');return;}
-  if(!age||age<1||age>17){showToast('Please enter a valid age (1–17)');return;}
-  const btn=document.getElementById('saveProfileBtn');
-  btn.disabled=true;btn.textContent='Adding…';
-  try{const p=await apiPost('/api/profiles',{name,age,emoji:selectedEmoji});_profiles.push(p);closeModal();renderProfiles();showToast(name+"'s profile added ✓");}
-  catch(e){showToast(e.message==='403'?'Max 5 profiles reached':'Failed to save profile');}
-  finally{btn.disabled=false;btn.textContent='Add Profile';}
-}
-document.getElementById('addModal').addEventListener('click',e=>{if(e.target===document.getElementById('addModal'))closeModal();});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeModal();closeUpgradeModal();}
-  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();window.cvOpenSearchModal&&window.cvOpenSearchModal();}
-});
 </script>
 <script src="/js/auth.js?v=20260406"></script>
 </body>

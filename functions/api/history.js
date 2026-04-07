@@ -15,8 +15,21 @@ export async function onRequestGet(context) {
   const url   = new URL(request.url);
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 500);
 
+  // Query history with LEFT JOIN to lists table to get verdict (if any)
   const rows = await env.DB
-    .prepare('SELECT * FROM history WHERE user_id = ? ORDER BY searched_at DESC LIMIT ?')
+    .prepare(`
+      SELECT 
+        h.id, h.user_id, h.tmdb_id, h.media_type, h.title, h.year, h.poster, h.profile_id,
+        h.searched_at as created_at,
+        COALESCE(l.list_type, 'allowed') as verdict
+      FROM history h
+      LEFT JOIN lists l ON h.user_id = l.user_id 
+        AND h.tmdb_id = l.tmdb_id 
+        AND h.media_type = l.media_type
+      WHERE h.user_id = ? 
+      ORDER BY h.searched_at DESC 
+      LIMIT ?
+    `)
     .bind(auth.userId, limit)
     .all();
 
