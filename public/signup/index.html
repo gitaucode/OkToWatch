@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<!-- Clerk preload Ã¢â‚¬â€ start fetching before anything else -->
+<!-- Clerk preload — start fetching before anything else -->
 <link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin/>
 <link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev"/>
 <link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin/>
@@ -27,7 +27,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
-<title>Create Account Ã¢â‚¬â€ OkToWatch</title>
+<title>Create Account — OkToWatch</title>
 <meta name="description" content="Create a free OkToWatch account. Search unlimited movies and TV shows, get AI-powered content breakdowns, and keep your family safe."/>
 <meta property="og:image" content="https://oktowatch.com/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
@@ -104,7 +104,7 @@
 
         <!-- Skeleton shown while Clerk loads -->
         <div id="clerkSkeleton" class="p-8 md:p-10 space-y-5">
-          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usualÃ¢â‚¬Â¦ check your connection.</p>
+          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
           <!-- Social skeletons -->
           <div class="grid grid-cols-2 gap-4">
             <div class="skel h-11 rounded-xl"></div>
@@ -148,7 +148,7 @@
     <!-- Pro nudge -->
     <div class="fade-up mt-4" style="animation-delay:0.13s;">
       <div class="flex items-center gap-3 bg-surface-container border border-outline-variant/15 rounded-xl px-4 py-3 text-sm text-on-surface-variant">
-        <span class="text-base flex-shrink-0">Ã°Å¸Å’Å¸</span>
+        <span class="text-base flex-shrink-0">🌟</span>
         <span>Upgrade to <a href="/plans" class="text-primary font-semibold hover:underline underline-offset-2">Pro or Family</a> to save lists, manage child profiles, and unlock family sharing.</span>
       </div>
     </div>
@@ -228,7 +228,7 @@
       }
     });
 
-    // Poll until Clerk card appears, then swap skeleton Ã¢â€ â€™ real form
+    // Poll until Clerk card appears, then swap skeleton → real form
     const poll = setInterval(() => {
       const card = document.querySelector('#clerk-signup .cl-card, #clerk-signup [data-localization-key]');
       if (card) { clearInterval(poll); showClerk(); }

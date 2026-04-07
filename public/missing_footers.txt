@@ -1,0 +1,4 @@
+D:\My Saas\OkToWatchv3\public\cv-admin\index.html
+D:\My Saas\OkToWatchv3\public\history\index.html
+D:\My Saas\OkToWatchv3\public\lists\index.html
+D:\My Saas\OkToWatchv3\public\settings\index.html

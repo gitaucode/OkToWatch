@@ -14,21 +14,21 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<title>Search â€” OkToWatch</title>
-<meta name="description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly â€” violence, language, sex, drugs, horror, and more. Built for parents.">
+<title>Search — OkToWatch</title>
+<meta name="description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
 
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OkToWatch">
-<meta property="og:title" content="OkToWatch â€” See what's in it before they watch">
-<meta property="og:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly â€” violence, language, sex, drugs, horror, and more. Built for parents.">
+<meta property="og:title" content="OkToWatch — See what's in it before they watch">
+<meta property="og:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
 <meta property="og:image" content="https://oktowatch.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://oktowatch.com/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="OkToWatch â€” See what's in it before they watch">
-<meta name="twitter:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly â€” violence, language, sex, drugs, horror, and more. Built for parents.">
+<meta name="twitter:title" content="OkToWatch — See what's in it before they watch">
+<meta name="twitter:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -49,11 +49,10 @@
   --verdict-danger-bg: #FCEBEB; --verdict-danger-text: #791F1F; --verdict-danger-dot: #A32D2D;
   --verdict-none-dot: #D3D1C7;
 }
-html, body { overflow-x: hidden; }
 body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
 
 /* NAV root handled by auth.js */
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
+#nav-root { position: relative; z-index: 10; min-height: 64px; }
 
 /* NAV COLLAPSED */
 #navCollapsed { display: none; align-items: center; gap: 0.5rem; padding: 0.6rem 0.75rem; position: sticky; top: 0; z-index: 200; background: rgba(200,217,209,0.95); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
@@ -505,6 +504,434 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
 .embed-mode footer { display: none !important; }
 .embed-mode .page-wrap { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
 .embed-mode .result-section { margin-top: 0; padding-top: 0; }
+/* --- SaaS Landing Page Redesign --- */
+.landing-hero {
+  background: linear-gradient(135deg, rgba(202, 217, 209, 0.5) 0%, rgba(105, 246, 184, 0.1) 100%);
+  position: relative;
+  padding: 6rem 1.5rem 4rem;
+  text-align: center;
+  overflow: hidden;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100%;
+  background: radial-gradient(circle at 20% 30%, rgba(42, 107, 85, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, rgba(86, 94, 116, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.landing-hero > * { position: relative; z-index: 2; }
+
+.landing-hero h1 {
+  font-size: clamp(2.8rem, 8vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  line-height: 1.1;
+}
+
+.landing-hero h1 .green-accent {
+  color: var(--accent);
+}
+
+.landing-hero .subhead {
+  font-size: clamp(1.1rem, 3vw, 1.25rem);
+  color: var(--text2);
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  line-height: 1.7;
+}
+
+.landing-search-container {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 100px;
+  box-shadow: var(--shadow-lg);
+  transition: box-shadow 0.3s ease;
+}
+
+.landing-search-container:focus-within {
+  box-shadow: 0 12px 48px rgba(42, 107, 85, 0.2);
+}
+
+.landing-search-container .search-box {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+}
+
+.landing-search-container input {
+  font-size: 1rem;
+  padding: 0.8rem 1.5rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  height: 48px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  flex: 1;
+}
+
+.landing-search-container input::placeholder {
+  color: var(--muted);
+}
+
+.landing-search-container button {
+  background: var(--accent);
+  color: white;
+  border-radius: 100px;
+  padding: 0.6rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  border: none;
+  box-shadow: 0 4px 12px rgba(42, 107, 85, 0.25);
+  transition: all 0.2s ease;
+  height: 48px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.landing-search-container button:hover {
+  background: #1f5542;
+  box-shadow: 0 6px 16px rgba(42, 107, 85, 0.35);
+  transform: translateY(-1px);
+}
+
+.quick-chips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.quick-chip {
+  background: white;
+  border: 1.5px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-chip:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Trust Section */
+.trust-section {
+  background: var(--surface);
+  padding: 4rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.trust-section h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.trust-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.trust-logo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Alternating Sections */
+.content-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 4rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.content-section.reverse {
+  direction: rtl;
+}
+
+.content-section.reverse > * {
+  direction: ltr;
+}
+
+.section-image {
+  width: 100%;
+  height: 380px;
+  background: linear-gradient(135deg, var(--accent-light) 0%, rgba(105, 246, 184, 0.3) 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  box-shadow: 0 12px 40px rgba(42, 107, 85, 0.1);
+}
+
+.section-content h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.section-content p {
+  font-size: 1rem;
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.section-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.section-content li {
+  font-size: 1rem;
+  color: var(--text2);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-content li::before {
+  content: '✓';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* Updated Features Grid */
+.landing-features {
+  padding: 5rem 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--surface2);
+}
+
+.landing-features h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.landing-features > p {
+  font-size: 1.05rem;
+  color: var(--text2);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  line-height: 1.6;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: left;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent);
+}
+
+.feature-icon {
+  width: 52px;
+  height: 52px;
+  background: var(--accent-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+  font-size: 0.95rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.landing-social-proof {
+  background: var(--surface2);
+  padding: 5rem 1.5rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.social-quote {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.social-quote p {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.social-rating {
+  color: var(--accent);
+  font-size: 1.25rem;
+  letter-spacing: 4px;
+  margin-bottom: 1rem;
+}
+
+.social-author {
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+}
+
+.landing-cta {
+  padding: 6rem 1.5rem;
+  text-align: center;
+  background: var(--surface);
+}
+
+.landing-cta h2 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.landing-cta p {
+  font-size: 1.1rem;
+  color: var(--text2);
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--accent);
+  color: white;
+  padding: 1rem 2.5rem;
+  border-radius: 100px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 8px 24px rgba(42, 107, 85, 0.25);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  background: #1f5542;
+  box-shadow: 0 12px 32px rgba(42, 107, 85, 0.35);
+  transform: translateY(-2px);
+}
+
+#landingPageContent { display: none; }
+#landingPageContent.visible { display: block; }
+
+@media (max-width: 768px) {
+  .content-section {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3rem 1.5rem;
+  }
+
+  .content-section.reverse {
+    direction: ltr;
+  }
+
+  .section-image {
+    height: 300px;
+    order: 2;
+  }
+
+  .trust-logos {
+    gap: 1.5rem;
+  }
+
+  .landing-hero {
+    min-height: 500px;
+    padding: 4rem 1.5rem 3rem;
+  }
+}
 </style>
 </head>
 <body data-page="search">
@@ -521,7 +948,7 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
         <h3>Your preferences</h3>
         <p>Choose which safety concerns and notable themes should appear first whenever OkToWatch summarizes a title.</p>
       </div>
-      <button class="prefs-close" onclick="closePrefsPanel()">âœ•</button>
+      <button class="prefs-close" onclick="closePrefsPanel()">✕</button>
     </div>
     <div class="prefs-body">
       <div class="prefs-section-label">Highlight these first</div>
@@ -538,35 +965,144 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
 
 
 <div class="page-wrap" id="pageWrap">
-  <div id="heroSection" style="padding: 1rem 1.5rem">
-    <div class="hero" style="text-align: left;">
-      <h1 style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 1; animation: none;">ðŸ” Search any title</h1>
-      <div class="search-wrap" style="opacity: 1; animation: none; margin: 0;">
-        <div class="suggestions-wrap">
-          <div class="search-box" style="border-color: var(--border);">
-            <input type="text" id="searchInput" placeholder="Search any movie or TV show..." autocomplete="off"/>
-            <button class="search-btn" id="searchBtn" onclick="doSearch()">Check â†’</button>
+  <div id="heroSection" class="saas-hero-container">
+    <div class="saas-hero">
+      <h1>Know <span class="green-gradient">exactly</span> what they're watching.</h1>
+      <p class="subhead">Instantly analyze any movie or TV show for mature content, themes, and age appropriateness before your kids hit play.</p>
+      <div class="search-wrap" style="opacity: 1; animation: none; margin: 0; width: 100%;">
+        <div class="saas-search-container">
+          <div class="suggestions-wrap">
+            <div class="search-box">
+              <input type="text" id="searchInput" placeholder="Search a movie or TV show..." autocomplete="off"/>
+              <button class="search-btn" id="searchBtn" onclick="doSearch()">Analyze Title</button>
+            </div>
+            <div class="suggestions" id="suggestions"></div>
           </div>
-          <div class="suggestions" id="suggestions"></div>
         </div>
+        <div class="quick-row" id="quickRow" style="margin-top: 1.5rem;">
+          <span class="quick-label">Or try:</span>
+          <button class="quick-chip" onclick="heroInput.value='Deadpool & Wolverine'; doSearch()">Deadpool & Wolverine</button>
+          <button class="quick-chip" onclick="heroInput.value='Inside Out 2'; doSearch()">Inside Out 2</button>
+        </div>
+        <div class="recent-searches-row" id="recentSearchesRow"></div>
       </div>
     </div>
   </div>
 
-  <div id="trendingEmptyState" style="padding: 1rem 1.5rem;">
-    <div class="recently-viewed-label" style="font-size:0.75rem; letter-spacing:0.05em; color:var(--muted); margin-bottom:0.75rem; font-weight:700;">SUGGESTED TITLES</div>
-    <div class="recent-grid">
-      <div class="recent-item" onclick="heroInput.value='Deadpool & Wolverine'; doSearch()">
-        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" alt="Deadpool & Wolverine"></div>
-        <div class="recent-info"><div class="recent-title">Deadpool & Wolverine</div><div class="recent-year">2024</div></div>
+  <div id="trendingEmptyState" style="padding: 0; width: 100%;">
+    <div id="landing-saas">
+      <!-- Trust Section -->
+      <div class="trust-section">
+        <div class="trust-section-content">
+          <p class="trust-label">🏆 Trusted by Parents Worldwide</p>
+          <div class="trust-logos">
+            <div class="trust-logo">Common Sense Media</div>
+            <div class="trust-logo">NCMEC</div>
+            <div class="trust-logo">Rated Excellent</div>
+            <div class="trust-logo">Parent-Approved</div>
+          </div>
+        </div>
       </div>
-      <div class="recent-item" onclick="heroInput.value='Inside Out 2'; doSearch()">
-        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" alt="Inside Out 2"></div>
-        <div class="recent-info"><div class="recent-title">Inside Out 2</div><div class="recent-year">2024</div></div>
+
+      <!-- Content Section 1: No More Scrolling -->
+      <div class="content-section">
+        <div class="section-image" style="background: linear-gradient(135deg, var(--accent-light) 0%, rgba(42, 107, 85, 0.08) 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem;">🔍</div>
+        <div class="section-content">
+          <h2 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--text);">No More Scrolling Reviews</h2>
+          <p style="font-size: 1.1rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6;">Instead of spending 20 minutes reading IMDb parent guides and forum discussions, get instant AI-powered breakdowns of violence, language, sexual content, and themes.</p>
+          <ul style="list-style: none; padding: 0;">
+            <li>✅ Violence & Gore Analysis</li>
+            <li>✅ Language & Profanity Breakdown</li>
+            <li>✅ Sexual Content Warnings</li>
+            <li>✅ Drug & Alcohol References</li>
+          </ul>
+        </div>
       </div>
-      <div class="recent-item" onclick="heroInput.value='Bluey'; type='tv'; doSearch()">
-        <div class="recent-poster"><img src="https://image.tmdb.org/t/p/w300/c77zPIfa8W5PZgQ6W08f1sA84Yw.jpg" alt="Bluey"></div>
-        <div class="recent-info"><div class="recent-title">Bluey</div><div class="recent-year">2018</div></div>
+
+      <!-- Content Section 2: Personalized (Reversed) -->
+      <div class="content-section reverse">
+        <div class="section-image" style="background: linear-gradient(135deg, rgba(109, 246, 184, 0.15) 0%, var(--accent-light) 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem;">👦</div>
+        <div class="section-content">
+          <h2 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--text);">Personalized by Age</h2>
+          <p style="font-size: 1.1rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6;">One movie means different things for a 6-year-old vs. a 15-year-old. Our AI adjusts its verdict and warnings based exactly on your child's age and sensitivity profile.</p>
+          <ul style="list-style: none; padding: 0;">
+            <li>✅ Age-Appropriate Verdicts</li>
+            <li>✅ Tailored Safety Concerns</li>
+            <li>✅ Custom Sensitivity Profiles</li>
+            <li>✅ Growth-Based Recommendations</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Content Section 3: Season Analysis -->
+      <div class="content-section">
+        <div class="section-image" style="background: linear-gradient(135deg, var(--accent-light) 0%, rgba(42, 107, 85, 0.08) 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem;">📺</div>
+        <div class="section-content">
+          <h2 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--text);">Season-by-Season Breakdown</h2>
+          <p style="font-size: 1.1rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6;">TV shows evolve. Season 1 of Breaking Bad is very different from Season 5. Get instant analysis for the specific season they want to watch, not a generic average.</p>
+          <ul style="list-style: none; padding: 0;">
+            <li>✅ Per-Season Analysis</li>
+            <li>✅ Trend Analysis Across Seasons</li>
+            <li>✅ Episode-Level Details</li>
+            <li>✅ Intensity Curve Preview</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Features Grid -->
+      <div style="background: var(--surface2); padding: 5rem 1.5rem;">
+        <h2 style="font-size: 2rem; text-align: center; color: var(--text); margin-bottom: 0.5rem;">Why Parents Choose OkToWatch</h2>
+        <p style="text-align: center; color: var(--text2); margin-bottom: 3rem; font-size: 1.1rem;">Everything you need to feel confident about your kids' entertainment</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto;">
+          <div class="feature-card">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.75rem;">Lightning Fast</h3>
+            <p>Get results in seconds, not hours. AI-powered analysis at your fingertips.</p>
+          </div>
+          <div class="feature-card">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🧠</div>
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.75rem;">AI-Powered</h3>
+            <p>Advanced machine learning trained on child development research and parent feedback.</p>
+          </div>
+          <div class="feature-card">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">💚</div>
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.75rem;">Parent-First</h3>
+            <p>Designed by parents, for parents. Your child's safety is our only goal.</p>
+          </div>
+          <div class="feature-card">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.75rem;">Private & Secure</h3>
+            <p>Your family's viewing history is completely private and never shared.</p>
+          </div>
+          <div class="feature-card">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.75rem;">Detailed Reports</h3>
+            <p>Get comprehensive breakdowns with specific timestamps and context for each concern.</p>
+          </div>
+          <div class="feature-card">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+            <h3 style="font-size: 1.25rem; color: var(--text); margin-bottom: 0.75rem;">Always Accurate</h3>
+            <p>Our AI learns from every review to become smarter and more precise over time.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Proof -->
+      <div class="landing-social-proof">
+        <div class="social-quote">
+          <div class="social-rating">★★★★★</div>
+          <p>"I used to spend an hour researching every movie. Now I search once and trust the results. OkToWatch has completely changed how we handle screen time as a family."</p>
+          <div class="social-author">Jessica K. — Parent of 3</div>
+        </div>
+      </div>
+
+      <!-- Final CTA -->
+      <div class="landing-cta">
+        <h2>Start protecting your family today</h2>
+        <p>Search your first movie or show for free. No credit card required. Join thousands of parents making smarter entertainment choices.</p>
+        <button class="cta-button" onclick="setTimeout(() => document.getElementById('searchInput').focus(), 100);">
+          🎬 Analyze a Title Now
+        </button>
       </div>
     </div>
   </div>
@@ -582,15 +1118,15 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
     </div>
   </div>
   <div id="loadingStatus" style="display:none;">
-    <span id="loadingStatusText">Fetching detailsâ€¦</span>
+    <span id="loadingStatusText">Fetching details…</span>
   </div>
 
   <div class="result-card" id="resultCard" style="display:none">
     <div class="poster-hero" id="posterHero">
-      <div class="poster-hero-fallback" id="posterFallback">ðŸŽ¬</div>
+      <div class="poster-hero-fallback" id="posterFallback">🎬</div>
       <div class="poster-overlay"></div>
       <div class="poster-meta">
-        <div class="poster-title" id="movieTitle">â€”</div>
+        <div class="poster-title" id="movieTitle">—</div>
         <div class="poster-tags" id="posterTags"></div>
         <span class="season-badge" id="seasonBadge"></span>
       </div>
@@ -602,7 +1138,7 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
     </div>
     <div class="season-refresh" id="seasonRefresh">
       <div class="season-spinner"></div>
-      <span id="seasonRefreshMsg">Analysing seasonâ€¦</span>
+      <span id="seasonRefreshMsg">Analysing season…</span>
     </div>
     <div class="watch-section" id="watchSection">
       <div class="section-label">Where to Watch</div>
@@ -617,8 +1153,8 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
         <button class="aud-tab" id="audAdults" onclick="setAudience(this,'adults')">Adults only</button>
       </div>
       <div class="verdict-pill verdict-safe" id="verdictPill">
-        <div class="verdict-icon" id="verdictIcon">âœ“</div>
-        <div><div class="verdict-text" id="verdictText">â€”</div><div class="verdict-sub" id="verdictSub">â€”</div></div>
+        <div class="verdict-icon" id="verdictIcon">✓</div>
+        <div><div class="verdict-text" id="verdictText">—</div><div class="verdict-sub" id="verdictSub">—</div></div>
       </div>
     </div>
     <div class="breakdown">
@@ -652,14 +1188,14 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
   </div>
 
   <div class="status-card" id="emptyCard" style="display:none">
-    <div class="status-icon">ðŸ”</div>
+    <div class="status-icon">🔍</div>
     <h3 id="emptyTitle">No results found</h3>
     <p id="emptyMsg">We couldn't find that title. Try a different spelling.</p>
     <div id="didYouMean" style="display:none;margin-bottom:0.75rem;"></div>
     <button class="btn-secondary" onclick="goHome()">Search again</button>
   </div>
   <div class="status-card" id="errorCard" style="display:none">
-    <div class="status-icon">âš ï¸</div>
+    <div class="status-icon">⚠️</div>
     <h3>Something went wrong</h3>
     <p id="errorMsg">Unable to load content breakdown.</p>
     <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
@@ -669,7 +1205,7 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
   </div>
 
   <div class="status-card" id="guestGate" style="display:none">
-    <div class="status-icon" style="background:#e8f0fe;">ðŸ”</div>
+    <div class="status-icon" style="background:#e8f0fe;">🔍</div>
     <h3 style="font-size:1.15rem;margin-bottom:0.5rem;">Free limit reached</h3>
     <p style="margin-bottom:0.25rem;">You've used your 3 free searches for today.</p>
     <p style="font-size:0.8rem;margin-bottom:1.5rem;color:var(--muted);">Resets in <strong id="guestGateTime" style="color:var(--text);">--h --m</strong></p>
@@ -692,9 +1228,9 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
   <div class="compare-search-card" id="compareSearchCard" style="display:none">
     <div class="compare-search-label">Compare with another title</div>
     <div class="compare-search-row">
-      <input type="text" id="compareInput" placeholder="Search a movie or TV showâ€¦" autocomplete="off"
+      <input type="text" id="compareInput" placeholder="Search a movie or TV show…" autocomplete="off"
              oninput="onCompareInput()" onkeydown="if(event.key==='Enter')doCompareSearch()"/>
-      <button id="compareSearchBtn" onclick="doCompareSearch()">Compare â†’</button>
+      <button id="compareSearchBtn" onclick="doCompareSearch()">Compare →</button>
     </div>
     <div class="compare-suggestions">
       <div class="compare-drop" id="compareDrop"></div>
@@ -713,8 +1249,8 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
 <!-- Pro nudge -->
 <div class="pro-nudge" id="proNudge">
   <span id="proNudgeMsg">Upgrade your account to unlock this feature.</span>
-  <a href="/plans" class="pro-nudge-btn">View plans â†’</a>
-  <button class="pro-nudge-close" onclick="document.getElementById('proNudge').classList.remove('show')">âœ•</button>
+  <a href="/plans" class="pro-nudge-btn">View plans →</a>
+  <button class="pro-nudge-close" onclick="document.getElementById('proNudge').classList.remove('show')">✕</button>
 </div>
 
 <!-- Save to list modal -->
@@ -723,19 +1259,19 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
     <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0.75rem auto 0;"></div>
     <div style="padding:1rem 1.5rem 0.85rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
       <h3 style="font-size:1rem;font-weight:700;" id="listModalTitle">Save to list</h3>
-      <button onclick="closeListModal()" style="background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;color:var(--text2);">âœ•</button>
+      <button onclick="closeListModal()" style="background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;color:var(--text2);">✕</button>
     </div>
     <div style="padding:1.1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;">
       <button onclick="saveToList('approved')" class="list-modal-btn" style="background:var(--safe-bg);color:var(--safe);border:1.5px solid rgba(42,125,82,0.2);">
-        <span style="font-size:1.1rem;">âœ…</span>
+        <span style="font-size:1.1rem;">✅</span>
         <div><strong>Approved</strong><span>Mark as safe for your child</span></div>
       </button>
       <button onclick="saveToList('watchlater')" class="list-modal-btn" style="background:var(--warn-bg);color:var(--warn);border:1.5px solid rgba(176,122,16,0.2);">
-        <span style="font-size:1.1rem;">ðŸ•</span>
+        <span style="font-size:1.1rem;">🕐</span>
         <div><strong>Watch Later</strong><span>Review properly before deciding</span></div>
       </button>
       <button onclick="saveToList('blocked')" class="list-modal-btn" style="background:var(--danger-bg);color:var(--danger);border:1.5px solid rgba(192,57,43,0.2);">
-        <span style="font-size:1.1rem;">ðŸš«</span>
+        <span style="font-size:1.1rem;">🚫</span>
         <div><strong>Blocked</strong><span>Mark as off-limits</span></div>
       </button>
     </div>
@@ -743,20 +1279,20 @@ html.embed-mode, body.embed-mode { background: transparent !important; }
 </div>
 
 <script>
-// â”€â”€ PREFERENCES & ONBOARDING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PREFERENCES & ONBOARDING ──────────────────────────────────────────────
 const PREFS_KEY   = 'cv_prefs';
 const ONBOARD_KEY = 'cv_onboarded';
 
 const ALL_CATEGORIES = [
-  { name: 'Sex & Nudity',    icon: 'ðŸ”ž', desc: 'Sexual content, nudity, or adult themes' },
+  { name: 'Sex & Nudity',    icon: '🔞', desc: 'Sexual content, nudity, or adult themes' },
   { name: 'Violence & Gore', icon: 'âš”ï¸', desc: 'Fighting, blood, injury, or death' },
-  { name: 'Language',        icon: 'ðŸ¤¬', desc: 'Profanity, slurs, or strong language' },
-  { name: 'Drugs & Alcohol', icon: 'ðŸ·', desc: 'Drug use, drinking, or substance abuse' },
-  { name: 'Horror & Fear',   icon: 'ðŸ‘»', desc: 'Scary scenes, jump scares, or disturbing imagery' },
-  { name: 'Self-harm',       icon: 'âš ï¸', desc: 'Self-harm, suicide, or eating disorders' },
-  { name: 'Bullying & Cruelty', icon: 'ðŸ’¬', desc: 'Bullying, humiliation, manipulation, or cruelty' },
-  { name: 'LGBTQ+ Themes',   icon: 'ðŸ³ï¸â€ðŸŒˆ', desc: 'Identity, coming out, same-sex relationships, or gender themes' },
-  { name: 'Mature Themes',   icon: 'ðŸ§ ', desc: 'Grief, trauma, intense family conflict, or heavy themes' },
+  { name: 'Language',        icon: '🤬', desc: 'Profanity, slurs, or strong language' },
+  { name: 'Drugs & Alcohol', icon: '🍷', desc: 'Drug use, drinking, or substance abuse' },
+  { name: 'Horror & Fear',   icon: '👻', desc: 'Scary scenes, jump scares, or disturbing imagery' },
+  { name: 'Self-harm',       icon: '⚠️', desc: 'Self-harm, suicide, or eating disorders' },
+  { name: 'Bullying & Cruelty', icon: '💬', desc: 'Bullying, humiliation, manipulation, or cruelty' },
+  { name: 'LGBTQ+ Themes',   icon: '🏳️‍🌈', desc: 'Identity, coming out, same-sex relationships, or gender themes' },
+  { name: 'Mature Themes',   icon: '🧠', desc: 'Grief, trauma, intense family conflict, or heavy themes' },
 ];
 const DEFAULT_ACTIVE = ['Sex & Nudity','Violence & Gore','Language','Drugs & Alcohol','Horror & Fear','Self-harm'];
 const PRESET_CONFIG = {
@@ -764,7 +1300,7 @@ const PRESET_CONFIG = {
     label: 'Balanced',
     desc: 'The main safety topics most parents want surfaced first.',
     active: [...DEFAULT_ACTIVE],
-    helper: 'A practical default for most families. Weâ€™ll prioritize core safety concerns first.'
+    helper: 'A practical default for most families. We’ll prioritize core safety concerns first.'
   },
   cautious: {
     label: 'More cautious',
@@ -905,7 +1441,7 @@ function savePrefsAndClose() {
   showToast('Preferences saved');
 }
 
-// â”€â”€ PREFS-AWARE RENDERING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PREFS-AWARE RENDERING ─────────────────────────────────────────────────
 function getSortedCategories(categories) {
   const p=getPrefs();
   const active=categories.filter(c=>p.active.includes(c.name));
@@ -944,7 +1480,7 @@ function toggleHiddenCats(el) {
   el.querySelector('svg').style.transform=s.classList.contains('open')?'rotate(45deg)':'';
 }
 
-// â”€â”€ CONSTANTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONSTANTS ─────────────────────────────────────────────────────────────
 const API='', TMDB_W500='https://image.tmdb.org/t/p/w500', TMDB_W300='https://image.tmdb.org/t/p/w300', TMDB_LOGO='https://image.tmdb.org/t/p/w45';
 const HISTORY_KEY='cv_search_history', RECENT_KEY='cv_recently_viewed', MAX_HISTORY=3, MAX_RECENT=6;
 const levelClass={none:'level-none',mild:'level-mild',moderate:'level-moderate',strong:'level-strong'};
@@ -952,14 +1488,14 @@ const levelLabel={none:'None',mild:'Mild',moderate:'Moderate',strong:'Strong'};
 const dotClass={none:'dot-none',mild:'dot-mild',moderate:'dot-moderate',strong:'dot-strong'};
 const dotColor={none:'#2a7d52',mild:'#b07a10',moderate:'#b85c1a',strong:'#c0392b'};
 const shortNames={'Sex & Nudity':'Sex','Violence & Gore':'Violence','Language':'Language','Drugs & Alcohol':'Drugs','Horror & Fear':'Horror','Self-harm':'Self-harm','Bullying & Cruelty':'Bullying','LGBTQ+ Themes':'LGBTQ+','Mature Themes':'Themes'};
-const RATING_INFO={'G':'General Audiences â€” suitable for all ages','PG':'Parental Guidance â€” some material may not suit young children','PG-13':'Parents Strongly Cautioned â€” some material may be inappropriate for children under 13','R':'Restricted â€” children under 17 require accompanying adult','NC-17':'Adults only â€” no one 17 and under admitted','TV-Y':'All children','TV-Y7':'Directed to older children (7+)','TV-G':'General audience','TV-PG':'Parental guidance suggested','TV-14':'Parents strongly cautioned â€” not suitable for under 14','TV-MA':'Mature audiences only â€” not suitable for under 17','NR':'Not yet rated'};
+const RATING_INFO={'G':'General Audiences — suitable for all ages','PG':'Parental Guidance — some material may not suit young children','PG-13':'Parents Strongly Cautioned — some material may be inappropriate for children under 13','R':'Restricted — children under 17 require accompanying adult','NC-17':'Adults only — no one 17 and under admitted','TV-Y':'All children','TV-Y7':'Directed to older children (7+)','TV-G':'General audience','TV-PG':'Parental guidance suggested','TV-14':'Parents strongly cautioned — not suitable for under 14','TV-MA':'Mature audiences only — not suitable for under 17','NR':'Not yet rated'};
 
 let currentAudience='young', currentBreakdown=null, lastId=null, lastType=null, lastSearchQuery='';
 let suggestTimer=null, collapsedSuggestTimer=null;
 let currentMovieTitle='', currentYear='', currentPosterUrl='';
 let pageReady=false;
 
-// â”€â”€ LOCAL STORAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── LOCAL STORAGE ─────────────────────────────────────────────────────────
 function getHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY))||[]; } catch { return []; } }
 function saveHistory(t) { let h=getHistory().filter(x=>x.toLowerCase()!==t.toLowerCase()); h.unshift(t); h=h.slice(0,MAX_HISTORY); try{localStorage.setItem(HISTORY_KEY,JSON.stringify(h));}catch{} }
 function removeFromHistory(t) { try{localStorage.setItem(HISTORY_KEY,JSON.stringify(getHistory().filter(x=>x!==t)));}catch{} }
@@ -969,7 +1505,7 @@ function saveRecentlyViewed(item) { let r=getRecentlyViewed().filter(x=>x.id!==i
 function getLists() { try{return JSON.parse(localStorage.getItem('cv_lists'))||[];}catch{return[];} }
 function saveLists(l) { try{localStorage.setItem('cv_lists',JSON.stringify(l));}catch{} }
 
-// â”€â”€ D1 SYNC (Pro users) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── D1 SYNC (Pro users) ───────────────────────────────────────────────────
 // In-memory caches so badge checks & recently-viewed are instant after load.
 let _d1Lists   = null;  // null = not loaded yet; [] = loaded, empty
 let _d1Recent  = null;  // recent history from D1
@@ -1000,7 +1536,7 @@ function getEffectiveRecent() {
   return ((window.CV?.isPro || window.CV?.isFamily) && _d1Recent !== null) ? _d1Recent : getRecentlyViewed();
 }
 
-// Listen for auth â€” kick off D1 sync as soon as we know the user is Pro.
+// Listen for auth — kick off D1 sync as soon as we know the user is Pro.
 document.addEventListener('cv:auth', ({ detail }) => {
   renderRecentSearchesCarousel();
   if (detail.isPro || detail.isFamily) {
@@ -1008,7 +1544,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   }
 });
 
-// â”€â”€ NAV STATE (collapsed nav removed â€” using dashboard shell nav) â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NAV STATE (collapsed nav removed — using dashboard shell nav) ────────
 function goHome() {
   showHeroState(); heroInput.value='';
   window.scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>heroInput.focus(),350);
@@ -1016,15 +1552,15 @@ function goHome() {
 function getChildAge() { return null; }
 function setAudience(btn,aud) { document.querySelectorAll('.aud-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentAudience=aud; if(currentBreakdown) renderVerdict(); }
 
-// â”€â”€ DROPDOWN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DROPDOWN ──────────────────────────────────────────────────────────────
 function renderDropdown(boxId,history) {
   const box=document.getElementById(boxId);
   if(!history.length){box.classList.remove('visible');return;}
   box.innerHTML=`<div class="drop-section-label">Recent searches<span class="drop-clear-all" onclick="onClearAll('${boxId}')">Clear all</span></div>
     ${history.map(t=>`<div class="suggestion-item" onclick="onHistoryClick('${t.replace(/'/g,"\\'")}')">
-      <div class="sug-icon history-icon">ðŸ•</div>
+      <div class="sug-icon history-icon">🕐</div>
       <div style="flex:1;min-width:0"><div class="sug-title">${t}</div></div>
-      <span class="sug-remove" onclick="event.stopPropagation();onRemoveHistory('${t.replace(/'/g,"\\'")}','${boxId}')">âœ•</span>
+      <span class="sug-remove" onclick="event.stopPropagation();onRemoveHistory('${t.replace(/'/g,"\\'")}','${boxId}')">✕</span>
     </div>`).join('')}`;
   box.classList.add('visible');
 }
@@ -1042,10 +1578,10 @@ async function fetchSuggestions(q,boxId) {
     box.innerHTML=`<div class="drop-section-label">Results</div>
       ${results.map(r=>{
         const title=r.title||r.name||'',year=(r.release_date||r.first_air_date||'').slice(0,4),type=r.media_type==='tv'?'TV Series':'Movie';
-        const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" alt="">`:'ðŸŽ¬';
+        const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" alt="">`:'🎬';
         return `<div class="suggestion-item" onclick="selectSuggestion(${r.id},'${r.media_type}','${title.replace(/'/g,"\\'")}')">
           <div class="sug-icon">${poster}</div>
-          <div><div class="sug-title">${title}</div><div class="sug-meta">${[year,type].filter(Boolean).join(' Â· ')}</div></div>
+          <div><div class="sug-title">${title}</div><div class="sug-meta">${[year,type].filter(Boolean).join(' · ')}</div></div>
         </div>`;
       }).join('')}`;
     box.classList.add('visible');
@@ -1053,7 +1589,7 @@ async function fetchSuggestions(q,boxId) {
 }
 
 const heroInput=document.getElementById('searchInput');
-const collInput=null; // collapsed nav removed â€” dashboard shell nav is used instead
+const collInput=null; // collapsed nav removed — dashboard shell nav is used instead
 
 heroInput.addEventListener('focus',()=>{ if(pageReady&&!heroInput.value.trim()) renderDropdown('suggestions',getHistory()); });
 // Render carousel immediately
@@ -1068,7 +1604,7 @@ function hideCollapsedSuggestions() { /* no-op: collapsed nav removed */ }
 function selectSuggestion(id,type,title) { heroInput.value=title; hideSuggestions(); runAnalysis(id,type); }
 function quickSearch(title) { heroInput.value=title; doSearch(); }
 
-// â”€â”€ Recent searches carousel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Recent searches carousel ───────────────────────────────────────────────
 function renderRecentSearchesCarousel() {
   const recent = getEffectiveRecent().slice(0, 4);
   const row    = document.getElementById('recentSearchesRow');
@@ -1081,7 +1617,7 @@ function renderRecentSearchesCarousel() {
       const title  = item.title || item.name || '';
       const poster = item.poster
         ? `<img class="rsc-poster" src="https://image.tmdb.org/t/p/w92${item.poster}" alt="">`
-        : '<span style="font-size:0.8rem;flex-shrink:0;">ðŸŽ¬</span>';
+        : '<span style="font-size:0.8rem;flex-shrink:0;">🎬</span>';
       return `<button class="recent-search-chip"
         onclick="runAnalysis(${item.id},'${item.media_type}')">
         ${poster}
@@ -1140,11 +1676,11 @@ function showDisambig(results) {
       <div class="disambig-header"><h3>Multiple matches found</h3><p>Which one did you mean?</p></div>
       ${results.map(r=>{
         const title=r.title||r.name||'',year=(r.release_date||r.first_air_date||'').slice(0,4),type=r.media_type==='tv'?'TV Series':'Movie';
-        const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" alt="">`:'ðŸŽ¬';
+        const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" alt="">`:'🎬';
         return `<div class="disambig-item" onclick="onDisambigSelect(${r.id},'${r.media_type}','${title.replace(/'/g,"\\'")}')">
           <div class="disambig-poster">${poster}</div>
-          <div><div class="disambig-title">${title}</div><div class="disambig-meta">${[year,type].filter(Boolean).join(' Â· ')}</div></div>
-          <div class="disambig-arrow">â€º</div>
+          <div><div class="disambig-title">${title}</div><div class="disambig-meta">${[year,type].filter(Boolean).join(' · ')}</div></div>
+          <div class="disambig-arrow">›</div>
         </div>`;
       }).join('')}
     </div>`;
@@ -1155,7 +1691,7 @@ async function runAnalysis(id,type,isRetry=false) {
   lastId=id; lastType=type;
   showResultState({showNav:false}); showSection(); showSkeleton();
   document.getElementById('disambigCard').style.display='none';
-  setLoadingStatus('Fetching detailsâ€¦');
+  setLoadingStatus('Fetching details…');
   try {
     const endpoint=type==='tv'?'tv':'movie';
     const [details,releases,watchProviders]=await Promise.all([
@@ -1181,7 +1717,7 @@ async function runAnalysis(id,type,isRetry=false) {
 
     currentMovieTitle=title; currentYear=year; currentPosterUrl=backdrop||poster||'';
     saveHistory(title); heroInput.value=title;
-    setLoadingStatus('Analysing contentâ€¦');
+    setLoadingStatus('Analysing content…');
     const breakdown=await getAIBreakdown({tmdb_id:id,media_type:type,season:null,title,year,overview,genres,certRating,keywords,type,childAge});
     clearLoadingStatus(); hideSkeleton(); currentBreakdown=breakdown;
 
@@ -1206,7 +1742,7 @@ async function runAnalysis(id,type,isRetry=false) {
     if(window.CV?.isPro || window.CV?.isFamily) {
       fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tmdb_id:id,media_type:type,title,year:year||null,poster:poster||null,profile_id:activeProfile})})
         .then(r=>r.json()).then(saved=>{
-          // Keep D1 recent cache in sync â€” bump to top
+          // Keep D1 recent cache in sync — bump to top
           if(_d1Recent !== null) {
             _d1Recent = _d1Recent.filter(h=>!(h.tmdb_id===id && h.media_type===type));
             _d1Recent.unshift(saved);
@@ -1228,7 +1764,7 @@ async function runAnalysis(id,type,isRetry=false) {
       return;
     }
     if(!isRetry) {
-      setLoadingStatus('Retryingâ€¦');
+      setLoadingStatus('Retrying…');
       setTimeout(async()=>{ clearLoadingStatus(); try{ await runAnalysis(id,type,true); }catch(e2){ showError('Analysis failed after retry. Please try again shortly.'); } },1500);
     } else { showError('Analysis failed. This sometimes happens with very new or obscure titles.'); }
     console.error(e);
@@ -1272,7 +1808,7 @@ function parseJSON(text) {
   return parsed;
 }
 
-// â”€â”€ SEASON SELECTOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SEASON SELECTOR ───────────────────────────────────────────────────────
 let currentShowId=null, currentShowSeasons=[], currentSeason=null;
 let currentSeasonBreakdown=null, currentRenderData={}, activeBreakdown=null;
 
@@ -1287,12 +1823,12 @@ async function initSeasonSelector(id,details) {
       <button class="season-pill active" style="cursor:default;">All seasons</button>
       <button class="season-pill season-pill-lock" onclick="showProNudge('Season-level analysis is available with Pro or Family plans.')">
         <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" style="opacity:0.7;flex-shrink:0"><path d="M12 7V5A4 4 0 0 0 4 5v2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1zM6 5a2 2 0 1 1 4 0v2H6V5z"/></svg>
-        ${seasons.length} seasons â€” Pro
+        ${seasons.length} seasons — Pro
       </button>`;
     seasonSection.style.display='block'; return;
   }
   pillsEl.innerHTML=`<button class="season-pill active" id="spAll" onclick="selectSeason(null)">All seasons</button>
-    ${seasons.map(s=>`<button class="season-pill" id="sp${s.season_number}" onclick="selectSeason(${s.season_number})">S${s.season_number}${s.name&&s.name!=='Season '+s.season_number?' Â· '+s.name:''}</button>`).join('')}`;
+    ${seasons.map(s=>`<button class="season-pill" id="sp${s.season_number}" onclick="selectSeason(${s.season_number})">S${s.season_number}${s.name&&s.name!=='Season '+s.season_number?' · '+s.name:''}</button>`).join('')}`;
   seasonSection.style.display='block';
 }
 
@@ -1320,7 +1856,7 @@ async function selectSeason(seasonNum) {
 async function analyseSeasonContent(showId,seasonNum) {
   const refreshEl=document.getElementById('seasonRefresh'), msgEl=document.getElementById('seasonRefreshMsg');
   document.querySelectorAll('.season-pill').forEach(p=>p.classList.add('loading'));
-  refreshEl.classList.add('visible'); msgEl.textContent=`Analysing Season ${seasonNum}â€¦`;
+  refreshEl.classList.add('visible'); msgEl.textContent=`Analysing Season ${seasonNum}…`;
   try {
     const seasonData=await fetch(`${API}/api/tmdb/tv/${showId}/season/${seasonNum}`).then(r=>r.json());
     const seasonTitle=seasonData.name||`Season ${seasonNum}`, seasonOverview=seasonData.overview||'';
@@ -1330,7 +1866,7 @@ async function analyseSeasonContent(showId,seasonNum) {
     const seasonContext=[seasonOverview,episodeSummaries?`Episodes: ${episodeSummaries}`:''].filter(Boolean).join(' ');
     const {title:showTitle,certRating,genres,keywords}=currentRenderData;
     const childAge=getChildAge();
-    const breakdown=await getAIBreakdown({tmdb_id:currentShowId,media_type:'tv',season:seasonNum,title:`${showTitle} â€” ${seasonTitle}`,year:airYear||currentYear,overview:seasonContext||`Season ${seasonNum} of ${showTitle}`,genres,certRating,keywords,type:'tv',childAge,seasonContext:`This analysis is specifically for Season ${seasonNum} of ${showTitle}, not the whole series.`});
+    const breakdown=await getAIBreakdown({tmdb_id:currentShowId,media_type:'tv',season:seasonNum,title:`${showTitle} — ${seasonTitle}`,year:airYear||currentYear,overview:seasonContext||`Season ${seasonNum} of ${showTitle}`,genres,certRating,keywords,type:'tv',childAge,seasonContext:`This analysis is specifically for Season ${seasonNum} of ${showTitle}, not the whole series.`});
     refreshEl.classList.remove('visible'); document.querySelectorAll('.season-pill').forEach(p=>p.classList.remove('loading'));
     const ss=document.getElementById('movieSummaryStrip');
     if(breakdown.summary){ss.textContent=breakdown.summary;ss.style.display='block';}
@@ -1367,7 +1903,7 @@ function renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flat
 function renderVerdict() {
   const bd=activeBreakdown||currentBreakdown, v=bd?.verdicts[currentAudience]; if(!v) return;
   const el=document.getElementById('verdictPill'); el.className='verdict-pill verdict-'+v.tier;
-  document.getElementById('verdictIcon').textContent=v.tier==='safe'?'âœ“':v.tier==='warn'?'!':'âœ•';
+  document.getElementById('verdictIcon').textContent=v.tier==='safe'?'✓':v.tier==='warn'?'!':'✕';
   document.getElementById('verdictText').textContent=v.text; document.getElementById('verdictSub').textContent=v.sub;
 }
 
@@ -1384,7 +1920,7 @@ function renderRecentlyViewed(currentId) {
     // Normalise field names between D1 (tmdb_id/media_type) and localStorage (id/type)
     const itemId   = r.tmdb_id   ?? r.id;
     const itemType = r.media_type ?? r.type;
-    const posterHtml=r.poster?`<img src="${r.poster}" alt="${r.title}" loading="lazy">`:`<div class="recent-poster-fallback">ðŸŽ¬</div>`;
+    const posterHtml=r.poster?`<img src="${r.poster}" alt="${r.title}" loading="lazy">`:`<div class="recent-poster-fallback">🎬</div>`;
     return `<div class="recent-item" onclick="runAnalysis(${itemId},'${itemType}')">
       <div class="recent-poster">${posterHtml}</div>
       <div class="recent-info"><div class="recent-title">${r.title}</div><div class="recent-year">${r.year||''}</div></div>
@@ -1393,9 +1929,9 @@ function renderRecentlyViewed(currentId) {
   wrap.style.display='block';
 }
 
-// â”€â”€ SHARE IMAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SHARE IMAGE ───────────────────────────────────────────────────────────
 async function shareImage() {
-  showToast('Generating imageâ€¦');
+  showToast('Generating image…');
   const canvas=document.getElementById('shareCanvas'), ctx=canvas.getContext('2d'), W=600,H=400;
   canvas.width=W; canvas.height=H;
   ctx.fillStyle='#1a2420'; ctx.fillRect(0,0,W,H);
@@ -1407,13 +1943,13 @@ async function shareImage() {
   ctx.fillStyle='white'; ctx.font=`bold ${currentMovieTitle.length>20?28:36}px DM Sans,sans-serif`; ctx.fillText(currentMovieTitle,28,105);
   ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='14px DM Sans,sans-serif'; ctx.fillText(currentYear,28,128);
   if(currentBreakdown){ const v=currentBreakdown.verdicts[currentAudience]; if(v){ const tc={safe:'#2a7d52',warn:'#b07a10',danger:'#c0392b'}[v.tier]; ctx.fillStyle=tc+'33'; roundRect(ctx,24,145,W-48,54,10); ctx.fill(); ctx.strokeStyle=tc; ctx.lineWidth=1.5; roundRect(ctx,24,145,W-48,54,10); ctx.stroke(); ctx.fillStyle=tc; ctx.font='bold 15px DM Sans,sans-serif'; ctx.fillText(v.text,42,168); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='12px DM Sans,sans-serif'; ctx.fillText(v.sub,42,188); } const cats=currentBreakdown.categories; const dotW=(W-48)/cats.length; cats.forEach((c,i)=>{ const x=24+i*dotW+dotW/2,y=240; ctx.beginPath(); ctx.arc(x,y-6,6,0,Math.PI*2); ctx.fillStyle=dotColor[c.level]; ctx.fill(); ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center'; ctx.fillText((shortNames[c.name]||c.name).toUpperCase(),x,y+10); ctx.textAlign='left'; }); }
-  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px DM Sans,sans-serif'; ctx.fillText('oktowatch.com â€” Know before your kids watch it',28,H-18);
-  canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'oktowatch.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch â€” ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
+  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px DM Sans,sans-serif'; ctx.fillText('oktowatch.com — Know before your kids watch it',28,H-18);
+  canvas.toBlob(async blob=>{ try{ if(navigator.share&&navigator.canShare({files:[new File([blob],'oktowatch.png',{type:'image/png'})]})) await navigator.share({files:[new File([blob],'oktowatch.png',{type:'image/png'})],title:`OkToWatch — ${currentMovieTitle}`}); else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`oktowatch-${currentMovieTitle.replace(/\s+/g,'-').toLowerCase()}.png`; a.click(); showToast('Image saved!'); } }catch(e){showToast('Image saved!');} },'image/png');
 }
 function loadImage(src) { return new Promise((res,rej)=>{ const img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>res(img); img.onerror=rej; img.src=src; }); }
 function roundRect(ctx,x,y,w,h,r) { ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
 
-// â”€â”€ SHARE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SHARE ─────────────────────────────────────────────────────────────────
 function getShareUrl() { if(lastId&&lastType){ const base=`${location.origin}/share.html?id=${lastId}&type=${lastType}`; return currentSeason?base+`&season=${currentSeason}`:base; } return `${location.origin}/share.html?q=${encodeURIComponent(currentMovieTitle)}`; }
 function copyShareLink() { navigator.clipboard.writeText(getShareUrl()).then(()=>showToast('Share link copied!')); }
 function shareWhatsApp() { const url=getShareUrl(); window.open(`https://wa.me/?text=${encodeURIComponent(`OkToWatch breakdown for "${currentMovieTitle}": ${url}`)}`,'_blank'); }
@@ -1423,7 +1959,7 @@ let proNudgeTimer=null;
 function showProNudge(msg) { const el=document.getElementById('proNudge'); document.getElementById('proNudgeMsg').textContent=msg; el.classList.add('show'); clearTimeout(proNudgeTimer); proNudgeTimer=setTimeout(()=>el.classList.remove('show'),4000); }
 
 function showResultState({showNav=true}={}) {
-  // Keep the persistent dashboard nav visible â€” only hide hero/empty-state
+  // Keep the persistent dashboard nav visible — only hide hero/empty-state
   document.getElementById('heroSection').classList.add('hidden');
   document.getElementById('trendingEmptyState').style.display='none';
 }
@@ -1433,7 +1969,7 @@ function showHeroState() {
 }
 function showSection() { document.getElementById('resultSection').style.display='block'; }
 function showSkeleton() { document.getElementById('skeletonCard').style.display='block'; clearLoadingStatus(); document.getElementById('resultCard').style.display='none'; document.getElementById('emptyCard').style.display='none'; document.getElementById('errorCard').style.display='none'; document.getElementById('recentlyViewed').style.display='none'; const sb=document.getElementById('searchBtn'); if(sb){sb.disabled=true;sb.textContent='...';} }
-function hideSkeleton() { document.getElementById('skeletonCard').style.display='none'; const sb=document.getElementById('searchBtn'); if(sb){sb.disabled=false;sb.textContent='Check â†’';} }
+function hideSkeleton() { document.getElementById('skeletonCard').style.display='none'; const sb=document.getElementById('searchBtn'); if(sb){sb.disabled=false;sb.textContent='Check →';} }
 function showError(msg) { document.getElementById('errorCard').style.display='block'; document.getElementById('errorMsg').textContent=msg; }
 
 function showGuestGate(resetsAt) {
@@ -1454,7 +1990,7 @@ function showGuestGate(resetsAt) {
 // Mobile tooltip
 document.addEventListener('click',e=>{ const tag=e.target.closest('.poster-tag[data-tooltip]'); if(tag){ document.querySelectorAll('.poster-tag.tooltip-open').forEach(t=>{if(t!==tag)t.classList.remove('tooltip-open');}); tag.classList.toggle('tooltip-open'); e.stopPropagation(); }else{ document.querySelectorAll('.poster-tag.tooltip-open').forEach(t=>t.classList.remove('tooltip-open')); } });
 
-// â”€â”€ COMPARE MODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── COMPARE MODE ──────────────────────────────────────────────────────────
 let compareData=null, compareTimer=null;
 
 function openCompare() {
@@ -1473,19 +2009,19 @@ async function fetchCompareSuggestions(q) {
     const res=await fetch(`${API}/api/tmdb/search/multi?query=${encodeURIComponent(q)}&page=1`);
     const data=await res.json(); const results=(data.results||[]).filter(r=>r.media_type==='movie'||r.media_type==='tv').slice(0,5);
     const drop=document.getElementById('compareDrop'); if(!results.length){drop.classList.remove('visible');return;}
-    drop.innerHTML=results.map(r=>{ const title=r.title||r.name||'',year=(r.release_date||r.first_air_date||'').slice(0,4),type=r.media_type==='tv'?'TV':'Movie'; const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" style="width:32px;min-width:32px;height:44px;border-radius:5px;object-fit:cover;" alt="">`:'<div style="width:32px;min-width:32px;height:44px;border-radius:5px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">ðŸŽ¬</div>'; return `<div class="suggestion-item" onclick="selectCompareTitle(${r.id},'${r.media_type}','${title.replace(/'/g,"\\'")}')"><div class="sug-icon">${poster}</div><div><div class="sug-title">${title}</div><div class="sug-meta">${[year,type].filter(Boolean).join(' Â· ')}</div></div></div>`; }).join('');
+    drop.innerHTML=results.map(r=>{ const title=r.title||r.name||'',year=(r.release_date||r.first_air_date||'').slice(0,4),type=r.media_type==='tv'?'TV':'Movie'; const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" style="width:32px;min-width:32px;height:44px;border-radius:5px;object-fit:cover;" alt="">`:'<div style="width:32px;min-width:32px;height:44px;border-radius:5px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">🎬</div>'; return `<div class="suggestion-item" onclick="selectCompareTitle(${r.id},'${r.media_type}','${title.replace(/'/g,"\\'")}')"><div class="sug-icon">${poster}</div><div><div class="sug-title">${title}</div><div class="sug-meta">${[year,type].filter(Boolean).join(' · ')}</div></div></div>`; }).join('');
     drop.classList.add('visible');
   } catch(e){}
 }
 async function doCompareSearch() {
   const q=document.getElementById('compareInput').value.trim(); if(!q) return;
-  document.getElementById('compareDrop').classList.remove('visible'); document.getElementById('compareSearchBtn').disabled=true; document.getElementById('compareSearchBtn').textContent='â€¦';
+  document.getElementById('compareDrop').classList.remove('visible'); document.getElementById('compareSearchBtn').disabled=true; document.getElementById('compareSearchBtn').textContent='…';
   try { const res=await fetch(`${API}/api/tmdb/search/multi?query=${encodeURIComponent(q)}&page=1`); const data=await res.json(); const result=(data.results||[]).find(r=>r.media_type==='movie'||r.media_type==='tv'); if(!result){showToast('No results found.');return;} await selectCompareTitle(result.id,result.media_type,result.title||result.name||''); }
   catch(e){showToast('Search failed.');}
-  finally{document.getElementById('compareSearchBtn').disabled=false;document.getElementById('compareSearchBtn').textContent='Compare â†’';}
+  finally{document.getElementById('compareSearchBtn').disabled=false;document.getElementById('compareSearchBtn').textContent='Compare →';}
 }
 async function selectCompareTitle(id,type,title) {
-  document.getElementById('compareDrop').classList.remove('visible'); document.getElementById('compareInput').value=title; document.getElementById('compareSearchBtn').disabled=true; document.getElementById('compareSearchBtn').textContent='â€¦';
+  document.getElementById('compareDrop').classList.remove('visible'); document.getElementById('compareInput').value=title; document.getElementById('compareSearchBtn').disabled=true; document.getElementById('compareSearchBtn').textContent='…';
   const wrap=document.getElementById('compareResultWrap'); wrap.style.display='block';
   wrap.innerHTML=`<div class="compare-card-label"><span>Comparison</span></div><div class="skeleton-card"><div class="skel skel-hero"></div><div class="skel-body"><div class="skel skel-title"></div><div class="skel skel-meta"></div><div class="skel skel-badge"></div><div class="skel skel-row"></div><div class="skel skel-row short"></div></div></div>`;
   try {
@@ -1498,18 +2034,18 @@ async function selectCompareTitle(id,type,title) {
     compareData={id,type,title:compareTitle,year,certRating,genres,backdrop,poster,breakdown};
     renderCompareResult(); renderCompareHeader();
   } catch(e) { wrap.innerHTML=`<div style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem;">Could not load comparison. <a href="#" onclick="openCompare()" style="color:var(--accent);">Try again</a></div>`; console.error(e); }
-  finally { document.getElementById('compareSearchBtn').disabled=false; document.getElementById('compareSearchBtn').textContent='Compare â†’'; }
+  finally { document.getElementById('compareSearchBtn').disabled=false; document.getElementById('compareSearchBtn').textContent='Compare →'; }
 }
 function renderCompareResult() {
   if(!compareData) return;
   const {title,year,certRating,genres,backdrop,poster,breakdown}=compareData;
   const prefs=getPrefs(), {active,inactive}=getSortedCategories(breakdown.categories);
-  const heroImg=backdrop||poster, heroHtml=heroImg?`<img src="${heroImg}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0.85;">`:`<div class="poster-hero-fallback">ðŸŽ¬</div>`;
+  const heroImg=backdrop||poster, heroHtml=heroImg?`<img src="${heroImg}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0.85;">`:`<div class="poster-hero-fallback">🎬</div>`;
   const tags=[year,certRating||'NR',genres.split(',')[0]].filter(Boolean);
   const tagsHtml=tags.map((t,i)=>{ const tooltip=i===1?(RATING_INFO[t]||null):null; return `<span class="poster-tag"${tooltip?` data-tooltip="${tooltip}"`:''}>${t}</span>`; }).join('');
   const glanceHtml=active.map(c=>`<div class="glance-item"><div class="glance-dot ${dotClass[c.level]}"></div><div class="glance-label">${shortNames[c.name]||c.name}</div></div>`).join('');
   const v=breakdown.verdicts[currentAudience]||breakdown.verdicts['young'];
-  const verdictHtml=v?`<div class="verdict-pill verdict-${v.tier}" style="margin:0"><div class="verdict-icon">${v.tier==='safe'?'âœ“':v.tier==='warn'?'!':'âœ•'}</div><div><div class="verdict-text">${v.text}</div><div class="verdict-sub">${v.sub}</div></div></div>`:'';
+  const verdictHtml=v?`<div class="verdict-pill verdict-${v.tier}" style="margin:0"><div class="verdict-icon">${v.tier==='safe'?'✓':v.tier==='warn'?'!':'✕'}</div><div><div class="verdict-text">${v.text}</div><div class="verdict-sub">${v.sub}</div></div></div>`:'';
   let catsHtml=active.map(c=>{ let dc=''; if(currentBreakdown){ const p=currentBreakdown.categories.find(x=>x.name===c.name); if(p){const ls=['none','mild','moderate','strong'],pi=ls.indexOf(p.level),ci=ls.indexOf(c.level); if(ci>pi) dc=' compare-worse'; else if(ci<pi) dc=' compare-better'; } } return `<div class="cat-item${dc}"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`; }).join('');
   if(inactive.length) catsHtml+=`<div class="hidden-cats-toggle" onclick="toggleHiddenCats(this)"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>${inactive.length} more</div><div class="hidden-cats-section">${inactive.map(c=>`<div class="cat-item deprioritised"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`).join('')}</div>`;
   const summaryHtml=breakdown.summary?`<div class="movie-summary-strip">${breakdown.summary}</div>`:'';
@@ -1521,12 +2057,12 @@ function renderCompareHeader() {
   const header=document.getElementById('compareHeader'), card=document.getElementById('compareSearchCard');
   const v1=currentBreakdown.verdicts[currentAudience]||currentBreakdown.verdicts['young'], v2=compareData.breakdown.verdicts[currentAudience]||compareData.breakdown.verdicts['young'];
   const ts={safe:2,warn:1,danger:0}, s1=ts[v1?.tier]??0, s2=ts[v2?.tier]??0, winner=s1>s2?1:s2>s1?2:0;
-  header.innerHTML=`<div class="compare-header"><div class="compare-header-label">Comparing</div><div class="compare-header-row"><div class="compare-title-chip ${winner===1?'winner':''}">${winner===1?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${currentMovieTitle}</div>${v1?`<span class="compare-chip-verdict ${v1.tier}">${v1.text}</span>`:''}</div><div class="compare-vs">VS</div><div class="compare-title-chip ${winner===2?'winner':''}">${winner===2?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${compareData.title}</div>${v2?`<span class="compare-chip-verdict ${v2.tier}">${v2.text}</span>`:''}</div></div><button class="compare-close-btn" onclick="closeCompare()">âœ• Close comparison</button></div>`;
+  header.innerHTML=`<div class="compare-header"><div class="compare-header-label">Comparing</div><div class="compare-header-row"><div class="compare-title-chip ${winner===1?'winner':''}">${winner===1?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${currentMovieTitle}</div>${v1?`<span class="compare-chip-verdict ${v1.tier}">${v1.text}</span>`:''}</div><div class="compare-vs">VS</div><div class="compare-title-chip ${winner===2?'winner':''}">${winner===2?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${compareData.title}</div>${v2?`<span class="compare-chip-verdict ${v2.tier}">${v2.text}</span>`:''}</div></div><button class="compare-close-btn" onclick="closeCompare()">✕ Close comparison</button></div>`;
   header.style.display='block'; card.style.display='none';
 }
 document.addEventListener('click',e=>{ if(!e.target.closest('#compareSection')) document.getElementById('compareDrop')?.classList.remove('visible'); });
 
-// â”€â”€ SAVE TO LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SAVE TO LIST ──────────────────────────────────────────────────────────
 function openListModal() {
   if(!lastId) return;
   document.getElementById('listModalTitle').textContent=`Save "${currentMovieTitle}"`;
@@ -1535,11 +2071,11 @@ function openListModal() {
 function closeListModal() { document.getElementById('listModal').style.display='none'; document.body.style.overflow=''; }
 async function saveToList(listType) {
   const activeProfile=sessionStorage.getItem('cv_active_profile')||null;
-  const labels={approved:'Approved âœ“',blocked:'Blocked âœ•',watchlater:'Saved for later ðŸ•'};
+  const labels={approved:'Approved ✓',blocked:'Blocked ✕',watchlater:'Saved for later 🕐'};
   if(window.CV?.isPro || window.CV?.isFamily) {
     try {
       const saved = await fetch('/api/lists',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tmdb_id:lastId,media_type:lastType,title:currentMovieTitle,year:currentYear||null,poster:currentPosterUrl||null,list_type:listType,profile_id:activeProfile})}).then(r=>r.json());
-      // Keep D1 cache in sync â€” replace any existing entry for this title
+      // Keep D1 cache in sync — replace any existing entry for this title
       if(_d1Lists !== null) {
         _d1Lists = _d1Lists.filter(l=>!(l.tmdb_id===lastId && l.media_type===lastType));
         _d1Lists.unshift(saved);
@@ -1555,7 +2091,7 @@ async function saveToList(listType) {
 function updateListBadge() { const badge=document.getElementById('listBadge'); if(!badge||!lastId) return; const inList=getEffectiveLists().some(l=>l.tmdb_id===lastId); badge.classList.toggle('visible',inList); }
 document.getElementById('listModal').addEventListener('click',e=>{ if(e.target===document.getElementById('listModal')) closeListModal(); });
 
-// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── INIT ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
   heroInput.blur();
   setTimeout(()=>{ pageReady=true; },500);
@@ -1589,7 +2125,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 <script>
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('/sw.js').then(r=>console.log('SW registered')).catch(e=>console.log('SW failed:',e)); }); }
 </script>
-<script src="/js/auth.js?v=20260403"></script>
+<script src="/js/auth.js?v=20260406"></script>
 </body>
 </html>
 

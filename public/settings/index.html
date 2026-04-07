@@ -14,27 +14,8 @@
 
 <div id="nav-root"></div>
 
-<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 h-16">
-    <div class="flex justify-between items-center h-full px-8 max-w-[1440px] mx-auto">
-        <div class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter brand-font">OkToWatch</div>
-        <nav class="hidden md:flex items-center space-x-8 font-label">
-            <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/dashboard">Dashboard</a>
-            <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/lists">Lists</a>
-            <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/discover">Discover</a>
-            <a class="font-headline font-bold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="/history">History</a>
-        </nav>
-        <div class="flex items-center gap-4">
-            <button class="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all rounded-full" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">
-                <span class="material-symbols-outlined" data-icon="search">search</span>
-            </button>
-            <button class="p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all rounded-full" onclick="window.location.href='/settings'">
-                <span class="material-symbols-outlined text-slate-900 dark:text-white pb-1" data-icon="account_circle">account_circle</span>
-            </button>
-        </div>
-    </div>
-</header>
 
-<main class="max-w-[1440px] mx-auto pt-24 pb-16 px-8 flex flex-col md:flex-row gap-12">
+<main class="max-w-[1440px] mx-auto pt-16 pb-16 px-8 flex flex-col md:flex-row gap-12">
     <!-- SideNavBar -->
     <aside class="w-full md:w-64 shrink-0">
         <div class="px-3 mb-3">
@@ -119,7 +100,7 @@
                         </div>
                         <div class="text-right">
                             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Next Billing Date</p>
-                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/80">â€”</p>
+                            <p id="billRenewalText" class="text-lg font-semibold brand-font text-on-surface-variant/80">—</p>
                         </div>
                     </div>
                     <div class="bg-surface-container-lowest p-6 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4 border border-outline-variant/10">
@@ -335,7 +316,7 @@
     <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl mx-4 border border-outline-variant/10">
         <div class="flex justify-between items-center border-b border-surface-variant pb-3 mb-4">
             <h3 class="font-headline font-bold text-lg">Add New Profile</h3>
-            <button onclick="closeAddModal()" class="text-outline hover:text-on-surface">âœ•</button>
+            <button onclick="closeAddModal()" class="text-outline hover:text-on-surface">✕</button>
         </div>
         <div class="space-y-4">
             <div>
@@ -364,9 +345,11 @@
     </div>
 </div>
 
-<script src="/js/auth.js?v=20260405"></script>
+<div id="footer-root"></div>
+
+<script src="/js/auth.js?v=20260406"></script>
 <script>
-    // â”€â”€ NAVIGATION & TAB STATE â”€â”€
+    // ── NAVIGATION & TAB STATE ──
     const SECTIONS = ['profile', 'subscription', 'notifications', 'security'];
     
     function selectNav(navId) {
@@ -415,7 +398,7 @@
         }
     }, {passive:true});
 
-    // â”€â”€ GENERAL UTILS â”€â”€
+    // ── GENERAL UTILS ──
     function showToast(msg, dur = 2500) {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -430,7 +413,7 @@
 
     let globalUser = null;
 
-    // â”€â”€ BIND TO AUTH.JS â”€â”€
+    // ── BIND TO AUTH.JS ──
     document.addEventListener('cv:auth', async ({ detail }) => {
         if (!detail.loggedIn) { window.location.href = '/signin?redirect=/settings'; return; }
         globalUser = detail.user;
@@ -446,7 +429,7 @@
         loadFamilyData();
     });
 
-    // â”€â”€ PROFILE ENGINE â”€â”€
+    // ── PROFILE ENGINE ──
     async function saveName() {
         const input = document.getElementById('inputDisplayName').value.trim();
         if (!input) return showToast("Name cannot be empty");
@@ -469,7 +452,7 @@
         finally { btn.innerHTML = oldHtml; }
     }
 
-    // â”€â”€ SUBSCRIPTION ENGINE â”€â”€
+    // ── SUBSCRIPTION ENGINE ──
     async function loadBilling() {
         try {
             const res = await fetch('/api/subscription-status', { headers: await authHeaders() });
@@ -500,7 +483,7 @@
         showToast(val ? "Weekly Digest Enabled" : "Digest Disabled");
     }
 
-    // â”€â”€ DANGER ZONE â”€â”€
+    // ── DANGER ZONE ──
     function openDeleteModal() { document.getElementById('deleteAccountModal').classList.add('visible'); }
     function closeDeleteModal() { document.getElementById('deleteAccountModal').classList.remove('visible'); }
     async function executeAccountDeletion() {
@@ -512,7 +495,7 @@
         } catch(e) { showToast("Failed to delete"); }
     }
 
-    // â”€â”€ FAMILY TAB ENGINE â”€â”€
+    // ── FAMILY TAB ENGINE ──
     let profiles = [];
     let activeProfileId = null;
 
@@ -545,7 +528,7 @@
             <div class="${wrapperClass}" onclick="selectProfileFamily('${p.id}')">
                 <div class="relative">
                     <div class="w-24 h-24 rounded-full overflow-hidden transition-all flex items-center justify-center bg-surface-variant text-5xl ${ringClasses}">
-                        ${p.emoji || 'ðŸ‘§'}
+                        ${p.emoji || '👧'}
                     </div>
                     ${isActive ? `
                     <div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-1 border-2 border-white shadow-sm">
@@ -717,7 +700,7 @@
         try {
             const res = await fetch('/api/profiles', {
                 method: 'POST', headers: await authHeaders(),
-                body: JSON.stringify({ name, age, emoji: 'ðŸ‘¦' })
+                body: JSON.stringify({ name, age, emoji: '👦' })
             });
             if (res.ok) {
                 const json = await res.json();

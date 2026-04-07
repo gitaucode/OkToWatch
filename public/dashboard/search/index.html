@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<title>Search â€” OkToWatch</title>
+<title>Search — OkToWatch</title>
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -28,9 +28,8 @@
   --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
   --radius: 16px; --radius-sm: 10px;
 }
-html, body { overflow-x: hidden; }
 body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
+#nav-root { position: relative; z-index: 10; min-height: 64px; }
 
 .search-page-wrap {
   max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 5rem;
@@ -150,7 +149,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 }
 
 .search-recent-thumb {
-  width: 40px; min-width: 40px; height: 56px; border-radius: 6px;
+  width: 40px; min-width: 40px; height: 64px; border-radius: 6px;
   background: var(--surface2); display: flex; align-items: center;
   justify-content: center; overflow: hidden; font-size: 1.2rem;
 }
@@ -201,14 +200,14 @@ footer a:hover { color: var(--accent); }
 <div class="search-page-wrap">
   <div class="search-header">
     <h1>Find something to watch</h1>
-    <p>Search any movie or TV show â€” instant AI breakdown</p>
+    <p>Search any movie or TV show — instant AI breakdown</p>
   </div>
 
   <div class="search-box-wrap">
     <div class="search-input-group">
       <input type="text" class="search-input" id="dashSearchInput" 
              placeholder="Search a title..." autocomplete="off" />
-      <button class="search-btn" id="dashSearchBtn" onclick="dashboardSearch()">Search â†’</button>
+      <button class="search-btn" id="dashSearchBtn" onclick="dashboardSearch()">Search →</button>
     </div>
     
     <div class="search-filters" id="dashSearchFilters">
@@ -236,7 +235,7 @@ footer a:hover { color: var(--accent); }
 
 <div id="footer-root"></div>
 
-<script src="/js/auth.js?v=20260403"></script>
+<script src="/js/auth.js?v=20260406"></script>
 <script>
 const TMDB_W300 = 'https://image.tmdb.org/t/p/w300';
 const API = '';
@@ -253,11 +252,11 @@ function loadRecentlyViewed() {
       list.innerHTML = dashboardSearchRecent.slice(0, 5).map(item => `
         <div class="search-recent-item" onclick="dashboardCheck(${item.id}, '${item.media_type}', '${item.title.replace(/'/g, "\\'")}')">
           <div class="search-recent-thumb">
-            ${item.poster ? `<img src="${TMDB_W300}${item.poster}" alt="">` : 'ðŸŽ¬'}
+            ${item.poster ? `<img src="${TMDB_W300}${item.poster}" alt="">` : '🎬'}
           </div>
           <div class="search-recent-info">
             <div class="search-recent-title">${item.title}</div>
-            <div class="search-recent-meta">${item.year} Â· ${item.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+            <div class="search-recent-meta">${item.year} · ${item.media_type === 'tv' ? 'TV' : 'Movie'}</div>
           </div>
         </div>
       `).join('');
@@ -282,14 +281,14 @@ async function dashboardSearch() {
     
     document.getElementById('dashResultSection').innerHTML = results.map(r => {
       const title = r.title || r.name;
-      const poster = r.poster_path ? `<img src="${TMDB_W300}${r.poster_path}" alt="">` : 'ðŸŽ¬';
+      const poster = r.poster_path ? `<img src="${TMDB_W300}${r.poster_path}" alt="">` : '🎬';
       const year = (r.release_date || r.first_air_date || '').slice(0, 4);
       return `
         <div class="search-recent-item" onclick="dashboardCheck(${r.id}, '${r.media_type}', '${title.replace(/'/g, "\\'")}')" style="margin-bottom:0.5rem;">
           <div class="search-recent-thumb">${poster}</div>
           <div class="search-recent-info">
             <div class="search-recent-title">${title}</div>
-            <div class="search-recent-meta">${year} Â· ${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+            <div class="search-recent-meta">${year} · ${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
           </div>
         </div>
       `;

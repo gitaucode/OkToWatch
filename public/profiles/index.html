@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<title>Family Profiles â€” OkToWatch</title>
+<title>Family Profiles — OkToWatch</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,12 +25,11 @@
   --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
   --radius: 16px; --radius-sm: 10px;
 }
-html { overflow-x: hidden; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; }
+#nav-root { position: relative; z-index: 10; min-height: 64px; }
 .page-wrap { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
 
-/* â”€â”€ Skeleton â”€â”€ */
+/* ── Skeleton ── */
 .skel { background: linear-gradient(90deg, #e8edeb 25%, #f2f5f3 50%, #e8edeb 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 .skel-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; }
@@ -40,7 +39,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 #pageContent { display: none; }
 #pageContent.visible { display: block; }
 
-/* â”€â”€ Page header â”€â”€ */
+/* ── Page header ── */
 .page-header {
   margin-bottom: 1.5rem;
   opacity: 0; animation: fadeUp 0.4s ease forwards 0.05s;
@@ -48,7 +47,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; }
 .page-header p  { font-size: 0.82rem; color: var(--muted); margin-top: 0.15rem; line-height: 1.55; }
 
-/* â”€â”€ Profile cards â”€â”€ */
+/* ── Profile cards ── */
 .profiles-grid {
   opacity: 0; animation: fadeUp 0.4s ease forwards 0.1s;
 }
@@ -62,7 +61,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .profile-card-full:hover { border-color: rgba(42,107,85,0.2); }
 
 .profile-big-emoji {
-  width: 56px; height: 56px; border-radius: 50%;
+  width: 56px; height: 64px; border-radius: 50%;
   background: var(--accent-light); display: flex; align-items: center;
   justify-content: center; font-size: 1.75rem; flex-shrink: 0;
 }
@@ -85,7 +84,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .btn-icon:hover { background: var(--accent-light); color: var(--accent); }
 .btn-icon.delete:hover { background: var(--danger-bg); color: var(--danger); }
 
-/* â”€â”€ Add profile button â”€â”€ */
+/* ── Add profile button ── */
 .add-profile-btn {
   width: 100%; background: var(--surface); border: 2px dashed var(--border);
   border-radius: var(--radius); padding: 1.25rem;
@@ -98,7 +97,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .add-profile-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 .add-profile-btn.hidden { display: none; }
 
-/* â”€â”€ Info card â”€â”€ */
+/* ── Info card ── */
 .info-card {
   background: var(--accent-light); border-radius: var(--radius-sm);
   padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 0.75rem;
@@ -107,11 +106,11 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .info-card-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
 .info-card p { font-size: 0.78rem; color: var(--accent); line-height: 1.55; }
 
-/* â”€â”€ Toast â”€â”€ */
+/* ── Toast ── */
 .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 0.65rem 1.25rem; border-radius: 100px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* â”€â”€ Modals â”€â”€ */
+/* ── Modals ── */
 .modal-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(20,30,26,0.6); backdrop-filter: blur(6px); align-items: flex-end; justify-content: center; }
 .modal-overlay.visible { display: flex; }
 .modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.28s ease forwards; padding-bottom: env(safe-area-inset-bottom, 1rem); }
@@ -139,7 +138,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .btn-danger { background: var(--danger); color: white; border: none; border-radius: 100px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; width: 100%; transition: opacity 0.15s; }
 .btn-danger:hover { opacity: 0.88; }
 
-/* â”€â”€ Footer â”€â”€ */
+/* ── Footer ── */
 footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
 footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
 footer a:hover { color: var(--accent); }
@@ -199,7 +198,7 @@ footer a:hover { color: var(--accent); }
     </div>
 
     <div class="info-card">
-      <div class="info-card-icon">ðŸ’¡</div>
+      <div class="info-card-icon">💡</div>
       <p>You can add up to <strong>5 profiles</strong>. When you search with an active profile selected, searches and list entries are tagged to that child.</p>
     </div>
 
@@ -225,7 +224,7 @@ footer a:hover { color: var(--accent); }
       <div>
         <h3 id="modalTitle">Add Child Profile</h3>
       </div>
-      <button class="modal-close" onclick="closeProfileModal()">âœ•</button>
+      <button class="modal-close" onclick="closeProfileModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="field">
@@ -254,7 +253,7 @@ footer a:hover { color: var(--accent); }
     <div class="modal-handle"></div>
     <div class="modal-header">
       <h3>Delete profile?</h3>
-      <p id="deleteModalSub">History and list entries tagged to this profile will not be deleted â€” just untagged.</p>
+      <p id="deleteModalSub">History and list entries tagged to this profile will not be deleted — just untagged.</p>
     </div>
     <div class="modal-footer">
       <button class="btn-danger" id="deleteConfirmBtn" onclick="confirmDelete()">Delete Profile</button>
@@ -264,16 +263,16 @@ footer a:hover { color: var(--accent); }
 </div>
 
 <script>
-const EMOJIS = ['ðŸ‘§','ðŸ‘¦','ðŸ§’','ðŸ‘¶','ðŸŒŸ','ðŸ¦','ðŸ¼','ðŸ¦Š','ðŸ¸','ðŸ¨','ðŸš€','âš½','ðŸŽ®','ðŸŽ¨','ðŸŽµ','ðŸ¦‹'];
+const EMOJIS = ['👧','👦','🧒','👶','🌟','🦁','🐼','🦊','🐸','🐨','🚀','⚽','🎮','🎨','🎵','🦋'];
 
 let _profiles    = [];
 let _lists       = [];
 let _history     = [];
-let _selectedEmoji = 'ðŸ‘§';
+let _selectedEmoji = '👧';
 let _editingId   = null;
 let _deletingId  = null;
 
-// â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Toast ─────────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -281,7 +280,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// â”€â”€ API helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── API helpers ───────────────────────────────────────────────────────────
 async function _authHeaders() {
   const token = await window.Clerk.session.getToken();
   return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -291,7 +290,7 @@ async function apiPost(url, body) { const h = await _authHeaders(); const r = aw
 async function apiPut(url, body)  { const h = await _authHeaders(); const r = await fetch(url, { method: 'PUT', headers: h, body: JSON.stringify(body) }); if (!r.ok) throw new Error(r.status); return r.json(); }
 async function apiDelete(url)     { const h = await _authHeaders(); const r = await fetch(url, { method: 'DELETE', headers: await _authHeaders() }); if (!r.ok) throw new Error(r.status); return r.json(); }
 
-// â”€â”€ Auth guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Auth guard ─────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
     window.location.href = '/signin?redirect=/profiles';
@@ -300,7 +299,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   loadProfiles();
 });
 
-// â”€â”€ Load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Load ──────────────────────────────────────────────────────────────────
 async function loadProfiles() {
   try {
     [_profiles, _lists, _history] = await Promise.all([
@@ -315,7 +314,7 @@ async function loadProfiles() {
   renderProfiles();
 }
 
-// â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render ────────────────────────────────────────────────────────────────
 function renderProfiles() {
   const grid = document.getElementById('profilesGrid');
   const addBtn = document.getElementById('addProfileBtn');
@@ -323,7 +322,7 @@ function renderProfiles() {
   if (!_profiles.length) {
     grid.innerHTML = `
       <div style="background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;text-align:center;margin-bottom:0.75rem;">
-        <div style="font-size:2rem;margin-bottom:0.5rem;">ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦</div>
+        <div style="font-size:2rem;margin-bottom:0.5rem;">👨‍👩‍👧‍👦</div>
         <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.35rem;">No profiles yet</h3>
         <p style="font-size:0.78rem;color:var(--muted);line-height:1.55;">Add your children's profiles to get personalised verdicts and per-child lists.</p>
       </div>`;
@@ -334,19 +333,19 @@ function renderProfiles() {
       const searchCount   = _history.filter(h => h.profile_id === p.id).length;
       return `
         <div class="profile-card-full">
-          <div class="profile-big-emoji">${p.emoji || 'ðŸ‘§'}</div>
+          <div class="profile-big-emoji">${p.emoji || '👧'}</div>
           <div class="profile-details">
             <h3>${p.name}</h3>
             <p>Age ${p.age}</p>
             <div class="profile-stats">
-              <span class="profile-stat">âœ… ${approvedCount} approved</span>
-              <span class="profile-stat">ðŸš« ${blockedCount} blocked</span>
-              <span class="profile-stat">ðŸ” ${searchCount} searches</span>
+              <span class="profile-stat">✅ ${approvedCount} approved</span>
+              <span class="profile-stat">🚫 ${blockedCount} blocked</span>
+              <span class="profile-stat">🔍 ${searchCount} searches</span>
             </div>
           </div>
           <div class="profile-actions">
             <button class="btn-icon" onclick="openEditModal('${p.id}')" title="Edit">âœï¸</button>
-            <button class="btn-icon delete" onclick="promptDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')  " title="Delete">ðŸ—‘</button>
+            <button class="btn-icon delete" onclick="promptDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')  " title="Delete">🗑</button>
           </div>
         </div>`;
     }).join('');
@@ -362,10 +361,10 @@ function renderProfiles() {
   }
 }
 
-// â”€â”€ Add modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Add modal ──────────────────────────────────────────────────────────────
 function openAddModal() {
   _editingId     = null;
-  _selectedEmoji = 'ðŸ‘§';
+  _selectedEmoji = '👧';
   document.getElementById('modalTitle').textContent   = 'Add Child Profile';
   document.getElementById('profileSaveBtn').textContent = 'Add Profile';
   document.getElementById('profileName').value = '';
@@ -380,7 +379,7 @@ function openEditModal(id) {
   const p = _profiles.find(p => p.id === id);
   if (!p) return;
   _editingId     = id;
-  _selectedEmoji = p.emoji || 'ðŸ‘§';
+  _selectedEmoji = p.emoji || '👧';
   document.getElementById('modalTitle').textContent     = `Edit ${p.name}`;
   document.getElementById('profileSaveBtn').textContent = 'Save Changes';
   document.getElementById('profileName').value = p.name;
@@ -410,25 +409,25 @@ async function saveProfile() {
 
   const btn = document.getElementById('profileSaveBtn');
   btn.disabled = true;
-  btn.textContent = _editingId ? 'Savingâ€¦' : 'Addingâ€¦';
+  btn.textContent = _editingId ? 'Saving…' : 'Adding…';
 
   try {
     if (_editingId) {
       const updated = await apiPut(`/api/profiles?id=${_editingId}`, { name, age, emoji: _selectedEmoji });
       const idx = _profiles.findIndex(p => p.id === _editingId);
       if (idx !== -1) _profiles[idx] = updated;
-      showToast(`${name}'s profile updated âœ“`);
+      showToast(`${name}'s profile updated ✓`);
     } else {
       const p = await apiPost('/api/profiles', { name, age, emoji: _selectedEmoji });
       _profiles.push(p);
-      showToast(`${name}'s profile added âœ“`);
+      showToast(`${name}'s profile added ✓`);
     }
     closeProfileModal();
     renderProfiles();
   } catch (e) {
     console.error('saveProfile error:', e);
     if (e.message === '403') showToast('Max 5 profiles reached or subscription required');
-    else if (e.message === '401') showToast('Session expired â€” please refresh and try again');
+    else if (e.message === '401') showToast('Session expired — please refresh and try again');
     else showToast('Failed to save profile (' + e.message + ')');
   } finally {
     btn.disabled = false;
@@ -441,7 +440,7 @@ function closeProfileModal() {
   document.body.style.overflow = '';
 }
 
-// â”€â”€ Delete modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Delete modal ──────────────────────────────────────────────────────────
 function promptDelete(id, name) {
   _deletingId = id;
   document.getElementById('deleteModalSub').textContent =
@@ -452,7 +451,7 @@ function promptDelete(id, name) {
 
 async function confirmDelete() {
   const btn = document.getElementById('deleteConfirmBtn');
-  btn.disabled = true; btn.textContent = 'Deletingâ€¦';
+  btn.disabled = true; btn.textContent = 'Deleting…';
   try {
     await apiDelete(`/api/profiles?id=${_deletingId}`);
     const p = _profiles.find(p => p.id === _deletingId);
@@ -491,7 +490,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeProfileModal(); closeDeleteModal(); }
 });
 </script>
-<script src="/js/auth.js?v=20260403"></script>
+<script src="/js/auth.js?v=20260406"></script>
 </body>
 </html>
 

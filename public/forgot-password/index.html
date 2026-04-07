@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<!-- Clerk preload Ã¢â‚¬â€ start fetching before anything else -->
+<!-- Clerk preload — start fetching before anything else -->
 <link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin/>
 <link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev"/>
 <link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin/>
@@ -27,7 +27,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
-<title>Reset Password Ã¢â‚¬â€ OkToWatch</title>
+<title>Reset Password — OkToWatch</title>
 <meta name="description" content="Reset your OkToWatch password to regain access to your family's movie guides and watchlists."/>
 <meta property="og:image" content="https://oktowatch.com/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
@@ -106,7 +106,7 @@
 
         <!-- Skeleton shown while Clerk loads -->
         <div id="clerkSkeleton" class="p-8 space-y-5">
-          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usualÃ¢â‚¬Â¦ check your connection.</p>
+          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
           <div class="skel h-3 w-28 rounded-full"></div>
           <div class="skel h-12 rounded-xl"></div>
           <div class="skel h-12 rounded-xl mt-2"></div>
@@ -164,7 +164,7 @@
     clearTimeout(slowTimer);
     await window.Clerk.load();
 
-    // If already signed in, no need to reset Ã¢â‚¬â€ go to dashboard
+    // If already signed in, no need to reset — go to dashboard
     if (window.Clerk.user) {
       window.location.href = '/dashboard';
       return;
@@ -199,7 +199,7 @@
       }
     });
 
-    // Poll until Clerk card appears, then swap skeleton Ã¢â€ â€™ real form
+    // Poll until Clerk card appears, then swap skeleton → real form
     const poll = setInterval(() => {
       const card = document.querySelector('#clerk-forgot .cl-card, #clerk-forgot [data-localization-key]');
       if (card) { clearInterval(poll); showClerk(); }

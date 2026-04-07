@@ -1,351 +1,701 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="manifest" href="/manifest.json">
+
 <meta name="theme-color" content="#2a6b55">
+
 <meta name="mobile-web-app-capable" content="yes">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
+
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <meta name="apple-mobile-web-app-title" content="OkToWatch">
+
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+
 <link rel="shortcut icon" href="/favicon.ico">
-<title>About â€” OkToWatch</title>
-<meta name="description" content="OkToWatch gives parents instant content breakdowns for any movie or TV show â€” so you always know before you press play.">
+
+<title>About –” OkToWatch</title>
+
+<meta name="description" content="OkToWatch gives parents instant content breakdowns for any movie or TV show –” so you always know before you press play.">
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
 <style>
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
+
   --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+
   --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+
   --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+
   --safe: #2a7d52; --safe-bg: #e6f4ec;
+
   --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+
   --radius: 16px; --radius-sm: 10px;
+
 }
-html { overflow-x: hidden; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
+
+
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; }
+
+#nav-root { position: relative; z-index: 10; min-height: 64px; }
+
 .page-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
 
-/* â”€â”€ Hero â”€â”€ */
+
+
+/* ── Hero ── */
+
 .about-hero {
+
   text-align: center; padding: 0 1rem 3rem;
+
   opacity: 0; animation: fadeUp 0.5s ease forwards 0.05s;
+
 }
+
 .hero-logo {
+
   width: 64px; height: 64px; border-radius: 18px;
+
   background: var(--accent); display: inline-flex;
+
   align-items: center; justify-content: center;
+
   margin-bottom: 1.25rem; box-shadow: 0 6px 24px rgba(42,107,85,0.28);
+
 }
+
 .about-hero h1 {
+
   font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 700;
+
   letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem;
+
 }
+
 .about-hero h1 span { color: var(--accent); }
+
 .about-hero p {
+
   font-size: 1.05rem; color: var(--text2); line-height: 1.7;
+
   max-width: 480px; margin: 0 auto 1.75rem;
+
 }
+
 .hero-cta {
+
   display: inline-flex; align-items: center; gap: 0.4rem;
+
   background: var(--accent); color: white; text-decoration: none;
+
   padding: 0.75rem 1.75rem; border-radius: 100px;
+
   font-size: 0.9rem; font-weight: 700; transition: opacity 0.15s;
+
   box-shadow: 0 4px 14px rgba(42,107,85,0.3);
+
 }
+
 .hero-cta:hover { opacity: 0.88; }
 
-/* â”€â”€ Section â”€â”€ */
+
+
+/* ── Section ── */
+
 .section {
+
   margin-bottom: 1rem;
+
   opacity: 0; animation: fadeUp 0.5s ease forwards;
+
 }
+
 .section:nth-child(2) { animation-delay: 0.1s; }
+
 .section:nth-child(3) { animation-delay: 0.15s; }
+
 .section:nth-child(4) { animation-delay: 0.2s; }
+
 .section:nth-child(5) { animation-delay: 0.25s; }
+
 .section:nth-child(6) { animation-delay: 0.3s; }
 
+
+
 .card {
+
   background: var(--surface); border-radius: var(--radius);
+
   box-shadow: var(--shadow); padding: 1.75rem 2rem;
+
 }
+
+
 
 .section-eyebrow {
+
   font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+
   text-transform: uppercase; color: var(--accent);
+
   margin-bottom: 0.5rem;
+
 }
+
 .card h2 {
+
   font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em;
+
   margin-bottom: 0.75rem;
+
 }
+
 .card p {
+
   font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin-bottom: 0.75rem;
+
 }
+
 .card p:last-child { margin-bottom: 0; }
 
-/* â”€â”€ Categories grid â”€â”€ */
+
+
+/* ── Categories grid ── */
+
 .categories-grid {
+
   display: grid; grid-template-columns: repeat(3, 1fr);
+
   gap: 0.65rem; margin-top: 1.25rem;
+
 }
+
 .category-chip {
+
   background: var(--surface2); border-radius: var(--radius-sm);
+
   padding: 0.85rem 0.75rem; text-align: center;
+
 }
+
 .cat-icon { font-size: 1.4rem; margin-bottom: 0.3rem; display: block; }
+
 .cat-name { font-size: 0.75rem; font-weight: 700; display: block; }
+
 .cat-desc { font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; display: block; }
 
-/* â”€â”€ How it works steps â”€â”€ */
+
+
+/* ── How it works steps ── */
+
 .steps { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
 .step { display: flex; gap: 1rem; align-items: flex-start; }
+
 .step-num {
+
   width: 30px; height: 30px; border-radius: 50%;
+
   background: var(--accent); color: white;
+
   display: flex; align-items: center; justify-content: center;
+
   font-size: 0.78rem; font-weight: 700; flex-shrink: 0; margin-top: 0.1rem;
+
 }
+
 .step-text strong { font-size: 0.88rem; font-weight: 700; display: block; margin-bottom: 0.15rem; }
+
 .step-text span   { font-size: 0.8rem; color: var(--text2); line-height: 1.55; }
 
-/* â”€â”€ Verdict pills example â”€â”€ */
+
+
+/* ── Verdict pills example ── */
+
 .verdict-example {
+
   display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;
+
 }
+
 .verdict-pill {
+
   display: flex; align-items: center; gap: 0.4rem;
+
   padding: 0.45rem 0.85rem; border-radius: 100px;
+
   font-size: 0.78rem; font-weight: 600;
+
 }
+
 .pill-safe     { background: #e6f4ec; color: #2a7d52; }
+
 .pill-mild     { background: #fef6e4; color: #b07a10; }
+
 .pill-moderate { background: #fef0e6; color: #b85c1a; }
+
 .pill-strong   { background: #fdecea; color: #c0392b; }
 
-/* â”€â”€ Values list â”€â”€ */
+
+
+/* ── Values list ── */
+
 .values { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1.25rem; }
+
 .value-row { display: flex; gap: 0.85rem; align-items: flex-start; }
+
 .value-icon {
+
   width: 36px; height: 36px; border-radius: 10px;
+
   background: var(--accent-light); display: flex;
+
   align-items: center; justify-content: center;
+
   font-size: 1rem; flex-shrink: 0;
+
 }
+
 .value-text strong { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.1rem; }
+
 .value-text span   { font-size: 0.78rem; color: var(--text2); line-height: 1.55; }
 
-/* â”€â”€ CTA card â”€â”€ */
+
+
+/* ── CTA card ── */
+
 .cta-card {
+
   background: var(--accent); border-radius: var(--radius);
+
   padding: 2rem; text-align: center; color: white;
+
   box-shadow: 0 8px 32px rgba(42,107,85,0.3);
+
 }
+
 .cta-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+
 .cta-card p  { font-size: 0.85rem; opacity: 0.85; margin-bottom: 1.5rem; line-height: 1.6; }
+
 .cta-btn {
+
   display: inline-flex; align-items: center; gap: 0.4rem;
+
   background: white; color: var(--accent); text-decoration: none;
+
   padding: 0.7rem 1.75rem; border-radius: 100px;
+
   font-size: 0.88rem; font-weight: 700; transition: opacity 0.15s;
+
 }
+
 .cta-btn:hover { opacity: 0.9; }
 
-/* â”€â”€ Footer â”€â”€ */
+
+
+/* ── Footer ── */
+
 footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; border-top: 1px solid rgba(0,0,0,0.08); }
+
 footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+
 footer a:hover { color: var(--accent); }
+
 .footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+
 .footer-logo-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+
 .footer-logo-text { font-size: 0.88rem; color: var(--text); display:inline-flex; align-items:center; gap:0.4rem; }
+
 .footer-logo-text strong { font-weight: 700; }
+
+
 
 @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
+
+
 @media (max-width: 599px) {
+
   .page-wrap { padding: 2rem 0.85rem 4rem; }
+
   .card { padding: 1.35rem 1.25rem; }
+
   .categories-grid { grid-template-columns: repeat(2, 1fr); }
+
   .about-hero h1 { font-size: 1.65rem; }
+
   footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+
 }
+
 @media (max-width: 380px) {
+
   .page-wrap { padding: 1.5rem 0.65rem 3rem; }
+
   .about-hero h1 { font-size: 1.4rem; }
+
   .categories-grid { grid-template-columns: 1fr; }
+
 }
+
 </style>
+
 <meta property="og:image" content="https://oktowatch.com/og-image.png">
+
 <meta name="twitter:card" content="summary_large_image">
+
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+
 </head>
+
 <body data-page="about">
+
+
 
 <div id="nav-root"></div>
 
+
+
 <div class="page-wrap">
 
+
+
   <!-- Hero -->
+
   <div class="about-hero">
+
     <div class="hero-logo">
+
       <svg width="28" height="28" viewBox="0 0 16 16" fill="none">
+
         <circle cx="8" cy="8" r="3" fill="white"/>
+
         <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
+
       </svg>
+
     </div>
+
     <h1>Know before<br>you <span>press play</span></h1>
-    <p>OkToWatch gives parents instant, clear content breakdowns for any movie or TV show â€” no more searching review sites or trusting an age rating alone.</p>
-    <a class="hero-cta" href="/index">ðŸ” Start searching</a>
+
+    <p>OkToWatch gives parents instant, clear content breakdowns for any movie or TV show –” no more searching review sites or trusting an age rating alone.</p>
+
+    <a class="hero-cta" href="/index">🔍 Start searching</a>
+
   </div>
+
+
 
   <!-- What it does -->
+
   <div class="section">
+
     <div class="card">
+
       <div class="section-eyebrow">What OkToWatch does</div>
+
       <h2>Instant content analysis, not just a number</h2>
-      <p>Age ratings tell you "12A" or "PG-13" â€” but not why. OkToWatch breaks down exactly what's in a title across six categories, so you can decide what's right for your family, not a ratings board.</p>
+
+      <p>Age ratings tell you "12A" or "PG-13" –” but not why. OkToWatch breaks down exactly what's in a title across six categories, so you can decide what's right for your family, not a ratings board.</p>
+
       <p>Search any movie or TV show and get a clear breakdown in seconds, powered by AI.</p>
 
+
+
       <div class="categories-grid">
+
         <div class="category-chip">
+
           <span class="cat-icon">âš”ï¸</span>
+
           <span class="cat-name">Violence</span>
+
           <span class="cat-desc">Combat, injury, gore</span>
+
         </div>
+
         <div class="category-chip">
-          <span class="cat-icon">ðŸ—£ï¸</span>
+
+          <span class="cat-icon">🗣️</span>
+
           <span class="cat-name">Language</span>
+
           <span class="cat-desc">Profanity, slurs</span>
+
         </div>
+
         <div class="category-chip">
-          <span class="cat-icon">ðŸ’‹</span>
+
+          <span class="cat-icon">💋</span>
+
           <span class="cat-name">Sex &amp; Nudity</span>
+
           <span class="cat-desc">Sexual content</span>
+
         </div>
+
         <div class="category-chip">
-          <span class="cat-icon">ðŸ’Š</span>
+
+          <span class="cat-icon">💊</span>
+
           <span class="cat-name">Drugs</span>
+
           <span class="cat-desc">Substance use</span>
+
         </div>
+
         <div class="category-chip">
-          <span class="cat-icon">ðŸ‘»</span>
+
+          <span class="cat-icon">👻</span>
+
           <span class="cat-name">Horror</span>
+
           <span class="cat-desc">Scary themes, fear</span>
+
         </div>
+
         <div class="category-chip">
-          <span class="cat-icon">âš ï¸</span>
+
+          <span class="cat-icon">⚠️</span>
+
           <span class="cat-name">Other</span>
+
           <span class="cat-desc">Themes, mature topics</span>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
+
+
 
   <!-- Verdicts -->
+
   <div class="section">
+
     <div class="card">
+
       <div class="section-eyebrow">How results work</div>
+
       <h2>Clear verdicts, not vague summaries</h2>
-      <p>Each category gets a plain-English rating â€” from None to Strong â€” so you can scan at a glance. No reading between the lines.</p>
+
+      <p>Each category gets a plain-English rating –” from None to Strong –” so you can scan at a glance. No reading between the lines.</p>
+
       <div class="verdict-example">
-        <span class="verdict-pill pill-safe">âœ… None</span>
-        <span class="verdict-pill pill-mild">âš ï¸ Mild</span>
-        <span class="verdict-pill pill-moderate">ðŸŸ  Moderate</span>
-        <span class="verdict-pill pill-strong">ðŸ”´ Strong</span>
+
+        <span class="verdict-pill pill-safe">✅ None</span>
+
+        <span class="verdict-pill pill-mild">⚠️ Mild</span>
+
+        <span class="verdict-pill pill-moderate">🟠 Moderate</span>
+
+        <span class="verdict-pill pill-strong">🔴 Strong</span>
+
       </div>
-      <p style="margin-top:1rem;">With a Pro child profile active, you also get a personalised age verdict â€” <em>"Safe for Emma, age 9"</em> â€” based on the content levels and your child's age.</p>
+
+      <p style="margin-top:1rem;">With a Pro child profile active, you also get a personalised age verdict –” <em>"Safe for Emma, age 9"</em> –” based on the content levels and your child's age.</p>
+
     </div>
+
   </div>
+
+
 
   <!-- How it works -->
+
   <div class="section">
+
     <div class="card">
+
       <div class="section-eyebrow">How it works</div>
+
       <h2>Three steps to a clear answer</h2>
+
       <div class="steps">
+
         <div class="step">
+
           <div class="step-num">1</div>
+
           <div class="step-text">
+
             <strong>Search any title</strong>
+
             <span>Type a movie or TV show name. OkToWatch pulls metadata and poster art from a trusted movie database so you always know you've got the right title.</span>
+
           </div>
+
         </div>
+
         <div class="step">
+
           <div class="step-num">2</div>
+
           <div class="step-text">
+
             <strong>AI analyses the content</strong>
+
             <span>Our AI reads community ratings, parental guides, and known content data to generate a breakdown across all six categories.</span>
+
           </div>
+
         </div>
+
         <div class="step">
+
           <div class="step-num">3</div>
+
           <div class="step-text">
+
             <strong>You decide</strong>
+
             <span>Get a plain-English verdict in seconds. Save it to Approved or Blocked, or share the report link with your co-parent.</span>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
+
+
 
   <!-- Values -->
+
   <div class="section">
+
     <div class="card">
+
       <div class="section-eyebrow">What we believe</div>
+
       <h2>Built for parents, not studios</h2>
+
       <div class="values">
+
         <div class="value-row">
-          <div class="value-icon">ðŸ”</div>
+
+          <div class="value-icon">🔍</div>
+
           <div class="value-text">
+
             <strong>Transparency over gatekeeping</strong>
-            <span>You should know exactly what's in a title before your child sees it â€” not find out during movie night.</span>
+
+            <span>You should know exactly what's in a title before your child sees it –” not find out during movie night.</span>
+
           </div>
+
         </div>
+
         <div class="value-row">
-          <div class="value-icon">ðŸ§’</div>
+
+          <div class="value-icon">🧒</div>
+
           <div class="value-text">
+
             <strong>Your family, your rules</strong>
-            <span>Every family draws different lines. OkToWatch doesn't tell you what to allow â€” it gives you the information to decide for yourself.</span>
+
+            <span>Every family draws different lines. OkToWatch doesn't tell you what to allow –” it gives you the information to decide for yourself.</span>
+
           </div>
+
         </div>
+
         <div class="value-row">
-          <div class="value-icon">âš¡</div>
+
+          <div class="value-icon">⚡</div>
+
           <div class="value-text">
+
             <strong>Fast answers, no rabbit holes</strong>
+
             <span>No wading through forum posts or piecing together reviews. A clear answer in seconds, right when you need it.</span>
+
           </div>
+
         </div>
+
         <div class="value-row">
-          <div class="value-icon">ðŸ”’</div>
+
+          <div class="value-icon">🔒</div>
+
           <div class="value-text">
+
             <strong>Privacy by default</strong>
+
             <span>We don't sell your data. We don't show ads. Your family's watch history stays private. Full stop.</span>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
 
+
+
   <!-- CTA -->
+
   <div class="section">
+
     <div class="cta-card">
+
       <h2>Ready to know before you press play?</h2>
-      <p>Search is free â€” no account needed. Subscribe to Pro or Family to unlock child profiles, saved lists, synced history and more.</p>
-      <a class="cta-btn" href="/index">ðŸ” Start searching</a>
+
+      <p>Search is free –” no account needed. Subscribe to Pro or Family to unlock child profiles, saved lists, synced history and more.</p>
+
+      <a class="cta-btn" href="/index">🔍 Start searching</a>
+
     </div>
+
   </div>
+
+
 
 </div>
 
+
+
 <div id="footer-root"></div>
 
-<script src="/js/auth.js?v=20260403"></script>
+
+
+<script src="/js/auth.js?v=20260406"></script>
+
 </body>
+
 </html>
+
+
 

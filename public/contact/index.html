@@ -1,292 +1,583 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="manifest" href="/manifest.json">
+
 <meta name="theme-color" content="#2a6b55">
+
 <meta name="mobile-web-app-capable" content="yes">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
+
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <meta name="apple-mobile-web-app-title" content="OkToWatch">
+
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+
 <link rel="shortcut icon" href="/favicon.ico">
-<title>Contact â€” OkToWatch</title>
+
+<title>Contact –” OkToWatch</title>
+
 <meta name="description" content="Get in touch with the OkToWatch team. We're here to help with questions, feedback, or anything else.">
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
 <style>
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
+
   --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
+
   --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
+
   --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+
   --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+
   --radius: 16px; --radius-sm: 10px;
+
 }
-html { overflow-x: hidden; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
-#nav-root { position: relative; z-index: 10; min-height: 56px; }
+
+
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; min-height: 100vh; }
+
+#nav-root { position: relative; z-index: 10; min-height: 64px; }
+
 .page-wrap { max-width: 600px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
 
+
+
 @keyframes fadeUp {
+
   from { opacity: 0; transform: translateY(16px); }
+
   to   { opacity: 1; transform: translateY(0); }
+
 }
 
-/* â”€â”€ Hero â”€â”€ */
+
+
+/* ── Hero ── */
+
 .contact-hero {
+
   text-align: center; padding: 0 1rem 2.5rem;
+
   opacity: 0; animation: fadeUp 0.5s ease forwards 0.05s;
-}
-.hero-icon {
-  width: 64px; height: 64px; border-radius: 18px;
-  background: var(--accent); display: inline-flex;
-  align-items: center; justify-content: center;
-  margin-bottom: 1.25rem; box-shadow: 0 6px 24px rgba(42,107,85,0.28);
-  font-size: 1.75rem;
-}
-.contact-hero h1 {
-  font-size: clamp(1.75rem, 5vw, 2.4rem); font-weight: 700;
-  letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.85rem;
-}
-.contact-hero h1 span { color: var(--accent); }
-.contact-hero p {
-  color: var(--text2); font-size: 1rem; line-height: 1.65;
-  max-width: 420px; margin: 0 auto;
+
 }
 
-/* â”€â”€ Cards â”€â”€ */
-.contact-card {
-  background: var(--surface); border-radius: var(--radius);
-  box-shadow: var(--shadow); padding: 1.5rem;
-  margin-bottom: 1rem;
-  opacity: 0; animation: fadeUp 0.4s ease forwards;
+.hero-icon {
+
+  width: 64px; height: 64px; border-radius: 18px;
+
+  background: var(--accent); display: inline-flex;
+
+  align-items: center; justify-content: center;
+
+  margin-bottom: 1.25rem; box-shadow: 0 6px 24px rgba(42,107,85,0.28);
+
+  font-size: 1.75rem;
+
 }
+
+.contact-hero h1 {
+
+  font-size: clamp(1.75rem, 5vw, 2.4rem); font-weight: 700;
+
+  letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.85rem;
+
+}
+
+.contact-hero h1 span { color: var(--accent); }
+
+.contact-hero p {
+
+  color: var(--text2); font-size: 1rem; line-height: 1.65;
+
+  max-width: 420px; margin: 0 auto;
+
+}
+
+
+
+/* ── Cards ── */
+
+.contact-card {
+
+  background: var(--surface); border-radius: var(--radius);
+
+  box-shadow: var(--shadow); padding: 1.5rem;
+
+  margin-bottom: 1rem;
+
+  opacity: 0; animation: fadeUp 0.4s ease forwards;
+
+}
+
 .contact-card:nth-child(1) { animation-delay: 0.15s; }
+
 .contact-card:nth-child(2) { animation-delay: 0.22s; }
+
 .contact-card:nth-child(3) { animation-delay: 0.29s; }
 
+
+
 .contact-card-header {
+
   display: flex; align-items: center; gap: 0.85rem;
+
   margin-bottom: 0.75rem;
+
 }
+
 .contact-card-icon {
+
   width: 42px; height: 42px; border-radius: 12px;
+
   background: var(--accent-light); display: flex;
+
   align-items: center; justify-content: center;
+
   font-size: 1.15rem; flex-shrink: 0;
+
 }
+
 .contact-card-header h2 {
+
   font-size: 1rem; font-weight: 700; margin-bottom: 0.1rem;
+
 }
+
 .contact-card-header p {
+
   font-size: 0.78rem; color: var(--muted); line-height: 1.4;
+
 }
+
 .contact-card-body {
+
   font-size: 0.88rem; color: var(--text2); line-height: 1.65;
+
   margin-bottom: 1rem;
+
 }
+
 .contact-link {
+
   display: inline-flex; align-items: center; gap: 0.4rem;
+
   background: var(--accent); color: white; text-decoration: none;
+
   border-radius: 100px; padding: 0.5rem 1.15rem;
+
   font-size: 0.82rem; font-weight: 700;
+
   transition: opacity 0.15s;
+
 }
+
 .contact-link:hover { opacity: 0.85; }
+
 .contact-link-ghost {
+
   display: inline-flex; align-items: center; gap: 0.4rem;
+
   background: var(--surface2); color: var(--text2); text-decoration: none;
+
   border-radius: 100px; padding: 0.5rem 1.15rem;
+
   font-size: 0.82rem; font-weight: 600; border: 1.5px solid var(--border);
+
   transition: all 0.15s;
+
 }
+
 .contact-link-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
+
+
 .response-badge {
+
   display: inline-flex; align-items: center; gap: 0.3rem;
+
   background: var(--accent-light); color: var(--accent);
+
   border-radius: 100px; padding: 0.2rem 0.65rem;
+
   font-size: 0.7rem; font-weight: 700; margin-top: 0.75rem;
-}
-.response-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent); flex-shrink: 0;
+
 }
 
-/* â”€â”€ Divider â”€â”€ */
-.section-divider {
-  display: flex; align-items: center; gap: 0.75rem;
-  margin: 1.5rem 0; opacity: 0; animation: fadeUp 0.4s ease forwards 0.35s;
+.response-dot {
+
+  width: 6px; height: 6px; border-radius: 50%;
+
+  background: var(--accent); flex-shrink: 0;
+
 }
+
+
+
+/* ── Divider ── */
+
+.section-divider {
+
+  display: flex; align-items: center; gap: 0.75rem;
+
+  margin: 1.5rem 0; opacity: 0; animation: fadeUp 0.4s ease forwards 0.35s;
+
+}
+
 .section-divider span { font-size: 0.72rem; font-weight: 600; color: var(--muted); white-space: nowrap; letter-spacing: 0.06em; text-transform: uppercase; }
+
 .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* â”€â”€ FAQ â”€â”€ */
+
+
+/* ── FAQ ── */
+
 .faq-card {
+
   background: var(--surface); border-radius: var(--radius);
+
   box-shadow: var(--shadow); overflow: hidden;
+
   opacity: 0; animation: fadeUp 0.4s ease forwards 0.4s;
+
 }
+
 .faq-item {
+
   padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+
   cursor: pointer; transition: background 0.12s;
+
 }
+
 .faq-item:last-child { border-bottom: none; }
+
 .faq-item:hover { background: var(--surface2); }
+
 .faq-question {
+
   display: flex; align-items: center; justify-content: space-between;
+
   gap: 1rem;
+
 }
+
 .faq-question span {
+
   font-size: 0.88rem; font-weight: 600; line-height: 1.4;
+
 }
+
 .faq-chevron {
+
   color: var(--muted); font-size: 0.85rem; flex-shrink: 0;
+
   transition: transform 0.2s;
+
 }
+
 .faq-answer {
+
   font-size: 0.82rem; color: var(--text2); line-height: 1.65;
+
   max-height: 0; overflow: hidden;
+
   transition: max-height 0.25s ease, padding 0.2s;
+
   padding-top: 0;
+
 }
+
 .faq-item.open .faq-answer { max-height: 200px; padding-top: 0.6rem; }
+
 .faq-item.open .faq-chevron { transform: rotate(180deg); }
 
-/* â”€â”€ Footer â”€â”€ */
+
+
+/* ── Footer ── */
+
 footer {
+
   border-top: 1px solid var(--border); padding: 1.5rem;
+
   display: flex; justify-content: space-between; align-items: center;
+
   flex-wrap: wrap; gap: 0.5rem; max-width: 680px; margin: 0 auto;
+
 }
+
 footer p, footer a { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+
 footer a:hover { color: var(--accent); }
+
 .footer-logo { display: flex; align-items: center; gap: 0.45rem; text-decoration: none; }
+
 .footer-logo-mark {
+
   width: 22px; height: 22px; border-radius: 6px; background: var(--accent);
+
   display: flex; align-items: center; justify-content: center;
+
 }
+
 .footer-logo-text { font-size: 0.88rem; color: var(--text); display:inline-flex; align-items:center; gap:0.4rem; }
+
 .footer-logo-text strong { font-weight: 700; }
 
+
+
 @media (max-width: 599px) {
+
   .page-wrap { padding: 2rem 1rem 4rem; }
+
   footer { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+
 }
+
 </style>
+
 <meta property="og:image" content="https://oktowatch.com/og-image.png">
+
 <meta name="twitter:card" content="summary_large_image">
+
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png">
+
 </head>
+
 <body>
+
+
 
 <div id="nav-root"></div>
 
+
+
 <div class="page-wrap">
 
+
+
   <div class="contact-hero">
+
     <div class="hero-icon">âœ‰ï¸</div>
+
     <h1>We're here <span>to help</span></h1>
+
     <p>Got a question, spotted a wrong verdict, or just want to say hi? We read every message and reply promptly.</p>
+
   </div>
 
+
+
   <div class="contact-card">
+
     <div class="contact-card-header">
-      <div class="contact-card-icon">ðŸ›Ÿ</div>
+
+      <div class="contact-card-icon">🛟</div>
+
       <div>
+
         <h2>General support</h2>
+
         <p>Account, billing, or how-to questions</p>
+
       </div>
+
     </div>
+
     <div class="contact-card-body">
+
       Having trouble with your account, a search that didn't work, or anything else about the app? Drop us an email and we'll sort it out.
+
     </div>
-    <a href="mailto:support@oktowatch.com" class="contact-link">âœ‰ support@oktowatch.com</a>
+
+    <a href="mailto:support@oktowatch.com" class="contact-link">✉ support@oktowatch.com</a>
+
     <div class="response-badge"><span class="response-dot"></span>We reply within 24 hours</div>
+
   </div>
 
+
+
   <div class="contact-card">
+
     <div class="contact-card-header">
-      <div class="contact-card-icon">ðŸŽ¬</div>
+
+      <div class="contact-card-icon">🎬</div>
+
       <div>
+
         <h2>Wrong verdict?</h2>
+
         <p>Help us improve our analysis</p>
+
       </div>
+
     </div>
+
     <div class="contact-card-body">
-      Our AI analysis isn't perfect. If you think a rating is off or a category is missing something important, let us know â€” we take these seriously and use them to improve.
+
+      Our AI analysis isn't perfect. If you think a rating is off or a category is missing something important, let us know –” we take these seriously and use them to improve.
+
     </div>
+
     <a href="mailto:support@oktowatch.com?subject=Wrong verdict feedback" class="contact-link">Report an issue</a>
+
   </div>
 
+
+
   <div class="contact-card">
+
     <div class="contact-card-header">
-      <div class="contact-card-icon">ðŸ”’</div>
+
+      <div class="contact-card-icon">🔒</div>
+
       <div>
+
         <h2>Privacy &amp; data</h2>
+
         <p>Questions about your data or account deletion</p>
+
       </div>
+
     </div>
+
     <div class="contact-card-body">
+
       For anything related to your personal data, privacy requests, or account deletion, contact our privacy team directly. You can also delete your account instantly from Settings.
+
     </div>
+
     <div style="display:flex;gap:0.65rem;flex-wrap:wrap;">
+
       <a href="mailto:privacy@oktowatch.com" class="contact-link-ghost">privacy@oktowatch.com</a>
-      <a href="/privacy" class="contact-link-ghost">Privacy policy â†’</a>
+
+      <a href="/privacy" class="contact-link-ghost">Privacy policy ↓’</a>
+
     </div>
+
   </div>
+
+
 
   <div class="section-divider">
+
     <span>Common questions</span>
+
   </div>
 
+
+
   <div class="faq-card">
+
     <div class="faq-item" onclick="toggleFaq(this)">
+
       <div class="faq-question">
+
         <span>Do I need to pay?</span>
-        <span class="faq-chevron">â–¾</span>
+
+        <span class="faq-chevron">▾</span>
+
       </div>
+
       <div class="faq-answer">No. Searching is always free and requires no account. Pro and Family plans unlock saved lists, child profiles, and family features.</div>
+
     </div>
+
     <div class="faq-item" onclick="toggleFaq(this)">
+
       <div class="faq-question">
-        <span>The analysis for a title seems wrong â€” what do I do?</span>
-        <span class="faq-chevron">â–¾</span>
+
+        <span>The analysis for a title seems wrong –” what do I do?</span>
+
+        <span class="faq-chevron">▾</span>
+
       </div>
+
       <div class="faq-answer">Use the "Report an issue" button above and tell us the title and what you think is incorrect. We review all reports and update our analysis where needed.</div>
+
     </div>
+
     <div class="faq-item" onclick="toggleFaq(this)">
+
       <div class="faq-question">
+
         <span>How do I delete my account?</span>
-        <span class="faq-chevron">â–¾</span>
+
+        <span class="faq-chevron">▾</span>
+
       </div>
-      <div class="faq-answer">You can delete your account instantly from Settings â†’ Danger Zone â†’ Delete account. This removes all your data from our servers immediately.</div>
+
+      <div class="faq-answer">You can delete your account instantly from Settings ↓’ Danger Zone ↓’ Delete account. This removes all your data from our servers immediately.</div>
+
     </div>
+
     <div class="faq-item" onclick="toggleFaq(this)">
+
       <div class="faq-question">
+
         <span>Do you have an app?</span>
-        <span class="faq-chevron">â–¾</span>
+
+        <span class="faq-chevron">▾</span>
+
       </div>
-      <div class="faq-answer">OkToWatch is a Progressive Web App (PWA) â€” you can install it on your home screen from any browser. On iPhone, tap the Share button then "Add to Home Screen". On Android, tap the menu then "Install app".</div>
+
+      <div class="faq-answer">OkToWatch is a Progressive Web App (PWA) –” you can install it on your home screen from any browser. On iPhone, tap the Share button then "Add to Home Screen". On Android, tap the menu then "Install app".</div>
+
     </div>
+
   </div>
+
+
 
 </div>
 
+
+
 <div id="footer-root"></div>
 
-<script src="/js/auth.js?v=20260403"></script>
+
+
+<script src="/js/auth.js?v=20260406"></script>
+
 <script>
+
 function toggleFaq(el) {
+
   const isOpen = el.classList.contains('open');
+
   document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
   if (!isOpen) el.classList.add('open');
+
 }
+
 </script>
+
 </body>
+
 </html>
+
+
+
 
 
