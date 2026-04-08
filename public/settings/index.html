@@ -135,6 +135,19 @@
                         <button id="btnSaveName" onclick="saveName()" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-dim transition-colors flex items-center gap-2">Save Changes</button>
                         <button onclick="window.Clerk.openUserProfile()" class="text-primary font-semibold px-4 py-2.5 hover:underline decoration-2 underline-offset-4">Change Password</button>
                     </div>
+
+                    <div id="onboardingDraftCard" class="hidden rounded-xl border border-outline-variant/10 bg-surface-container-lowest p-6 space-y-4">
+                        <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                            <div>
+                                <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">Saved From Onboarding</p>
+                                <h4 class="mt-1 text-lg font-bold brand-font text-on-surface">Family setup draft</h4>
+                                <p id="onboardingDraftSummary" class="mt-1 text-sm leading-relaxed text-on-surface-variant"></p>
+                            </div>
+                            <a id="onboardingDraftCta" href="/plans" class="inline-flex items-center justify-center rounded-lg border border-outline-variant/20 px-4 py-2 text-sm font-semibold text-primary hover:bg-surface-container transition-colors">View plans</a>
+                        </div>
+                        <div id="onboardingDraftChildren" class="flex flex-wrap gap-2"></div>
+                        <div id="onboardingDraftPrefs" class="flex flex-wrap gap-2"></div>
+                    </div>
                 </section>
 
                 <!-- SUBSCRIPTION SECTION -->
@@ -404,6 +417,7 @@
 
     let globalUser = null;
     let householdState = null;
+    let onboardingDraft = null;
 
     // ── BIND TO AUTH.JS ──
     document.addEventListener('cv:auth', async ({ detail }) => {
@@ -416,6 +430,7 @@
         document.getElementById('inputEmail').value = globalUser.emailAddresses?.[0]?.emailAddress || globalUser.email || '';
         
         loadBilling();
+        loadOnboardingDraft();
         if (detail.isFamily) loadHousehold();
         const savedDigest = JSON.parse(localStorage.getItem('cv_digest') || 'true'); // defaults to true in mock
         document.getElementById('chkDigest').checked = savedDigest;
@@ -474,6 +489,86 @@
             }
         } catch(e) {} finally {
             document.getElementById('billingLoading').classList.add('hidden');
+        }
+    }
+
+    function formatOnboardingAge(age) {
+        const value = Number(age);
+        if (!value) return 'Age not set';
+        if (value <= 4) return '2-5';
+        if (value <= 8) return '6-9';
+        if (value <= 11) return '10-12';
+        return '13+';
+    }
+
+    function renderOnboardingDraft() {
+        const card = document.getElementById('onboardingDraftCard');
+        if (!card) return;
+
+        const hasDraft = onboardingDraft && (
+            onboardingDraft.parentName ||
+            (Array.isArray(onboardingDraft.children) && onboardingDraft.children.length) ||
+            (Array.isArray(onboardingDraft.preferences?.active) && onboardingDraft.preferences.active.length)
+        );
+
+        if (!hasDraft) {
+            card.classList.add('hidden');
+            return;
+        }
+
+        card.classList.remove('hidden');
+
+        const children = Array.isArray(onboardingDraft.children) ? onboardingDraft.children.filter(Boolean) : [];
+        const prefs = Array.isArray(onboardingDraft.preferences?.active) ? onboardingDraft.preferences.active : [];
+        const createdCount = Number(onboardingDraft.createdProfileCount || 0);
+        const deferredCount = Number(onboardingDraft.deferredProfiles || 0);
+
+        const summary = document.getElementById('onboardingDraftSummary');
+        if (createdCount > 0) {
+            summary.textContent = `Saved ${children.length || createdCount} child setup${(children.length || createdCount) === 1 ? '' : 's'} from onboarding. Your paid plan created ${createdCount} profile${createdCount === 1 ? '' : 's'} automatically.`;
+        } else if (deferredCount > 0) {
+            summary.textContent = `Your family setup is saved here. Upgrade to Pro or Family to turn ${deferredCount} child ${deferredCount === 1 ? 'draft' : 'drafts'} into real child profiles.`;
+        } else {
+            summary.textContent = `Your family setup is saved here so you can pick up where you left off.`;
+        }
+
+        document.getElementById('onboardingDraftChildren').innerHTML = children.length
+            ? children.map((child) => `
+                <span class="inline-flex items-center rounded-full bg-surface-container px-3 py-1.5 text-sm font-semibold text-on-surface">
+                    ${child.name || 'Unnamed child'} · ${formatOnboardingAge(child.age)}
+                </span>
+            `).join('')
+            : '<span class="text-sm text-on-surface-variant">No child details saved yet.</span>';
+
+        document.getElementById('onboardingDraftPrefs').innerHTML = prefs.length
+            ? prefs.map((pref) => `
+                <span class="inline-flex items-center rounded-full border border-outline-variant/15 bg-white px-3 py-1.5 text-xs font-bold text-on-surface-variant">
+                    ${pref}
+                </span>
+            `).join('')
+            : '<span class="text-sm text-on-surface-variant">No content preferences saved yet.</span>';
+
+        const cta = document.getElementById('onboardingDraftCta');
+        if (deferredCount > 0) {
+            cta.textContent = 'Unlock profiles';
+            cta.href = '/plans';
+        } else if (createdCount > 0) {
+            cta.textContent = 'Manage profiles';
+            cta.href = '/profiles';
+        } else {
+            cta.textContent = 'View plans';
+            cta.href = '/plans';
+        }
+    }
+
+    async function loadOnboardingDraft() {
+        try {
+            const res = await fetch('/api/onboarding', { headers: await authHeaders() });
+            if (!res.ok) return;
+            onboardingDraft = await res.json();
+            renderOnboardingDraft();
+        } catch (e) {
+            console.error('Failed to load onboarding draft', e);
         }
     }
 
