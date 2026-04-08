@@ -206,6 +206,17 @@
                             </div>
                         </div>
 
+                        <div class="rounded-xl border border-outline-variant/10 bg-surface-container p-4 space-y-3">
+                            <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Share Invite Link</p>
+                            <input id="householdInviteLink" class="w-full bg-white border-outline-variant/30 rounded-lg px-4 py-2.5 text-sm text-on-surface outline-none" readonly type="text" value=""/>
+                            <div class="settings-mobile-inline flex items-center gap-3">
+                                <button id="btnCopyInviteLink" onclick="copyInviteLink()" class="rounded-lg border border-outline-variant/20 px-4 py-2.5 text-sm font-semibold text-on-surface hover:bg-white transition-colors">Copy link</button>
+                                <button id="btnShareInviteLink" onclick="shareInviteLink()" class="rounded-lg border border-outline-variant/20 px-4 py-2.5 text-sm font-semibold text-on-surface hover:bg-white transition-colors">Share</button>
+                                <button id="btnEmailInviteLink" onclick="emailInviteLink()" class="rounded-lg border border-outline-variant/20 px-4 py-2.5 text-sm font-semibold text-on-surface hover:bg-white transition-colors">Email</button>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Opening this link fills the household code automatically on the recipient’s Settings page.</p>
+                        </div>
+
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-3">Connected Caregivers</p>
                             <div id="householdMembers" class="space-y-2">
@@ -408,6 +419,7 @@
         if (detail.isFamily) loadHousehold();
         const savedDigest = JSON.parse(localStorage.getItem('cv_digest') || 'true'); // defaults to true in mock
         document.getElementById('chkDigest').checked = savedDigest;
+        prefillInviteFromUrl();
     });
 
     initSettingsTabs();
@@ -484,6 +496,10 @@
         document.getElementById('householdNameInput').value = householdState.household.name || '';
         document.getElementById('householdNameInput').disabled = householdState.household.role !== 'owner';
         document.getElementById('btnSaveHouseholdName').style.display = householdState.household.role === 'owner' ? 'inline-flex' : 'none';
+        document.getElementById('householdInviteLink').value = householdInviteLink();
+        document.getElementById('btnEmailInviteLink').style.display = householdState.household.role === 'owner' ? 'inline-flex' : 'none';
+        document.getElementById('btnCopyInviteLink').style.display = householdState.household.role === 'owner' ? 'inline-flex' : 'none';
+        document.getElementById('btnShareInviteLink').style.display = householdState.household.role === 'owner' ? 'inline-flex' : 'none';
 
         const members = householdState.members || [];
         const membersEl = document.getElementById('householdMembers');
@@ -514,6 +530,52 @@
         } catch {
             showToast('Could not copy code');
         }
+    }
+
+    function householdInviteLink() {
+        const code = householdState?.household?.inviteCode;
+        if (!code) return '';
+        const url = new URL(window.location.origin + '/settings');
+        url.searchParams.set('tab', 'subscription');
+        url.searchParams.set('invite', code);
+        return url.toString();
+    }
+
+    async function copyInviteLink() {
+        const link = householdInviteLink();
+        if (!link) return showToast('Invite link not ready');
+        try {
+            await navigator.clipboard.writeText(link);
+            showToast('Invite link copied');
+        } catch {
+            showToast('Could not copy invite link');
+        }
+    }
+
+    async function shareInviteLink() {
+        const link = householdInviteLink();
+        if (!link) return showToast('Invite link not ready');
+        const title = householdState?.household?.name || 'OkToWatch Family household';
+        const text = `Join my OkToWatch Family household so we can share notes, profiles, and decisions.`;
+        try {
+            if (navigator.share) {
+                await navigator.share({ title, text, url: link });
+                return;
+            }
+            await navigator.clipboard.writeText(link);
+            showToast('Invite link copied');
+        } catch {
+            showToast('Could not share invite link');
+        }
+    }
+
+    function emailInviteLink() {
+        const link = householdInviteLink();
+        if (!link) return showToast('Invite link not ready');
+        const householdName = householdState?.household?.name || 'my OkToWatch Family household';
+        const subject = encodeURIComponent(`Join ${householdName} on OkToWatch`);
+        const body = encodeURIComponent(`Join ${householdName} on OkToWatch so we can share notes, profiles, and viewing decisions.\n\nOpen this link:\n${link}`);
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 
     async function saveHouseholdName() {
@@ -642,6 +704,16 @@
             btn.textContent = old;
             btn.disabled = false;
         }
+    }
+
+    function prefillInviteFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const invite = (params.get('invite') || '').trim().toUpperCase();
+        if (!invite) return;
+        const input = document.getElementById('householdJoinCode');
+        if (input && !input.value) input.value = invite;
+        selectNav('subscription');
+        showToast('Invite code added');
     }
 
     function toggleDigest(val) {
