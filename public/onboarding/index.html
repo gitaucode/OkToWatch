@@ -15,8 +15,13 @@
   body { font-family: 'Inter', sans-serif; }
   h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-  .step-chip.active { background: #565e74; color: #fff; border-color: #565e74; }
-  .step-chip.done { background: #dae2fd; color: #373f54; border-color: #ccd4ee; }
+  .step-chip { position: relative; }
+  .step-chip.active .step-chip-circle { background: #565e74; color: #fff; border-color: #565e74; }
+  .step-chip.active .step-chip-label { color: #2d3336; }
+  .step-chip.done .step-chip-circle { background: #dae2fd; color: #373f54; border-color: #ccd4ee; }
+  .step-chip.done .step-chip-circle::before { content: 'check'; font-family: 'Material Symbols Outlined'; font-size: 18px; line-height: 1; }
+  .step-chip.done .step-chip-circle span { display: none; }
+  .step-chip.done .step-chip-label { color: #2d3336; }
   .pref-card.selected { border-color: rgba(86, 94, 116, 0.35); background: linear-gradient(180deg, #f2f4fb 0%, #edf2ff 100%); box-shadow: 0 16px 32px rgba(86, 94, 116, 0.12); }
   .pref-card.selected .pref-pill { background: #565e74; }
   .pref-card.selected .pref-pill::after { transform: translateX(18px); }
@@ -28,42 +33,50 @@
 </style>
 </head>
 <body class="bg-background text-on-surface antialiased" data-page="onboarding">
-<div id="nav-root"></div>
-
-<main class="min-h-screen pt-20 pb-14">
-  <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
-    <section class="rounded-[2rem] border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-[0_30px_70px_-40px_rgba(45,51,54,0.35)] sm:p-8 lg:p-10">
-      <div class="mb-8 flex flex-col gap-4 border-b border-outline-variant/10 pb-6">
-        <span class="inline-flex w-fit items-center rounded-full bg-primary-container px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-primary">Family setup</span>
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 class="brand-font text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">Let&rsquo;s make OkToWatch feel like it already knows your family.</h1>
-            <p class="mt-3 max-w-2xl text-base leading-relaxed text-on-surface-variant">This setup is full-page on purpose so you can move through it comfortably. We&rsquo;ll save your progress, personalize reviews, and get you to the dashboard with less busywork.</p>
-          </div>
-          <button id="skipSetupBtn" type="button" class="inline-flex items-center justify-center rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">Skip for now</button>
+<main class="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-3xl">
+    <div class="rounded-[2rem] border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-[0_30px_70px_-40px_rgba(45,51,54,0.35)] sm:p-8 lg:p-10">
+      <div class="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center rounded-full bg-primary-container px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-primary">Family setup</span>
+          <h1 class="brand-font mt-4 text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">Set up your family</h1>
+          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">A few quick steps, then you&rsquo;re in.</p>
         </div>
+        <button id="skipSetupBtn" type="button" class="inline-flex items-center justify-center rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">Skip</button>
       </div>
 
-      <div class="mb-8 flex flex-wrap gap-3" id="stepChips">
-        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">1. About you</div>
-        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">2. Your children</div>
-        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">3. Preferences</div>
-        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">4. Finish</div>
+      <div class="mb-10 grid grid-cols-4 gap-3" id="stepChips">
+        <div class="step-chip flex flex-col items-center gap-2">
+          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>1</span></div>
+          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">About</span>
+        </div>
+        <div class="step-chip flex flex-col items-center gap-2">
+          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>2</span></div>
+          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">Children</span>
+        </div>
+        <div class="step-chip flex flex-col items-center gap-2">
+          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>3</span></div>
+          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">Preferences</span>
+        </div>
+        <div class="step-chip flex flex-col items-center gap-2">
+          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>4</span></div>
+          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">Finish</span>
+        </div>
       </div>
 
       <section data-step="0" class="space-y-6">
         <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Tell us about your family</h2>
-          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">We&rsquo;ll use this to personalize your dashboard and reduce setup later.</p>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">About you</h2>
+          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Tell us your name and how many children you want to set up.</p>
         </div>
 
-        <div class="grid gap-5 lg:grid-cols-2">
+        <div class="grid gap-5 sm:grid-cols-2">
           <div class="space-y-2">
             <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Your first name</label>
             <input id="parentNameInput" type="text" maxlength="40" placeholder="e.g. Jane" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
           </div>
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">How many children are you setting up?</label>
+            <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">How many children?</label>
             <select id="childCountInput" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary">
               <option value="1">1 child</option>
               <option value="2">2 children</option>
@@ -73,21 +86,12 @@
             </select>
           </div>
         </div>
-
-        <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
-          <p class="text-sm font-semibold text-on-surface">What happens next</p>
-          <ul class="mt-3 space-y-2 text-sm leading-relaxed text-on-surface-variant">
-            <li>We&rsquo;ll save your setup progress to your account.</li>
-            <li>Paid plans create child profiles right away.</li>
-            <li>Free plans keep the family draft ready so you don&rsquo;t have to start over later.</li>
-          </ul>
-        </div>
       </section>
 
       <section data-step="1" class="hidden space-y-6">
         <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Add your children</h2>
-          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">Name and age are enough to get helpful recommendations and safer defaults in place.</p>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Your children</h2>
+          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Add each child&rsquo;s name and age.</p>
         </div>
         <div id="childrenList" class="grid gap-4"></div>
         <p class="text-sm leading-relaxed text-on-surface-variant" id="childLimitHint"></p>
@@ -96,27 +100,27 @@
       <section data-step="2" class="hidden space-y-6">
         <div>
           <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">What should we watch out for?</h2>
-          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">Pick the topics you want highlighted in each review.</p>
+          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Pick the topics you want highlighted in each review.</p>
         </div>
         <div id="preferencesGrid" class="grid gap-4 md:grid-cols-2"></div>
       </section>
 
       <section data-step="3" class="hidden space-y-6">
         <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">You&rsquo;re almost done</h2>
-          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">Check the setup summary below, then we&rsquo;ll save everything and take you into the app.</p>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Finish</h2>
+          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Check everything looks right, then continue to your dashboard.</p>
         </div>
 
-        <div class="grid gap-5 lg:grid-cols-2">
+        <div class="space-y-5">
           <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Family summary</p>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Children</p>
             <div id="summaryChildren" class="mt-4 space-y-3"></div>
           </div>
           <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Highlighted topics</p>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Preferences</p>
             <div id="summaryPreferences" class="mt-4 flex flex-wrap gap-2"></div>
-            <div id="summaryPlanNote" class="mt-5 rounded-2xl bg-white p-4 text-sm leading-relaxed text-on-surface-variant"></div>
           </div>
+          <div id="summaryPlanNote" class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5 text-sm leading-relaxed text-on-surface-variant"></div>
         </div>
       </section>
 
@@ -127,41 +131,11 @@
           <button id="nextBtn" type="button" class="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary transition-colors hover:bg-primary-dim">Next</button>
         </div>
       </div>
-    </section>
-
-    <aside class="rounded-[2rem] border border-outline-variant/10 bg-surface-container-low p-6 shadow-[0_24px_60px_-40px_rgba(45,51,54,0.32)] sm:p-8 lg:sticky lg:top-24 lg:h-fit">
-      <div class="rounded-[1.75rem] bg-gradient-to-br from-primary to-primary-dim p-6 text-white">
-        <span class="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em]">Why this matters</span>
-        <h3 class="brand-font mt-4 text-2xl font-extrabold tracking-tight">A calmer first session.</h3>
-        <p class="mt-3 text-sm leading-relaxed text-white/80">Instead of dropping you into a blank dashboard, we&rsquo;ll start with your family details, child setup, and the topics you care about most.</p>
-      </div>
-
-      <div class="mt-6 space-y-4">
-        <div class="rounded-3xl border border-outline-variant/10 bg-white p-5">
-          <div class="flex items-start gap-3">
-            <span class="material-symbols-outlined rounded-2xl bg-primary-container p-2 text-primary">family_restroom</span>
-            <div>
-              <p class="font-semibold text-on-surface">Child-friendly from the start</p>
-              <p class="mt-1 text-sm leading-relaxed text-on-surface-variant">We use ages and family preferences to make recommendations feel less generic immediately.</p>
-            </div>
-          </div>
-        </div>
-        <div class="rounded-3xl border border-outline-variant/10 bg-white p-5">
-          <div class="flex items-start gap-3">
-            <span class="material-symbols-outlined rounded-2xl bg-primary-container p-2 text-primary">task_alt</span>
-            <div>
-              <p class="font-semibold text-on-surface">Saved as you go</p>
-              <p class="mt-1 text-sm leading-relaxed text-on-surface-variant">If you leave and come back, your progress can resume instead of forcing you to start over.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
+    </div>
   </div>
 </main>
 
 <div id="toast" class="toast"></div>
-<div id="footer-root"></div>
 
 <script src="/js/auth.js?v=dev"></script>
 <script>
