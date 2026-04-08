@@ -163,7 +163,7 @@
     root.innerHTML = `
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
   <div class="flex justify-between items-center h-16 px-4 md:px-8 max-w-[1440px] mx-auto gap-4">
-    <a href="${loggedIn ? '/dashboard' : '/index'}" class="inline-flex items-center gap-2 text-slate-900 dark:text-white no-underline shrink-0">
+    <a href="${loggedIn ? '/dashboard' : '/'}" class="inline-flex items-center gap-2 text-slate-900 dark:text-white no-underline shrink-0">
       <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="w-8 h-8 rounded-[10px] object-contain" />
       <span aria-label="OkToWatch" class="font-['Plus_Jakarta_Sans'] text-[1.02rem] tracking-[-0.03em] leading-none">
         <span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span>
