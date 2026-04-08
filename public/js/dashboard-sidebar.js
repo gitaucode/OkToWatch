@@ -13,6 +13,13 @@
   if (!root) return;
   document.body.classList.add('cv-has-dashboard-sidebar');
 
+  if (!document.getElementById('cv-app-tour-script')) {
+    const script = document.createElement('script');
+    script.id = 'cv-app-tour-script';
+    script.src = '/js/app-walkthrough.js?v=dev';
+    document.head.appendChild(script);
+  }
+
   if (!document.getElementById('cv-dashboard-sidebar-styles')) {
     const style = document.createElement('style');
     style.id = 'cv-dashboard-sidebar-styles';
@@ -157,7 +164,7 @@
       <div class="cv-dashboard-sidebar">
         <nav class="cv-dashboard-sidebar__nav">
           ${items.map((item) => `
-            <a class="cv-dashboard-sidebar__link${isActive(item) ? ' active' : ''}" href="${item.href}">
+            <a class="cv-dashboard-sidebar__link${isActive(item) ? ' active' : ''}" href="${item.href}" data-tour-link="${item.id}">
               <span class="material-symbols-outlined">${item.icon}</span>
               <span>${item.label}</span>
             </a>
