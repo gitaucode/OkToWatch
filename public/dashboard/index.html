@@ -232,6 +232,23 @@
       </section>
 
       <!-- ── Weekly Safe Picks + Recent Vetting ────────────────────── -->
+      <section class="mb-14">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div>
+            <h3 class="text-2xl font-bold font-headline text-on-surface" id="recommendationsLabel">Recommended next</h3>
+            <p class="text-on-surface-variant text-sm font-medium mt-0.5" id="recommendationsSub">Personalized from age, recent checks, and saved picks.</p>
+          </div>
+          <a href="/discover" class="text-sm font-bold text-primary flex items-center gap-1 group no-underline">
+            Browse Discover <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" id="recommendationsGrid">
+          <div class="group"><div class="skel rounded-xl mb-3" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-full mb-2"></div><div class="skel h-2 w-2/3"></div></div>
+          <div class="group"><div class="skel rounded-xl mb-3" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-full mb-2"></div><div class="skel h-2 w-2/3"></div></div>
+          <div class="group"><div class="skel rounded-xl mb-3" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-full mb-2"></div><div class="skel h-2 w-2/3"></div></div>
+        </div>
+      </section>
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
         <!-- Weekly Safe Picks / Trending (wider column) -->
@@ -472,6 +489,7 @@ setTimeout(()=>{
 async function loadDashboard(user){
   try{[_profiles,_history,_lists]=await Promise.all([apiGet('/api/profiles'),apiGet('/api/history'),apiGet('/api/lists')]);}
   catch(e){console.error('Dashboard load error:',e);}
+  if(_profiles.length && !getActive()) sessionStorage.setItem('cv_active_profile',_profiles[0].id);
   document.getElementById('pageLoader').classList.add('hidden');
   document.getElementById('pageContent').classList.add('visible');
   animateNum('statSearches',_history.length);
@@ -480,6 +498,7 @@ async function loadDashboard(user){
   renderProfiles();
   renderRecent();
   loadTrending('movie');
+  loadRecommendations('movie');
   if((window.userTier||'free')==='free') document.getElementById('profilesPremiumBadge').classList.remove('hidden');
 }
 
@@ -544,7 +563,7 @@ function setActive(id){
   sessionStorage.setItem('cv_active_profile',id);
   renderProfiles();
   const p=_profiles.find(p=>p.id===id);
-  if(p){showToast('Checking for '+p.name+' '+(p.emoji||''));loadTrending(_trendType);}
+  if(p){showToast('Checking for '+p.name+' '+(p.emoji||''));loadTrending(_trendType);loadRecommendations(_trendType);}
 }
 
 // Recent searches → #dashRecent
@@ -571,6 +590,37 @@ function renderRecent(){
 
 // Trending / Safe Picks
 let _trendType='movie', _cachedIds=new Set(), _verdictData={};
+function recommendationProfile(){const active=getActive();return _profiles.find(p=>p.id===active)||_profiles[0]||null;}
+function recommendationLoading(){
+  const grid=document.getElementById('recommendationsGrid');
+  if(!grid)return;
+  grid.innerHTML=Array(3).fill(`<div class="group"><div class="skel rounded-xl mb-3" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-full mb-2"></div><div class="skel h-2 w-2/3"></div></div>`).join('');
+}
+async function loadRecommendations(type='movie'){
+  const grid=document.getElementById('recommendationsGrid');
+  const label=document.getElementById('recommendationsLabel');
+  const sub=document.getElementById('recommendationsSub');
+  if(!grid||!label||!sub)return;
+  const profile=recommendationProfile();
+  label.textContent=profile?`Recommended for ${profile.name} ${profile.emoji||''}`:'Recommended next';
+  sub.textContent=profile
+    ? `Based on age ${profile.age}, recent checks, and saved picks.`
+    : 'Sign in activity will make these picks smarter over time.';
+  recommendationLoading();
+  try{
+    const profileQuery=profile?`profile_id=${encodeURIComponent(profile.id)}&`:'';
+    const data=await apiGet(`/api/recommendations?${profileQuery}type=${type}`);
+    const items=data.results||[];
+    if(!items.length){
+      grid.innerHTML='<p class="text-sm text-on-surface-variant col-span-full">No recommendations yet. Check a few titles or save a couple of picks and this will start filling in.</p>';
+      return;
+    }
+    grid.innerHTML=items.map(item=>recommendationCard(item,type)).join('');
+  }catch(e){
+    console.error('Recommendations load error:',e);
+    grid.innerHTML='<p class="text-sm text-on-surface-variant col-span-full">Could not load recommendations right now.</p>';
+  }
+}
 async function loadTrending(type='movie'){
   _trendType=type;
   const grid=document.getElementById('trendingGrid');
@@ -633,6 +683,23 @@ function trendCard(item,type){
   </div>`;
 }
 
+function recommendationCard(item,type){
+  const poster=item.poster_path
+    ?`<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://image.tmdb.org/t/p/w342${item.poster_path}" alt="${esc(item.title)}" loading="lazy">`
+    :`<div class="w-full h-full flex items-center justify-center text-4xl bg-surface-dim">🎬</div>`;
+  return `<article class="group cursor-pointer" onclick="checkTitle(${item.id},'${type}')">
+    <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-surface-dim shadow-sm">
+      ${poster}
+      <div class="absolute top-3 left-3 px-2 py-1 rounded-full bg-white/92 text-on-surface text-[10px] font-extrabold tracking-widest uppercase">${item.match_score}% match</div>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-bold text-sm leading-tight text-on-surface">${esc(item.title)}</h3>
+      <p class="text-[11px] text-on-surface-variant font-medium">${esc(item.genre_label||getGenreLabel(item,type))}${item.year?' • '+esc(item.year):''}</p>
+      <p class="text-xs text-on-surface-variant leading-relaxed">${esc(item.reason||'Popular with families right now.')}</p>
+    </div>
+  </article>`;
+}
+
 function getCert(item){
   const g=item.genre_ids||[];
   const isKids=g.includes(10751)||g.includes(16);
@@ -662,6 +729,7 @@ function switchTrend(type){
   document.getElementById('tabMovies').className=type==='movie'?on:off;
   document.getElementById('tabTV').className=type==='tv'?on:off;
   loadTrending(type);
+  loadRecommendations(type);
 }
 
 function checkTitle(id,type){window.location.href=`/index?id=${id}&type=${type}`;}
