@@ -166,11 +166,16 @@
       </div>
     </section>
 
-    <section data-step="1" class="hidden space-y-5">
-      <div id="childrenList" class="space-y-4"></div>
-      <section class="wizard-card bg-secondary-container p-5 flex gap-4 items-start">
-        <span class="material-symbols-outlined text-on-secondary-container">info</span>
-        <p id="childLimitHint" class="text-on-secondary-container text-sm font-medium"></p>
+    <section data-step="1" class="hidden space-y-10">
+      <div id="childrenList" class="space-y-10"></div>
+      <section class="bg-surface-container-low p-8 rounded-xl border-l-4 border-tertiary flex gap-6 items-start">
+        <div class="bg-tertiary-container/30 p-3 rounded-full shrink-0">
+          <span class="material-symbols-outlined text-tertiary">auto_awesome</span>
+        </div>
+        <div>
+          <h4 class="font-headline font-bold text-on-surface mb-1">Why age matters?</h4>
+          <p id="childLimitHint" class="text-on-surface-variant text-sm leading-relaxed">OkToWatch uses age to make reviews easier to scan from the start.</p>
+        </div>
       </section>
     </section>
 
@@ -247,6 +252,12 @@
 const PREFS_KEY = 'cv_prefs';
 const LEGACY_ONBOARD_KEY = 'cv_onboarded';
 const DEFAULT_ACTIVE = ['Sex & Nudity', 'Violence & Gore', 'Language', 'Drugs & Alcohol', 'Horror & Fear', 'Self-harm'];
+const AGE_GROUPS = [
+  { value: '4', range: '2-5', label: 'Preschool' },
+  { value: '8', range: '6-9', label: 'Elementary' },
+  { value: '11', range: '10-12', label: 'Pre-teen' },
+  { value: '14', range: '13+', label: 'Teen' }
+];
 const TOPICS = [
   { name: 'Sex & Nudity', icon: 'visibility_off', desc: 'Sexual content, nudity, or adult themes.' },
   { name: 'Violence & Gore', icon: 'warning', desc: 'Fighting, blood, injury, or death.' },
@@ -268,7 +279,7 @@ const STEP_META = [
   {
     progressLabel: 'Your children',
     heading: 'Add your children',
-    description: "Add each child's name and age so we can tailor reviews and recommendations.",
+    description: "A few quick steps, then you're in. Tell us about your primary explorer.",
     button: 'Continue'
   },
   {
@@ -335,24 +346,20 @@ function renderStepChips() {
 function renderChildren() {
   const list = document.getElementById('childrenList');
   list.innerHTML = state.children.map((child, index) => `
-    <div class="child-card">
-      <div class="flex items-center justify-between mb-5">
-        <div>
-          <h3 class="font-headline text-xl font-bold text-on-surface">Child ${index + 1}</h3>
-          <p class="text-on-surface-variant text-sm">Name and age are enough to get started.</p>
-        </div>
-        <div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined text-2xl">${index % 2 === 0 ? 'child_care' : 'stars'}</span>
-        </div>
+    <div class="space-y-10">
+      <div class="group">
+        <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">${index === 0 ? "First child's name" : `Child ${index + 1}'s name`}</label>
+        <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-name="${index}" maxlength="20" placeholder="e.g. Leo" type="text" value="${escapeHtml(child.name)}"/>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">Name</label>
-          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-lg font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-name="${index}" maxlength="20" placeholder="e.g. Maya" type="text" value="${escapeHtml(child.name)}"/>
-        </div>
-        <div>
-          <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">Age</label>
-          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-lg font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-age="${index}" max="17" min="1" placeholder="e.g. 8" type="number" value="${escapeHtml(child.age)}"/>
+      <div>
+        <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">Age group</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          ${AGE_GROUPS.map((group) => `
+            <button type="button" class="age-chip flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${String(child.age) === group.value ? 'bg-surface-container-lowest border-primary' : 'bg-surface-container-low border-transparent hover:bg-surface-container-high'}" data-child-age-group="${index}" data-age-value="${group.value}">
+              <span class="text-3xl font-headline font-black ${String(child.age) === group.value ? 'text-primary' : 'text-on-surface-variant'} mb-1">${group.range}</span>
+              <span class="text-xs font-label font-bold ${String(child.age) === group.value ? 'text-primary-dim' : 'text-outline'} uppercase tracking-tighter">${group.label}</span>
+            </button>
+          `).join('')}
         </div>
       </div>
     </div>
@@ -361,9 +368,9 @@ function renderChildren() {
   const maxProfiles = getMaxProfilesForTier();
   const hint = document.getElementById('childLimitHint');
   if (maxProfiles > 0) {
-    hint.textContent = `Your ${authState.tier} plan can create up to ${maxProfiles} child profile${maxProfiles === 1 ? '' : 's'} right away.`;
+    hint.textContent = `OkToWatch uses clinical research to filter content based on developmental milestones, not just standard movie ratings. Your ${authState.tier} plan can create up to ${maxProfiles} child profile${maxProfiles === 1 ? '' : 's'} right away.`;
   } else {
-    hint.textContent = 'Free accounts save this family setup as a draft until child profiles are unlocked.';
+    hint.textContent = 'OkToWatch uses clinical research to filter content based on developmental milestones, not just standard movie ratings. Free accounts save this family setup as a draft until profiles are unlocked.';
   }
 }
 
@@ -394,14 +401,19 @@ function renderPreferences() {
   });
 }
 
+function getAgeGroupMeta(age) {
+  return AGE_GROUPS.find((group) => String(group.value) === String(age)) || null;
+}
+
 function renderSummary() {
   const children = state.children.filter((child) => child.name.trim() || child.age);
   const primary = children[0];
+  const primaryAgeGroup = getAgeGroupMeta(primary?.age);
   document.getElementById('finishIntro').textContent = primary?.name
     ? `We've tailored the experience around ${primary.name}.`
     : "We'll tailor reviews to your family from the start.";
   document.getElementById('summaryPrimaryChild').textContent = primary?.name || 'Your family';
-  document.getElementById('summaryChildMeta').textContent = primary?.age ? `${primary.age} years old` : 'Ready to personalize your reviews';
+  document.getElementById('summaryChildMeta').textContent = primaryAgeGroup ? `${primaryAgeGroup.range} · ${primaryAgeGroup.label}` : 'Ready to personalize your reviews';
 
   document.getElementById('summaryPreferences').innerHTML = state.preferences.active.map((name) => `
     <span class="summary-chip">${escapeHtml(name)}</span>
@@ -412,7 +424,7 @@ function renderSummary() {
       <div class="flex items-center justify-between gap-4">
         <div>
           <h3 class="font-headline text-xl font-bold text-on-surface">${escapeHtml(child.name || 'Unnamed child')}</h3>
-          <p class="text-sm text-on-surface-variant">${child.age ? `Age ${escapeHtml(child.age)}` : 'Age not set'}</p>
+          <p class="text-sm text-on-surface-variant">${getAgeGroupMeta(child.age) ? `${getAgeGroupMeta(child.age).range} · ${getAgeGroupMeta(child.age).label}` : 'Age group not set'}</p>
         </div>
         <span class="material-symbols-outlined text-primary active-icon">verified_user</span>
       </div>
@@ -466,7 +478,7 @@ function validateCurrentStep() {
   if (currentStep === 1) {
     const invalid = state.children.find((child) => !child.name.trim() || !child.age || child.age < 1 || child.age > 17);
     if (invalid) {
-      showToast('Each child needs a name and age between 1 and 17');
+      showToast('Each child needs a name and age group');
       return false;
     }
   }
@@ -659,6 +671,18 @@ document.getElementById('childrenList').addEventListener('input', (event) => {
   const ageIndex = event.target.getAttribute('data-child-age');
   if (nameIndex !== null) state.children[Number(nameIndex)].name = event.target.value;
   if (ageIndex !== null) state.children[Number(ageIndex)].age = event.target.value;
+  renderSummary();
+  scheduleDraftSave();
+});
+
+document.getElementById('childrenList').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-child-age-group]');
+  if (!button) return;
+  const childIndex = Number(button.getAttribute('data-child-age-group'));
+  const ageValue = button.getAttribute('data-age-value') || '';
+  if (Number.isNaN(childIndex)) return;
+  state.children[childIndex].age = ageValue;
+  renderChildren();
   renderSummary();
   scheduleDraftSave();
 });
