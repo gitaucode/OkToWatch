@@ -99,9 +99,9 @@
   <div class="h-px bg-surface-container"></div>
 </header>
 
-<main class="flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-32">
-  <div class="max-w-2xl w-full">
-    <section class="mb-12">
+<main class="flex-grow flex flex-col items-center justify-center px-6 pt-20 pb-28">
+  <div class="max-w-[54rem] w-full">
+    <section class="mb-8">
       <div class="flex items-center justify-between mb-4">
         <span id="progressText" class="font-label text-sm font-semibold uppercase tracking-widest text-on-surface-variant">Step 1 of 4</span>
         <span id="progressLabel" class="font-label text-sm font-semibold text-primary">Family setup</span>
@@ -111,41 +111,41 @@
       </div>
     </section>
 
-    <section class="mb-10">
-      <h1 id="stepHeading" class="font-headline text-3xl md:text-4xl font-extrabold text-on-surface leading-tight tracking-tight mb-3">Set up your family</h1>
-      <p id="stepDescription" class="text-on-surface-variant text-base leading-relaxed max-w-xl">A few quick steps, then you're in.</p>
+    <section class="mb-8">
+      <h1 id="stepHeading" class="font-headline text-[2.4rem] md:text-[3rem] font-extrabold text-on-surface leading-[1.02] tracking-tight mb-2">Set up your family</h1>
+      <p id="stepDescription" class="text-on-surface-variant text-[1.05rem] leading-relaxed max-w-xl">A few quick steps, then you're in.</p>
     </section>
 
-    <section class="mb-10">
-      <div class="grid grid-cols-4 gap-2" id="stepChips">
-        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-3 flex flex-col items-center gap-1.5 text-on-surface-variant" data-step-target="0">
+    <section class="mb-8">
+      <div class="grid grid-cols-4 gap-2.5" id="stepChips">
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-2.5 flex flex-col items-center gap-1 text-on-surface-variant" data-step-target="0">
           <span class="stepper-number"><span>1</span></span>
           <span class="stepper-label text-[11px] font-semibold uppercase tracking-wider">About</span>
         </button>
-        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-3 flex flex-col items-center gap-1.5 text-on-surface-variant" data-step-target="1">
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-2.5 flex flex-col items-center gap-1 text-on-surface-variant" data-step-target="1">
           <span class="stepper-number"><span>2</span></span>
           <span class="stepper-label text-[11px] font-semibold uppercase tracking-wider">Children</span>
         </button>
-        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-3 flex flex-col items-center gap-1.5 text-on-surface-variant" data-step-target="2">
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-2.5 flex flex-col items-center gap-1 text-on-surface-variant" data-step-target="2">
           <span class="stepper-number"><span>3</span></span>
           <span class="stepper-label text-[11px] font-semibold uppercase tracking-wider">Preferences</span>
         </button>
-        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-3 flex flex-col items-center gap-1.5 text-on-surface-variant" data-step-target="3">
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-2.5 flex flex-col items-center gap-1 text-on-surface-variant" data-step-target="3">
           <span class="stepper-number"><span>4</span></span>
           <span class="stepper-label text-[11px] font-semibold uppercase tracking-wider">Finish</span>
         </button>
       </div>
     </section>
 
-    <section data-step="0" class="space-y-10">
-      <div class="space-y-10">
+    <section data-step="0" class="space-y-8">
+      <div class="space-y-8">
         <div class="group">
           <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="parentNameInput">Your first name</label>
-          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
+          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-3.5 text-[1.4rem] font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
         </div>
         <div>
           <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="childCountInput">How many children?</label>
-          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-xl font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
+          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-3.5 text-[1.4rem] font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
             <option value="1">1 child</option>
             <option value="2">2 children</option>
             <option value="3">3 children</option>
@@ -156,37 +156,37 @@
       </div>
     </section>
 
-    <section data-step="1" class="hidden space-y-6">
+    <section data-step="1" class="hidden space-y-5">
       <div id="childrenList" class="space-y-4"></div>
-      <section class="wizard-card bg-secondary-container p-6 flex gap-4 items-start">
+      <section class="wizard-card bg-secondary-container p-5 flex gap-4 items-start">
         <span class="material-symbols-outlined text-on-secondary-container">info</span>
         <p id="childLimitHint" class="text-on-secondary-container text-sm font-medium"></p>
       </section>
     </section>
 
-    <section data-step="2" class="hidden grid grid-cols-1 gap-6">
-      <div id="preferencesGrid" class="grid grid-cols-1 gap-6"></div>
-      <section class="wizard-card p-6 bg-secondary-container flex gap-4 items-center">
+    <section data-step="2" class="hidden grid grid-cols-1 gap-5">
+      <div id="preferencesGrid" class="grid grid-cols-1 gap-5"></div>
+      <section class="wizard-card p-5 bg-secondary-container flex gap-4 items-center">
         <span class="material-symbols-outlined text-on-secondary-container">info</span>
         <p class="text-on-secondary-container text-sm font-medium">You can change these at any time from Settings.</p>
       </section>
     </section>
 
     <section data-step="3" class="hidden">
-      <div class="text-center mb-10">
+      <div class="text-center mb-8">
         <div class="relative inline-block mb-6">
           <div class="w-20 h-20 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary mx-auto">
             <span class="material-symbols-outlined text-5xl active-icon">check_circle</span>
           </div>
           <div class="absolute -top-2 -right-4 text-tertiary-container">
-            <span class="material-symbols-outlined text-2xl">celebration</span>
+            <span class="text-2xl" aria-hidden="true">🎉</span>
           </div>
         </div>
         <h2 class="text-3xl font-extrabold text-on-surface mb-3 tracking-tight font-headline">You're all set!</h2>
         <p id="finishIntro" class="text-on-surface-variant leading-relaxed">We'll tailor reviews to your family from the start.</p>
       </div>
 
-      <div class="bg-surface-container-low p-1 rounded-full overflow-hidden mb-8">
+      <div class="bg-surface-container-low p-1 rounded-full overflow-hidden mb-6">
         <div class="bg-surface-container-lowest p-8 rounded-full border border-outline-variant/10">
           <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="relative shrink-0">
@@ -208,7 +208,7 @@
         </div>
       </div>
 
-      <div class="space-y-4" id="summaryChildren"></div>
+      <div class="space-y-3" id="summaryChildren"></div>
       <div id="summaryPlanNote" class="mt-6 bg-surface-container-low p-6 rounded-xl border-l-4 border-tertiary text-sm leading-relaxed text-on-surface-variant"></div>
     </section>
   </div>
@@ -216,13 +216,13 @@
 
 <footer class="fixed bottom-0 w-full bg-slate-50 z-50 border-t border-slate-200/20">
   <div class="w-full flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
-    <button id="backBtn" class="flex items-center justify-center text-slate-500 px-5 py-3 gap-2 text-sm font-semibold uppercase tracking-wider hover:opacity-70 transition-opacity">
+    <button id="backBtn" class="flex items-center justify-center text-slate-500 px-5 py-2.5 gap-2 text-sm font-semibold uppercase tracking-wider hover:opacity-70 transition-opacity">
       <span class="material-symbols-outlined">arrow_back</span>
       Back
     </button>
     <div class="flex flex-col items-end gap-1">
       <p id="statusMsg" class="text-xs text-on-surface-variant min-h-[1rem]"></p>
-      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 text-white rounded-lg px-6 py-3 gap-2 transition-all hover:bg-slate-800 active:translate-y-0.5 text-sm font-semibold uppercase tracking-wider">
+      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 text-white rounded-lg px-6 py-2.5 gap-2 transition-all hover:bg-slate-800 active:translate-y-0.5 text-sm font-semibold uppercase tracking-wider">
         <span class="material-symbols-outlined">arrow_forward</span>
         Continue
       </button>
