@@ -6,13 +6,13 @@
  * DELETE — delete a note (?id=)
  */
 
-import { requireAuth, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { requireFamily, jsonResponse, handleOptions } from '../_shared/clerk.js';
 
 const VALID_NOTE_TYPES = ['observation', 'approval', 'caution'];
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requireFamily(request, env);
   if (error) return error;
 
   const url = new URL(request.url);
@@ -46,7 +46,7 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requireFamily(request, env);
   if (error) return error;
 
   let body;
@@ -90,7 +90,7 @@ export async function onRequestPost(context) {
 
 export async function onRequestPut(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requireFamily(request, env);
   if (error) return error;
 
   const url = new URL(request.url);
@@ -133,7 +133,7 @@ export async function onRequestPut(context) {
 
 export async function onRequestDelete(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requireFamily(request, env);
   if (error) return error;
 
   const url = new URL(request.url);

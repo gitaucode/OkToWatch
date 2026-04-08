@@ -63,6 +63,9 @@ tailwind.config = {
   .toast { position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,26,24,0.92);color:white;backdrop-filter:blur(12px);padding:0.65rem 1.25rem;border-radius:100px;font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.25s ease;pointer-events:none;z-index:999;white-space:nowrap; }
   .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
 
+  /* Family notes */
+  .note-type-btn.active { border-color:#565e74; background:#dae2fd; color:#4a5167; }
+
   /* Hide auth.js injected nav */
   #nav-root * { visibility:hidden!important; }
   #nav-root .cv-search-modal,
@@ -170,6 +173,20 @@ tailwind.config = {
         </div>
       </section>
 
+      <section>
+        <div class="flex items-center justify-between gap-4 mb-6 border-b border-surface-variant pb-2">
+          <h2 class="text-xs font-bold text-outline uppercase tracking-widest">Family Notes</h2>
+          <span class="text-[11px] font-semibold uppercase tracking-widest text-outline">Family Plan</span>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6" id="familyNotesSection">
+          <div class="space-y-4" id="notesContent">
+            <div class="skel h-5 w-32"></div>
+            <div class="skel h-24 w-full"></div>
+            <div class="skel h-20 w-full"></div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
     <!-- â”€â”€ Sidebar (col-span-4) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
@@ -272,10 +289,14 @@ const _type   = _params.get('type') || _params.get('searchType') || 'movie';
 let _details  = null;
 let _breakdown= null;
 let _lists    = [];
+let _notes    = [];
 let _inWatchlist = false;
+let _authState = { loggedIn: false, isFamily: false, tier: 'free', user: null };
+let _notesLoading = false;
 
 // â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener('cv:auth', ({ detail }) => {
+  _authState = detail || _authState;
   if (!detail.loggedIn) {
     // Allow unauthenticated browsing on detail page â€” just no save actions
   }
@@ -300,6 +321,11 @@ document.addEventListener('cv:auth', ({ detail }) => {
         }).catch(() => {});
     });
   }
+
+  renderNotesSection();
+  if (detail.loggedIn && detail.isFamily) {
+    loadNotes();
+  }
 });
 
 let _clerkToken = null;
@@ -307,6 +333,251 @@ let _clerkToken = null;
 async function getToken() {
   if (!window.Clerk?.session) return null;
   try { return await window.Clerk.session.getToken(); } catch { return null; }
+}
+
+function formatNoteTypeLabel(type) {
+  const map = { observation: 'Observation', approval: 'Approved', caution: 'Caution' };
+  return map[type] || 'Note';
+}
+
+function formatNoteDate(value) {
+  if (!value) return 'Just now';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Just now';
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function currentNoteType() {
+  return document.querySelector('.note-type-btn.active')?.dataset.type || 'observation';
+}
+
+function setNoteType(type) {
+  document.querySelectorAll('.note-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+}
+
+function renderNotesSection() {
+  const root = document.getElementById('notesContent');
+  if (!root) return;
+
+  if (!_authState.loggedIn) {
+    root.innerHTML = `
+      <div class="space-y-3">
+        <h3 class="text-lg font-bold text-on-surface">Shared caregiver notes</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">Sign in with your Family plan to keep shared observations, approvals, and cautions on every title.</p>
+        <div class="flex gap-3 flex-wrap">
+          <a href="/sign-in" class="inline-flex items-center justify-center rounded-xl bg-[#0F172A] text-white px-4 py-2.5 text-sm font-bold no-underline hover:bg-slate-800 transition-colors">Sign in</a>
+          <a href="/plans" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 no-underline hover:bg-slate-50 transition-colors">See Family plan</a>
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (!_authState.isFamily) {
+    root.innerHTML = `
+      <div class="space-y-3">
+        <h3 class="text-lg font-bold text-on-surface">Family-only shared notes</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">Keep one place for caregiver notes on what felt fine, what needs context, and what to skip next time.</p>
+        <a href="/plans" class="inline-flex items-center justify-center rounded-xl bg-[#0F172A] text-white px-4 py-2.5 text-sm font-bold no-underline hover:bg-slate-800 transition-colors">Upgrade to Family</a>
+      </div>`;
+    return;
+  }
+
+  const notesMarkup = _notesLoading
+    ? `
+      <div class="space-y-3">
+        <div class="skel h-5 w-28"></div>
+        <div class="skel h-24 w-full"></div>
+        <div class="skel h-20 w-full"></div>
+      </div>`
+    : (_notes.length
+      ? `<div class="space-y-3">${_notes.map(note => `
+          <article class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${
+                    note.note_type === 'approval'
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : note.note_type === 'caution'
+                        ? 'bg-amber-50 text-amber-700'
+                        : 'bg-slate-100 text-slate-700'
+                  }">${formatNoteTypeLabel(note.note_type)}</span>
+                  ${note.is_pinned ? '<span class="inline-flex items-center rounded-full bg-primary-container px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-on-primary-container">Pinned</span>' : ''}
+                  <span class="text-xs text-on-surface-variant">${formatNoteDate(note.created_at)}</span>
+                </div>
+                <p class="mt-3 text-sm leading-relaxed text-on-surface">${esc(note.message)}</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors" onclick="toggleNotePin('${esc(note.id)}', ${note.is_pinned ? 'true' : 'false'})">${note.is_pinned ? 'Unpin' : 'Pin'}</button>
+                <button type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors" onclick="deleteNote('${esc(note.id)}')">Delete</button>
+              </div>
+            </div>
+          </article>
+        `).join('')}</div>`
+      : '<div class="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-on-surface-variant">No family notes yet. Add the first note below so future decisions are faster.</div>');
+
+  root.innerHTML = `
+    <div class="space-y-5">
+      <div>
+        <h3 class="text-lg font-bold text-on-surface">Shared caregiver notes</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">Capture what mattered for your household on this title so the next decision takes seconds.</p>
+      </div>
+      <form class="space-y-4" id="familyNoteForm">
+        <div class="flex gap-2 flex-wrap">
+          <button type="button" class="note-type-btn active rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors" data-type="observation">Observation</button>
+          <button type="button" class="note-type-btn rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors" data-type="approval">Approved</button>
+          <button type="button" class="note-type-btn rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors" data-type="caution">Caution</button>
+        </div>
+        <div class="space-y-2">
+          <textarea id="familyNoteMessage" rows="4" maxlength="500" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-on-surface placeholder:text-slate-400 focus:border-primary focus:ring-primary" placeholder="Example: Fine for our 9-year-old, but the third act got intense and needed a quick pause."></textarea>
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-xs text-on-surface-variant">Shared across your Family workspace for this title.</p>
+            <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-[#0F172A] text-white px-4 py-2.5 text-sm font-bold hover:bg-slate-800 transition-colors">Save note</button>
+          </div>
+        </div>
+      </form>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <h4 class="text-sm font-bold uppercase tracking-wider text-outline">Saved notes</h4>
+          <span class="text-xs text-on-surface-variant">${_notes.length} note${_notes.length === 1 ? '' : 's'}</span>
+        </div>
+        ${notesMarkup}
+      </div>
+    </div>`;
+
+  document.querySelectorAll('.note-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => setNoteType(btn.dataset.type));
+  });
+
+  const form = document.getElementById('familyNoteForm');
+  if (form) {
+    form.addEventListener('submit', saveNote);
+  }
+}
+
+async function loadNotes() {
+  if (!_authState.loggedIn || !_authState.isFamily || !_tmdbId) {
+    renderNotesSection();
+    return;
+  }
+
+  _notesLoading = true;
+  renderNotesSection();
+
+  try {
+    const tok = await getToken();
+    if (!tok) throw new Error('Missing token');
+
+    const res = await fetch(`/api/notes?tmdb_id=${encodeURIComponent(_tmdbId)}&media_type=${encodeURIComponent(_type)}`, {
+      headers: { 'Authorization': 'Bearer ' + tok }
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Could not load notes');
+    }
+
+    _notes = await res.json();
+  } catch (e) {
+    console.error('Notes load failed:', e);
+    showToast('Could not load family notes');
+  } finally {
+    _notesLoading = false;
+    renderNotesSection();
+  }
+}
+
+async function saveNote(event) {
+  event.preventDefault();
+  const input = document.getElementById('familyNoteMessage');
+  const message = (input?.value || '').trim();
+  if (!message) {
+    showToast('Add a note before saving');
+    return;
+  }
+
+  try {
+    const tok = await getToken();
+    if (!tok) throw new Error('Missing token');
+
+    const res = await fetch('/api/notes', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + tok,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        tmdb_id: _tmdbId,
+        media_type: _type,
+        note_type: currentNoteType(),
+        message
+      })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Could not save note');
+
+    _notes = [data, ..._notes];
+    input.value = '';
+    setNoteType('observation');
+    renderNotesSection();
+    showToast('Family note saved');
+  } catch (e) {
+    console.error('Save note failed:', e);
+    showToast(e.message || 'Could not save note');
+  }
+}
+
+async function toggleNotePin(noteId, isPinned) {
+  try {
+    const tok = await getToken();
+    if (!tok) throw new Error('Missing token');
+
+    const res = await fetch(`/api/notes?id=${encodeURIComponent(noteId)}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + tok,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ is_pinned: !isPinned })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Could not update note');
+
+    _notes = _notes
+      .map(note => note.id === noteId ? data : note)
+      .sort((a, b) => Number(b.is_pinned) - Number(a.is_pinned) || new Date(b.created_at) - new Date(a.created_at));
+    renderNotesSection();
+    showToast(data.is_pinned ? 'Note pinned' : 'Note unpinned');
+  } catch (e) {
+    console.error('Pin note failed:', e);
+    showToast(e.message || 'Could not update note');
+  }
+}
+
+async function deleteNote(noteId) {
+  try {
+    const tok = await getToken();
+    if (!tok) throw new Error('Missing token');
+
+    const res = await fetch(`/api/notes?id=${encodeURIComponent(noteId)}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + tok }
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Could not delete note');
+
+    _notes = _notes.filter(note => note.id !== noteId);
+    renderNotesSection();
+    showToast('Note deleted');
+  } catch (e) {
+    console.error('Delete note failed:', e);
+    showToast(e.message || 'Could not delete note');
+  }
 }
 
 // â”€â”€ Main load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
