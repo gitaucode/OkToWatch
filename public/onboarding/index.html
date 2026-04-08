@@ -139,6 +139,8 @@
     main { padding-left: 1rem; padding-right: 1rem; }
     .stepper-label { display: none; }
     .finish-poster-card { min-height: 15rem; }
+    #summaryPreferences { gap: 0.5rem; }
+    .summary-chip { padding: 0.55rem 0.8rem; font-size: 0.75rem; }
   }
 </style>
 </head>
@@ -214,7 +216,7 @@
           </div>
           <div>
             <h4 class="font-headline font-bold text-on-surface mb-1">Why this helps</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">We’ll use this to personalize your dashboard, save setup time later, and make recommendations feel less generic from the start.</p>
+            <p class="text-on-surface-variant text-sm leading-relaxed">We'll use this to personalize your dashboard, save setup time later, and make recommendations feel less generic from the start.</p>
           </div>
         </section>
       </div>
@@ -254,7 +256,7 @@
             <div class="w-12 h-12 rounded-full bg-tertiary text-white flex items-center justify-center">
               <span class="material-symbols-outlined text-3xl active-icon">check</span>
             </div>
-            <span class="absolute -right-3 -top-2 text-2xl" aria-hidden="true">🎉</span>
+            <span class="absolute -right-3 -top-2 text-2xl" aria-hidden="true">&#x1F389;</span>
           </div>
           <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight font-headline mb-4">You're All Set!</h2>
           <p id="finishIntro" class="text-on-surface-variant text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">We've tailored the movie library to ensure a safe and magical experience for your family.</p>
@@ -907,4 +909,5 @@ document.addEventListener('cv:auth', async ({ detail }) => {
 </script>
 </body>
 </html>
+
 
