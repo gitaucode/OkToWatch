@@ -63,11 +63,28 @@ tailwind.config = {
   .outcome-approved { background:#c8e6d9;color:#004d39; }
   .outcome-blocked { background:#ffcccb;color:#9f403d; }
   .outcome-flagged { background:#fff4d6;color:#f57f17; }
+  @media (max-width: 767px) {
+    .history-filters {
+      gap: 0.75rem;
+    }
+    .history-reset-btn {
+      width: 100%;
+    }
+    .history-stats {
+      gap: 1rem;
+    }
+    .activity-table td {
+      padding: 0.85rem 0.75rem;
+      font-size: 0.82rem;
+    }
+  }
 </style>
 </head>
-<body class="bg-background text-on-surface" data-page="dashboard">
+<body class="bg-background text-on-surface" data-page="history">
 
 <div id="nav-root"></div>
+<div class="cv-dashboard-layout pt-16">
+<div id="dashboard-sidebar-root"></div>
 
 <!-- ── Skeleton loader ──────────────────────────────────────────────────── -->
 <div id="pageLoader">
@@ -89,7 +106,8 @@ tailwind.config = {
 
 <!-- ── Page content ─────────────────────────────────────────────────────── -->
 <div id="pageContent">
-<main class="pt-16 pb-12 max-w-5xl mx-auto px-8 space-y-8">
+<main class="cv-dashboard-main pb-12 px-4 md:px-8">
+<div class="cv-dashboard-content cv-dashboard-content--narrow space-y-8">
 
   <!-- ── Header ────────────────────────────────────────────────────────── -->
   <header class="space-y-2">
@@ -98,7 +116,7 @@ tailwind.config = {
   </header>
 
   <!-- ── Filters ────────────────────────────────────────────────────────── -->
-  <div class="flex flex-col md:flex-row gap-4">
+  <div class="history-filters flex flex-col md:flex-row gap-4">
     <!-- Profile filter -->
     <div class="flex-1">
       <label class="block text-xs font-semibold text-on-surface-variant mb-1.5 uppercase">Child Profile</label>
@@ -116,7 +134,7 @@ tailwind.config = {
         <option value="all">All Time</option>
       </select>
     </div>
-    <button onclick="resetFilters()" class="md:mt-6 px-4 py-2.5 rounded-xl font-medium text-sm bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors">Reset</button>
+    <button onclick="resetFilters()" class="history-reset-btn md:mt-6 px-4 py-2.5 rounded-xl font-medium text-sm bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors">Reset</button>
   </div>
 
   <!-- ── Activity Table ────────────────────────────────────────────────── -->
@@ -140,7 +158,7 @@ tailwind.config = {
   </section>
 
   <!-- ── Insights Grid ────────────────────────────────────────────────── -->
-  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <section class="history-stats grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Safety Health metric -->
     <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 space-y-2">
       <div class="flex items-center justify-between">
@@ -171,11 +189,13 @@ tailwind.config = {
     </div>
   </section>
 
+</div>
 </main>
+</div>
+</div><!-- end #pageContent -->
 
 <!-- Footer -->
 <div id="footer-root"></div>
-</div><!-- end #pageContent -->
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -441,6 +461,7 @@ function escapeHtml(s){
     .replace(/'/g,'&#39;');
 }
 </script>
-<script src="/js/auth.js?v=20260406"></script>
+<script src="/js/dashboard-sidebar.js?v=dev"></script>
+<script src="/js/auth.js?v=dev"></script>
 </body>
 </html>

@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<!-- Clerk preload — start fetching before anything else -->
 <link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin/>
 <link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev"/>
 <link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin/>
@@ -27,150 +26,134 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
-<title>Create Account — OkToWatch</title>
-<meta name="description" content="Create a free OkToWatch account. Search unlimited movies and TV shows, get AI-powered content breakdowns, and keep your family safe."/>
+<title>Create Account - OkToWatch</title>
+<meta name="description" content="Create a free OkToWatch account. Search unlimited movies and TV shows, get content breakdowns, and keep your family safe."/>
 <meta property="og:image" content="https://oktowatch.com/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="/js/tailwind-theme.js"></script>
+<script src="/js/tailwind-theme.js?v=dev"></script>
 <style>
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-  body { font-family: 'Inter', sans-serif; }
-  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-  /* Shimmer skeleton */
-  .skel {
-    background: linear-gradient(90deg, #ebeef0 25%, #f2f4f5 50%, #ebeef0 75%);
-    background-size: 200% 100%; border-radius: 10px; animation: shimmer 1.4s infinite;
-  }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-  /* Clerk host: hidden until loaded */
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align: middle; }
+  body { font-family:'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family:'Plus Jakarta Sans', sans-serif; }
+  .skel { background: linear-gradient(90deg, #ebeef0 25%, #f2f4f5 50%, #ebeef0 75%); background-size: 200% 100%; border-radius: 10px; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   .clerk-host { display: none; }
   .clerk-host.ready { display: block; animation: fadeIn 0.3s ease forwards; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-  /* Fade-up */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-  .fade-up { opacity: 0; animation: fadeUp 0.35s ease forwards; }
-
-  /* nav-root: minimal header, no full nav on this focus page */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   #nav-root { display: none; }
 </style>
 </head>
-<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col" data-page="signup">
-
+<body class="bg-background text-on-surface antialiased min-h-screen" data-page="signup">
 <div id="nav-root" aria-hidden="true"></div>
 
-<!-- Minimal focus header -->
-<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-outline-variant/10 h-16 flex items-center justify-center px-6">
-  <a href="/index" class="flex items-center gap-2 group">
-    <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary-dim transition-colors">
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="3" fill="white"/>
-        <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
-      </svg>
-    </div>
-    <span class="font-headline text-lg font-extrabold tracking-tighter text-on-surface">Ok<span class="text-primary">ToWatch</span></span>
-  </a>
-</header>
-
-<!-- Background blobs -->
-<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-  <div class="absolute -top-32 -left-32 w-96 h-96 bg-tertiary/5 rounded-full blur-3xl"></div>
-  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-</div>
-
-<!-- Main auth content -->
-<main class="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12 relative z-10">
-  <div class="w-full max-w-[480px]">
-
-    <!-- Heading -->
-    <div class="fade-up text-center mb-8" style="animation-delay:0.02s;">
-      <h1 class="text-4xl font-extrabold tracking-tighter text-on-surface mb-3 leading-tight">
-        Create your family account
-      </h1>
-      <p class="text-on-surface-variant text-sm leading-relaxed opacity-80">
-        Start making safer viewing choices for your household today.
-      </p>
-    </div>
-
-    <!-- Auth card -->
-    <div class="fade-up" style="animation-delay:0.06s;">
-      <div class="bg-surface-container-lowest border border-outline-variant/15 rounded-2xl shadow-[0_10px_40px_-10px_rgba(86,94,116,0.12)]">
-
-        <!-- Skeleton shown while Clerk loads -->
-        <div id="clerkSkeleton" class="p-8 md:p-10 space-y-5">
-          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
-          <!-- Social skeletons -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="skel h-11 rounded-xl"></div>
-            <div class="skel h-11 rounded-xl"></div>
+<div class="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8">
+  <div class="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-7xl overflow-hidden rounded-[24px] sm:rounded-[32px] border border-outline-variant/15 bg-surface-container-lowest shadow-[0_24px_80px_-36px_rgba(45,51,54,0.28)] lg:min-h-[calc(100vh-4rem)]">
+    <section class="relative hidden overflow-hidden lg:flex lg:w-[44%] xl:w-[42%]">
+      <img src="/images/family-moments-green.webp" alt="Parent and child relaxing together on a sofa while planning family viewing time." class="absolute inset-0 h-full w-full object-cover"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/15 to-transparent"></div>
+      <div class="relative z-10 flex h-full flex-col justify-between p-8 text-white xl:p-10">
+        <a href="/index" class="inline-flex items-center gap-3 self-start rounded-full bg-white/15 px-4 py-2 backdrop-blur-md">
+          <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="h-8 w-8 rounded-[10px] object-contain"/>
+          <span class="inline-flex items-baseline text-lg tracking-[-0.03em]"><span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span></span>
+        </a>
+        <div>
+          <div class="mb-4 text-[11px] font-bold uppercase tracking-[0.28em] text-white/75">Family Setup</div>
+          <h1 class="max-w-md text-4xl font-extrabold leading-tight tracking-tight xl:text-5xl">Create a calmer movie-night routine from day one.</h1>
+          <p class="mt-5 max-w-md text-base leading-relaxed text-white/82">
+            Build your household account once, then keep recommendations, lists, and verdicts aligned with how your family actually watches together.
+          </p>
+          <div class="mt-8 space-y-4">
+            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">search</span></span>
+              Search titles and jump straight to the verdict page.
+            </div>
+            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">playlist_add_check</span></span>
+              Save approved picks and avoid rechecking the same title.
+            </div>
+            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">shield</span></span>
+              Upgrade later for profiles, filters, and family sharing.
+            </div>
           </div>
-          <!-- Divider -->
-          <div class="relative flex items-center gap-3 py-1">
-            <div class="flex-1 h-px bg-outline-variant/20"></div>
-            <div class="skel h-3 w-24 rounded-full"></div>
-            <div class="flex-1 h-px bg-outline-variant/20"></div>
-          </div>
-          <!-- Name row -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="skel h-12 rounded-xl"></div>
-            <div class="skel h-12 rounded-xl"></div>
-          </div>
-          <!-- Email + password -->
-          <div class="skel h-3 w-28 rounded-full"></div>
-          <div class="skel h-12 rounded-xl"></div>
-          <div class="skel h-3 w-28 rounded-full"></div>
-          <div class="skel h-12 rounded-xl"></div>
-          <!-- Submit -->
-          <div class="skel h-13 rounded-xl mt-2"></div>
-          <div class="skel h-3 w-52 rounded-full mx-auto mt-3"></div>
         </div>
-
-        <!-- Clerk mounts here -->
-        <div class="clerk-host" id="clerk-signup"></div>
-
+        <div class="inline-flex items-center gap-3 self-start rounded-2xl bg-white/14 px-4 py-3 backdrop-blur-md">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">auto_awesome</span></span>
+          <div>
+            <div class="text-sm font-bold">Start free, upgrade when you need more</div>
+            <div class="text-xs text-white/72">The account grows with your family.</div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Sign in link -->
-    <div class="fade-up mt-7 text-center" style="animation-delay:0.1s;">
-      <p class="text-on-surface-variant text-sm">
-        Already have an account?
-        <a href="/signin" class="text-primary font-bold hover:underline underline-offset-4 ml-1">Login instead</a>
-      </p>
-    </div>
+    <section class="flex w-full flex-col lg:w-[56%] xl:w-[58%]">
+      <header class="flex items-center justify-between border-b border-outline-variant/10 px-4 py-3 sm:px-8 sm:py-4">
+        <a href="/index" class="inline-flex items-center gap-3 lg:hidden">
+          <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="h-8 w-8 rounded-[10px] object-contain"/>
+          <span class="inline-flex items-baseline text-base tracking-[-0.03em]"><span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span></span>
+        </a>
+        <div class="hidden lg:block"></div>
+        <a href="/index" class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high" aria-label="Close">
+          <span class="material-symbols-outlined">close</span>
+        </a>
+      </header>
 
-    <!-- Pro nudge -->
-    <div class="fade-up mt-4" style="animation-delay:0.13s;">
-      <div class="flex items-center gap-3 bg-surface-container border border-outline-variant/15 rounded-xl px-4 py-3 text-sm text-on-surface-variant">
-        <span class="text-base flex-shrink-0">🌟</span>
-        <span>Upgrade to <a href="/plans" class="text-primary font-semibold hover:underline underline-offset-2">Pro or Family</a> to save lists, manage child profiles, and unlock family sharing.</span>
-      </div>
-    </div>
+      <main class="flex flex-1 items-center justify-center px-4 py-8 sm:px-8 sm:py-10 lg:px-10 xl:px-14">
+        <div class="w-full max-w-xl">
+          <div class="mb-8">
+            <div class="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-primary">Create Account</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-on-surface">Set up your OkToWatch account</h2>
+            <p class="mt-4 max-w-lg text-base leading-relaxed text-on-surface-variant">
+              Start making safer viewing decisions with one place for title checks, recommendations, and future family profiles.
+            </p>
+          </div>
 
-  </div>
-</main>
+          <div class="rounded-[28px] border border-outline-variant/15 bg-white shadow-[0_18px_55px_-32px_rgba(45,51,54,0.2)]">
+            <div id="clerkSkeleton" class="space-y-5 p-6 sm:p-10">
+              <p class="slow-msg hidden py-1 text-center text-xs text-on-surface-variant">Taking longer than usual... check your connection.</p>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="skel h-11 rounded-xl"></div>
+                <div class="skel h-11 rounded-xl"></div>
+              </div>
+              <div class="relative flex items-center gap-3 py-1">
+                <div class="flex-1 h-px bg-outline-variant/20"></div>
+                <div class="skel h-3 w-24 rounded-full"></div>
+                <div class="flex-1 h-px bg-outline-variant/20"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="skel h-12 rounded-xl"></div>
+                <div class="skel h-12 rounded-xl"></div>
+              </div>
+              <div class="skel h-3 w-28 rounded-full"></div>
+              <div class="skel h-12 rounded-xl"></div>
+              <div class="skel h-3 w-28 rounded-full"></div>
+              <div class="skel h-12 rounded-xl"></div>
+              <div class="skel mt-2 h-13 rounded-xl"></div>
+              <div class="skel mx-auto mt-3 h-3 w-52 rounded-full"></div>
+            </div>
+            <div class="clerk-host" id="clerk-signup"></div>
+          </div>
 
-<!-- Footer -->
-<div id="footer-root"></div>
+          <div class="mt-6 text-center text-sm text-on-surface-variant">
+            Already have an account?
+            <a href="/signin" class="ml-1 font-bold text-primary hover:underline underline-offset-4">Log in instead</a>
+          </div>
 
-<!-- Privacy First floating trust badge (desktop only) -->
-<div class="hidden lg:block fixed bottom-8 right-8 max-w-xs p-5 bg-tertiary-container/30 backdrop-blur-sm rounded-2xl border border-tertiary/10 z-20 shadow-sm">
-  <div class="flex items-start gap-3">
-    <div class="bg-tertiary text-on-tertiary p-2 rounded-full flex-shrink-0">
-      <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">verified_user</span>
-    </div>
-    <div>
-      <h4 class="font-headline font-bold text-on-tertiary-container text-sm mb-1">Privacy First</h4>
-      <p class="text-xs text-on-tertiary-container/80 leading-relaxed">Your family's viewing data is encrypted and never shared with third-party advertisers.</p>
-    </div>
+          <div class="mt-5 rounded-2xl border border-outline-variant/15 bg-surface-container-low px-4 py-4 text-sm text-on-surface-variant">
+            Family tools like child profiles, saved lists, and shared guidance are available once you are ready to upgrade.
+          </div>
+        </div>
+      </main>
+    </section>
   </div>
 </div>
+
+<div id="footer-root"></div>
 
 <script>
 (function () {
@@ -202,47 +185,36 @@
       signInUrl: '/signin',
       appearance: {
         variables: {
-          colorPrimary:    '#565e74',
+          colorPrimary: '#565e74',
           colorBackground: '#ffffff',
-          colorText:       '#2d3336',
-          borderRadius:    '12px',
-          fontFamily:      'Inter, sans-serif',
-          fontSize:        '15px',
+          colorText: '#2d3336',
+          borderRadius: '16px',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '15px',
         },
         elements: {
-          card:              { boxShadow: 'none', borderRadius: '0', padding: '2rem 2.5rem' },
-          headerTitle:       { display: 'none' },
-          headerSubtitle:    { display: 'none' },
-          formButtonPrimary: {
-            backgroundColor: '#565e74',
-            fontFamily:      'Plus Jakarta Sans, sans-serif',
-            fontWeight:      '700',
-            borderRadius:    '12px',
-            textTransform:   'none',
-            fontSize:        '1rem',
-          },
-          footerActionLink:  { color: '#565e74', fontWeight: '600' },
-          socialButtonsBlockButton: { borderRadius: '12px' },
-          formFieldInput:    { borderRadius: '12px' },
+          card: { boxShadow: 'none', borderRadius: '0', padding: '2rem 2.5rem' },
+          headerTitle: { display: 'none' },
+          headerSubtitle: { display: 'none' },
+          formButtonPrimary: { backgroundColor: '#111827', fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: '700', borderRadius: '14px', textTransform: 'none', fontSize: '1rem' },
+          footerActionLink: { color: '#565e74', fontWeight: '600' },
+          socialButtonsBlockButton: { borderRadius: '14px' },
+          formFieldInput: { borderRadius: '14px' },
         }
       }
     });
 
-    // Poll until Clerk card appears, then swap skeleton → real form
     const poll = setInterval(() => {
       const card = document.querySelector('#clerk-signup .cl-card, #clerk-signup [data-localization-key]');
       if (card) { clearInterval(poll); showClerk(); }
     }, 80);
 
-    // Hard fallback after 2.5s
     setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);
   }
 
-  document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded', boot)
-    : boot();
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
 })();
 </script>
-<script src="/js/auth.js?v=20260405"></script>
+<script src="/js/auth.js?v=dev"></script>
 </body>
 </html>

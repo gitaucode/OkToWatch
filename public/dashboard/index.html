@@ -111,7 +111,7 @@
 
 <!-- ── Skeleton loader ──────────────────────────────────────────────── -->
 <div id="pageLoader">
-  <div class="flex pt-16">
+  <div class="cv-dashboard-layout pt-16">
     <!-- Sidebar skel -->
     <div class="hidden md:flex flex-col h-[calc(100vh-64px)] w-64 bg-slate-50 border-r border-slate-200 p-4 space-y-4 fixed left-0 top-16">
       <div class="skel h-8 w-40 rounded-lg mt-2"></div>
@@ -147,59 +147,18 @@
 
 <!-- ── Page content ──────────────────────────────────────────────────── -->
 <div id="pageContent">
-  <div class="flex pt-16">
+  <div class="cv-dashboard-layout pt-16">
 
     <!-- ── Left Sidebar ─────────────────────────────────────────────── -->
-    <aside class="hidden md:flex flex-col h-[calc(100vh-64px)] w-64 bg-slate-50 border-r border-slate-200 p-4 space-y-6 fixed left-0 top-16 overflow-y-auto no-scrollbar">
-      <div class="px-2">
-        <div class="flex items-center gap-3 mb-1">
-          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings:'FILL' 1;">security</span>
-          <span class="text-lg font-bold text-slate-800 font-headline">Guardian Hub</span>
-        </div>
-        <p class="text-xs text-slate-500 font-medium tracking-wide uppercase px-1">Family Management</p>
-      </div>
+    <div id="dashboard-sidebar-root"></div>
 
-      <nav class="flex-1 space-y-1">
-        <a class="flex items-center gap-3 px-3 py-2.5 bg-white text-slate-900 font-semibold rounded-lg shadow-sm transition-all no-underline" href="/dashboard">
-          <span class="material-symbols-outlined">face</span>
-          <span class="text-sm">Child Profiles</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-100 hover:translate-x-1 rounded-lg transition-all no-underline" href="/lists">
-          <span class="material-symbols-outlined">bookmark</span>
-          <span class="text-sm">Watchlists</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-100 hover:translate-x-1 rounded-lg transition-all no-underline" href="/settings">
-          <span class="material-symbols-outlined">security</span>
-          <span class="text-sm">Safety Filters</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-100 hover:translate-x-1 rounded-lg transition-all no-underline" href="/history">
-          <span class="material-symbols-outlined">history</span>
-          <span class="text-sm">History</span>
-        </a>
-      </nav>
 
       <!-- Add Child Profile button — tier-aware -->
-      <button
-        id="sidebarAddProfileBtn"
-        class="w-full bg-primary text-on-primary py-3 rounded-lg font-bold text-sm shadow-sm hover:opacity-90 transition-opacity"
-        onclick="window._addProfileAction && window._addProfileAction()">
-        Add Child Profile
-      </button>
 
-      <div class="pt-4 border-t border-slate-200 space-y-1">
-        <a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-all no-underline" href="/how-it-works">
-          <span class="material-symbols-outlined">help</span>
-          <span class="text-sm">Help Center</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-all no-underline" href="/signin">
-          <span class="material-symbols-outlined">logout</span>
-          <span class="text-sm">Log Out</span>
-        </a>
-      </div>
-    </aside>
 
     <!-- ── Main Content Canvas ──────────────────────────────────────── -->
-    <main class="flex-1 ml-0 md:ml-64 p-6 md:p-8 bg-background pb-24 md:pb-12">
+    <main class="cv-dashboard-main p-6 md:p-8 bg-background pb-24 md:pb-12">
+      <div class="cv-dashboard-content">
 
       <!-- Hero Header -->
       <header class="mb-10">
@@ -259,7 +218,7 @@
 
       <!-- ── Family Profiles Section ────────────────────────────────── -->
       <section class="mb-14">
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
           <h3 class="text-2xl font-bold font-headline text-on-surface">
             Family Profiles
             <span id="profilesPremiumBadge" class="hidden text-[10px] font-bold text-primary bg-primary-container px-2 py-0.5 rounded-full ml-2 normal-case tracking-normal align-middle">Free</span>
@@ -267,7 +226,7 @@
           <a href="/settings" class="text-primary font-semibold text-sm hover:underline no-underline">Manage Settings</a>
         </div>
         <!-- JS renders profile cards here -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5" id="profilesGrid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="profilesGrid">
           <p class="text-xs text-on-surface-variant col-span-full">Loading profiles…</p>
         </div>
       </section>
@@ -277,12 +236,12 @@
 
         <!-- Weekly Safe Picks / Trending (wider column) -->
         <div class="lg:col-span-2">
-          <div class="flex items-center justify-between mb-6">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
             <div>
               <h3 class="text-2xl font-bold font-headline text-on-surface" id="trendingLabel">Weekly Safe Picks</h3>
               <p class="text-on-surface-variant text-sm font-medium mt-0.5">Safety-first curation for your family</p>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <!-- Movies / TV toggle -->
               <div class="flex gap-1 bg-surface-container-high rounded-full p-1">
                 <button id="tabMovies" onclick="switchTrend('movie')"
@@ -296,7 +255,7 @@
             </div>
           </div>
           <!-- JS renders trend cards here (2×2 poster grid) -->
-          <div class="grid grid-cols-2 gap-6" id="trendingGrid">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="trendingGrid">
             <!-- skeleton cards -->
             <div class="group"><div class="skel rounded-xl mb-3" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
             <div class="group"><div class="skel rounded-xl mb-3" style="aspect-ratio:2/3"></div><div class="skel h-3 w-4/5 mb-2"></div><div class="skel h-2 w-1/2"></div></div>
@@ -338,12 +297,14 @@
         </div>
       </div>
 
+      </div>
     </main>
   </div>
 
-  <!-- Footer injected by auth.js -->
-  <div id="footer-root"></div>
 </div><!-- end #pageContent -->
+
+<!-- Footer injected by auth.js -->
+<div id="footer-root"></div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -752,6 +713,7 @@ document.addEventListener('keydown',e=>{
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();window.cvOpenSearchModal&&window.cvOpenSearchModal();}
 });
 </script>
-<script src="/js/auth.js?v=20260406"></script>
+<script src="/js/dashboard-sidebar.js?v=dev"></script>
+<script src="/js/auth.js?v=dev"></script>
 </body>
 </html>

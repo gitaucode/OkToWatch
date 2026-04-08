@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<!-- Clerk preload — start fetching before anything else -->
 <link rel="preconnect" href="https://thorough-anteater-20.clerk.accounts.dev" crossorigin/>
 <link rel="dns-prefetch" href="https://thorough-anteater-20.clerk.accounts.dev"/>
 <link rel="preload" href="https://thorough-anteater-20.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" as="script" crossorigin/>
@@ -27,121 +26,116 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
-<title>Reset Password — OkToWatch</title>
+<title>Reset Password - OkToWatch</title>
 <meta name="description" content="Reset your OkToWatch password to regain access to your family's movie guides and watchlists."/>
 <meta property="og:image" content="https://oktowatch.com/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="/js/tailwind-theme.js"></script>
+<script src="/js/tailwind-theme.js?v=dev"></script>
 <style>
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-  body { font-family: 'Inter', sans-serif; }
-  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-  /* Shimmer skeleton */
-  .skel {
-    background: linear-gradient(90deg, #ebeef0 25%, #f2f4f5 50%, #ebeef0 75%);
-    background-size: 200% 100%; border-radius: 10px; animation: shimmer 1.4s infinite;
-  }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-  /* Clerk host: hidden until loaded */
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align: middle; }
+  body { font-family:'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family:'Plus Jakarta Sans', sans-serif; }
+  .skel { background: linear-gradient(90deg, #ebeef0 25%, #f2f4f5 50%, #ebeef0 75%); background-size: 200% 100%; border-radius: 10px; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   .clerk-host { display: none; }
   .clerk-host.ready { display: block; animation: fadeIn 0.3s ease forwards; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-  /* Fade-up */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-  .fade-up { opacity: 0; animation: fadeUp 0.38s ease forwards; }
-
-  /* nav-root: minimal header, no full nav needed on this focus page */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   #nav-root { display: none; }
 </style>
 </head>
-<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col" data-page="forgot-password">
-
-<!-- Suppressed nav for this transactional focus page -->
+<body class="bg-background text-on-surface antialiased min-h-screen" data-page="forgot-password">
 <div id="nav-root" aria-hidden="true"></div>
 
-<!-- Minimal focus header -->
-<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-outline-variant/10 h-16 flex items-center justify-center px-6">
-  <a href="/index" class="flex items-center gap-2 group">
-    <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary-dim transition-colors">
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="3" fill="white"/>
-        <path d="M8 2C4.5 2 1.5 4.5 1 8c.5 3.5 3.5 6 7 6s6.5-2.5 7-6c-.5-3.5-3.5-6-7-6z" stroke="white" stroke-width="1.5" fill="none"/>
-      </svg>
-    </div>
-    <span class="font-headline text-lg font-extrabold tracking-tighter text-on-surface">Ok<span class="text-primary">ToWatch</span></span>
-  </a>
-</header>
+<div class="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8">
+  <div class="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-7xl overflow-hidden rounded-[24px] sm:rounded-[32px] border border-outline-variant/15 bg-surface-container-lowest shadow-[0_24px_80px_-36px_rgba(45,51,54,0.28)] lg:min-h-[calc(100vh-4rem)]">
+    <section class="relative hidden overflow-hidden lg:flex lg:w-[44%] xl:w-[42%]">
+      <img src="/images/parent-tip-family.webp" alt="Family sitting together in a calm evening living room." class="absolute inset-0 h-full w-full object-cover"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/72 via-slate-900/20 to-transparent"></div>
+      <div class="relative z-10 flex h-full flex-col justify-between p-8 text-white xl:p-10">
+        <a href="/index" class="inline-flex items-center gap-3 self-start rounded-full bg-white/15 px-4 py-2 backdrop-blur-md">
+          <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="h-8 w-8 rounded-[10px] object-contain"/>
+          <span class="inline-flex items-baseline text-lg tracking-[-0.03em]"><span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span></span>
+        </a>
+        <div>
+          <div class="mb-4 text-[11px] font-bold uppercase tracking-[0.28em] text-white/75">Account Recovery</div>
+          <h1 class="max-w-md text-4xl font-extrabold leading-tight tracking-tight xl:text-5xl">Get back to your family's guidance quickly and securely.</h1>
+          <p class="mt-5 max-w-md text-base leading-relaxed text-white/82">
+            Reset your password and return to the same saved watchlists, child profiles, and viewing decisions you already set up.
+          </p>
+          <div class="mt-8 space-y-4">
+            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">lock_reset</span></span>
+              Recovery happens through your verified email address.
+            </div>
+            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">shield_lock</span></span>
+              Your household settings stay protected while you reset access.
+            </div>
+          </div>
+        </div>
+        <div class="inline-flex items-center gap-3 self-start rounded-2xl bg-white/14 px-4 py-3 backdrop-blur-md">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">lightbulb</span></span>
+          <div>
+            <div class="text-sm font-bold">Use a unique password for your household account</div>
+            <div class="text-xs text-white/72">It helps protect saved filters and private family activity.</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<!-- Background blobs -->
-<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-  <div class="absolute top-0 right-0 w-96 h-96 bg-primary-container/20 rounded-full blur-3xl opacity-50"></div>
-  <div class="absolute bottom-0 left-0 w-[50vw] h-[50vh] bg-tertiary-container/10 rounded-full blur-3xl opacity-30"></div>
+    <section class="flex w-full flex-col lg:w-[56%] xl:w-[58%]">
+      <header class="flex items-center justify-between border-b border-outline-variant/10 px-4 py-3 sm:px-8 sm:py-4">
+        <a href="/index" class="inline-flex items-center gap-3 lg:hidden">
+          <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="h-8 w-8 rounded-[10px] object-contain"/>
+          <span class="inline-flex items-baseline text-base tracking-[-0.03em]"><span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span></span>
+        </a>
+        <div class="hidden lg:block"></div>
+        <a href="/signin" class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high" aria-label="Close">
+          <span class="material-symbols-outlined">close</span>
+        </a>
+      </header>
+
+      <main class="flex flex-1 items-center justify-center px-4 py-8 sm:px-8 sm:py-10 lg:px-10 xl:px-14">
+        <div class="w-full max-w-xl">
+          <div class="mb-8">
+            <div class="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-primary">Reset Password</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-on-surface">Recover your account</h2>
+            <p class="mt-4 max-w-lg text-base leading-relaxed text-on-surface-variant">
+              Enter the email linked to your account and we will guide you through resetting your password.
+            </p>
+          </div>
+
+          <div class="rounded-[28px] border border-outline-variant/15 bg-white shadow-[0_18px_55px_-32px_rgba(45,51,54,0.2)]">
+            <div id="clerkSkeleton" class="space-y-5 p-6 sm:p-10">
+              <p class="slow-msg hidden py-1 text-center text-xs text-on-surface-variant">Taking longer than usual... check your connection.</p>
+              <div class="skel h-3 w-28 rounded-full"></div>
+              <div class="skel h-12 rounded-xl"></div>
+              <div class="skel mt-2 h-12 rounded-xl"></div>
+              <div class="skel mx-auto mt-4 h-3 w-36 rounded-full"></div>
+            </div>
+            <div class="clerk-host" id="clerk-forgot"></div>
+          </div>
+
+          <div class="mt-6 text-center">
+            <a href="/signin" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-dim group">
+              <span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+              Return to Sign In
+            </a>
+          </div>
+
+          <div class="mt-5 rounded-2xl border border-outline-variant/15 bg-surface-container-low px-4 py-4 text-sm text-on-surface-variant">
+            Your password protects saved profiles, viewing history, and family-specific recommendations.
+          </div>
+        </div>
+      </main>
+    </section>
+  </div>
 </div>
 
-<!-- Main content -->
-<main class="flex-1 flex items-center justify-center px-4 py-28 relative z-10">
-  <div class="w-full max-w-md">
-
-    <!-- Icon + Heading -->
-    <div class="fade-up text-center mb-8" style="animation-delay:0s;">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-5 mx-auto">
-        <span class="material-symbols-outlined text-[32px]" style="font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 48;">lock_reset</span>
-      </div>
-      <h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-3">Reset your password</h1>
-      <p class="text-on-surface-variant text-sm leading-relaxed max-w-xs mx-auto">
-        Enter the email address linked to your account and we'll send you a reset link.
-      </p>
-    </div>
-
-    <!-- Auth card -->
-    <div class="fade-up" style="animation-delay:0.06s;">
-      <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl shadow-[0_10px_40px_-10px_rgba(86,94,116,0.12)]">
-
-        <!-- Skeleton shown while Clerk loads -->
-        <div id="clerkSkeleton" class="p-8 space-y-5">
-          <p class="slow-msg hidden text-center text-xs text-on-surface-variant py-1">Taking longer than usual… check your connection.</p>
-          <div class="skel h-3 w-28 rounded-full"></div>
-          <div class="skel h-12 rounded-xl"></div>
-          <div class="skel h-12 rounded-xl mt-2"></div>
-          <div class="skel h-3 w-36 rounded-full mx-auto mt-4"></div>
-        </div>
-
-        <!-- Clerk mounts here -->
-        <div class="clerk-host" id="clerk-forgot"></div>
-
-      </div>
-    </div>
-
-    <!-- Back to sign in link -->
-    <div class="fade-up mt-6 text-center" style="animation-delay:0.1s;">
-      <a href="/signin" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-dim transition-colors group">
-        <span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-x-1">arrow_back</span>
-        Return to Sign In
-      </a>
-    </div>
-
-    <!-- Parental tip -->
-    <div class="fade-up mt-8 flex gap-4 p-5 bg-surface-container-low rounded-2xl border-l-4 border-tertiary" style="animation-delay:0.14s;">
-      <span class="material-symbols-outlined text-tertiary flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">lightbulb</span>
-      <div>
-        <h4 class="text-sm font-bold text-on-surface mb-1">Parental Tip</h4>
-        <p class="text-xs text-on-surface-variant leading-relaxed">
-          Using a unique password for OkToWatch helps keep your family's safety filters and watchlists protected.
-        </p>
-      </div>
-    </div>
-
-  </div>
-</main>
-
-<!-- Footer -->
 <div id="footer-root"></div>
 
 <script>
@@ -164,55 +158,44 @@
     clearTimeout(slowTimer);
     await window.Clerk.load();
 
-    // If already signed in, no need to reset — go to dashboard
     if (window.Clerk.user) {
       window.location.href = '/dashboard';
       return;
     }
 
-    // Clerk's forgot password flow
     window.Clerk.mountForgotPassword(document.getElementById('clerk-forgot'), {
       signInUrl: '/signin',
       appearance: {
         variables: {
-          colorPrimary:    '#565e74',
+          colorPrimary: '#565e74',
           colorBackground: '#ffffff',
-          colorText:       '#2d3336',
-          borderRadius:    '12px',
-          fontFamily:      'Inter, sans-serif',
-          fontSize:        '15px',
+          colorText: '#2d3336',
+          borderRadius: '16px',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '15px',
         },
         elements: {
-          card:              { boxShadow: 'none', borderRadius: '0', padding: '2rem' },
-          headerTitle:       { display: 'none' },
-          headerSubtitle:    { display: 'none' },
-          formButtonPrimary: {
-            backgroundColor: '#565e74',
-            fontFamily:      'Plus Jakarta Sans, sans-serif',
-            fontWeight:      '700',
-            borderRadius:    '12px',
-            textTransform:   'none',
-          },
-          footerActionLink:  { color: '#565e74', fontWeight: '600' },
-          formFieldInput:    { borderRadius: '12px' },
+          card: { boxShadow: 'none', borderRadius: '0', padding: '2rem 2.25rem' },
+          headerTitle: { display: 'none' },
+          headerSubtitle: { display: 'none' },
+          formButtonPrimary: { backgroundColor: '#111827', fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: '700', borderRadius: '14px', textTransform: 'none' },
+          footerActionLink: { color: '#565e74', fontWeight: '600' },
+          formFieldInput: { borderRadius: '14px' },
         }
       }
     });
 
-    // Poll until Clerk card appears, then swap skeleton → real form
     const poll = setInterval(() => {
       const card = document.querySelector('#clerk-forgot .cl-card, #clerk-forgot [data-localization-key]');
       if (card) { clearInterval(poll); showClerk(); }
     }, 80);
 
-    // Hard fallback after 2.5s
     setTimeout(() => { clearInterval(poll); showClerk(); }, 2500);
   }
 
-  document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded', boot)
-    : boot();
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
 })();
 </script>
+<script src="/js/auth.js?v=dev"></script>
 </body>
 </html>

@@ -6,27 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OkToWatch | Know Before They Watch</title>
   <meta name="description" content="Instant parent-friendly safety breakdowns for movies, shows, apps, and games." />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f5f9f6;
+      --bg: #f9f9fa;
       --surface: #ffffff;
-      --surface-soft: #f0f7f2;
-      --line: #dce8e0;
-      --line-strong: #c5d9cc;
-      --text: #141f18;
-      --text-soft: #4a6355;
-      --text-muted: #7a9686;
-      --brand: #1a8a47;
-      --brand-dark: #136134;
-      --brand-soft: #e4f4eb;
-      --brand-softer: #f0faf4;
-      --shadow-sm: 0 2px 8px rgba(20, 60, 35, 0.06);
-      --shadow: 0 8px 32px rgba(20, 60, 35, 0.09);
-      --shadow-lg: 0 24px 64px rgba(20, 60, 35, 0.13);
-      --radius: 20px;
-      --radius-sm: 12px;
+      --surface-soft: #f2f4f5;
+      --line: #dde3e7;
+      --line-strong: #acb3b6;
+      --text: #2d3336;
+      --text-soft: #596063;
+      --text-muted: #757c7f;
+      --brand: #565e74;
+      --brand-dark: #4a5268;
+      --brand-soft: #dae2fd;
+      --brand-softer: #ebeef0;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --radius: 24px;
+      --radius-sm: 16px;
       --max: 1160px;
-      --font: Helvetica Neue, Helvetica, Arial, sans-serif;
+      --font: 'Inter', Helvetica Neue, Helvetica, Arial, sans-serif;
+      --font-headline: 'Plus Jakarta Sans', 'Inter', Helvetica Neue, Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -45,6 +47,10 @@
       color: var(--text);
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .section-title, .font-headline, .logo {
+      font-family: var(--font-headline);
     }
 
     a {
@@ -72,7 +78,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(245, 249, 246, 0.96);
+      background: rgba(249, 249, 250, 0.96);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--line);
     }
@@ -89,22 +95,32 @@
       display: inline-flex;
       align-items: center;
       gap: 9px;
-      font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.94rem;
       letter-spacing: -0.02em;
+    }
+
+    .wordmark {
+      display: inline-flex;
+      align-items: baseline;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .wordmark-ok {
+      font-weight: 500;
+    }
+
+    .wordmark-towatch {
+      font-weight: 800;
     }
 
     .logo-mark {
       width: 34px;
       height: 34px;
-      border-radius: 9px;
-      background: var(--brand);
-      color: #fff;
-      font-weight: 800;
-      font-size: 0.75rem;
-      display: grid;
-      place-items: center;
-      letter-spacing: 0;
+      border-radius: 12px;
+      display: block;
+      object-fit: contain;
+      flex-shrink: 0;
     }
 
     nav.nav {
@@ -136,12 +152,12 @@
       align-items: center;
       justify-content: center;
       gap: 7px;
-      border-radius: 999px;
-      padding: 10px 22px;
-      font-weight: 600;
+      border-radius: 14px;
+      padding: 11px 20px;
+      font-weight: 700;
       font-size: 0.88rem;
       cursor: pointer;
-      border: 1.5px solid transparent;
+      border: 1px solid transparent;
       transition: all 0.16s ease;
       text-decoration: none;
       letter-spacing: -0.01em;
@@ -154,7 +170,7 @@
     .btn-primary {
       background: var(--brand);
       color: #fff;
-      box-shadow: 0 6px 18px rgba(26, 138, 71, 0.25);
+      box-shadow: 0 10px 22px rgba(86, 94, 116, 0.18);
     }
 
     .btn-primary:hover {
@@ -162,14 +178,15 @@
     }
 
     .btn-outline {
-      background: transparent;
+      background: #fff;
       color: var(--text);
-      border-color: var(--line-strong);
+      border-color: var(--line);
     }
 
     .btn-outline:hover {
       border-color: var(--brand);
-      color: var(--brand);
+      color: var(--text);
+      background: var(--surface-soft);
     }
 
     .btn-white {
@@ -194,7 +211,7 @@
     }
 
     .btn-lg {
-      padding: 14px 32px;
+      padding: 14px 28px;
       font-size: 0.96rem;
       font-weight: 700;
     }
@@ -213,18 +230,18 @@
     }
 
     .hero {
-      padding: 34px 0 72px;
+      padding: 40px 0 72px;
+      background:
+        radial-gradient(circle at top left, rgba(218, 226, 253, 0.8), transparent 36%),
+        linear-gradient(180deg, #fbfcfe 0%, #f9f9fa 100%);
+      border-bottom: 1px solid var(--line);
     }
 
     .hero-shell {
-      background: #f0f4ee;
       min-height: min(86vh, 760px);
       display: flex;
-      gap: 20px;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow-sm);
+      gap: 48px;
+      align-items: stretch;
     }
 
     .hero-copy {
@@ -233,7 +250,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 52px 24px 52px 56px;
+      padding: 36px 0 24px;
     }
 
     .hero-badge {
@@ -244,7 +261,7 @@
       border-radius: 999px;
       background: #fff;
       color: var(--brand-dark);
-      border: 1px solid var(--line-strong);
+      border: 1px solid var(--line);
       font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -288,7 +305,10 @@
       min-width: 0;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(19, 97, 52, 0.08), rgba(19, 97, 52, 0.18));
+      min-height: 580px;
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      background: linear-gradient(135deg, rgba(218, 226, 253, 0.5), rgba(86, 94, 116, 0.14));
     }
 
     .hero-visual img {
@@ -297,14 +317,16 @@
       object-fit: cover;
       object-position: center;
       display: block;
-      filter: saturate(0.88) hue-rotate(-10deg) brightness(0.92);
+      filter: saturate(0.9) brightness(0.97);
     }
 
     .hero-visual::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(240, 244, 238, 0.32) 0%, rgba(240, 244, 238, 0.04) 28%, rgba(19, 97, 52, 0.16) 100%);
+      background:
+        linear-gradient(90deg, rgba(249, 249, 250, 0.28) 0%, rgba(249, 249, 250, 0.04) 30%, rgba(86, 94, 116, 0.14) 100%),
+        linear-gradient(180deg, rgba(86, 94, 116, 0.02) 0%, rgba(86, 94, 116, 0.16) 100%);
       pointer-events: none;
     }
 
@@ -316,9 +338,9 @@
 
     .search-widget {
       background: #fff;
-      border: 1.5px solid var(--line-strong);
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
 
@@ -1464,6 +1486,95 @@
         border-radius: var(--radius-sm);
       }
     }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .hero-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 22px;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .hero-trust span::before {
+      content: "•";
+      color: var(--brand);
+      margin-right: 8px;
+    }
+
+    .hero-visual {
+      flex: 1;
+      min-width: 320px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(19, 97, 52, 0.08), rgba(19, 97, 52, 0.18));
+    }
+
+    .hero-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      filter: saturate(0.9) hue-rotate(-8deg) brightness(0.95);
+    }
+
+    .hero-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(240, 244, 238, 0.26) 0%, rgba(240, 244, 238, 0.04) 28%, rgba(19, 97, 52, 0.16) 100%);
+      pointer-events: none;
+    }
+
+    .trust-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin: 28px 0 24px;
+    }
+
+    .trust-stat {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .trust-stat strong {
+      display: block;
+      font-size: 1.65rem;
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .trust-stat span {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1024px) {
+      .trust-stats,
+      .hero-signal-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .hero-actions,
+      .hero-trust {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
   </style>
 </head>
 
@@ -1473,8 +1584,8 @@
   <header class="topbar">
     <div class="container topbar-inner">
       <a href="#" class="logo">
-        <span class="logo-mark">OK</span>
-        OkToWatch
+        <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="logo-mark" />
+        <span class="wordmark" aria-label="OkToWatch"><span class="wordmark-ok">Ok</span><span class="wordmark-towatch">ToWatch</span></span>
       </a>
       <nav class="nav">
         <a href="#how">How it works</a>
@@ -1496,11 +1607,11 @@
         <div class="hero-copy">
           <div class="hero-badge">
             <span class="hero-badge-dot"></span>
-            Trusted by 80,000+ parents
+            Parent-first safety guidance
           </div>
           <h1>Know before<br>they <em>watch.</em></h1>
           <p class="hero-sub">
-            Search any movie or show and get a clear, instant content breakdown for your kids.
+            Search any movie or show and get a clear verdict, age guidance, and the top reasons behind it in seconds.
           </p>
 
           <div class="search-outer">
@@ -1515,6 +1626,15 @@
               </div>
               <div id="swResults" class="sw-results"></div>
             </div>
+          </div>
+          <div class="hero-actions">
+            <a href="/search/" class="btn btn-primary btn-lg">Search a title</a>
+            <a href="#how" class="btn btn-outline btn-lg">See how it works</a>
+          </div>
+          <div class="hero-trust">
+            <span>50,000+ titles reviewed</span>
+            <span>Results in under 10 seconds</span>
+            <span>Built for real family decisions</span>
           </div>
         </div>
 
@@ -1615,45 +1735,6 @@
       </div>
     </section>
 
-    <!-- ─── IMAGE SPLIT 1: Family couch moment ─── -->
-    <section class="img-split">
-      <div class="img-split-photo">
-        <img src="/images/split1-problem-family.png" alt="Parent searching on phone while kids wait on the couch" />
-      </div>
-      <div class="img-split-content">
-        <p class="section-label">The problem</p>
-        <h2 class="section-title">Movie night shouldn't start with 20 minutes of research.</h2>
-        <p class="section-sub">Every parent knows it — kids on the couch, snacks ready, and you're deep in a forum
-          trying to figure out if this show is actually okay. OkToWatch cuts that down to ten seconds.</p>
-        <div class="feature-chips">
-          <span class="feature-chip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            No more rabbit holes
-          </span>
-          <span class="feature-chip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            One clear answer
-          </span>
-          <span class="feature-chip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            Works for games &amp; apps too
-          </span>
-        </div>
-        <div>
-          <a href="#" class="btn btn-primary">Check Your First Title</a>
-        </div>
-      </div>
-    </section>
-
     <!-- ─── HOW IT WORKS ─── -->
     <section id="how" class="how-section">
       <div class="container">
@@ -1681,77 +1762,25 @@
       </div>
     </section>
 
-    <!-- ─── IMAGE SPLIT 2: Parent & child (reversed) ─── -->
     <section class="img-split reverse">
       <div class="img-split-photo">
         <img src="/images/split2-parent-child.png" alt="Mother and son laughing together with popcorn" />
       </div>
       <div class="img-split-content">
-        <p class="section-label">For your whole family</p>
-        <h2 class="section-title">Matched to each child's age and comfort level.</h2>
-        <p class="section-sub">Create profiles for each of your kids. OkToWatch adjusts what "safe" means based on their
-          age, sensitivities, and your own household rules — not some generic rating board's call.</p>
+        <p class="section-label">Personalized for your family</p>
+        <h2 class="section-title">What feels safe should match the child, not just the rating board.</h2>
+        <p class="section-sub">Set up profiles for each child so recommendations, watchlists, and content filters reflect your household rules instead of one generic standard.</p>
         <div class="feature-chips">
-          <span class="feature-chip">Ages 2–5</span>
-          <span class="feature-chip">Ages 6–9</span>
-          <span class="feature-chip">Pre-teens 10–13</span>
-          <span class="feature-chip">Teens 14+</span>
+          <span class="feature-chip">Profiles by child</span>
+          <span class="feature-chip">Age-aware recommendations</span>
+          <span class="feature-chip">Shared household watchlists</span>
+          <span class="feature-chip">Works for siblings and co-parents</span>
         </div>
         <div>
-          <a href="#" class="btn btn-primary">Set Up Family Profiles</a>
+          <a href="/signup/" class="btn btn-primary">Create family profiles</a>
         </div>
       </div>
     </section>
-
-    <!-- ─── 3-UP PHOTO GRID ─── -->
-    <section class="photo-grid-section">
-      <div class="container">
-        <div class="photo-trio-header">
-          <div>
-            <p class="section-label">Real family moments</p>
-            <h2 class="section-title">More presence. Less second-guessing.</h2>
-          </div>
-          <a href="#" class="btn btn-outline">Read parent stories</a>
-        </div>
-        <div class="photo-trio">
-          <div class="photo-trio-item">
-            <img src="/images/trio1-kids-laughing.png" alt="Children laughing and having fun watching together" />
-            <div class="photo-trio-caption">
-              <strong>Friday nights sorted</strong>
-              <span>No more last-minute panic searches</span>
-            </div>
-          </div>
-          <div class="photo-trio-item">
-            <img src="/images/trio2-diverse-family.png" alt="Diverse family enjoying movie night together" />
-            <div class="photo-trio-caption">
-              <strong>Every family, every setup</strong>
-              <span>Works for all family dynamics</span>
-            </div>
-          </div>
-          <div class="photo-trio-item">
-            <img src="/images/trio3-grandparent.png" alt="Grandmother and granddaughter watching together" />
-            <div class="photo-trio-caption">
-              <strong>Multi-generational households</strong>
-              <span>Safe picks for the whole family</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── FULL-BLEED PHOTO with overlay ─── -->
-    <div class="photo-full">
-      <img src="/images/fullbleed-family-quote.png" alt="Happy family enjoying a cozy movie night together" />
-      <div class="photo-full-overlay">
-        <div class="photo-full-text">
-          <p class="section-label">The result</p>
-          <h2 class="section-title">"We're watching in 10 seconds now."</h2>
-          <p class="section-sub" style="margin-bottom: 28px;">I used to spend 15 minutes skimming forums while my kids
-            complained. Now I type the name in, see the green light, and we're settled. — Sarah M., mum of two</p>
-          <a href="#" class="btn btn-white">Read more stories</a>
-        </div>
-      </div>
-    </div>
 
     <!-- ─── SAFE PICKS ─── -->
     <section id="picks" class="picks-section">
@@ -1825,38 +1854,30 @@
       </div>
     </section>
 
-    <!-- ─── STATS ─── -->
-    <section class="stats-section">
-      <div class="container">
-        <p class="section-label">By the numbers</p>
-        <div class="stats-grid">
-          <div class="stat">
-            <strong>50K+</strong>
-            <span>Titles reviewed across movies, shows, games, and apps.</span>
-          </div>
-          <div class="stat">
-            <strong>10 sec</strong>
-            <span>Average time from search to safety signal.</span>
-          </div>
-          <div class="stat">
-            <strong>12K+</strong>
-            <span>Verified parent reviewers contributing to ratings.</span>
-          </div>
-          <div class="stat">
-            <strong>4 age bands</strong>
-            <span>Custom safety thresholds for each stage of childhood.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ─── METHODOLOGY ─── -->
     <section id="method" class="method-section">
       <div class="container">
         <p class="section-label">Transparency</p>
         <h2 class="section-title">Who reviews these titles?</h2>
-        <p class="section-sub">Parents are right to be skeptical of algorithms. Every rating combines three independent
-          sources.</p>
+        <p class="section-sub">Parents are right to be skeptical of algorithms. Every rating combines reviewer input, child-development guidance, and human oversight.</p>
+        <div class="trust-stats">
+          <div class="trust-stat">
+            <strong>50K+</strong>
+            <span>titles reviewed across movies, shows, games, and apps</span>
+          </div>
+          <div class="trust-stat">
+            <strong>10 sec</strong>
+            <span>average time from search to decision signal</span>
+          </div>
+          <div class="trust-stat">
+            <strong>12K+</strong>
+            <span>verified parent reviewers contributing notes and flags</span>
+          </div>
+          <div class="trust-stat">
+            <strong>4 bands</strong>
+            <span>age-aware safety thresholds for real childhood stages</span>
+          </div>
+        </div>
         <div class="method-grid">
           <div class="method-card">
             <div class="method-num">01</div>
@@ -1876,28 +1897,6 @@
             <p>Every title goes through an editorial review before publishing. No automated rating goes live without a
               human check. Ever.</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── IMAGE SPLIT 3: Grandparent / diverse family ─── -->
-    <section class="img-split" style="border-top: 1px solid var(--line);">
-      <div class="img-split-photo">
-        <img src="/images/split3-multigenerational.png"
-          alt="Multi-generational diverse family watching content together" />
-      </div>
-      <div class="img-split-content">
-        <p class="section-label">Every family, every dynamic</p>
-        <h2 class="section-title">Built for how families actually watch.</h2>
-        <p class="section-sub">Single parents. Multi-generational households. Co-parenting setups. OkToWatch doesn't
-          assume a typical family — it works for yours.</p>
-        <div class="feature-chips">
-          <span class="feature-chip">Multiple child profiles</span>
-          <span class="feature-chip">Shareable watchlists</span>
-          <span class="feature-chip">Grandparent-friendly</span>
-        </div>
-        <div>
-          <a href="/signup/" class="btn btn-primary">Start Free — No Card Needed</a>
         </div>
       </div>
     </section>
@@ -1940,35 +1939,16 @@
       </div>
     </section>
 
-    <!-- ─── NEWSLETTER ─── -->
-    <section class="newsletter-section">
-      <div class="container">
-        <div class="newsletter-inner">
-          <div class="newsletter-left">
-            <p class="section-label">Every Friday at 4 PM</p>
-            <h2 class="section-title">3 hand-picked titles. In your inbox before the weekend scramble.</h2>
-            <p class="section-sub">Age-appropriate, parent-approved picks — ready before the "what are we watching?"
-              debate even starts.</p>
-          </div>
-          <div class="newsletter-right">
-            <input type="email" class="nl-input" placeholder="Your email address" id="nlEmail" />
-            <button class="nl-btn" id="nlBtn">Send Me Friday Picks</button>
-            <p class="nl-note">No spam. Unsubscribe anytime.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ─── FINAL CTA ─── -->
     <section class="final-cta-section">
       <div class="container">
         <div class="final-cta">
           <p class="section-label">Get started</p>
-          <h2 class="section-title">Stop guessing.<br>Start knowing.</h2>
-          <p class="section-sub">One search. A clear answer. Movie night sorted.</p>
+          <h2 class="section-title">Search once.<br>Know the call.</h2>
+          <p class="section-sub">Start with a title you already have in mind, or create an account to save your family rules.</p>
           <div class="final-cta-btns">
-            <a href="#" class="btn btn-primary btn-lg">Search Your First Title</a>
-            <a href="#how" class="btn btn-outline btn-lg">How it works</a>
+            <a href="/search/" class="btn btn-primary btn-lg">Search your first title</a>
+            <a href="/signup/" class="btn btn-outline btn-lg">Create free account</a>
           </div>
         </div>
       </div>
@@ -1980,8 +1960,8 @@
   <footer>
     <div class="container footer-inner">
       <a href="#" class="logo">
-        <span class="logo-mark" style="width:30px;height:30px;font-size:0.7rem;">OK</span>
-        OkToWatch
+        <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="logo-mark" style="width:30px;height:30px;" />
+        <span class="wordmark" aria-label="OkToWatch"><span class="wordmark-ok">Ok</span><span class="wordmark-towatch">ToWatch</span></span>
       </a>
       <div class="footer-links">
         <a href="#">About</a>
@@ -2023,12 +2003,19 @@
     const safePicksGrid = document.getElementById('safePicksGrid');
     const popularRow = document.getElementById('popularRow');
     let homeData = HOME_FALLBACK;
+    let searchRequestToken = 0;
 
     function initials(t) { return t.split(' ').map(w => w[0]).join('').slice(0, 3).toUpperCase(); }
     function escapeHtml(text) {
       return String(text || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
     function slugTitle(title) { return `/search/?q=${encodeURIComponent(title)}`; }
+    function detailHref(item) {
+      if (item && item.id && (item.media_type === 'movie' || item.media_type === 'tv')) {
+        return `/index?id=${item.id}&type=${item.media_type}`;
+      }
+      return slugTitle(item?.title || item?.name || '');
+    }
     function posterUrl(path) { return path ? `https://image.tmdb.org/t/p/w500${path}` : ''; }
     function badgeClass(label) {
       const value = String(label || '').toLowerCase();
@@ -2044,32 +2031,49 @@
       return items.filter((item, index, arr) => arr.findIndex(other => other.title === item.title) === index);
     }
 
-    function getSearchPool() {
-      return uniqByTitle([...homeData.trending, ...homeData.safe_picks, ...homeData.popular]);
+    async function fetchTitleMatches(query) {
+      const q = String(query || '').trim();
+      if (!q) return [];
+      try {
+        const res = await fetch(`/api/tmdb/search/multi?query=${encodeURIComponent(q)}&page=1`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.results || []).filter(item => item && (item.media_type === 'movie' || item.media_type === 'tv'));
+      } catch (error) {
+        return [];
+      }
     }
 
-    function render(q) {
-      const query = String(q || '').trim().toLowerCase();
-      const pool = getSearchPool();
-      const hits = query
-        ? pool.filter(item => item.title.toLowerCase().includes(query))
-        : pool.slice(0, 6);
+    async function render(q) {
+      if (!results) return;
+      const query = String(q || '').trim();
+      const currentToken = ++searchRequestToken;
+
+      if (!query) {
+        results.classList.remove('visible');
+        results.innerHTML = '';
+        return;
+      }
+
+      const hits = await fetchTitleMatches(query);
+      if (currentToken !== searchRequestToken) return;
 
       results.innerHTML = hits.length
         ? hits.slice(0, 6).map(item => `
-          <a class="sw-result" href="${slugTitle(item.title)}">
-            <div class="sw-thumb" style="background:${item.poster_path ? 'transparent' : 'linear-gradient(135deg,#dcf0e4,#b4dcc4)'}">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="${escapeHtml(item.title)} poster" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">` : initials(item.title)}</div>
+          <a class="sw-result" href="${detailHref(item)}">
+            <div class="sw-thumb" style="background:${item.poster_path ? 'transparent' : 'linear-gradient(135deg,#dcf0e4,#b4dcc4)'}">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="${escapeHtml(item.title || item.name)} poster" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">` : initials(item.title || item.name || 'OK')}</div>
             <div class="sw-result-info">
-              <strong>${escapeHtml(item.title)}</strong>
-              <span>${escapeHtml(item.type)}${item.age_guidance ? ` · ${escapeHtml(item.age_guidance)}` : ''}</span>
+              <strong>${escapeHtml(item.title || item.name || 'Untitled')}</strong>
+              <span>${escapeHtml(item.media_type === 'tv' ? 'TV Show' : 'Movie')}${item.release_date || item.first_air_date ? ` · ${escapeHtml((item.release_date || item.first_air_date || '').slice(0, 4))}` : ''}</span>
             </div>
           </a>`).join('')
         : '<div class="sw-no-results">No matches found.</div>';
 
-      results.classList.toggle('visible', hits.length > 0 || !!query);
+      results.classList.add('visible');
     }
 
     function renderSafePicks(items) {
+      if (!safePicksGrid) return;
       safePicksGrid.innerHTML = items.slice(0, 4).map((item, index) => `
       <article class="pick-card">
         <a href="${slugTitle(item.title)}">
@@ -2092,6 +2096,7 @@
     }
 
     function renderPopular(items) {
+      if (!popularRow) return;
       popularRow.classList.remove('loading');
       popularRow.innerHTML = items.slice(0, 5).map(item => `
       <a class="popular-item" href="${slugTitle(item.title)}">
@@ -2125,40 +2130,49 @@
       }
     }
 
-    function submitSearch() {
+    async function submitSearch() {
+      if (!field) return;
       const q = field.value.trim();
       if (!q) return field.focus();
-      window.location.href = slugTitle(q);
+      const hits = await fetchTitleMatches(q);
+      const first = hits[0];
+      window.location.href = first ? detailHref(first) : slugTitle(q);
     }
 
-    field.addEventListener('focus', () => render(field.value));
-    field.addEventListener('input', () => render(field.value));
-    field.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        submitSearch();
-      }
-    });
+    if (field) {
+      field.addEventListener('focus', () => render(field.value));
+      field.addEventListener('input', () => render(field.value));
+      field.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          submitSearch();
+        }
+      });
+    }
     document.addEventListener('click', (event) => {
       if (!event.target.closest('.search-widget')) {
-        results.classList.remove('visible');
+        if (results) results.classList.remove('visible');
       }
     });
 
-    document.getElementById('nlBtn').addEventListener('click', function () {
-      const input = document.getElementById('nlEmail');
-      if (input.value.includes('@')) {
-        input.value = '';
-        input.placeholder = "✓ You're on the list — see you Friday!";
-        this.textContent = '✓ Subscribed!';
-        this.style.background = '#e3f5eb';
-        this.style.color = 'var(--brand-dark)';
-      } else {
-        input.style.borderColor = 'rgba(255,100,80,0.7)';
-        input.focus();
-        setTimeout(() => input.style.borderColor = '', 1600);
-      }
-    });
+    const nlBtn = document.getElementById('nlBtn');
+    if (nlBtn) {
+      nlBtn.addEventListener('click', function () {
+        const input = document.getElementById('nlEmail');
+        if (!input) return;
+        if (input.value.includes('@')) {
+          input.value = '';
+          input.placeholder = "✓ You're on the list — see you Friday!";
+          this.textContent = '✓ Subscribed!';
+          this.style.background = '#e3f5eb';
+          this.style.color = 'var(--brand-dark)';
+        } else {
+          input.style.borderColor = 'rgba(255,100,80,0.7)';
+          input.focus();
+          setTimeout(() => input.style.borderColor = '', 1600);
+        }
+      });
+    }
 
     loadHomeContent();
   </script>

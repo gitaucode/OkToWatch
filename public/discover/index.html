@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script src="/js/tailwind-theme.js"></script>
+<script src="/js/tailwind-theme.js?v=dev"></script>
 <style>
   body { font-family: 'Inter', sans-serif; }
   h1,h2,h3,.font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -33,20 +33,44 @@
     .discover-main-grid { display: block; }
     .discover-sidebar { width: 100%; position: static; margin-top: 3rem; }
   }
+  @media (max-width: 767px) {
+    .discover-header-stack {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .discover-genre-row {
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 0.25rem;
+    }
+    .discover-genre-row::-webkit-scrollbar {
+      display: none;
+    }
+    .genre-pill {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+  }
 </style>
 </head>
 <body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen flex flex-col" data-page="discover">
 <div id="nav-root"></div>
+<div class="cv-dashboard-layout pt-16">
+  <div id="dashboard-sidebar-root"></div>
 
-<main class="pt-16 pb-12 px-6 w-full flex-grow">
-  <div class="max-w-6xl mx-auto w-full">
+<main class="cv-dashboard-main pb-12 px-4 md:px-6 flex-grow">
+  <div class="cv-dashboard-content cv-dashboard-content--wide">
   <header class="mb-8">
     <h1 class="text-4xl font-extrabold text-on-background tracking-tighter mb-2">Discover.</h1>
     <p class="text-on-surface-variant max-w-2xl text-base md:text-lg leading-relaxed">Hand-picked cinema for your family's next masterpiece moment. Trustworthy guidance, zero noise.</p>
   </header>
 
   <section class="mb-12">
-    <div class="flex items-end justify-between gap-4 mb-6">
+    <div class="discover-header-stack flex items-end justify-between gap-4 mb-6">
       <h2 class="text-2xl font-bold tracking-tight">Editor's Choice</h2>
       <a class="text-primary font-semibold items-center gap-2 group hidden md:inline-flex" href="/lists/">View curated lists <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span></a>
     </div>
@@ -88,7 +112,7 @@
 
   <div class="discover-main-grid flex flex-col lg:flex-row gap-8 lg:gap-10">
     <section class="flex-1 min-w-0">
-      <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-8 lg:mb-12" id="genrePills">
+      <div class="discover-genre-row flex flex-wrap items-center gap-3 sm:gap-4 mb-8 lg:mb-12" id="genrePills">
         <button class="genre-pill active px-5 py-2 bg-surface-container-highest text-on-background font-bold rounded-full text-sm" data-filter="all" type="button">All Genres</button>
         <button class="genre-pill px-5 py-2 text-on-surface-variant hover:text-on-background font-bold text-sm" data-filter="28" type="button">Action</button>
         <button class="genre-pill px-5 py-2 text-on-surface-variant hover:text-on-background font-bold text-sm" data-filter="12" type="button">Adventure</button>
@@ -106,7 +130,7 @@
         <p class="text-sm text-on-surface-variant mt-2" id="resultsSubtext">Loading results...</p>
       </div>
 
-      <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-10 gap-x-6 sm:gap-x-8" id="resultsContainer">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-10 gap-x-6 sm:gap-x-8" id="resultsContainer">
         <div class="flex flex-col">
           <div class="aspect-[2/3] skel mb-4"></div>
           <div class="skel h-5 w-3/4 mb-2"></div>
@@ -176,10 +200,12 @@
   </div>
   </div>
 </main>
+</div>
 
 <div id="footer-root"></div>
 
-<script src="/js/auth.js?v=20260406"></script>
+<script src="/js/dashboard-sidebar.js?v=dev"></script>
+<script src="/js/auth.js?v=dev"></script>
 <script>
   let currentPage = 1;
   let currentResults = [];

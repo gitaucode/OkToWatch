@@ -21,7 +21,7 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="/js/tailwind-theme.js"></script>
+<script src="/js/tailwind-theme.js?v=dev"></script>
 
 <style>
   .material-symbols-outlined {
@@ -42,6 +42,8 @@
     color: rgb(117 124 127);
     transition: color 180ms ease;
     border-bottom: 2px solid transparent;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .tab-btn-v2:hover {
     color: rgb(45 51 54);
@@ -186,6 +188,35 @@
   }
 
   @media (max-width: 767px) {
+    .lists-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.85rem;
+    }
+    .lists-tab-row {
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 0.25rem;
+    }
+    .lists-tab-row::-webkit-scrollbar {
+      display: none;
+    }
+    .lists-view-toggle {
+      justify-content: flex-end;
+      padding-bottom: 0;
+    }
+    .list-mode .list-card {
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 0.85rem;
+      padding: 0.7rem;
+    }
+    .list-mode .list-card-poster {
+      width: 72px;
+      border-radius: 0.75rem;
+    }
     .tab-btn-v2 {
       font-size: 0.875rem;
       padding-bottom: 0.875rem;
@@ -247,59 +278,15 @@
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MAIN PAGE (shown after auth)
 -->
-<div id="pageContent" class="hidden flex min-h-screen">
+<div id="pageContent" class="hidden">
+  <div class="cv-dashboard-layout pt-16">
 
   <!-- ── SideNavBar ── -->
-  <aside class="hidden lg:flex flex-col p-6 space-y-2 w-64 border-r-0 bg-slate-50 overflow-y-auto min-h-screen">
-    <!-- Library header -->
-    <div class="flex items-center space-x-3 mb-3">
-      <div class="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-on-primary flex-shrink-0">
-        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">verified_user</span>
-      </div>
-      <div class="min-w-0">
-        <h3 class="text-slate-900 font-bold font-headline text-sm">My Library</h3>
-        <p class="text-xs text-slate-500 truncate" id="sidebarSubtitle">Loading...</p>
-      </div>
-    </div>
-
-    <!-- Nav links -->
-    <nav class="space-y-1">
-      <button class="side-link active flex items-center space-x-3 w-full px-4 py-3 text-slate-900 rounded-lg text-sm"
-              id="sideApproved" onclick="setTabFromSidebar('approved')">
-        <span class="material-symbols-outlined">verified</span>
-        <span>Approved <span id="sideCountApproved" class="ml-auto text-xs font-bold text-primary"></span></span>
-      </button>
-      <button class="side-link flex items-center space-x-3 w-full px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-lg text-sm"
-              id="sideBlocked" onclick="setTabFromSidebar('blocked')">
-        <span class="material-symbols-outlined">block</span>
-        <span>Blocked <span id="sideCountBlocked" class="ml-auto text-xs font-bold text-primary"></span></span>
-      </button>
-      <button class="side-link flex items-center space-x-3 w-full px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-lg text-sm"
-              id="sideWatched" onclick="setTabFromSidebar('watched')">
-        <span class="material-symbols-outlined">visibility</span>
-        <span>Watched</span>
-      </button>
-      <button class="side-link flex items-center space-x-3 w-full px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-lg text-sm"
-              id="sideWatchlater" onclick="setTabFromSidebar('watchlater')">
-        <span class="material-symbols-outlined">bookmark</span>
-        <span>Watchlist <span id="sideCountWatchlater" class="ml-auto text-xs font-bold text-primary"></span></span>
-      </button>
-    </nav>
-
-    <!-- Parental tip -->
-    <div class="mt-auto pt-6">
-      <div class="p-4 bg-surface-container-low rounded-xl">
-        <p class="text-xs font-bold text-primary mb-1 uppercase tracking-wider">Parental Tip</p>
-        <p class="text-xs leading-relaxed text-on-surface-variant">
-          Review the <a href="/search" class="underline underline-offset-2">Family Guide</a> for detailed content analysis of newer releases.
-        </p>
-      </div>
-    </div>
-  </aside>
+  <div id="dashboard-sidebar-root"></div>
 
   <!-- ── Main Content Area ── -->
-  <main class="flex-1 p-6 md:p-8 bg-background main-content pt-16">
-    <div class="max-w-6xl mx-auto">
+  <main class="cv-dashboard-main p-6 md:p-8 bg-background main-content pt-16">
+    <div class="cv-dashboard-content cv-dashboard-content--wide">
 
       <!-- Header -->
       <header class="mb-10 fade-up">
@@ -313,13 +300,14 @@
       <div class="flex flex-wrap gap-2 mb-6 fade-up" id="profileFilter" style="animation-delay:0.05s;"></div>
 
       <!-- Tab bar + view toggles -->
-      <div class="flex items-center justify-between border-b border-outline-variant/30 mb-8 fade-up" style="animation-delay:0.1s;">
-        <div class="flex space-x-6">
+      <div class="lists-toolbar flex items-center justify-between border-b border-outline-variant/30 mb-8 fade-up" style="animation-delay:0.1s;">
+        <div class="lists-tab-row flex space-x-6">
           <button class="tab-btn-v2 active" id="tabApproved" onclick="setTab('approved', this)">Approved Titles</button>
           <button class="tab-btn-v2" id="tabBlocked"   onclick="setTab('blocked', this)">Blocked</button>
+          <button class="tab-btn-v2" id="tabWatched" onclick="setTab('watched', this)">Watched</button>
           <button class="tab-btn-v2" id="tabWatchlater" onclick="setTab('watchlater', this)">Watchlist</button>
         </div>
-        <div class="flex items-center space-x-1 pb-4">
+        <div class="lists-view-toggle flex items-center space-x-1 pb-4">
           <button id="btnGridView" onclick="setView('grid')" title="Grid view"
                   class="p-2 text-primary transition-colors rounded-lg bg-primary/10">
             <span class="material-symbols-outlined text-[20px]">grid_view</span>
@@ -333,7 +321,7 @@
 
       <!-- Movie bento grid / list -->
       <section class="fade-up" style="animation-delay:0.15s;">
-        <div id="listContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+        <div id="listContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
           <!-- Populated by JS -->
         </div>
       </section>
@@ -356,6 +344,7 @@
 
     </div>
   </main>
+  </div>
 </div>
 
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -534,7 +523,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   // Respect ?tab= URL param
   const params = new URLSearchParams(window.location.search);
   const tabParam = params.get('tab');
-  if (['approved', 'blocked', 'watchlater'].includes(tabParam)) {
+  if (['approved', 'blocked', 'watched', 'watchlater'].includes(tabParam)) {
     _activeTab = tabParam;
   }
   loadLists();
@@ -576,8 +565,11 @@ function updateSidebar() {
   const sideWlEl = document.getElementById('sideCountWatchlater');
   if (sideWlEl) sideWlEl.textContent = countWatchlater || '';
 
-  document.getElementById('sidebarSubtitle').textContent =
-    total === 0 ? 'No titles saved yet' : `Managing ${total} Title${total !== 1 ? 's' : ''}`;
+  const subtitleEl = document.getElementById('sidebarSubtitle');
+  if (subtitleEl) {
+    subtitleEl.textContent =
+      total === 0 ? 'No titles saved yet' : `Managing ${total} Title${total !== 1 ? 's' : ''}`;
+  }
 
   // Sync sidebar active button
   ['approved', 'blocked', 'watched', 'watchlater'].forEach(t => {
@@ -585,7 +577,7 @@ function updateSidebar() {
     if (btn) btn.classList.toggle('active', t === _activeTab);
   });
   // Sync top tabs
-  ['Approved', 'Blocked', 'Watchlater'].forEach(t => {
+  ['Approved', 'Blocked', 'Watched', 'Watchlater'].forEach(t => {
     const btn = document.getElementById('tab' + t);
     if (btn) btn.classList.toggle('active', t.toLowerCase() === _activeTab);
   });
@@ -655,7 +647,7 @@ function setView(mode) {
 
   if (mode === 'grid') {
     container.classList.remove('list-mode');
-    container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5';
+    container.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5';
     btnGrid.className = 'p-2 text-primary transition-colors rounded-lg bg-primary/10';
     btnList.className  = 'p-2 text-outline hover:text-primary transition-colors rounded-lg';
   } else {
@@ -669,7 +661,7 @@ function setView(mode) {
 // ── Render the item list ──────────────────────────────────────────────────────
 function renderActiveTab() {
   // Sync tab UI in case we entered with a ?tab= param
-  ['Approved', 'Blocked', 'Watchlater'].forEach(t => {
+  ['Approved', 'Blocked', 'Watched', 'Watchlater'].forEach(t => {
     const btn = document.getElementById('tab' + t);
     if (btn) btn.classList.toggle('active', t.toLowerCase() === _activeTab);
   });
@@ -962,6 +954,7 @@ document.addEventListener('keydown', e => {
 
 <div id="footer-root"></div>
 
-<script src="/js/auth.js?v=20260406"></script>
+<script src="/js/dashboard-sidebar.js?v=dev"></script>
+<script src="/js/auth.js?v=dev"></script>
 </body>
 </html>
