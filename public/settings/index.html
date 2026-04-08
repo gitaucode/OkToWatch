@@ -175,7 +175,10 @@
                                 <h4 class="text-lg font-bold brand-font">Family Household</h4>
                                 <p class="text-sm text-on-surface-variant">Link caregiver accounts so Family profiles, notes, lists, and history stay shared.</p>
                             </div>
-                            <span id="householdRoleBadge" class="bg-primary-container text-primary px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest">Owner</span>
+                            <div class="flex items-center gap-2">
+                                <span id="householdRoleBadge" class="bg-primary-container text-primary px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest">Owner</span>
+                                <button id="btnLeaveHousehold" onclick="leaveHousehold()" class="rounded-lg border border-outline-variant/20 px-3 py-1.5 text-xs font-bold text-on-surface-variant hover:bg-surface-container transition-colors">Leave</button>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -184,6 +187,7 @@
                                 <div class="mt-2 flex items-center gap-3">
                                     <code id="householdInviteCode" class="text-xl font-bold tracking-[0.2em] text-on-surface">—</code>
                                     <button id="btnCopyHouseholdCode" onclick="copyHouseholdCode()" class="text-primary text-sm font-bold hover:underline">Copy</button>
+                                    <button id="btnRefreshHouseholdCode" onclick="regenerateHouseholdCode()" class="text-primary text-sm font-bold hover:underline">Refresh</button>
                                 </div>
                                 <p class="mt-2 text-xs text-on-surface-variant">Share this code with another caregiver on a Family plan.</p>
                             </div>
@@ -468,17 +472,23 @@
         if (!householdState?.household) return;
         document.getElementById('householdInviteCode').textContent = householdState.household.inviteCode || '—';
         document.getElementById('householdRoleBadge').textContent = (householdState.household.role || 'member').toUpperCase();
+        document.getElementById('btnRefreshHouseholdCode').style.display = householdState.household.role === 'owner' ? 'inline-block' : 'none';
 
         const members = householdState.members || [];
         const membersEl = document.getElementById('householdMembers');
         membersEl.innerHTML = members.length
             ? members.map(member => `
                 <div class="flex items-center justify-between rounded-lg border border-outline-variant/10 bg-white px-4 py-3">
-                    <div>
-                        <p class="text-sm font-semibold text-on-surface">${member.user_id === globalUser?.id ? 'You' : member.user_id}</p>
-                        <p class="text-xs text-on-surface-variant">${member.user_id === householdState.household.ownerUserId ? 'Household owner' : 'Caregiver'}</p>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-on-surface">${member.user_id === globalUser?.id ? 'You' : (member.display_name || member.user_id)}</p>
+                        <p class="text-xs text-on-surface-variant truncate">${member.email || (member.user_id === householdState.household.ownerUserId ? 'Household owner' : 'Caregiver')}</p>
                     </div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest ${member.role === 'owner' ? 'text-primary' : 'text-on-surface-variant'}">${member.role}</span>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <span class="text-[10px] font-bold uppercase tracking-widest ${member.role === 'owner' ? 'text-primary' : 'text-on-surface-variant'}">${member.role}</span>
+                        ${(householdState.household.role === 'owner' && member.role !== 'owner')
+                            ? `<button onclick="removeHouseholdMember('${member.user_id}')" class="text-xs font-bold text-error hover:underline">Remove</button>`
+                            : ''}
+                    </div>
                 </div>
             `).join('')
             : '<p class="text-sm text-on-surface-variant">No caregivers connected yet.</p>';
@@ -518,6 +528,77 @@
             showToast('Household joined');
         } catch (e) {
             showToast(e.message || 'Could not join household');
+        } finally {
+            btn.textContent = old;
+            btn.disabled = false;
+        }
+    }
+
+    async function regenerateHouseholdCode() {
+        const btn = document.getElementById('btnRefreshHouseholdCode');
+        const old = btn.textContent;
+        btn.textContent = 'Refreshing...';
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/household', {
+                method: 'POST',
+                headers: await authHeaders(),
+                body: JSON.stringify({ action: 'regenerate_invite' })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Could not refresh code');
+            householdState.household.inviteCode = data.inviteCode;
+            renderHousehold();
+            showToast('Invite code refreshed');
+        } catch (e) {
+            showToast(e.message || 'Could not refresh code');
+        } finally {
+            btn.textContent = old;
+            btn.disabled = false;
+        }
+    }
+
+    async function removeHouseholdMember(userId) {
+        try {
+            const res = await fetch('/api/household', {
+                method: 'POST',
+                headers: await authHeaders(),
+                body: JSON.stringify({ action: 'remove_member', user_id: userId })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Could not remove caregiver');
+            householdState = data;
+            renderHousehold();
+            showToast('Caregiver removed');
+        } catch (e) {
+            showToast(e.message || 'Could not remove caregiver');
+        }
+    }
+
+    async function leaveHousehold() {
+        const btn = document.getElementById('btnLeaveHousehold');
+        const old = btn.textContent;
+        btn.textContent = 'Leaving...';
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/household', {
+                method: 'POST',
+                headers: await authHeaders(),
+                body: JSON.stringify({ action: 'leave' })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Could not leave household');
+            if (data.reset) {
+                householdState = null;
+                showToast('Household left');
+                setTimeout(() => loadHousehold(), 300);
+            } else {
+                householdState = data;
+                renderHousehold();
+                showToast('Household updated');
+            }
+        } catch (e) {
+            showToast(e.message || 'Could not leave household');
         } finally {
             btn.textContent = old;
             btn.disabled = false;

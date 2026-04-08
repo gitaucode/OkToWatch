@@ -1,15 +1,45 @@
 import { requireFamily, jsonResponse, handleOptions } from '../_shared/clerk.js';
 import { ensureHouseholdTables, generateUniqueInviteCode, getOrCreateHouseholdForFamily } from '../_shared/households.js';
 
-async function listMembers(db, householdId) {
-  const rows = await db.prepare(`
+const CLERK_API = 'https://api.clerk.com/v1';
+
+async function enrichMembers(env, members) {
+  return Promise.all((members || []).map(async (member) => {
+    try {
+      const res = await fetch(`${CLERK_API}/users/${member.user_id}`, {
+        headers: {
+          'Authorization': 'Bearer ' + env.CLERK_SECRET_KEY,
+          'Accept': 'application/json'
+        }
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const user = await res.json();
+      return {
+        ...member,
+        display_name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || member.user_id,
+        email: user.email_addresses?.[0]?.email_address || null,
+        image_url: user.image_url || null
+      };
+    } catch {
+      return {
+        ...member,
+        display_name: member.user_id,
+        email: null,
+        image_url: null
+      };
+    }
+  }));
+}
+
+async function listMembers(env, householdId) {
+  const rows = await env.DB.prepare(`
     SELECT user_id, role, created_at
     FROM household_members
     WHERE household_id = ?
     ORDER BY CASE WHEN role = 'owner' THEN 0 ELSE 1 END, created_at ASC
   `).bind(householdId).all();
 
-  return rows.results || [];
+  return enrichMembers(env, rows.results || []);
 }
 
 export async function onRequestGet(context) {
@@ -18,7 +48,7 @@ export async function onRequestGet(context) {
   if (error) return error;
 
   const household = await getOrCreateHouseholdForFamily(auth, env);
-  const members = await listMembers(env.DB, household.householdId);
+  const members = await listMembers(env, household.householdId);
 
   return jsonResponse({
     household: {
@@ -60,7 +90,7 @@ export async function onRequestPost(context) {
 
     if (!target) return jsonResponse({ error: 'Invite code not found' }, 404);
     if (target.id === currentHousehold.householdId) {
-      const members = await listMembers(env.DB, target.id);
+      const members = await listMembers(env, target.id);
       return jsonResponse({
         joined: true,
         household: {
@@ -92,7 +122,7 @@ export async function onRequestPost(context) {
       VALUES (?, ?, ?, 'member')
     `).bind(crypto.randomUUID().replace(/-/g, ''), target.id, auth.userId).run();
 
-    const members = await listMembers(env.DB, target.id);
+    const members = await listMembers(env, target.id);
     return jsonResponse({
       joined: true,
       household: {
@@ -114,6 +144,77 @@ export async function onRequestPost(context) {
     const inviteCode = await generateUniqueInviteCode(env.DB);
     await env.DB.prepare('UPDATE households SET invite_code = ? WHERE id = ?').bind(inviteCode, currentHousehold.householdId).run();
     return jsonResponse({ inviteCode });
+  }
+
+  if (action === 'remove_member') {
+    if (currentHousehold.role !== 'owner') {
+      return jsonResponse({ error: 'Only household owners can remove caregivers' }, 403);
+    }
+
+    const targetUserId = String(body.user_id || '').trim();
+    if (!targetUserId) return jsonResponse({ error: 'user_id is required' }, 400);
+    if (targetUserId === currentHousehold.ownerUserId) {
+      return jsonResponse({ error: 'Household owner cannot be removed' }, 400);
+    }
+
+    const member = await env.DB.prepare(`
+      SELECT id, role
+      FROM household_members
+      WHERE household_id = ? AND user_id = ?
+      LIMIT 1
+    `).bind(currentHousehold.householdId, targetUserId).first();
+
+    if (!member) return jsonResponse({ error: 'Caregiver not found' }, 404);
+
+    await env.DB.prepare('DELETE FROM household_members WHERE id = ?').bind(member.id).run();
+    const members = await listMembers(env, currentHousehold.householdId);
+    return jsonResponse({
+      removed: true,
+      household: {
+        id: currentHousehold.householdId,
+        name: currentHousehold.name,
+        inviteCode: currentHousehold.inviteCode,
+        role: currentHousehold.role,
+        ownerUserId: currentHousehold.ownerUserId
+      },
+      members
+    });
+  }
+
+  if (action === 'leave') {
+    const membership = await env.DB.prepare(`
+      SELECT id
+      FROM household_members
+      WHERE household_id = ? AND user_id = ?
+      LIMIT 1
+    `).bind(currentHousehold.householdId, auth.userId).first();
+
+    if (!membership) return jsonResponse({ error: 'Membership not found' }, 404);
+
+    if (currentHousehold.role === 'owner') {
+      const memberCount = await env.DB.prepare('SELECT COUNT(*) AS n FROM household_members WHERE household_id = ?').bind(currentHousehold.householdId).first();
+      if (Number(memberCount?.n || 0) > 1) {
+        return jsonResponse({ error: 'Remove other caregivers before the owner leaves the household' }, 409);
+      }
+      await env.DB.prepare('DELETE FROM household_members WHERE id = ?').bind(membership.id).run();
+      await env.DB.prepare('DELETE FROM households WHERE id = ?').bind(currentHousehold.householdId).run();
+      return jsonResponse({ left: true, reset: true });
+    }
+
+    await env.DB.prepare('DELETE FROM household_members WHERE id = ?').bind(membership.id).run();
+    const nextHousehold = await getOrCreateHouseholdForFamily(auth, env);
+    const members = await listMembers(env, nextHousehold.householdId);
+    return jsonResponse({
+      left: true,
+      household: {
+        id: nextHousehold.householdId,
+        name: nextHousehold.name,
+        inviteCode: nextHousehold.inviteCode,
+        role: nextHousehold.role,
+        ownerUserId: nextHousehold.ownerUserId
+      },
+      members
+    });
   }
 
   return jsonResponse({ error: 'Unsupported action' }, 400);
