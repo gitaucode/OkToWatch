@@ -84,7 +84,7 @@
     position: relative;
     border-radius: 0.9rem;
     overflow: hidden;
-    min-height: 21rem;
+    min-height: 17.5rem;
     background: #dde3e7;
     box-shadow: 0 20px 40px rgba(45,51,54,0.08);
   }
@@ -138,7 +138,7 @@
   @media (max-width: 767px) {
     main { padding-left: 1rem; padding-right: 1rem; }
     .stepper-label { display: none; }
-    .finish-poster-card { min-height: 15rem; }
+    .finish-poster-card { min-height: 13rem; }
     #summaryPreferences { gap: 0.5rem; }
     .summary-chip { padding: 0.55rem 0.8rem; font-size: 0.75rem; }
   }
@@ -156,9 +156,9 @@
   </div>
 </header>
 
-<main class="min-h-screen pt-32 pb-40 px-6 max-w-3xl mx-auto w-full">
+<main class="min-h-screen pt-24 pb-32 px-6 max-w-[44rem] mx-auto w-full">
   <div class="w-full">
-    <section id="standardProgress" class="mb-12">
+    <section id="standardProgress" class="mb-8">
       <div class="flex items-center justify-between mb-4">
         <span id="progressText" class="font-label text-sm font-semibold uppercase tracking-widest text-on-surface-variant">Step 1 of 4</span>
         <span id="progressLabel" class="font-label text-sm font-semibold text-primary">Family setup</span>
@@ -168,9 +168,9 @@
       </div>
     </section>
 
-    <section id="standardIntro" class="mb-16">
-      <h1 id="stepHeading" class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-4 leading-tight">Set up your family</h1>
-      <p id="stepDescription" class="text-on-surface-variant text-lg leading-relaxed max-w-2xl">A few quick steps, then you're in. Tell us a little about your family.</p>
+    <section id="standardIntro" class="mb-10">
+      <h1 id="stepHeading" class="font-headline text-[2.6rem] md:text-[3rem] font-extrabold tracking-tight text-on-surface mb-3 leading-[1.02]">Set up your family</h1>
+      <p id="stepDescription" class="text-on-surface-variant text-base md:text-lg leading-relaxed max-w-xl">A few quick steps, then you're in. Tell us a little about your family.</p>
     </section>
 
     <section class="hidden mb-8">
@@ -194,15 +194,15 @@
       </div>
     </section>
 
-    <section data-step="0" class="space-y-10">
-      <div class="space-y-10">
+    <section data-step="0" class="space-y-8">
+      <div class="space-y-8">
         <div class="group">
           <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="parentNameInput">Your first name</label>
-          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
+          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-[1.55rem] font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
         </div>
         <div>
           <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="childCountInput">How many children?</label>
-          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
+          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-[1.55rem] font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
             <option value="1">1 child</option>
             <option value="2">2 children</option>
             <option value="3">3 children</option>
@@ -210,7 +210,7 @@
             <option value="5">5 children</option>
           </select>
         </div>
-        <section class="bg-surface-container-low p-8 rounded-xl border-l-4 border-tertiary flex gap-6 items-start">
+        <section class="bg-surface-container-low p-6 rounded-xl border-l-4 border-tertiary flex gap-5 items-start">
           <div class="bg-tertiary-container/30 p-3 rounded-full shrink-0">
             <span class="material-symbols-outlined text-tertiary">auto_awesome</span>
           </div>
@@ -222,9 +222,9 @@
       </div>
     </section>
 
-    <section data-step="1" class="hidden space-y-10">
-      <div id="childrenList" class="space-y-10"></div>
-      <section class="bg-surface-container-low p-8 rounded-xl border-l-4 border-tertiary flex gap-6 items-start">
+    <section data-step="1" class="hidden space-y-8">
+      <div id="childrenList" class="space-y-8"></div>
+      <section class="bg-surface-container-low p-6 rounded-xl border-l-4 border-tertiary flex gap-5 items-start">
         <div class="bg-tertiary-container/30 p-3 rounded-full shrink-0">
           <span class="material-symbols-outlined text-tertiary">auto_awesome</span>
         </div>
@@ -235,8 +235,8 @@
       </section>
     </section>
 
-    <section data-step="2" class="hidden grid grid-cols-1 gap-5">
-      <div id="preferencesGrid" class="grid grid-cols-1 gap-5"></div>
+    <section data-step="2" class="hidden grid grid-cols-1 gap-4">
+      <div id="preferencesGrid" class="grid grid-cols-1 gap-4"></div>
       <section class="wizard-card p-5 bg-secondary-container flex gap-4 items-center">
         <span class="material-symbols-outlined text-on-secondary-container">info</span>
         <p class="text-on-secondary-container text-sm font-medium">You can change these at any time from Settings.</p>
@@ -245,43 +245,43 @@
 
     <section data-step="3" class="hidden">
       <div class="max-w-[46rem] mx-auto">
-        <div class="text-center mb-10">
+        <div class="text-center mb-8">
           <div class="flex items-center justify-center gap-5 mb-5">
             <span class="finish-progress-dot"></span>
             <span class="finish-progress-dot"></span>
             <span class="finish-progress-dot"></span>
           </div>
-          <p class="text-on-surface-variant font-label text-sm uppercase tracking-widest font-semibold mb-10">Step 4 of 4</p>
-          <div class="finish-check-shell mb-8">
+          <p class="text-on-surface-variant font-label text-sm uppercase tracking-widest font-semibold mb-8">Step 4 of 4</p>
+          <div class="finish-check-shell mb-6">
             <div class="w-12 h-12 rounded-full bg-tertiary text-white flex items-center justify-center">
               <span class="material-symbols-outlined text-3xl active-icon">check</span>
             </div>
             <span class="absolute -right-3 -top-2 text-2xl" aria-hidden="true">&#x1F389;</span>
           </div>
-          <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight font-headline mb-4">You're All Set!</h2>
-          <p id="finishIntro" class="text-on-surface-variant text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">We've tailored the movie library to ensure a safe and magical experience for your family.</p>
+          <h2 class="text-[2.5rem] md:text-[3.25rem] font-extrabold text-on-surface tracking-tight font-headline mb-3">You're All Set!</h2>
+          <p id="finishIntro" class="text-on-surface-variant text-base md:text-lg leading-relaxed max-w-xl mx-auto">We've tailored the movie library to ensure a safe and magical experience for your family.</p>
         </div>
 
-        <div class="bg-white border border-outline-variant/15 rounded-[1.35rem] shadow-[0_10px_28px_rgba(45,51,54,0.08)] p-6 md:p-8 mb-10">
-          <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+        <div class="bg-white border border-outline-variant/15 rounded-[1.2rem] shadow-[0_10px_28px_rgba(45,51,54,0.08)] p-5 md:p-6 mb-8">
+          <div class="flex flex-col md:flex-row items-center gap-5 md:gap-6">
             <div class="relative shrink-0">
-              <div id="summaryAvatar" class="w-28 h-28 rounded-2xl overflow-hidden bg-primary-container flex items-center justify-center text-primary text-4xl font-headline font-extrabold">O</div>
+              <div id="summaryAvatar" class="w-24 h-24 rounded-2xl overflow-hidden bg-primary-container flex items-center justify-center text-primary text-3xl font-headline font-extrabold">O</div>
               <div class="absolute -bottom-2 -right-2 bg-tertiary text-on-tertiary p-2 rounded-2xl border-4 border-white">
                 <span class="material-symbols-outlined text-base active-icon">verified_user</span>
               </div>
             </div>
             <div class="flex-grow text-center md:text-left">
-              <h3 id="summaryPrimaryChild" class="text-3xl font-bold text-on-surface tracking-tight font-headline mb-1">Your family</h3>
-              <p id="summaryChildMeta" class="text-on-surface-variant text-xl font-medium mb-5">Ready to personalize your reviews</p>
+              <h3 id="summaryPrimaryChild" class="text-[2rem] font-bold text-on-surface tracking-tight font-headline mb-1">Your family</h3>
+              <p id="summaryChildMeta" class="text-on-surface-variant text-lg font-medium mb-4">Ready to personalize your reviews</p>
               <div class="flex flex-wrap justify-center md:justify-start gap-3" id="summaryPreferences"></div>
             </div>
-            <button type="button" class="hidden md:flex w-14 h-14 rounded-2xl border border-outline-variant/30 items-center justify-center text-primary hover:bg-surface-container-high transition-colors" aria-label="Edit setup" data-step-target="1">
+            <button type="button" class="hidden md:flex w-12 h-12 rounded-2xl border border-outline-variant/30 items-center justify-center text-primary hover:bg-surface-container-high transition-colors" aria-label="Edit setup" data-step-target="1">
               <span class="material-symbols-outlined">edit</span>
             </button>
           </div>
         </div>
 
-        <div id="finishPosters" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"></div>
+        <div id="finishPosters" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6"></div>
         <div id="summaryChildren" class="space-y-3"></div>
         <div id="summaryPlanNote" class="mt-6 text-center text-sm leading-relaxed text-on-surface-variant"></div>
       </div>
@@ -290,14 +290,14 @@
 </main>
 
 <footer class="fixed bottom-0 w-full z-50 border-t border-slate-200/20 bg-slate-50 dark:bg-slate-950">
-  <div class="w-full flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
-    <button id="backBtn" class="flex items-center justify-center text-slate-500 dark:text-slate-400 px-6 py-3 gap-2 hover:bg-slate-800 dark:hover:bg-white transition-colors">
+  <div class="w-full flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+    <button id="backBtn" class="flex items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-2.5 gap-2 hover:bg-slate-800 dark:hover:bg-white transition-colors">
       <span class="material-symbols-outlined">arrow_back</span>
       <span class="font-['Inter'] text-sm font-semibold uppercase tracking-wider">Back</span>
     </button>
     <div class="flex flex-col items-end gap-1">
       <p id="statusMsg" class="text-xs text-on-surface-variant min-h-[1rem]"></p>
-      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 dark:bg-slate-200 text-white dark:text-slate-900 rounded-lg px-8 py-3 gap-2 transition-all hover:bg-slate-800 dark:hover:bg-white active:translate-y-0.5">
+      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 dark:bg-slate-200 text-white dark:text-slate-900 rounded-lg px-7 py-2.5 gap-2 transition-all hover:bg-slate-800 dark:hover:bg-white active:translate-y-0.5">
         <span class="material-symbols-outlined">arrow_forward</span>
         <span class="font-['Inter'] text-sm font-semibold uppercase tracking-wider">Continue</span>
       </button>
@@ -412,17 +412,17 @@ function renderStepChips() {
 function renderChildren() {
   const list = document.getElementById('childrenList');
   list.innerHTML = state.children.map((child, index) => `
-    <div class="space-y-10">
+    <div class="space-y-8">
       <div class="group">
         <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">${index === 0 ? "First child's name" : `Child ${index + 1}'s name`}</label>
-        <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-name="${index}" maxlength="20" placeholder="e.g. Leo" type="text" value="${escapeHtml(child.name)}"/>
+        <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-4 text-[1.55rem] font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-name="${index}" maxlength="20" placeholder="e.g. Leo" type="text" value="${escapeHtml(child.name)}"/>
       </div>
       <div>
         <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">Age group</label>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           ${AGE_GROUPS.map((group) => `
-            <button type="button" class="age-chip flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${String(child.age) === group.value ? 'bg-surface-container-lowest border-primary' : 'bg-surface-container-low border-transparent hover:bg-surface-container-high'}" data-child-age-group="${index}" data-age-value="${group.value}">
-              <span class="text-3xl font-headline font-black ${String(child.age) === group.value ? 'text-primary' : 'text-on-surface-variant'} mb-1">${group.range}</span>
+            <button type="button" class="age-chip flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all hover:scale-[1.02] active:scale-95 ${String(child.age) === group.value ? 'bg-surface-container-lowest border-primary' : 'bg-surface-container-low border-transparent hover:bg-surface-container-high'}" data-child-age-group="${index}" data-age-value="${group.value}">
+              <span class="text-[1.7rem] font-headline font-black ${String(child.age) === group.value ? 'text-primary' : 'text-on-surface-variant'} mb-1">${group.range}</span>
               <span class="text-xs font-label font-bold ${String(child.age) === group.value ? 'text-primary-dim' : 'text-outline'} uppercase tracking-tighter">${group.label}</span>
             </button>
           `).join('')}
@@ -443,16 +443,16 @@ function renderChildren() {
 function renderPreferences() {
   const grid = document.getElementById('preferencesGrid');
   grid.innerHTML = TOPICS.map((topic) => `
-    <button type="button" class="pref-card group bg-surface-container-low p-6 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all hover:bg-surface-container-lowest text-left" data-pref="${topic.name}">
+    <button type="button" class="pref-card group bg-surface-container-low p-5 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all hover:bg-surface-container-lowest text-left" data-pref="${topic.name}">
       <div class="flex items-start gap-6">
-        <div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined text-2xl">${topic.icon}</span>
+        <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-[1.35rem]">${topic.icon}</span>
         </div>
         <div class="flex-1">
           <div class="flex items-center justify-between mb-2">
-            <h3 class="font-headline text-xl font-bold text-on-surface">${topic.name}</h3>
-            <span class="pref-check w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors">
-              <span class="material-symbols-outlined text-lg">check</span>
+            <h3 class="font-headline text-lg font-bold text-on-surface">${topic.name}</h3>
+            <span class="pref-check w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-base">check</span>
             </span>
           </div>
           <p class="text-sm text-on-surface-variant leading-relaxed">${topic.desc}</p>
