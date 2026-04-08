@@ -5,135 +5,230 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#565e74"/>
-<title>Welcome to OkToWatch</title>
+<title>OkToWatch - Family Setup</title>
 <meta name="description" content="Set up your family preferences so OkToWatch can personalize reviews from the start."/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/js/tailwind-theme.js?v=dev"></script>
 <style>
-  body { font-family: 'Inter', sans-serif; }
-  h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-  .step-chip { position: relative; }
-  .step-chip.active .step-chip-circle { background: #565e74; color: #fff; border-color: #565e74; }
-  .step-chip.active .step-chip-label { color: #2d3336; }
-  .step-chip.done .step-chip-circle { background: #dae2fd; color: #373f54; border-color: #ccd4ee; }
-  .step-chip.done .step-chip-circle::before { content: 'check'; font-family: 'Material Symbols Outlined'; font-size: 18px; line-height: 1; }
-  .step-chip.done .step-chip-circle span { display: none; }
-  .step-chip.done .step-chip-label { color: #2d3336; }
-  .pref-card.selected { border-color: rgba(86, 94, 116, 0.35); background: linear-gradient(180deg, #f2f4fb 0%, #edf2ff 100%); box-shadow: 0 16px 32px rgba(86, 94, 116, 0.12); }
-  .pref-card.selected .pref-pill { background: #565e74; }
-  .pref-card.selected .pref-pill::after { transform: translateX(18px); }
-  .pref-pill { width: 40px; height: 22px; background: #cbd5e1; border-radius: 999px; position: relative; transition: background 160ms ease; }
-  .pref-pill::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 999px; background: #fff; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18); transition: transform 160ms ease; }
-  .child-card { border: 1px solid rgba(172, 179, 182, 0.25); background: #fff; border-radius: 1.25rem; padding: 1rem; }
-  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%) translateY(20px); background: rgba(15,23,42,0.92); color: #fff; padding: 0.75rem 1rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none; transition: all 180ms ease; z-index: 80; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  body { font-family: 'Inter', sans-serif; background: #f9f9fa; }
+  h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  .active-icon { font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24; }
+  .wizard-card { border-radius: 1rem; }
+  .stepper-pill { transition: all 160ms ease; }
+  .stepper-pill.is-active { background: #565e74; color: #fff; border-color: #565e74; }
+  .stepper-pill.is-done { background: #dae2fd; color: #373f54; border-color: #ccd4ee; }
+  .stepper-number {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.12);
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+  .stepper-pill.is-done .stepper-number::before {
+    content: 'check';
+    font-family: 'Material Symbols Outlined';
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .stepper-pill.is-done .stepper-number span { display: none; }
+  .pref-card.selected {
+    background: #ffffff;
+    border-color: rgba(86,94,116,0.28);
+    box-shadow: 0 18px 34px rgba(86,94,116,0.08);
+    transform: translateY(-2px);
+  }
+  .pref-card.selected .pref-check {
+    background: #565e74;
+    color: #fff;
+  }
+  .child-card {
+    background: #ffffff;
+    border: 1px solid rgba(172,179,182,0.25);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+  .summary-chip {
+    background: #ffffff;
+    border: 1px solid rgba(172,179,182,0.18);
+    border-radius: 9999px;
+    padding: 0.625rem 0.95rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 6.25rem;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 180ms ease;
+    z-index: 80;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (max-width: 767px) {
+    main { padding-left: 1rem; padding-right: 1rem; }
+    .stepper-label { display: none; }
+  }
 </style>
 </head>
-<body class="bg-background text-on-surface antialiased" data-page="onboarding">
-<main class="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
-  <div class="mx-auto max-w-3xl">
-    <div class="rounded-[2rem] border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-[0_30px_70px_-40px_rgba(45,51,54,0.35)] sm:p-8 lg:p-10">
-      <div class="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <span class="inline-flex items-center rounded-full bg-primary-container px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-primary">Family setup</span>
-          <h1 class="brand-font mt-4 text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">Set up your family</h1>
-          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">A few quick steps, then you&rsquo;re in.</p>
-        </div>
-        <button id="skipSetupBtn" type="button" class="inline-flex items-center justify-center rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">Skip</button>
-      </div>
-
-      <div class="mb-10 grid grid-cols-4 gap-3" id="stepChips">
-        <div class="step-chip flex flex-col items-center gap-2">
-          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>1</span></div>
-          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">About</span>
-        </div>
-        <div class="step-chip flex flex-col items-center gap-2">
-          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>2</span></div>
-          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">Children</span>
-        </div>
-        <div class="step-chip flex flex-col items-center gap-2">
-          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>3</span></div>
-          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">Preferences</span>
-        </div>
-        <div class="step-chip flex flex-col items-center gap-2">
-          <div class="step-chip-circle flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/25 bg-surface-container text-sm font-bold"><span>4</span></div>
-          <span class="step-chip-label text-center text-xs font-semibold text-on-surface-variant">Finish</span>
-        </div>
-      </div>
-
-      <section data-step="0" class="space-y-6">
-        <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">About you</h2>
-          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Tell us your name and how many children you want to set up.</p>
-        </div>
-
-        <div class="grid gap-5 sm:grid-cols-2">
-          <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Your first name</label>
-            <input id="parentNameInput" type="text" maxlength="40" placeholder="e.g. Jane" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">How many children?</label>
-            <select id="childCountInput" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary">
-              <option value="1">1 child</option>
-              <option value="2">2 children</option>
-              <option value="3">3 children</option>
-              <option value="4">4 children</option>
-              <option value="5">5 children</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <section data-step="1" class="hidden space-y-6">
-        <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Your children</h2>
-          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Add each child&rsquo;s name and age.</p>
-        </div>
-        <div id="childrenList" class="grid gap-4"></div>
-        <p class="text-sm leading-relaxed text-on-surface-variant" id="childLimitHint"></p>
-      </section>
-
-      <section data-step="2" class="hidden space-y-6">
-        <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">What should we watch out for?</h2>
-          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Pick the topics you want highlighted in each review.</p>
-        </div>
-        <div id="preferencesGrid" class="grid gap-4 md:grid-cols-2"></div>
-      </section>
-
-      <section data-step="3" class="hidden space-y-6">
-        <div>
-          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Finish</h2>
-          <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Check everything looks right, then continue to your dashboard.</p>
-        </div>
-
-        <div class="space-y-5">
-          <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Children</p>
-            <div id="summaryChildren" class="mt-4 space-y-3"></div>
-          </div>
-          <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Preferences</p>
-            <div id="summaryPreferences" class="mt-4 flex flex-wrap gap-2"></div>
-          </div>
-          <div id="summaryPlanNote" class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5 text-sm leading-relaxed text-on-surface-variant"></div>
-        </div>
-      </section>
-
-      <div class="mt-10 flex flex-col gap-3 border-t border-outline-variant/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <button id="backBtn" type="button" class="inline-flex items-center justify-center rounded-full border border-outline-variant/20 px-5 py-3 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">Back</button>
-        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
-          <p id="statusMsg" class="text-sm text-on-surface-variant"></p>
-          <button id="nextBtn" type="button" class="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary transition-colors hover:bg-primary-dim">Next</button>
-        </div>
-      </div>
+<body class="text-on-surface min-h-screen flex flex-col" data-page="onboarding">
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl transition-all">
+  <div class="flex justify-between items-center px-6 py-5 max-w-7xl mx-auto">
+    <div class="text-xl font-black text-slate-900 font-headline tracking-tight">OkToWatch</div>
+    <div class="flex items-center gap-4">
+      <button id="skipSetupBtn" class="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors">Skip</button>
     </div>
   </div>
+  <div class="h-px bg-surface-container"></div>
+</header>
+
+<main class="flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-32">
+  <div class="max-w-3xl w-full">
+    <section class="mb-12">
+      <div class="flex items-center justify-between mb-4">
+        <span id="progressText" class="font-label text-sm font-semibold uppercase tracking-widest text-on-surface-variant">Step 1 of 4</span>
+        <span id="progressLabel" class="font-label text-sm font-semibold text-primary">Family setup</span>
+      </div>
+      <div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full bg-primary rounded-full transition-all duration-200" style="width:25%"></div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h1 id="stepHeading" class="font-headline text-4xl md:text-5xl font-extrabold text-on-surface leading-tight tracking-tight mb-4">Set up your family</h1>
+      <p id="stepDescription" class="text-on-surface-variant text-lg leading-relaxed max-w-2xl">A few quick steps, then you're in.</p>
+    </section>
+
+    <section class="mb-10">
+      <div class="grid grid-cols-4 gap-3" id="stepChips">
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-3 py-4 flex flex-col items-center gap-2 text-on-surface-variant" data-step-target="0">
+          <span class="stepper-number"><span>1</span></span>
+          <span class="stepper-label text-xs font-semibold uppercase tracking-wider">About</span>
+        </button>
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-3 py-4 flex flex-col items-center gap-2 text-on-surface-variant" data-step-target="1">
+          <span class="stepper-number"><span>2</span></span>
+          <span class="stepper-label text-xs font-semibold uppercase tracking-wider">Children</span>
+        </button>
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-3 py-4 flex flex-col items-center gap-2 text-on-surface-variant" data-step-target="2">
+          <span class="stepper-number"><span>3</span></span>
+          <span class="stepper-label text-xs font-semibold uppercase tracking-wider">Preferences</span>
+        </button>
+        <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-3 py-4 flex flex-col items-center gap-2 text-on-surface-variant" data-step-target="3">
+          <span class="stepper-number"><span>4</span></span>
+          <span class="stepper-label text-xs font-semibold uppercase tracking-wider">Finish</span>
+        </button>
+      </div>
+    </section>
+
+    <section data-step="0" class="space-y-10">
+      <div class="space-y-10">
+        <div class="group">
+          <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="parentNameInput">Your first name</label>
+          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
+        </div>
+        <div>
+          <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="childCountInput">How many children?</label>
+          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
+            <option value="1">1 child</option>
+            <option value="2">2 children</option>
+            <option value="3">3 children</option>
+            <option value="4">4 children</option>
+            <option value="5">5 children</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section data-step="1" class="hidden space-y-6">
+      <div id="childrenList" class="space-y-4"></div>
+      <section class="wizard-card bg-secondary-container p-6 flex gap-4 items-start">
+        <span class="material-symbols-outlined text-on-secondary-container">info</span>
+        <p id="childLimitHint" class="text-on-secondary-container text-sm font-medium"></p>
+      </section>
+    </section>
+
+    <section data-step="2" class="hidden grid grid-cols-1 gap-6">
+      <div id="preferencesGrid" class="grid grid-cols-1 gap-6"></div>
+      <section class="wizard-card p-6 bg-secondary-container flex gap-4 items-center">
+        <span class="material-symbols-outlined text-on-secondary-container">info</span>
+        <p class="text-on-secondary-container text-sm font-medium">You can change these at any time from Settings.</p>
+      </section>
+    </section>
+
+    <section data-step="3" class="hidden">
+      <div class="text-center mb-10">
+        <div class="relative inline-block mb-6">
+          <div class="w-20 h-20 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary mx-auto">
+            <span class="material-symbols-outlined text-5xl active-icon">check_circle</span>
+          </div>
+          <div class="absolute -top-2 -right-4 text-tertiary-container">
+            <span class="material-symbols-outlined text-2xl">celebration</span>
+          </div>
+        </div>
+        <h2 class="text-3xl font-extrabold text-on-surface mb-3 tracking-tight font-headline">You're all set!</h2>
+        <p id="finishIntro" class="text-on-surface-variant leading-relaxed">We'll tailor reviews to your family from the start.</p>
+      </div>
+
+      <div class="bg-surface-container-low p-1 rounded-full overflow-hidden mb-8">
+        <div class="bg-surface-container-lowest p-8 rounded-full border border-outline-variant/10">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="relative shrink-0">
+              <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface-container flex items-center justify-center bg-primary-container text-primary">
+                <span class="material-symbols-outlined text-5xl active-icon">family_restroom</span>
+              </div>
+              <div class="absolute bottom-0 right-0 bg-tertiary text-on-tertiary p-1.5 rounded-full border-2 border-surface-container-lowest">
+                <span class="material-symbols-outlined text-sm active-icon">verified_user</span>
+              </div>
+            </div>
+            <div class="flex-grow text-center md:text-left space-y-4">
+              <div>
+                <h3 id="summaryPrimaryChild" class="text-2xl font-bold text-on-surface tracking-tight font-headline">Your family</h3>
+                <p id="summaryChildMeta" class="text-on-surface-variant font-medium">Ready to personalize your reviews</p>
+              </div>
+              <div class="flex flex-wrap justify-center md:justify-start gap-3" id="summaryPreferences"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4" id="summaryChildren"></div>
+      <div id="summaryPlanNote" class="mt-6 bg-surface-container-low p-6 rounded-xl border-l-4 border-tertiary text-sm leading-relaxed text-on-surface-variant"></div>
+    </section>
+  </div>
 </main>
+
+<footer class="fixed bottom-0 w-full bg-slate-50 z-50 border-t border-slate-200/20">
+  <div class="w-full flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+    <button id="backBtn" class="flex items-center justify-center text-slate-500 px-6 py-3 gap-2 text-sm font-semibold uppercase tracking-wider hover:opacity-70 transition-opacity">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Back
+    </button>
+    <div class="flex flex-col items-end gap-1">
+      <p id="statusMsg" class="text-xs text-on-surface-variant min-h-[1rem]"></p>
+      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 text-white rounded-lg px-8 py-3 gap-2 transition-all hover:bg-slate-800 active:translate-y-0.5 text-sm font-semibold uppercase tracking-wider">
+        <span class="material-symbols-outlined">arrow_forward</span>
+        Continue
+      </button>
+    </div>
+  </div>
+</footer>
 
 <div id="toast" class="toast"></div>
 
@@ -143,15 +238,41 @@ const PREFS_KEY = 'cv_prefs';
 const LEGACY_ONBOARD_KEY = 'cv_onboarded';
 const DEFAULT_ACTIVE = ['Sex & Nudity', 'Violence & Gore', 'Language', 'Drugs & Alcohol', 'Horror & Fear', 'Self-harm'];
 const TOPICS = [
-  { name: 'Sex & Nudity', icon: '🔞', desc: 'Sexual content, nudity, or adult themes.' },
-  { name: 'Violence & Gore', icon: '⚠️', desc: 'Fighting, blood, injury, or death.' },
-  { name: 'Language', icon: '🤬', desc: 'Profanity, slurs, or strong language.' },
-  { name: 'Drugs & Alcohol', icon: '🍷', desc: 'Drug use, drinking, or substance abuse.' },
-  { name: 'Horror & Fear', icon: '👻', desc: 'Scary scenes, jump scares, or disturbing imagery.' },
-  { name: 'Self-harm', icon: '🛟', desc: 'Self-harm, suicide, or eating disorder references.' },
-  { name: 'Bullying & Cruelty', icon: '💬', desc: 'Bullying, humiliation, or emotional cruelty.' },
-  { name: 'Mature Themes', icon: '🧠', desc: 'Grief, trauma, or emotionally heavy themes.' },
-  { name: 'LGBTQ+ Themes', icon: '🏳️‍🌈', desc: 'Identity, coming out, same-sex relationships, or gender themes.' }
+  { name: 'Sex & Nudity', icon: 'visibility_off', desc: 'Sexual content, nudity, or adult themes.' },
+  { name: 'Violence & Gore', icon: 'warning', desc: 'Fighting, blood, injury, or death.' },
+  { name: 'Language', icon: 'record_voice_over', desc: 'Profanity, slurs, or strong language.' },
+  { name: 'Drugs & Alcohol', icon: 'local_bar', desc: 'Drug use, drinking, or substance abuse.' },
+  { name: 'Horror & Fear', icon: 'dark_mode', desc: 'Scary scenes, jump scares, or disturbing imagery.' },
+  { name: 'Self-harm', icon: 'health_and_safety', desc: 'Self-harm, suicide, or eating disorder references.' },
+  { name: 'Bullying & Cruelty', icon: 'campaign', desc: 'Bullying, humiliation, or emotional cruelty.' },
+  { name: 'Mature Themes', icon: 'psychology', desc: 'Grief, trauma, or emotionally heavy themes.' },
+  { name: 'LGBTQ+ Themes', icon: 'diversity_3', desc: 'Identity, coming out, same-sex relationships, or gender themes.' }
+];
+const STEP_META = [
+  {
+    progressLabel: 'About you',
+    heading: 'Set up your family',
+    description: "A few quick steps, then you're in. Tell us a little about your family.",
+    button: 'Continue'
+  },
+  {
+    progressLabel: 'Your children',
+    heading: 'Add your children',
+    description: "Add each child's name and age so we can tailor reviews and recommendations.",
+    button: 'Continue'
+  },
+  {
+    progressLabel: 'Preferences',
+    heading: 'What should we watch out for?',
+    description: 'Pick the topics you want highlighted in each review.',
+    button: 'Continue'
+  },
+  {
+    progressLabel: 'Finish',
+    heading: 'Finish and preview',
+    description: "Take one last look, then we'll get your family set up.",
+    button: 'Finish'
+  }
 ];
 
 let authState = null;
@@ -163,7 +284,7 @@ const state = {
   children: [{ name: '', age: '' }],
   preferences: {
     active: [...DEFAULT_ACTIVE],
-    order: TOPICS.map(topic => topic.name)
+    order: TOPICS.map((topic) => topic.name)
   }
 };
 
@@ -194,10 +315,10 @@ function syncChildrenLength() {
 }
 
 function renderStepChips() {
-  document.querySelectorAll('#stepChips .step-chip').forEach((chip, index) => {
-    chip.classList.remove('active', 'done');
-    if (index === currentStep) chip.classList.add('active');
-    else if (index < currentStep) chip.classList.add('done');
+  document.querySelectorAll('#stepChips .stepper-pill').forEach((chip, index) => {
+    chip.classList.remove('is-active', 'is-done');
+    if (index === currentStep) chip.classList.add('is-active');
+    if (index < currentStep) chip.classList.add('is-done');
   });
 }
 
@@ -205,21 +326,23 @@ function renderChildren() {
   const list = document.getElementById('childrenList');
   list.innerHTML = state.children.map((child, index) => `
     <div class="child-card">
-      <div class="mb-4 flex items-center justify-between">
+      <div class="flex items-center justify-between mb-6">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Child ${index + 1}</p>
-          <p class="mt-1 text-sm font-semibold text-on-surface">${child.name || 'New child profile'}</p>
+          <h3 class="font-headline text-2xl font-bold text-on-surface">Child ${index + 1}</h3>
+          <p class="text-on-surface-variant text-sm">Name and age are enough to get started.</p>
         </div>
-        <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-container text-xl">${index % 2 === 0 ? '🧒' : '⭐'}</span>
+        <div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-3xl">${index % 2 === 0 ? 'child_care' : 'stars'}</span>
+        </div>
       </div>
-      <div class="grid gap-4 md:grid-cols-2">
-        <div class="space-y-2">
-          <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Name</label>
-          <input type="text" data-child-name="${index}" maxlength="20" value="${escapeHtml(child.name)}" placeholder="e.g. Maya" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">Name</label>
+          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-name="${index}" maxlength="20" placeholder="e.g. Maya" type="text" value="${escapeHtml(child.name)}"/>
         </div>
-        <div class="space-y-2">
-          <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Age</label>
-          <input type="number" data-child-age="${index}" min="1" max="17" value="${escapeHtml(child.age)}" placeholder="e.g. 8" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+        <div>
+          <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider">Age</label>
+          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" data-child-age="${index}" max="17" min="1" placeholder="e.g. 8" type="number" value="${escapeHtml(child.age)}"/>
         </div>
       </div>
     </div>
@@ -230,56 +353,88 @@ function renderChildren() {
   if (maxProfiles > 0) {
     hint.textContent = `Your ${authState.tier} plan can create up to ${maxProfiles} child profile${maxProfiles === 1 ? '' : 's'} right away.`;
   } else {
-    hint.textContent = 'Free accounts keep this family setup saved as a draft until you unlock child profiles.';
+    hint.textContent = 'Free accounts save this family setup as a draft until child profiles are unlocked.';
   }
 }
 
 function renderPreferences() {
   const grid = document.getElementById('preferencesGrid');
   grid.innerHTML = TOPICS.map((topic) => `
-    <button type="button" class="pref-card ${state.preferences.active.includes(topic.name) ? 'selected' : ''} flex items-start gap-4 rounded-[1.25rem] border border-outline-variant/20 bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg" data-pref="${topic.name}">
-      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-container text-xl">${topic.icon}</span>
-      <span class="min-w-0 flex-1">
-        <span class="block text-base font-bold text-on-surface">${topic.name}</span>
-        <span class="mt-1 block text-sm leading-relaxed text-on-surface-variant">${topic.desc}</span>
-      </span>
-      <span class="pref-pill shrink-0"></span>
+    <button type="button" class="pref-card group bg-surface-container-low p-8 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all hover:bg-surface-container-lowest text-left" data-pref="${topic.name}">
+      <div class="flex items-start gap-6">
+        <div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-3xl">${topic.icon}</span>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-headline text-2xl font-bold text-on-surface">${topic.name}</h3>
+            <span class="pref-check w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors">
+              <span class="material-symbols-outlined text-xl">check</span>
+            </span>
+          </div>
+          <p class="text-on-surface-variant leading-relaxed">${topic.desc}</p>
+        </div>
+      </div>
     </button>
   `).join('');
+
+  state.preferences.active.forEach((name) => {
+    const card = grid.querySelector(`[data-pref="${CSS.escape(name)}"]`);
+    if (card) card.classList.add('selected');
+  });
 }
 
 function renderSummary() {
-  document.getElementById('summaryChildren').innerHTML = state.children.map((child) => `
-    <div class="rounded-2xl bg-white px-4 py-3">
-      <p class="font-semibold text-on-surface">${escapeHtml(child.name || 'Unnamed child')}</p>
-      <p class="mt-1 text-sm text-on-surface-variant">Age ${escapeHtml(child.age || '—')}</p>
+  const children = state.children.filter((child) => child.name.trim() || child.age);
+  const primary = children[0];
+  document.getElementById('finishIntro').textContent = primary?.name
+    ? `We've tailored the experience around ${primary.name}.`
+    : "We'll tailor reviews to your family from the start.";
+  document.getElementById('summaryPrimaryChild').textContent = primary?.name || 'Your family';
+  document.getElementById('summaryChildMeta').textContent = primary?.age ? `${primary.age} years old` : 'Ready to personalize your reviews';
+
+  document.getElementById('summaryPreferences').innerHTML = state.preferences.active.map((name) => `
+    <span class="summary-chip">${escapeHtml(name)}</span>
+  `).join('');
+
+  document.getElementById('summaryChildren').innerHTML = children.map((child) => `
+    <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h3 class="font-headline text-xl font-bold text-on-surface">${escapeHtml(child.name || 'Unnamed child')}</h3>
+          <p class="text-sm text-on-surface-variant">${child.age ? `Age ${escapeHtml(child.age)}` : 'Age not set'}</p>
+        </div>
+        <span class="material-symbols-outlined text-primary active-icon">verified_user</span>
+      </div>
     </div>
   `).join('');
 
-  document.getElementById('summaryPreferences').innerHTML = state.preferences.active.map((name) => `
-    <span class="rounded-full bg-white px-3 py-2 text-sm font-semibold text-on-surface">${escapeHtml(name)}</span>
-  `).join('');
-
-  const planNote = document.getElementById('summaryPlanNote');
   const maxProfiles = getMaxProfilesForTier();
+  const planNote = document.getElementById('summaryPlanNote');
   if (maxProfiles > 0) {
     const deferred = Math.max(0, state.children.length - maxProfiles);
     planNote.textContent = deferred > 0
-      ? `We’ll create your first ${maxProfiles} child profiles now and keep the rest saved in your family setup draft.`
-      : `We’ll create these child profiles now so Settings and recommendations are ready when you arrive.`;
+      ? `We'll create your first ${maxProfiles} child profiles now and keep the rest saved in your family setup draft.`
+      : "We'll create these child profiles now so your dashboard is ready when you arrive.";
   } else {
-    planNote.textContent = 'We’ll save this setup to your account now. Free plans keep child details as a saved family draft until profiles are unlocked.';
+    planNote.textContent = 'We will save this setup to your account now. Free plans keep child details as a saved family draft until profiles are unlocked.';
   }
 }
 
 function render() {
+  const meta = STEP_META[currentStep];
+  document.getElementById('progressText').textContent = `Step ${currentStep + 1} of ${STEP_META.length}`;
+  document.getElementById('progressLabel').textContent = meta.progressLabel;
+  document.getElementById('progressBar').style.width = `${((currentStep + 1) / STEP_META.length) * 100}%`;
+  document.getElementById('stepHeading').textContent = meta.heading;
+  document.getElementById('stepDescription').textContent = meta.description;
+  document.getElementById('nextBtn').lastChild.textContent = meta.button;
+  document.getElementById('backBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+
   renderStepChips();
   document.querySelectorAll('[data-step]').forEach((section, index) => {
     section.classList.toggle('hidden', index !== currentStep);
   });
-
-  document.getElementById('backBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-  document.getElementById('nextBtn').textContent = currentStep === 3 ? 'Finish setup' : 'Next';
 
   renderChildren();
   renderPreferences();
@@ -293,7 +448,7 @@ function validateCurrentStep() {
       return false;
     }
     if (!state.childCount || state.childCount < 1 || state.childCount > 5) {
-      showToast('Pick how many children you’re setting up');
+      showToast('Pick how many children you are setting up');
       return false;
     }
   }
@@ -409,7 +564,7 @@ async function finishSetup() {
   const button = document.getElementById('nextBtn');
   const status = document.getElementById('statusMsg');
   button.disabled = true;
-  button.textContent = 'Saving...';
+  button.style.opacity = '0.7';
   status.textContent = 'Saving your family setup...';
 
   try {
@@ -444,7 +599,7 @@ async function finishSetup() {
     console.error(err);
     status.textContent = '';
     button.disabled = false;
-    button.textContent = 'Finish setup';
+    button.style.opacity = '1';
     showToast('We could not finish setup. Please try again.');
   }
 }
@@ -456,7 +611,9 @@ async function loadSavedState() {
     const saved = await res.json();
     if (saved.parentName) state.parentName = saved.parentName;
     if (saved.childCount) state.childCount = Math.max(1, Math.min(5, Number(saved.childCount) || 1));
-    if (Array.isArray(saved.children) && saved.children.length) state.children = saved.children.map((child) => ({ name: child.name || '', age: child.age || '' }));
+    if (Array.isArray(saved.children) && saved.children.length) {
+      state.children = saved.children.map((child) => ({ name: child.name || '', age: child.age || '' }));
+    }
     if (saved.preferences?.active?.length) {
       state.preferences = {
         active: saved.preferences.active,
@@ -468,6 +625,7 @@ async function loadSavedState() {
   if (!state.parentName.trim() && authState?.user?.firstName) {
     state.parentName = authState.user.firstName;
   }
+
   syncChildrenLength();
   document.getElementById('parentNameInput').value = state.parentName;
   document.getElementById('childCountInput').value = String(state.childCount);
@@ -542,6 +700,16 @@ document.getElementById('skipSetupBtn').addEventListener('click', async () => {
   });
   const redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
   window.location.replace(redirect);
+});
+
+document.querySelectorAll('[data-step-target]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const target = Number(button.getAttribute('data-step-target'));
+    if (target > currentStep) return;
+    currentStep = target;
+    render();
+    await persistDraft(false);
+  });
 });
 
 document.addEventListener('cv:auth', async ({ detail }) => {
