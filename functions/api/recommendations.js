@@ -1,4 +1,4 @@
-import { requireAuth, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
 
 const GENRE_NAMES = {
   16: 'Animation',
@@ -26,7 +26,7 @@ const FALLBACK_RECOMMENDATIONS = [
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requirePro(request, env);
   if (error) return error;
 
   const url = new URL(request.url);

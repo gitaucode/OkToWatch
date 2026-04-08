@@ -4,7 +4,7 @@
  * Body: { tmdb_id, season, episode, title }
  */
 
-import { requireAuth, jsonResponse, handleOptions } from '../../_shared/clerk.js';
+import { requirePro, jsonResponse, handleOptions } from '../../_shared/clerk.js';
 
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
@@ -67,7 +67,7 @@ Return ONLY valid JSON (no markdown, no extra text):
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requirePro(request, env);
   if (error) return error;
 
   try {

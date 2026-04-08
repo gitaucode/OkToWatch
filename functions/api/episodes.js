@@ -7,11 +7,11 @@
  * are risky for their child, so they can skip problematic ones.
  */
 
-import { requireAuth, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const { auth, error } = await requireAuth(request, env);
+  const { auth, error } = await requirePro(request, env);
   if (error) return error;
 
   const url = new URL(request.url);

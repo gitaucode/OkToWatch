@@ -378,7 +378,7 @@
 
       <span class="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2 block">OkToWatch Premium</span>
       <h2 class="text-3xl md:text-4xl font-extrabold font-headline text-slate-900 leading-tight mb-3 tracking-tight" id="upgradeFeatureTitle">Save Child Profiles</h2>
-      <p class="text-on-surface-variant text-sm leading-relaxed mb-8 max-w-sm" id="upgradeFeatureDesc">Elevate your family's entertainment experience with granular controls and synchronized insights across all devices.</p>
+      <p class="text-on-surface-variant text-sm leading-relaxed mb-8 max-w-sm" id="upgradeFeatureDesc">Upgrade to save family decisions, compare titles, and get personalized picks that follow each child's profile.</p>
 
       <!-- Benefits -->
       <ul class="space-y-4 mb-8">
@@ -404,8 +404,8 @@
           <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
             <span class="material-symbols-outlined text-slate-900 text-sm">check</span>
           </div>
-          <span class="text-slate-800 font-medium text-sm">Season-level content analysis</span>
-        </li>
+          <span class="text-slate-800 font-medium text-sm">Profile-based recommendations &amp; title compare</span>
+      </li>
       </ul>
 
       <!-- Actions -->
@@ -415,7 +415,7 @@
       </div>
 
       <p class="mt-6 pt-6 border-t border-surface-container-high text-xs text-on-surface-variant leading-relaxed">
-        Subscription starts at $9.99/mo. Cancel anytime through your account settings. Taxes may apply.
+        Pro starts at $4.99/mo. Cancel anytime through your account settings. Taxes may apply.
       </p>
     </div>
 
@@ -601,6 +601,21 @@ async function loadRecommendations(type='movie'){
   const label=document.getElementById('recommendationsLabel');
   const sub=document.getElementById('recommendationsSub');
   if(!grid||!label||!sub)return;
+  if((window.userTier||'free')==='free'){
+    label.textContent='Premium recommendations';
+    sub.textContent='Unlock profile-based picks, title compare, and season-level TV guidance with Pro.';
+    grid.innerHTML=`<div class="col-span-full bg-surface-container-lowest border border-outline-variant/15 rounded-2xl p-6 md:p-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="max-w-2xl">
+          <span class="text-[11px] font-bold uppercase tracking-widest text-primary/70 block mb-2">Pro feature</span>
+          <h4 class="text-xl md:text-2xl font-bold font-headline text-on-surface mb-2">Get personalized picks for each child</h4>
+          <p class="text-sm text-on-surface-variant leading-relaxed">Pro unlocks profile-based recommendations, saved picks, title compare, synced history, and season-level TV analysis.</p>
+        </div>
+        <a href="/plans" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-slate-900 text-white font-bold text-sm no-underline hover:bg-slate-800 transition-colors">Upgrade to Pro</a>
+      </div>
+    </div>`;
+    return;
+  }
   const profile=recommendationProfile();
   label.textContent=profile?`Recommended for ${profile.name} ${profile.emoji||''}`:'Recommended next';
   sub.textContent=profile
