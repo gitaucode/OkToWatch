@@ -132,6 +132,23 @@ CREATE TABLE IF NOT EXISTS shared_notes (
   updated_at TEXT DEFAULT (datetime('now'))
 );
 
+-- —— Households (multi-caregiver Family accounts) ————————————————————————————————
+CREATE TABLE IF NOT EXISTS households (
+  id            TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  owner_user_id TEXT NOT NULL UNIQUE,
+  name          TEXT,
+  invite_code   TEXT NOT NULL UNIQUE,
+  created_at    TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS household_members (
+  id           TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  household_id TEXT NOT NULL,
+  user_id      TEXT NOT NULL UNIQUE,
+  role         TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner', 'member')),
+  created_at   TEXT DEFAULT (datetime('now'))
+);
+
 -- ── Episode Analysis (TV episode-level verdicts) ────────────────────────────
 -- Cache verdicts for individual TV episodes so parents can see which episodes
 -- are risky for their child's age. Keyed on tmdb_id:season:episode format.
@@ -161,6 +178,8 @@ CREATE INDEX IF NOT EXISTS idx_issue_reports    ON issue_reports(tmdb_id, media_
 CREATE INDEX IF NOT EXISTS idx_issue_user       ON issue_reports(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_shared_notes     ON shared_notes(family_id, tmdb_id, media_type);
 CREATE INDEX IF NOT EXISTS idx_shared_notes_user ON shared_notes(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_households_owner ON households(owner_user_id);
+CREATE INDEX IF NOT EXISTS idx_household_members_household ON household_members(household_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_episode_analysis ON episode_analysis(tmdb_id, season_number, episode_number);
 CREATE INDEX IF NOT EXISTS idx_episode_cache_key ON episode_analysis(cache_key);
 

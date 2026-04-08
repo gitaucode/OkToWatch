@@ -1,4 +1,5 @@
 import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { resolveDataScope } from '../_shared/households.js';
 
 const GENRE_NAMES = {
   16: 'Animation',
@@ -28,6 +29,7 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const profileId = url.searchParams.get('profile_id');
@@ -35,9 +37,9 @@ export async function onRequestGet(context) {
 
   try {
     const [profilesRes, historyRes, listsRes] = await Promise.all([
-      env.DB.prepare('SELECT id, name, age, emoji, blocked_categories FROM profiles WHERE user_id = ? ORDER BY created_at ASC').bind(auth.userId).all(),
-      env.DB.prepare('SELECT tmdb_id, media_type, title, searched_at, profile_id FROM history WHERE user_id = ? ORDER BY searched_at DESC LIMIT 20').bind(auth.userId).all(),
-      env.DB.prepare('SELECT tmdb_id, media_type, title, list_type, saved_at, profile_id FROM lists WHERE user_id = ? ORDER BY saved_at DESC LIMIT 30').bind(auth.userId).all(),
+      env.DB.prepare('SELECT id, name, age, emoji, blocked_categories FROM profiles WHERE user_id = ? ORDER BY created_at ASC').bind(scope.scopeUserId).all(),
+      env.DB.prepare('SELECT tmdb_id, media_type, title, searched_at, profile_id FROM history WHERE user_id = ? ORDER BY searched_at DESC LIMIT 20').bind(scope.scopeUserId).all(),
+      env.DB.prepare('SELECT tmdb_id, media_type, title, list_type, saved_at, profile_id FROM lists WHERE user_id = ? ORDER BY saved_at DESC LIMIT 30').bind(scope.scopeUserId).all(),
     ]);
 
     const profiles = profilesRes.results || [];

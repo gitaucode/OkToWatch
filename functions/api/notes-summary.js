@@ -5,11 +5,13 @@
  */
 
 import { requireFamily, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { resolveDataScope } from '../_shared/households.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
   const { auth, error } = await requireFamily(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   if (!env.DB) return jsonResponse({});
 
@@ -25,9 +27,9 @@ export async function onRequestGet(context) {
     const rows = await env.DB.prepare(`
       SELECT tmdb_id, note_type, is_pinned, created_at
       FROM shared_notes
-      WHERE family_id = ? AND media_type = ? AND tmdb_id IN (${placeholders})
+      WHERE family_id IN (?, ?) AND media_type = ? AND tmdb_id IN (${placeholders})
       ORDER BY is_pinned DESC, created_at DESC
-    `).bind(auth.userId, mediaType, ...ids).all();
+    `).bind(scope.householdId || auth.userId, scope.scopeUserId || auth.userId, mediaType, ...ids).all();
 
     const summaries = {};
     for (const row of (rows.results || [])) {

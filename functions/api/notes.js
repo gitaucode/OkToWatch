@@ -7,6 +7,7 @@
  */
 
 import { requireFamily, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { resolveDataScope } from '../_shared/households.js';
 
 const VALID_NOTE_TYPES = ['observation', 'approval', 'caution'];
 
@@ -14,6 +15,7 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const { auth, error } = await requireFamily(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const tmdb_id = url.searchParams.get('tmdb_id');
@@ -25,16 +27,14 @@ export async function onRequestGet(context) {
 
   try {
     // Get family_id (for now, use user_id as family_id — can be extended for real family accounts)
-    const family_id = auth.userId;
-
     const notes = await env.DB
       .prepare(`
         SELECT id, user_id, note_type, message, is_pinned, created_at, updated_at
         FROM shared_notes
-        WHERE family_id = ? AND tmdb_id = ? AND media_type = ?
+        WHERE family_id IN (?, ?) AND tmdb_id = ? AND media_type = ?
         ORDER BY is_pinned DESC, created_at DESC
       `)
-      .bind(family_id, parseInt(tmdb_id), media_type)
+      .bind(scope.householdId || auth.userId, scope.scopeUserId || auth.userId, parseInt(tmdb_id), media_type)
       .all();
 
     return jsonResponse(notes.results ?? []);
@@ -48,6 +48,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const { auth, error } = await requireFamily(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   let body;
   try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON' }, 400); }
@@ -64,7 +65,7 @@ export async function onRequestPost(context) {
   }
 
   try {
-    const family_id = auth.userId; // Use user_id as family_id
+    const family_id = scope.householdId || auth.userId;
     const id = crypto.getRandomValues(new Uint8Array(8));
     const note_id = Array.from(id).map(b => b.toString(16).padStart(2, '0')).join('');
 
@@ -92,6 +93,7 @@ export async function onRequestPut(context) {
   const { request, env } = context;
   const { auth, error } = await requireFamily(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
@@ -110,7 +112,7 @@ export async function onRequestPut(context) {
       .first();
 
     if (!note) return jsonResponse({ error: 'Note not found' }, 404);
-    if (note.user_id !== auth.userId) return jsonResponse({ error: 'Unauthorized' }, 403);
+    if (note.user_id !== auth.userId && scope.role !== 'owner') return jsonResponse({ error: 'Unauthorized' }, 403);
 
     if (is_pinned !== undefined) {
       await env.DB
@@ -135,6 +137,7 @@ export async function onRequestDelete(context) {
   const { request, env } = context;
   const { auth, error } = await requireFamily(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
@@ -148,7 +151,7 @@ export async function onRequestDelete(context) {
       .first();
 
     if (!note) return jsonResponse({ error: 'Note not found' }, 404);
-    if (note.user_id !== auth.userId) return jsonResponse({ error: 'Unauthorized' }, 403);
+    if (note.user_id !== auth.userId && scope.role !== 'owner') return jsonResponse({ error: 'Unauthorized' }, 403);
 
     await env.DB
       .prepare('DELETE FROM shared_notes WHERE id = ?')

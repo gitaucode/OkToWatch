@@ -7,6 +7,7 @@
  */
 
 import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { resolveDataScope } from '../_shared/households.js';
 
 const VALID_TYPES = ['approved', 'blocked', 'watchlater'];
 
@@ -14,13 +15,14 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url       = new URL(request.url);
   const listType  = url.searchParams.get('list_type');
   const profileId = url.searchParams.get('profile_id');
 
   let query  = 'SELECT * FROM lists WHERE user_id = ?';
-  const args = [auth.userId];
+  const args = [scope.scopeUserId];
 
   if (listType) {
     if (!VALID_TYPES.includes(listType)) return jsonResponse({ error: 'Invalid list_type' }, 400);
@@ -43,6 +45,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   let body;
   try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON' }, 400); }
@@ -58,7 +61,7 @@ export async function onRequestPost(context) {
   // Check if already in any list for this user
   const existing = await env.DB
     .prepare('SELECT id, list_type FROM lists WHERE user_id = ? AND tmdb_id = ? AND media_type = ?')
-    .bind(auth.userId, tmdb_id, media_type)
+    .bind(scope.scopeUserId, tmdb_id, media_type)
     .first();
 
   if (existing) {
@@ -77,7 +80,7 @@ export async function onRequestPost(context) {
   const id = crypto.randomUUID().replace(/-/g, '');
   await env.DB
     .prepare('INSERT INTO lists (id, user_id, tmdb_id, media_type, title, year, poster, list_type, profile_id, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, auth.userId, tmdb_id, media_type, title, year ?? null, poster ?? null, list_type, profile_id ?? null, note ?? null)
+    .bind(id, scope.scopeUserId, tmdb_id, media_type, title, year ?? null, poster ?? null, list_type, profile_id ?? null, note ?? null)
     .run();
 
   const item = await env.DB
@@ -92,6 +95,7 @@ export async function onRequestPut(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const id  = url.searchParams.get('id');
@@ -99,7 +103,7 @@ export async function onRequestPut(context) {
 
   const existing = await env.DB
     .prepare('SELECT id FROM lists WHERE id = ? AND user_id = ?')
-    .bind(id, auth.userId)
+    .bind(id, scope.scopeUserId)
     .first();
   if (!existing) return jsonResponse({ error: 'Item not found' }, 404);
 
@@ -109,7 +113,7 @@ export async function onRequestPut(context) {
   const { note } = body;
   await env.DB
     .prepare('UPDATE lists SET note = ? WHERE id = ? AND user_id = ?')
-    .bind(note ?? null, id, auth.userId)
+    .bind(note ?? null, id, scope.scopeUserId)
     .run();
 
   const updated = await env.DB
@@ -124,6 +128,7 @@ export async function onRequestDelete(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const id  = url.searchParams.get('id');
@@ -131,7 +136,10 @@ export async function onRequestDelete(context) {
 
   // ?all=1 — delete all lists for this user (used by account deletion)
   if (all === '1') {
-    await env.DB.prepare('DELETE FROM lists WHERE user_id = ?').bind(auth.userId).run();
+    if (scope.isFamilyScope && scope.role !== 'owner') {
+      return jsonResponse({ error: 'Only the household owner can clear all lists' }, 403);
+    }
+    await env.DB.prepare('DELETE FROM lists WHERE user_id = ?').bind(scope.scopeUserId).run();
     return jsonResponse({ deleted: true });
   }
 
@@ -139,13 +147,13 @@ export async function onRequestDelete(context) {
 
   const existing = await env.DB
     .prepare('SELECT id FROM lists WHERE id = ? AND user_id = ?')
-    .bind(id, auth.userId)
+    .bind(id, scope.scopeUserId)
     .first();
   if (!existing) return jsonResponse({ error: 'Item not found' }, 404);
 
   await env.DB
     .prepare('DELETE FROM lists WHERE id = ? AND user_id = ?')
-    .bind(id, auth.userId)
+    .bind(id, scope.scopeUserId)
     .run();
 
   return jsonResponse({ deleted: true, id });

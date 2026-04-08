@@ -6,11 +6,13 @@
  */
 
 import { requirePro, jsonResponse, handleOptions } from '../_shared/clerk.js';
+import { resolveDataScope } from '../_shared/households.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url   = new URL(request.url);
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 500);
@@ -30,7 +32,7 @@ export async function onRequestGet(context) {
       ORDER BY h.searched_at DESC 
       LIMIT ?
     `)
-    .bind(auth.userId, limit)
+    .bind(scope.scopeUserId, limit)
     .all();
 
   return jsonResponse(rows.results ?? []);
@@ -40,6 +42,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   let body;
   try { body = await request.json(); } catch { return jsonResponse({ error: 'Invalid JSON' }, 400); }
@@ -52,7 +55,7 @@ export async function onRequestPost(context) {
   // Check if this title is already in history for this user
   const existing = await env.DB
     .prepare('SELECT id FROM history WHERE user_id = ? AND tmdb_id = ? AND media_type = ?')
-    .bind(auth.userId, tmdb_id, media_type)
+    .bind(scope.scopeUserId, tmdb_id, media_type)
     .first();
 
   if (existing) {
@@ -72,7 +75,7 @@ export async function onRequestPost(context) {
   const id = crypto.randomUUID().replace(/-/g, '');
   await env.DB
     .prepare('INSERT INTO history (id, user_id, tmdb_id, media_type, title, year, poster, profile_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, auth.userId, tmdb_id, media_type, title, year ?? null, poster ?? null, profile_id ?? null)
+    .bind(id, scope.scopeUserId, tmdb_id, media_type, title, year ?? null, poster ?? null, profile_id ?? null)
     .run();
 
   const entry = await env.DB
@@ -87,6 +90,7 @@ export async function onRequestDelete(context) {
   const { request, env } = context;
   const { auth, error } = await requirePro(request, env);
   if (error) return error;
+  const scope = await resolveDataScope(auth, env);
 
   const url = new URL(request.url);
   const id  = url.searchParams.get('id');
@@ -95,22 +99,25 @@ export async function onRequestDelete(context) {
     // Delete single entry — verify ownership first
     const existing = await env.DB
       .prepare('SELECT id FROM history WHERE id = ? AND user_id = ?')
-      .bind(id, auth.userId)
+      .bind(id, scope.scopeUserId)
       .first();
     if (!existing) return jsonResponse({ error: 'Entry not found' }, 404);
 
     await env.DB
       .prepare('DELETE FROM history WHERE id = ? AND user_id = ?')
-      .bind(id, auth.userId)
+      .bind(id, scope.scopeUserId)
       .run();
 
     return jsonResponse({ deleted: true, id });
   }
 
   // No id param → clear all history for this user
+  if (scope.isFamilyScope && scope.role !== 'owner') {
+    return jsonResponse({ error: 'Only the household owner can clear all history' }, 403);
+  }
   await env.DB
     .prepare('DELETE FROM history WHERE user_id = ?')
-    .bind(auth.userId)
+    .bind(scope.scopeUserId)
     .run();
 
   return jsonResponse({ deleted: true, all: true });

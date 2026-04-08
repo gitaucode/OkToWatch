@@ -168,6 +168,39 @@
                         </div>
                         <a href="/plans" class="text-primary font-bold text-sm hover:underline md:ml-auto">Manage Plan</a>
                     </div>
+
+                    <div id="householdCard" class="hidden bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/10 space-y-5">
+                        <div class="settings-mobile-inline flex justify-between items-start gap-4">
+                            <div>
+                                <h4 class="text-lg font-bold brand-font">Family Household</h4>
+                                <p class="text-sm text-on-surface-variant">Link caregiver accounts so Family profiles, notes, lists, and history stay shared.</p>
+                            </div>
+                            <span id="householdRoleBadge" class="bg-primary-container text-primary px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest">Owner</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-xl border border-outline-variant/10 bg-surface-container p-4">
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Invite Code</p>
+                                <div class="mt-2 flex items-center gap-3">
+                                    <code id="householdInviteCode" class="text-xl font-bold tracking-[0.2em] text-on-surface">—</code>
+                                    <button id="btnCopyHouseholdCode" onclick="copyHouseholdCode()" class="text-primary text-sm font-bold hover:underline">Copy</button>
+                                </div>
+                                <p class="mt-2 text-xs text-on-surface-variant">Share this code with another caregiver on a Family plan.</p>
+                            </div>
+                            <div class="rounded-xl border border-outline-variant/10 bg-surface-container p-4 space-y-3">
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Join a Household</p>
+                                <input id="householdJoinCode" class="w-full bg-white border-outline-variant/30 rounded-lg px-4 py-2.5 uppercase tracking-[0.2em] font-bold outline-none focus:ring-1 focus:ring-primary focus:border-primary" maxlength="12" placeholder="ENTER CODE" type="text"/>
+                                <button id="btnJoinHousehold" onclick="joinHousehold()" class="bg-primary text-on-primary px-4 py-2.5 rounded-lg font-semibold hover:bg-primary-dim transition-colors">Join Household</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-3">Connected Caregivers</p>
+                            <div id="householdMembers" class="space-y-2">
+                                <p class="text-sm text-on-surface-variant">Loading household…</p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- NOTIFICATIONS SECTION -->
@@ -347,6 +380,7 @@
     }
 
     let globalUser = null;
+    let householdState = null;
 
     // ── BIND TO AUTH.JS ──
     document.addEventListener('cv:auth', async ({ detail }) => {
@@ -359,6 +393,7 @@
         document.getElementById('inputEmail').value = globalUser.emailAddresses?.[0]?.emailAddress || globalUser.email || '';
         
         loadBilling();
+        if (detail.isFamily) loadHousehold();
         const savedDigest = JSON.parse(localStorage.getItem('cv_digest') || 'true'); // defaults to true in mock
         document.getElementById('chkDigest').checked = savedDigest;
     });
@@ -408,9 +443,84 @@
                 } else if (sub.trialEndsAt) {
                     document.getElementById('billRenewalText').textContent = new Date(sub.trialEndsAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' }) + " (Trial)";
                 }
+
+                const householdCard = document.getElementById('householdCard');
+                if (sub.isFamily) householdCard.classList.remove('hidden');
+                else householdCard.classList.add('hidden');
             }
         } catch(e) {} finally {
             document.getElementById('billingLoading').classList.add('hidden');
+        }
+    }
+
+    async function loadHousehold() {
+        try {
+            const res = await fetch('/api/household', { headers: await authHeaders() });
+            if (!res.ok) return;
+            householdState = await res.json();
+            renderHousehold();
+        } catch (e) {
+            console.error('Failed to load household', e);
+        }
+    }
+
+    function renderHousehold() {
+        if (!householdState?.household) return;
+        document.getElementById('householdInviteCode').textContent = householdState.household.inviteCode || '—';
+        document.getElementById('householdRoleBadge').textContent = (householdState.household.role || 'member').toUpperCase();
+
+        const members = householdState.members || [];
+        const membersEl = document.getElementById('householdMembers');
+        membersEl.innerHTML = members.length
+            ? members.map(member => `
+                <div class="flex items-center justify-between rounded-lg border border-outline-variant/10 bg-white px-4 py-3">
+                    <div>
+                        <p class="text-sm font-semibold text-on-surface">${member.user_id === globalUser?.id ? 'You' : member.user_id}</p>
+                        <p class="text-xs text-on-surface-variant">${member.user_id === householdState.household.ownerUserId ? 'Household owner' : 'Caregiver'}</p>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest ${member.role === 'owner' ? 'text-primary' : 'text-on-surface-variant'}">${member.role}</span>
+                </div>
+            `).join('')
+            : '<p class="text-sm text-on-surface-variant">No caregivers connected yet.</p>';
+    }
+
+    async function copyHouseholdCode() {
+        const code = document.getElementById('householdInviteCode').textContent.trim();
+        if (!code || code === '—') return;
+        try {
+            await navigator.clipboard.writeText(code);
+            showToast('Invite code copied');
+        } catch {
+            showToast('Could not copy code');
+        }
+    }
+
+    async function joinHousehold() {
+        const code = document.getElementById('householdJoinCode').value.trim().toUpperCase();
+        if (!code) return showToast('Enter an invite code first');
+
+        const btn = document.getElementById('btnJoinHousehold');
+        const old = btn.textContent;
+        btn.textContent = 'Joining...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/household', {
+                method: 'POST',
+                headers: await authHeaders(),
+                body: JSON.stringify({ action: 'join', code })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Could not join household');
+            householdState = data;
+            document.getElementById('householdJoinCode').value = '';
+            renderHousehold();
+            showToast('Household joined');
+        } catch (e) {
+            showToast(e.message || 'Could not join household');
+        } finally {
+            btn.textContent = old;
+            btn.disabled = false;
         }
     }
 
