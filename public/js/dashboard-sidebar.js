@@ -1,4 +1,14 @@
 (function () {
+  try {
+    const raw = sessionStorage.getItem('cvAuthCache');
+    const cached = raw ? JSON.parse(raw) : null;
+    if (cached && cached.loggedIn === false) {
+      const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.replace('/signin?redirect=' + redirect);
+      return;
+    }
+  } catch {}
+
   const root = document.getElementById('dashboard-sidebar-root');
   if (!root) return;
   document.body.classList.add('cv-has-dashboard-sidebar');

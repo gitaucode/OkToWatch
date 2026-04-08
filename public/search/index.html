@@ -24,18 +24,23 @@
       const id = params.get('id');
       const type = params.get('type');
       
-      let redirectUrl = '/dashboard';
-      let hasParams = false;
-      
       if (id && type) {
-        redirectUrl += `?searchId=${id}&searchType=${type}`;
-        hasParams = true;
+        window.location.replace(`/index?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}`);
+      } else {
+        let redirectUrl = '/dashboard';
+        if (q) {
+          redirectUrl += `?q=${encodeURIComponent(q)}`;
+        }
+
+        let cachedAuth = null;
+        try {
+          cachedAuth = JSON.parse(sessionStorage.getItem('cvAuthCache') || 'null');
+        } catch {}
+
+        const isKnownLoggedIn = cachedAuth?.loggedIn === true;
+        const authUrl = '/signin?redirect=' + encodeURIComponent(redirectUrl);
+        window.location.replace(isKnownLoggedIn ? redirectUrl : authUrl);
       }
-      if (q) {
-        redirectUrl += (hasParams ? '&' : '?') + `q=${encodeURIComponent(q)}`;
-      }
-      
-      window.location.replace(redirectUrl);
     }
   </script>
 <meta name="robots" content="index, follow">
@@ -1612,5 +1617,4 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator
 <script src="/js/auth.js?v=dev"></script>
 </body>
 </html>
-
 

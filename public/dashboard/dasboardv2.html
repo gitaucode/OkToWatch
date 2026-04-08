@@ -247,7 +247,7 @@ async function apiPost(u,b){const h=await _h();const r=await fetch(u,{method:'PO
 let _authReceived=false;
 document.addEventListener('cv:auth',({detail})=>{
   _authReceived=true;
-  if(!detail.loggedIn){window.location.href='/signin?redirect=/dashboard';return;}
+  if(!detail.loggedIn){window.location.href='/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);return;}
   window.userTier=detail.tier||(detail.isFamily?'family':detail.isPro?'pro':'free');
   // Update nav account icon with avatar if available
   if(detail.user?.imageUrl){

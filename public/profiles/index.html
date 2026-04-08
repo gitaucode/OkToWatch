@@ -329,7 +329,7 @@ async function apiDelete(url) { const r = await fetch(url, { method: 'DELETE', h
 
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
-    window.location.href = '/signin?redirect=/profiles';
+    window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
     return;
   }
   loadProfiles();

@@ -407,7 +407,7 @@
 
     // ── BIND TO AUTH.JS ──
     document.addEventListener('cv:auth', async ({ detail }) => {
-        if (!detail.loggedIn) { window.location.href = '/signin?redirect=/settings'; return; }
+        if (!detail.loggedIn) { window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search); return; }
         globalUser = detail.user;
         
         // Populate profile name and email
