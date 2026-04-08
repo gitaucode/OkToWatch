@@ -146,6 +146,131 @@
       gap: 9px;
     }
 
+    .nav-toggle {
+      display: none;
+      width: 46px;
+      height: 46px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-toggle-lines {
+      width: 18px;
+      height: 14px;
+      position: relative;
+      display: block;
+    }
+
+    .nav-toggle-lines span {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform 0.18s ease, opacity 0.18s ease, top 0.18s ease;
+    }
+
+    .nav-toggle-lines span:nth-child(1) { top: 0; }
+    .nav-toggle-lines span:nth-child(2) { top: 6px; }
+    .nav-toggle-lines span:nth-child(3) { top: 12px; }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-lines span:nth-child(1) {
+      top: 6px;
+      transform: rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-lines span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-lines span:nth-child(3) {
+      top: 6px;
+      transform: rotate(-45deg);
+    }
+
+    .mobile-nav {
+      display: none;
+    }
+
+    .mobile-nav-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 51, 54, 0.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+      z-index: 105;
+    }
+
+    .mobile-nav-panel {
+      position: fixed;
+      top: 76px;
+      left: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      padding: 16px;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 110;
+    }
+
+    .mobile-nav.is-open .mobile-nav-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-nav.is-open .mobile-nav-panel {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-links a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 14px;
+      color: var(--text);
+      font-weight: 700;
+      background: var(--surface);
+      border: 1px solid transparent;
+    }
+
+    .mobile-nav-links a:hover {
+      background: var(--surface-soft);
+      border-color: var(--line);
+    }
+
+    .mobile-nav-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .mobile-nav-actions .btn {
+      width: 100%;
+    }
+
     /* ─── BUTTONS ─── */
     .btn {
       display: inline-flex;
@@ -1397,6 +1522,18 @@
         display: none;
       }
 
+      .nav-cta {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+
+      .mobile-nav {
+        display: block;
+      }
+
       .hero {
         padding: 56px 0 44px;
       }
@@ -1420,7 +1557,8 @@
 
       .hero-visual {
         display: block;
-        min-height: 260px;
+        height: clamp(260px, 62vw, 360px);
+        min-height: 0;
       }
 
       .section {
@@ -1452,16 +1590,22 @@
       }
 
       .popular-row {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(148px, 78vw);
+        display: flex;
+        gap: 14px;
         overflow-x: auto;
         overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
         padding-bottom: 6px;
         scroll-snap-type: x proximity;
+        scrollbar-width: none;
+      }
+
+      .popular-row::-webkit-scrollbar {
+        display: none;
       }
 
       .popular-item {
+        flex: 0 0 min(78vw, 220px);
         scroll-snap-align: start;
       }
 
@@ -1591,10 +1735,33 @@
         <a href="#how">How it works</a>
         <a href="#picks">Safe picks</a>
         <a href="#method">Our method</a>
+        <a href="/plans/">Plans</a>
       </nav>
       <div class="nav-cta">
         <a href="/signin/" class="btn btn-outline">Log in</a>
         <a href="/signup/" class="btn btn-primary">Try it free</a>
+      </div>
+      <button class="nav-toggle" id="mobileNavToggle" type="button" aria-label="Open menu" aria-controls="mobileNav" aria-expanded="false">
+        <span class="nav-toggle-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+      <div class="mobile-nav-panel" role="dialog" aria-modal="true" aria-label="Mobile menu">
+        <nav class="mobile-nav-links">
+          <a href="#how">How it works</a>
+          <a href="#picks">Safe picks</a>
+          <a href="#method">Our method</a>
+          <a href="/plans/">Plans</a>
+        </nav>
+        <div class="mobile-nav-actions">
+          <a href="/signin/" class="btn btn-outline">Log in</a>
+          <a href="/signup/" class="btn btn-primary">Try it free</a>
+        </div>
       </div>
     </div>
   </header>
@@ -1980,7 +2147,7 @@
         { title: 'Inside Out 2', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Big feelings, gentle tone, family-friendly emotional themes.' },
         { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'Very parent-friendly, calm humor, easy family watch.' },
         { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Adventure with mild peril and strong family themes.' },
-        { title: 'Minecraft', type: 'Game', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Creative and social, but online play needs parent awareness.' },
+        { title: 'Minecraft', type: 'Game', search_query: 'A Minecraft Movie', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Creative and social, but online play needs parent awareness.' },
         { title: 'Wednesday', type: 'TV Show', age_guidance: 'Teens', safety_label: 'Caution', summary: 'Dark humor, creepy tone, better for older kids.' }
       ],
       safe_picks: [
@@ -1994,7 +2161,7 @@
         { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'A dependable option for family co-viewing.' },
         { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Still a strong family-night favorite.' },
         { title: 'Wednesday', type: 'TV Show', age_guidance: 'Teens', safety_label: 'Caution', summary: 'Popular older-kid and teen pick.' },
-        { title: 'Minecraft', type: 'Game', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Huge recognition value for parents with gaming kids.' }
+        { title: 'Minecraft', type: 'Game', search_query: 'A Minecraft Movie', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Huge recognition value for parents with gaming kids.' }
       ]
     };
 
@@ -2170,6 +2337,39 @@
           input.style.borderColor = 'rgba(255,100,80,0.7)';
           input.focus();
           setTimeout(() => input.style.borderColor = '', 1600);
+        }
+      });
+    }
+
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+
+    function setMobileNav(open) {
+      if (!mobileNav || !mobileNavToggle) return;
+      mobileNav.classList.toggle('is-open', open);
+      mobileNavToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mobileNavToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    if (mobileNav && mobileNavToggle) {
+      mobileNavToggle.addEventListener('click', () => {
+        setMobileNav(!mobileNav.classList.contains('is-open'));
+      });
+
+      mobileNavOverlay?.addEventListener('click', () => setMobileNav(false));
+      mobileNav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMobileNav(false)));
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && mobileNav.classList.contains('is-open')) {
+          setMobileNav(false);
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 720 && mobileNav.classList.contains('is-open')) {
+          setMobileNav(false);
         }
       });
     }
