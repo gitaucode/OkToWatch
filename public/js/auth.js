@@ -1,4 +1,4 @@
-/**
+﻿/**
  * OkToWatch /public/js/auth.js
  * Loaded on every page. Initializes Clerk, sets window.CV, renders nav.
  * Secondary nav with dropdown menu.
@@ -163,10 +163,10 @@
     root.innerHTML = `
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
   <div class="flex justify-between items-center h-16 px-4 md:px-8 max-w-[1440px] mx-auto gap-4">
-    <a href="${loggedIn ? '/dashboard' : '/index'}" class="inline-flex items-center gap-2 text-[1.05rem] text-slate-900 dark:text-white tracking-tighter font-['Plus_Jakarta_Sans'] no-underline shrink-0">
+    <a href="${loggedIn ? '/dashboard' : '/index'}" class="inline-flex items-center gap-2 text-slate-900 dark:text-white no-underline shrink-0">
       <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="w-8 h-8 rounded-[10px] object-contain" />
-      <span aria-label="OkToWatch" style="display:inline-flex; align-items:baseline; line-height:1; letter-spacing:-0.03em;">
-        <span style="font-weight:500;">Ok</span><span style="font-weight:800;">ToWatch</span>
+      <span aria-label="OkToWatch" class="font-['Plus_Jakarta_Sans'] text-[1.02rem] tracking-[-0.03em] leading-none">
+        <span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span>
       </span>
     </a>
     <div class="hidden md:flex items-center gap-8">${linkHTML}</div>
@@ -329,9 +329,9 @@
     transition: transform 0.22s ease, opacity 0.22s ease;
   }
   .cv-nav-mobile.open { transform: translateY(0); opacity: 1; pointer-events: all; }
-  .cv-nav-mobile-inner { padding: 1rem 1rem 1.15rem; }
-  .cv-nav-mobile-links { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 0.95rem; }
-  .cv-nav-mobile-actions { display: flex; flex-direction: column; gap: 0.65rem; padding-top: 0.95rem; border-top: 1px solid rgba(0,0,0,0.07); }
+  .cv-nav-mobile-inner { padding: 0.9rem 1rem 1.1rem; }
+  .cv-nav-mobile-links { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.85rem; }
+  .cv-nav-mobile-actions { display: flex; flex-direction: column; gap: 0.55rem; padding-top: 0.85rem; border-top: 1px solid rgba(0,0,0,0.07); }
   @media (min-width: 768px) {
     .cv-nav-mobile, .cv-nav-mobile-overlay, .cv-nav-hamburger { display: none !important; }
   }
@@ -573,7 +573,7 @@
     cacheAuthState(loggedIn, isPro, isFamily, tier, clerkUser || null);
     renderNav(loggedIn, isPro, clerkUser || null);
     document.dispatchEvent(new CustomEvent('cv:auth', {
-      detail: { loggedIn, isPro, isFamily, user: clerkUser || null }
+      detail: { loggedIn, isPro, isFamily, tier: tier || 'free', user: clerkUser || null }
     }));
   }
 
@@ -680,26 +680,22 @@
     const root = document.getElementById('footer-root');
     if (!root) return;
 
-    root.style.position = 'relative';
-    root.style.zIndex = '10';
-    root.style.marginLeft = '';
-    root.style.width = '';
-
     root.innerHTML = `
 <footer style="border-top:1px solid rgba(0,0,0,0.08); background:#f2f4f5; margin-top:3rem;">
-  <div style="max-width:1100px; margin:0 auto; padding:2rem 1.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
-    <div style="display:flex; flex-direction:column; gap:0.35rem; min-width:180px;">
-      <span style="display:inline-flex; align-items:center; gap:0.65rem; font-family:'Plus Jakarta Sans',sans-serif; font-size:1.55rem; font-weight:700; letter-spacing:-0.03em; color:#1a2420; line-height:1;">
-        <img src="/icons/favicon-32.png" alt="OkToWatch logo" style="width:30px; height:30px; border-radius:10px; object-fit:contain;" />
-        <span>OkToWatch</span>
+  <div style="max-width:1100px; margin:0 auto; padding:1.35rem 1.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; min-width:180px;">
+      <span style="display:inline-flex; align-items:center; gap:0.65rem; font-family:'Plus Jakarta Sans',sans-serif; font-size:1.05rem; color:#1a2420; letter-spacing:-0.03em; line-height:1;">
+        <img src="/icons/favicon-32.png" alt="OkToWatch logo" style="width:30px;height:30px;border-radius:10px;object-fit:contain;" />
+        <span aria-label="OkToWatch" style="display:inline-flex; align-items:baseline; line-height:1;">
+          <span style="font-weight:500;">Ok</span><span style="font-weight:800;">ToWatch</span>
+        </span>
       </span>
-      <p style="margin:0; font-family:'DM Sans',sans-serif; font-size:0.82rem; color:#7a908a;">© OkToWatch. Data provided by TMDb.</p>
     </div>
     <div style="display:flex; flex-wrap:wrap; justify-content:flex-end; gap:1.5rem;">
-      <a style="font-family:'DM Sans',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="/about">About</a>
-      <a style="font-family:'DM Sans',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="/privacy">Privacy</a>
-      <a style="font-family:'DM Sans',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="/contact">Contact</a>
-      <a style="font-family:'DM Sans',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDb Attribution</a>
+      <a style="font-family:'Inter',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="/about">About</a>
+      <a style="font-family:'Inter',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="/privacy">Privacy</a>
+      <a style="font-family:'Inter',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="/contact">Contact</a>
+      <a style="font-family:'Inter',sans-serif; font-size:0.85rem; color:#607670; text-decoration:none; font-weight:500;" href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDb Attribution</a>
     </div>
   </div>
 </footer>
@@ -734,7 +730,4 @@
     renderFooter();
     loadAnnouncements();
   }
-
-  window.addEventListener('resize', renderFooter, { passive: true });
 })();
-

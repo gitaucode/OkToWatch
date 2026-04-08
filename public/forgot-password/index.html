@@ -44,18 +44,16 @@
   .clerk-host { display: none; }
   .clerk-host.ready { display: block; animation: fadeIn 0.3s ease forwards; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  #nav-root { display: none; }
 </style>
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen" data-page="forgot-password">
-<div id="nav-root" aria-hidden="true"></div>
 
-<div class="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8">
-  <div class="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-7xl overflow-hidden rounded-[24px] sm:rounded-[32px] border border-outline-variant/15 bg-surface-container-lowest shadow-[0_24px_80px_-36px_rgba(45,51,54,0.28)] lg:min-h-[calc(100vh-4rem)]">
+<div class="min-h-screen">
+  <div class="flex min-h-screen bg-surface-container-lowest">
     <section class="relative hidden overflow-hidden lg:flex lg:w-[44%] xl:w-[42%]">
       <img src="/images/parent-tip-family.webp" alt="Family sitting together in a calm evening living room." class="absolute inset-0 h-full w-full object-cover"/>
       <div class="absolute inset-0 bg-gradient-to-t from-slate-950/72 via-slate-900/20 to-transparent"></div>
-      <div class="relative z-10 flex h-full flex-col justify-between p-8 text-white xl:p-10">
+      <div class="relative z-10 flex h-full flex-col justify-between p-8 text-white xl:p-12">
         <a href="/index" class="inline-flex items-center gap-3 self-start rounded-full bg-white/15 px-4 py-2 backdrop-blur-md">
           <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="h-8 w-8 rounded-[10px] object-contain"/>
           <span class="inline-flex items-baseline text-lg tracking-[-0.03em]"><span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span></span>
@@ -63,27 +61,8 @@
         <div>
           <div class="mb-4 text-[11px] font-bold uppercase tracking-[0.28em] text-white/75">Account Recovery</div>
           <h1 class="max-w-md text-4xl font-extrabold leading-tight tracking-tight xl:text-5xl">Get back to your family's guidance quickly and securely.</h1>
-          <p class="mt-5 max-w-md text-base leading-relaxed text-white/82">
-            Reset your password and return to the same saved watchlists, child profiles, and viewing decisions you already set up.
-          </p>
-          <div class="mt-8 space-y-4">
-            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
-              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">lock_reset</span></span>
-              Recovery happens through your verified email address.
-            </div>
-            <div class="flex items-center gap-3 text-sm font-medium text-white/92">
-              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16 backdrop-blur-sm"><span class="material-symbols-outlined text-[20px]">shield_lock</span></span>
-              Your household settings stay protected while you reset access.
-            </div>
-          </div>
         </div>
-        <div class="inline-flex items-center gap-3 self-start rounded-2xl bg-white/14 px-4 py-3 backdrop-blur-md">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/16"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">lightbulb</span></span>
-          <div>
-            <div class="text-sm font-bold">Use a unique password for your household account</div>
-            <div class="text-xs text-white/72">It helps protect saved filters and private family activity.</div>
-          </div>
-        </div>
+        <div></div>
       </div>
     </section>
 
@@ -93,10 +72,7 @@
           <img src="/icons/favicon-32.png" alt="OkToWatch logo" class="h-8 w-8 rounded-[10px] object-contain"/>
           <span class="inline-flex items-baseline text-base tracking-[-0.03em]"><span class="font-medium">Ok</span><span class="font-extrabold">ToWatch</span></span>
         </a>
-        <div class="hidden lg:block"></div>
-        <a href="/signin" class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high" aria-label="Close">
-          <span class="material-symbols-outlined">close</span>
-        </a>
+        <a href="/signin" class="hidden text-sm font-semibold text-on-surface-variant no-underline transition-colors hover:text-on-surface lg:inline-flex">Back to sign in</a>
       </header>
 
       <main class="flex flex-1 items-center justify-center px-4 py-8 sm:px-8 sm:py-10 lg:px-10 xl:px-14">
@@ -109,7 +85,7 @@
             </p>
           </div>
 
-          <div class="rounded-[28px] border border-outline-variant/15 bg-white shadow-[0_18px_55px_-32px_rgba(45,51,54,0.2)]">
+          <div class="rounded-[28px] border border-outline-variant/15 bg-white shadow-[0_18px_55px_-32px_rgba(45,51,54,0.16)]">
             <div id="clerkSkeleton" class="space-y-5 p-6 sm:p-10">
               <p class="slow-msg hidden py-1 text-center text-xs text-on-surface-variant">Taking longer than usual... check your connection.</p>
               <div class="skel h-3 w-28 rounded-full"></div>
@@ -135,8 +111,6 @@
     </section>
   </div>
 </div>
-
-<div id="footer-root"></div>
 
 <script>
 (function () {
@@ -196,6 +170,5 @@
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
 })();
 </script>
-<script src="/js/auth.js?v=dev"></script>
 </body>
 </html>
