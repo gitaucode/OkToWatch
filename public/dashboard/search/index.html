@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
+<meta name="theme-color" content="#131C35">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OkToWatch">
@@ -14,21 +14,22 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <title>Search — OkToWatch</title>
 <meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --bg: #f7f9fc; --surface: #fff; --surface2: #f5f7fb;
+  --border: rgba(19,28,53,0.08); --text: #121a30; --text2: #5f6b7c;
+  --muted: #7a869a; --accent: #131c35; --accent-light: #eef2fa;
   --safe: #2a7d52; --safe-bg: #e6f4ec;
   --warn: #b07a10; --warn-bg: #fef6e4;
   --moderate: #b85c1a; --moderate-bg: #fef0e6;
   --danger: #c0392b; --danger-bg: #fdecea;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 10px 30px rgba(19,28,53,0.08); --shadow-lg: 0 18px 44px rgba(19,28,53,0.12);
+  --radius: 20px; --radius-sm: 16px;
 }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; font-size: 15px; }
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
 #nav-root { position: relative; z-index: 10; min-height: 64px; }
 
 .search-page-wrap {
@@ -62,7 +63,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .search-input {
   flex: 1; background: var(--surface2); border: 1px solid var(--border);
   border-radius: 100px; padding: 0.8rem 1.2rem;
-  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  font-family: 'Inter', sans-serif; font-size: 0.95rem;
   outline: none; transition: all 0.2s;
 }
 
@@ -72,9 +73,10 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 
 .search-btn {
   background: var(--accent); color: white; border: none;
-  border-radius: 100px; padding: 0.8rem 1.5rem;
-  font-family: 'DM Sans', sans-serif; font-weight: 700;
+  border-radius: 16px; padding: 0.8rem 1.5rem;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800;
   cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
+  box-shadow: 0 14px 28px rgba(19,28,53,0.14);
 }
 
 .search-btn:hover { opacity: 0.88; }

@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2a6b55">
+<meta name="theme-color" content="#131C35">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -56,26 +56,27 @@
 <meta name="twitter:title" content="OkToWatch — See what's in it before they watch">
 <meta name="twitter:description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #c8d9d1; --surface: #fff; --surface2: #f4f6f5;
-  --border: rgba(0,0,0,0.08); --text: #1a2420; --text2: #3d4f49;
-  --muted: #7a908a; --accent: #2a6b55; --accent-light: #e4efe9;
+  --bg: #f7f9fc; --surface: #fff; --surface2: #f5f7fb;
+  --border: rgba(19,28,53,0.08); --text: #121a30; --text2: #5f6b7c;
+  --muted: #7a869a; --accent: #131c35; --accent-light: #eef2fa;
   --safe: #2a7d52; --safe-bg: #e6f4ec;
   --warn: #b07a10; --warn-bg: #fef6e4;
   --moderate: #b85c1a; --moderate-bg: #fef0e6;
   --danger: #c0392b; --danger-bg: #fdecea;
-  --shadow: 0 4px 16px rgba(0,0,0,0.08); --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 10px 30px rgba(19,28,53,0.08); --shadow-lg: 0 18px 44px rgba(19,28,53,0.12);
+  --radius: 20px; --radius-sm: 16px;
   /* Semantic verdict colours */
   --verdict-safe-bg: #EAF3DE; --verdict-safe-text: #27500A; --verdict-safe-dot: #3B6D11;
   --verdict-caution-bg: #FAEEDA; --verdict-caution-text: #633806; --verdict-caution-dot: #854F0B;
   --verdict-danger-bg: #FCEBEB; --verdict-danger-text: #791F1F; --verdict-danger-dot: #A32D2D;
   --verdict-none-dot: #D3D1C7;
 }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; font-size: 15px; }
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
 
 /* NAV root handled by auth.js */
 #nav-root { position: relative; z-index: 10; min-height: 64px; }
@@ -83,14 +84,14 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 /* NAV COLLAPSED */
 #navCollapsed { display: none; align-items: center; gap: 0.5rem; padding: 0.6rem 0.75rem; position: sticky; top: 0; z-index: 200; background: rgba(200,217,209,0.95); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
 #navCollapsed.visible { display: flex; }
-.btn-back { display: flex; align-items: center; gap: 0.25rem; background: rgba(255,255,255,0.6); border: 1.5px solid var(--border); border-radius: 100px; padding: 0.4rem 0.7rem; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--text2); cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
+.btn-back { display: flex; align-items: center; gap: 0.25rem; background: rgba(255,255,255,0.8); border: 1.5px solid var(--border); border-radius: 16px; padding: 0.5rem 0.8rem; font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--text2); cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
 .btn-back:hover { background: white; color: var(--accent); border-color: var(--accent); }
 .collapsed-search-wrap { flex: 1; position: relative; }
 .collapsed-search-box { display: flex; align-items: center; background: var(--surface); border-radius: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1.5px solid transparent; transition: border-color 0.2s, box-shadow 0.2s; overflow: hidden; }
-.collapsed-search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,107,85,0.1); }
-.collapsed-search-box input { flex: 1; background: transparent; border: none; outline: none; padding: 0.55rem 1rem; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; min-width: 0; }
+.collapsed-search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(19,28,53,0.08); }
+.collapsed-search-box input { flex: 1; background: transparent; border: none; outline: none; padding: 0.55rem 1rem; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.88rem; min-width: 0; }
 .collapsed-search-box input::placeholder { color: var(--muted); }
-.collapsed-search-box button { background: var(--accent); color: white; border: none; padding: 0.45rem 0.85rem; margin: 4px; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.78rem; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; }
+.collapsed-search-box button { background: var(--accent); color: white; border: none; padding: 0.5rem 0.95rem; margin: 4px; border-radius: 14px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.78rem; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; box-shadow: 0 12px 24px rgba(19,28,53,0.14); }
 .collapsed-search-box button:hover { opacity: 0.88; }
 .collapsed-search-box button:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -134,10 +135,10 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .search-wrap { max-width: 500px; margin: 0 auto; opacity: 0; animation: fadeUp 0.5s ease forwards 0.3s; }
 .suggestions-wrap { position: relative; }
 .search-box { display: flex; align-items: center; background: var(--surface); border-radius: 100px; box-shadow: var(--shadow); border: 1.5px solid transparent; transition: border-color 0.2s, box-shadow 0.2s; }
-.search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(42,107,85,0.1), var(--shadow); }
-.search-box input { flex: 1; background: transparent; border: none; outline: none; padding: 0.9rem 1.2rem; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; min-width: 0; }
+.search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(19,28,53,0.08), var(--shadow); }
+.search-box input { flex: 1; background: transparent; border: none; outline: none; padding: 0.9rem 1.2rem; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.95rem; min-width: 0; }
 .search-box input::placeholder { color: var(--muted); }
-.search-btn { background: var(--accent); color: white; border: none; padding: 0.65rem 1.3rem; margin: 5px; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.875rem; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; }
+.search-btn { background: var(--accent); color: white; border: none; padding: 0.78rem 1.3rem; margin: 5px; border-radius: 16px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.875rem; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; box-shadow: 0 14px 28px rgba(19,28,53,0.14); }
 .search-btn:hover { opacity: 0.88; }
 .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .quick-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.9rem; align-items: center; }
@@ -1617,4 +1618,3 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator
 <script src="/js/auth.js?v=dev"></script>
 </body>
 </html>
-

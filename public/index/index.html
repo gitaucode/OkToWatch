@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link rel="manifest" href="/manifest.json"/>
-<meta name="theme-color" content="#565e74"/>
-<title id="pageTitle">OkToWatch â€” Content Breakdown</title>
+<meta name="theme-color" content="#131C35"/>
+<title id="pageTitle">OkToWatch — Content Breakdown</title>
 <meta name="description" content="Detailed content breakdown and parent verdict for any movie or TV show."/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -19,22 +19,22 @@ tailwind.config = {
         "surface-dim":"#d3dbdf","tertiary":"#006d4a","surface-variant":"#dde3e7",
         "secondary-fixed":"#dce2f3","inverse-on-surface":"#9c9d9e","tertiary-dim":"#005f40",
         "on-secondary-container":"#4b525f","secondary-container":"#dce2f3",
-        "inverse-primary":"#dae2fd","outline":"#757c7f","on-tertiary-container":"#005a3c",
+        "inverse-primary":"#E9EEF8","outline":"#7A869A","on-tertiary-container":"#005a3c",
         "error-container":"#fe8983","surface-container-low":"#f2f4f5",
-        "on-secondary-fixed-variant":"#555c69","primary-fixed-dim":"#ccd4ee",
-        "primary-container":"#dae2fd","surface-container-highest":"#dde3e7",
-        "primary":"#565e74","on-primary":"#f7f7ff","error-dim":"#4e0309",
+        "on-secondary-fixed-variant":"#555c69","primary-fixed-dim":"#D9E1F2",
+        "primary-container":"#E9EEF8","surface-container-highest":"#dde3e7",
+        "primary":"#131C35","on-primary":"#FFFFFF","error-dim":"#4e0309",
         "on-tertiary":"#e6ffee","surface-bright":"#f9f9fa","on-primary-container":"#4a5167",
         "background":"#f9f9fa","surface":"#f9f9fa","surface-container-lowest":"#ffffff",
         "on-tertiary-fixed-variant":"#006544","secondary":"#585f6d",
         "on-primary-fixed":"#373f54","on-secondary-fixed":"#39404c",
         "tertiary-fixed":"#69f6b8","on-error-container":"#752121","on-secondary":"#f8f8ff",
-        "outline-variant":"#acb3b6","on-error":"#fff7f6","on-primary-fixed-variant":"#535b71",
-        "on-surface":"#2d3336","tertiary-fixed-dim":"#58e7ab","surface-tint":"#565e74",
-        "on-tertiary-fixed":"#00452d","on-background":"#2d3336","inverse-surface":"#0c0e0f",
+        "outline-variant":"#D5DDE8","on-error":"#fff7f6","on-primary-fixed-variant":"#535b71",
+        "on-surface":"#121A30","tertiary-fixed-dim":"#58e7ab","surface-tint":"#131C35",
+        "on-tertiary-fixed":"#00452d","on-background":"#121A30","inverse-surface":"#0c0e0f",
         "surface-container-high":"#e4e9ec","secondary-dim":"#4c5361",
-        "on-surface-variant":"#596063","surface-container":"#ebeef0","primary-dim":"#4a5268",
-        "primary-fixed":"#dae2fd","secondary-fixed-dim":"#ced4e4",
+        "on-surface-variant":"#667085","surface-container":"#ebeef0","primary-dim":"#0F162D",
+        "primary-fixed":"#E9EEF8","secondary-fixed-dim":"#ced4e4",
         "tertiary-container":"#69f6b8","error":"#9f403d"
       },
       borderRadius: { DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem" },
@@ -64,7 +64,7 @@ tailwind.config = {
   .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
 
   /* Family notes */
-  .note-type-btn.active { border-color:#565e74; background:#dae2fd; color:#4a5167; }
+  .note-type-btn.active { border-color:#131C35; background:#E9EEF8; color:#4a5167; }
 
   /* Hide auth.js injected nav */
   #nav-root * { visibility:hidden!important; }
@@ -74,7 +74,7 @@ tailwind.config = {
 </head>
 <body class="bg-background text-on-surface selection:bg-primary-container">
 
-<!-- â”€â”€ Top Nav (exact original design) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Top Nav (exact original design) ─────────────────────────────────── -->
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
   <div class="flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
     <a href="/dashboard" class="text-xl font-bold text-slate-900 dark:text-white tracking-tighter font-['Plus_Jakarta_Sans'] no-underline">OkToWatch</a>
@@ -97,7 +97,7 @@ tailwind.config = {
 
 <main class="min-h-screen pt-16">
 
-  <!-- â”€â”€ Hero Section (exact original) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── Hero Section (exact original) ─────────────────────────────────── -->
   <section class="relative h-[614px] w-full overflow-hidden" id="heroSection">
     <div class="absolute inset-0 z-0">
       <!-- Skeleton backdrop -->
@@ -123,15 +123,15 @@ tailwind.config = {
       </div>
     </div>
   </section>
-  <!-- â”€â”€ AI Summary Strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── AI Summary Strip ───────────────────────────────────────────────── -->
   <div id="movieSummaryStrip" class="max-w-[1440px] mx-auto px-8 py-6 border-b border-surface-variant hidden">
     <p class="text-[14.5px] italic text-on-surface-variant leading-relaxed max-w-4xl" id="summaryStripText"></p>
   </div>
 
-  <!-- â”€â”€ Content Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── Content Grid ───────────────────────────────────────────────────── -->
   <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 py-10 pb-24">
 
-    <!-- â”€â”€ Main Column (col-span-8) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+    <!-- ── Main Column (col-span-8) ────────────────────────────────────── -->
     <div class="lg:col-span-8 space-y-12">
 
       <!-- Verdict Card (exact original markup) -->
@@ -189,7 +189,7 @@ tailwind.config = {
 
     </div>
 
-    <!-- â”€â”€ Sidebar (col-span-4) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+    <!-- ── Sidebar (col-span-4) ─────────────────────────────────────────── -->
     <div class="lg:col-span-4 space-y-8">
       <!-- Action Card (exact original markup) -->
       <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/10 shadow-xl lg:sticky lg:top-24">
@@ -211,14 +211,14 @@ tailwind.config = {
             <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">group</span>
             <div>
               <h4 class="font-bold text-sm">Parental Community</h4>
-              <p class="text-xs text-on-surface-variant" id="communityText">Loading community dataâ€¦</p>
+              <p class="text-xs text-on-surface-variant" id="communityText">Loading community data…</p>
             </div>
           </div>
           <div class="flex items-start gap-4">
             <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">psychology</span>
             <div>
               <h4 class="font-bold text-sm">Positive Messages</h4>
-              <p class="text-xs text-on-surface-variant" id="positiveMessages">Loadingâ€¦</p>
+              <p class="text-xs text-on-surface-variant" id="positiveMessages">Loading…</p>
             </div>
           </div>
         </div>
@@ -253,7 +253,7 @@ tailwind.config = {
 <script>
 const TMDB_IMG  = 'https://image.tmdb.org/t/p/';
 
-// Category â†’ material icon
+// Category → material icon
 const CAT_ICONS = {
   'violence':'gavel','gore':'gavel',
   'language':'chat_bubble','profanity':'chat_bubble',
@@ -264,7 +264,7 @@ const CAT_ICONS = {
   'bullying':'shield_person','abuse':'shield_person',
 };
 
-// Level â†’ label + Tailwind colour class
+// Level → label + Tailwind colour class
 const LEVEL_CFG = {
   none:     { label:'None',     cls:'text-tertiary',  bgCls:'bg-tertiary/10' },
   mild:     { label:'Mild',     cls:'text-amber-500', bgCls:'bg-amber-50' },
@@ -281,7 +281,7 @@ function catIcon(name) {
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function showToast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 
-// â”€â”€ URL params â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── URL params ────────────────────────────────────────────────────────────
 const _params = new URLSearchParams(window.location.search);
 const _tmdbId = _params.get('id') || _params.get('searchId');
 const _type   = _params.get('type') || _params.get('searchType') || 'movie';
@@ -294,11 +294,11 @@ let _inWatchlist = false;
 let _authState = { loggedIn: false, isFamily: false, tier: 'free', user: null };
 let _notesLoading = false;
 
-// â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Auth ──────────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   _authState = detail || _authState;
   if (!detail.loggedIn) {
-    // Allow unauthenticated browsing on detail page â€” just no save actions
+    // Allow unauthenticated browsing on detail page — just no save actions
   }
   // Update icon
   if (detail.user?.imageUrl) {
@@ -580,7 +580,7 @@ async function deleteNote(noteId) {
   }
 }
 
-// â”€â”€ Main load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Main load ─────────────────────────────────────────────────────────────
 async function loadPage() {
   if (!_tmdbId) {
     document.getElementById('heroTitle').textContent = 'No title selected';
@@ -589,7 +589,7 @@ async function loadPage() {
   }
 
   try {
-    // Step 1 â€” Fetch TMDb details, ratings, and providers in parallel
+    // Step 1 — Fetch TMDb details, ratings, and providers in parallel
     const endpoint = _type === 'tv' ? 'tv' : 'movie';
     const [details, ratings, providers] = await Promise.all([
       fetch(`/api/tmdb/${endpoint}/${_tmdbId}?append_to_response=credits,keywords`).then(r => r.json()),
@@ -620,10 +620,10 @@ async function loadPage() {
     const genres   = (details.genres || []).map(g => g.name).join(', ');
     const keywords = ((details.keywords?.keywords || details.keywords?.results) || []).map(k => k.name).slice(0, 20).join(', ');
 
-    // Render hero immediately â€” don't block on AI call
+    // Render hero immediately — don't block on AI call
     renderHero(_details, certRating);
 
-    // Step 2 â€” Call analyze with full metadata (sequential, after we have details)
+    // Step 2 — Call analyze with full metadata (sequential, after we have details)
     const _authHeaders = { 'Content-Type': 'application/json' };
     try {
       const _tok = await getToken();
@@ -635,13 +635,13 @@ async function loadPage() {
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords, type: _type })
     });
 
-    // Handle rate limit specifically â€” show friendly UI, don't treat as crash
+    // Handle rate limit specifically — show friendly UI, don't treat as crash
     if (analyzeRes.status === 429) {
-      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now â€” please try again in a moment.';
+      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
       document.getElementById('breakdownAccordion').innerHTML = `
         <div class="flex flex-col items-center gap-4 py-10 text-center">
           <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
-          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit â€” please wait a moment and try again.</p>
+          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit — please wait a moment and try again.</p>
           <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
             Try Again
           </button>
@@ -681,11 +681,11 @@ async function loadPage() {
     // rate_limit error in the JSON body
     if (String(e.message).toLowerCase().includes('rate_limit') || String(e.message).toLowerCase().includes('rate limit')) {
       document.getElementById('heroTitle').textContent = _details?.title || _details?.name || 'Could not load';
-      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now â€” please try again in a moment.';
+      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
       document.getElementById('breakdownAccordion').innerHTML = `
         <div class="flex flex-col items-center gap-4 py-10 text-center">
           <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
-          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit â€” please wait a moment and try again.</p>
+          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit — please wait a moment and try again.</p>
           <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
             Try Again
           </button>
@@ -698,7 +698,7 @@ async function loadPage() {
   }
 }
 
-// â”€â”€ Render Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Hero ────────────────────────────────────────────────────────────
 function renderHero(d, certRating = '') {
   const title    = d.title || d.name || 'Unknown';
   const year     = (d.release_date || d.first_air_date || '').slice(0, 4);
@@ -729,7 +729,7 @@ function renderHero(d, certRating = '') {
   // Title
   document.getElementById('heroTitle').textContent = title;
 
-  // Meta row â€” year Â· runtime Â· rating (Â· cert if available)
+  // Meta row — year · runtime · rating (· cert if available)
   const metaParts = [
     year ? `<span>${year}</span>` : '',
     runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${runtime}</span>` : '',
@@ -739,7 +739,7 @@ function renderHero(d, certRating = '') {
   document.getElementById('heroMeta').innerHTML = metaParts;
 }
 
-// â”€â”€ Render Verdict Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Verdict Card ────────────────────────────────────────────────────
 function renderVerdictCard(d, bd, providerResults = {}) {
   // Age recommendation box
   const ageBox = document.getElementById('ageBox');
@@ -751,7 +751,7 @@ function renderVerdictCard(d, bd, providerResults = {}) {
   const summaryText = bd?.verdicts?.young?.sub || bd?.summary || 'Content breakdown available below.';
   summaryEl.textContent = summaryText;
 
-  // Where to Watch â€” prefer GB then US
+  // Where to Watch — prefer GB then US
   const provs    = providerResults.GB || providerResults.US || {};
   const flatrate = provs.flatrate || [];
   const rent     = provs.rent     || [];
@@ -783,7 +783,7 @@ function getAgeNumber(bd) {
   return 'R';
 }
 
-// â”€â”€ Render Breakdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Breakdown ───────────────────────────────────────────────────────
 function renderAccordion(bd) {
   const container = document.getElementById('breakdownAccordion');
   const cats = bd?.categories || [];
@@ -823,16 +823,16 @@ function toggleAccordion(headerEl) {
   chevron.classList.toggle('open', !isOpen);
 }
 
-// â”€â”€ Render Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Sidebar ─────────────────────────────────────────────────────────
 function renderSidebar(d, bd) {
-  // Community text â€” use vote_count from TMDb as a proxy
+  // Community text — use vote_count from TMDb as a proxy
   const voteCount = d.vote_count || 0;
   const pct = voteCount > 100 ? Math.round(60 + Math.random() * 30) : null; // realistic proxy
   document.getElementById('communityText').textContent =
     pct ? `${pct}% of parents recommend this for their family.`
         : 'Be the first to review this for your family.';
 
-  // Positive messages â€” extract from breakdown summary or first "safe" category
+  // Positive messages — extract from breakdown summary or first "safe" category
   const safeCategories = (bd?.categories||[]).filter(c => c.level === 'none').map(c => c.name.toLowerCase());
   const positiveEl = document.getElementById('positiveMessages');
   if (bd?.summary) {
@@ -860,7 +860,7 @@ function renderSidebar(d, bd) {
   }
 }
 
-// â”€â”€ Watchlist â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Watchlist ──────────────────────────────────────────────────────────────
 function updateWatchlistBtn(saved) {
   const btn = document.getElementById('watchlistBtn');
   if (saved) {
@@ -882,9 +882,9 @@ async function toggleWatchlist() {
       headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, list_type: 'approved', title, poster, year })
     });
-    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist âœ“'); }
-    else showToast('Could not save â€” try again');
-  } catch { showToast('Could not save â€” try again'); }
+    if (r.ok) { _inWatchlist = true; updateWatchlistBtn(true); showToast('Saved to watchlist ✓'); }
+    else showToast('Could not save — try again');
+  } catch { showToast('Could not save — try again'); }
 }
 
 async function markWatched() {
@@ -900,15 +900,16 @@ async function markWatched() {
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, poster })
     });
     const btn = document.getElementById('watchedBtn');
-    btn.textContent = 'âœ“ Marked as Watched';
+    btn.textContent = '✓ Marked as Watched';
     btn.classList.add('border-tertiary', 'text-tertiary');
-    showToast('Marked as watched âœ“');
-  } catch { showToast('Could not save â€” try again'); }
+    showToast('Marked as watched ✓');
+  } catch { showToast('Could not save — try again'); }
 }
 
-// â”€â”€ Start â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Start ──────────────────────────────────────────────────────────────────
 loadPage();
 </script>
 <script src="/js/auth.js?v=dev"></script>
 </body>
 </html>
+
