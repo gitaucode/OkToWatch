@@ -3,7 +3,7 @@ const CURATED = {
     { title: 'Inside Out 2', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Big feelings, gentle tone, family-friendly emotional themes.' },
     { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'Very parent-friendly, calm humor, easy family watch.' },
     { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Adventure with mild peril and strong family themes.' },
-    { title: 'Minecraft', type: 'Game', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Creative and social, but online play needs parent awareness.' },
+    { title: 'Minecraft', type: 'Game', search_query: 'A Minecraft Movie', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Creative and social, but online play needs parent awareness.' },
     { title: 'Wednesday', type: 'TV Show', age_guidance: 'Teens', safety_label: 'Caution', summary: 'Dark humor, creepy tone, better for older kids.' },
   ],
   safe_picks: [
@@ -17,7 +17,7 @@ const CURATED = {
     { title: 'Bluey', type: 'TV Show', age_guidance: 'Ages 3+', safety_label: 'Safe', summary: 'A dependable option for family co-viewing.' },
     { title: 'Moana', type: 'Movie', age_guidance: 'Ages 6+', safety_label: 'Safe', summary: 'Still a strong family-night favorite.' },
     { title: 'Wednesday', type: 'TV Show', age_guidance: 'Teens', safety_label: 'Caution', summary: 'Popular older-kid and teen pick.' },
-    { title: 'Minecraft', type: 'Game', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Huge recognition value for parents with gaming kids.' },
+    { title: 'Minecraft', type: 'Game', search_query: 'A Minecraft Movie', age_guidance: 'Ages 8+', safety_label: 'Caution', summary: 'Huge recognition value for parents with gaming kids.' },
   ],
 };
 
@@ -41,7 +41,7 @@ export async function onRequestGet({ env }) {
 
 async function enrichItem(item, env) {
   const mediaTypeHint = item.type === 'TV Show' ? 'tv' : item.type === 'Movie' ? 'movie' : null;
-  const result = await searchTmdb(item.title, mediaTypeHint, env.TMDB_TOKEN);
+  const result = await searchTmdb(item.search_query || item.title, mediaTypeHint, env.TMDB_TOKEN);
   if (!result) return item;
 
   return {
