@@ -448,6 +448,7 @@
 <script>
 const EMOJIS = ['👧','👦','🧒','👶','🌟','🦁','🐼','🦊','🐸','🐨','🚀','⚽','🎮','🎨','🎵','🦋'];
 let selectedEmoji='👧', _profiles=[], _history=[], _lists=[];
+let _familyNoteSummaries={};
 
 // Toast
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
@@ -456,6 +457,23 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 async function _h(){const tk=await window.Clerk.session.getToken();return{'Authorization':'Bearer '+tk,'Content-Type':'application/json'};}
 async function apiGet(u){const h=await _h();const r=await fetch(u,{headers:h});if(!r.ok)throw new Error(r.status);return r.json();}
 async function apiPost(u,b){const h=await _h();const r=await fetch(u,{method:'POST',headers:h,body:JSON.stringify(b)});if(!r.ok)throw new Error(r.status);return r.json();}
+async function loadFamilyNoteSummaries(items,type){
+  if((window.userTier||'free')!=='family'||!Array.isArray(items)||!items.length){_familyNoteSummaries={};return;}
+  try{
+    const ids=items.map(item=>item.id).filter(Boolean).join(',');
+    _familyNoteSummaries=await apiGet(`/api/notes-summary?media_type=${encodeURIComponent(type)}&ids=${encodeURIComponent(ids)}`);
+  }catch(e){
+    console.error('Family note summaries error:',e);
+    _familyNoteSummaries={};
+  }
+}
+function familyBadge(summary){
+  if(!summary||!summary.count)return'';
+  const caution=summary.primary_type==='caution';
+  const label=caution?'Family Caution':summary.primary_type==='approval'?'Family Approved':'Family Note';
+  const cls=caution?'bg-amber-50 text-amber-700':'bg-emerald-50 text-emerald-700';
+  return `<span class="${cls} text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">${label}</span>`;
+}
 
 // Auth guard — listens for cv:auth event dispatched by auth.js
 let _authReceived=false;
@@ -630,6 +648,7 @@ async function loadRecommendations(type='movie'){
       grid.innerHTML='<p class="text-sm text-on-surface-variant col-span-full">No recommendations yet. Check a few titles or save a couple of picks and this will start filling in.</p>';
       return;
     }
+    await loadFamilyNoteSummaries(items,type);
     grid.innerHTML=items.map(item=>recommendationCard(item,type)).join('');
   }catch(e){
     console.error('Recommendations load error:',e);
@@ -667,6 +686,7 @@ async function loadTrending(type='movie'){
     if(cacheRes?.ok){const cached=await cacheRes.json();_cachedIds=new Set((cached||[]).map(String));}
     if(!items.length){grid.innerHTML='<p class="col-span-full text-sm text-on-surface-variant text-center py-8">Could not load titles.</p>';return;}
     try{const vr=await fetch(`/api/verdicts?ids=${items.map(i=>i.id).join(',')}`);if(vr.ok)_verdictData=await vr.json();}catch(e){}
+    await loadFamilyNoteSummaries(items,type);
     grid.innerHTML=items.map(item=>trendCard(item,type)).join('');
   }catch(e){
     grid.innerHTML='<p class="col-span-full text-sm text-on-surface-variant text-center py-8">Could not load titles.</p>';
@@ -679,6 +699,7 @@ function trendCard(item,type){
   const year=(item.release_date||item.first_air_date||'').slice(0,4);
   const cert=getCert(item);
   const cached=_cachedIds.has(String(item.id));
+  const noteBadge=familyBadge(_familyNoteSummaries[String(item.id)]);
   const badgeClass=cert.cls==='red'?'bg-error text-on-error':cert.cls==='green'?'bg-tertiary text-on-tertiary':'bg-surface-container-lowest/90 backdrop-blur text-on-surface';
   const poster=item.poster_path
     ?`<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://image.tmdb.org/t/p/w342${item.poster_path}" alt="${esc(title)}" loading="lazy">`
@@ -688,7 +709,10 @@ function trendCard(item,type){
     <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-surface-dim">
       ${poster}
       <div class="absolute top-3 left-3 px-2 py-1 ${badgeClass} rounded text-[10px] font-extrabold uppercase tracking-widest">${cert.label}</div>
-      ${cached?'<span class="absolute top-3 right-3 bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">✓</span>':''}
+      <div class="absolute top-3 right-3 flex flex-col items-end gap-1">
+        ${noteBadge}
+        ${cached?'<span class="bg-tertiary/90 text-on-tertiary text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">✓</span>':''}
+      </div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
         <button class="w-full py-2 bg-white text-black font-bold text-xs rounded-lg">${cached?'✓ View analysis':'Check this'}</button>
       </div>
@@ -699,6 +723,7 @@ function trendCard(item,type){
 }
 
 function recommendationCard(item,type){
+  const noteBadge=familyBadge(_familyNoteSummaries[String(item.id)]);
   const poster=item.poster_path
     ?`<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://image.tmdb.org/t/p/w342${item.poster_path}" alt="${esc(item.title)}" loading="lazy">`
     :`<div class="w-full h-full flex items-center justify-center text-4xl bg-surface-dim">🎬</div>`;
@@ -706,6 +731,7 @@ function recommendationCard(item,type){
     <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-surface-dim shadow-sm">
       ${poster}
       <div class="absolute top-3 left-3 px-2 py-1 rounded-full bg-white/92 text-on-surface text-[10px] font-extrabold tracking-widest uppercase">${item.match_score}% match</div>
+      ${noteBadge?`<div class="absolute top-3 right-3">${noteBadge}</div>`:''}
     </div>
     <div class="space-y-1">
       <h3 class="font-bold text-sm leading-tight text-on-surface">${esc(item.title)}</h3>
