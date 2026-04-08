@@ -62,6 +62,59 @@
     font-size: 0.8125rem;
     font-weight: 700;
   }
+  .finish-progress-dot {
+    width: 3.75rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: #565e74;
+    display: inline-block;
+  }
+  .finish-check-shell {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(180deg, rgba(105,246,184,0.1), rgba(204,212,238,0.35));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+  }
+  .finish-poster-card {
+    position: relative;
+    border-radius: 0.9rem;
+    overflow: hidden;
+    min-height: 21rem;
+    background: #dde3e7;
+    box-shadow: 0 20px 40px rgba(45,51,54,0.08);
+  }
+  .finish-poster-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .finish-poster-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #596063;
+    font-size: 2rem;
+    background: linear-gradient(180deg, rgba(218,226,253,0.8), rgba(221,227,231,0.95));
+  }
+  .finish-poster-label {
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    border-radius: 0.75rem;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(8px);
+    padding: 0.75rem 0.85rem;
+    box-shadow: 0 8px 18px rgba(45,51,54,0.08);
+  }
   .toast {
     position: fixed;
     left: 50%;
@@ -85,6 +138,7 @@
   @media (max-width: 767px) {
     main { padding-left: 1rem; padding-right: 1rem; }
     .stepper-label { display: none; }
+    .finish-poster-card { min-height: 15rem; }
   }
 </style>
 </head>
@@ -102,7 +156,7 @@
 
 <main class="min-h-screen pt-32 pb-40 px-6 max-w-3xl mx-auto w-full">
   <div class="w-full">
-    <section class="mb-12">
+    <section id="standardProgress" class="mb-12">
       <div class="flex items-center justify-between mb-4">
         <span id="progressText" class="font-label text-sm font-semibold uppercase tracking-widest text-on-surface-variant">Step 1 of 4</span>
         <span id="progressLabel" class="font-label text-sm font-semibold text-primary">Family setup</span>
@@ -112,7 +166,7 @@
       </div>
     </section>
 
-    <section class="mb-16">
+    <section id="standardIntro" class="mb-16">
       <h1 id="stepHeading" class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-4 leading-tight">Set up your family</h1>
       <p id="stepDescription" class="text-on-surface-variant text-lg leading-relaxed max-w-2xl">A few quick steps, then you're in. Tell us a little about your family.</p>
     </section>
@@ -188,43 +242,47 @@
     </section>
 
     <section data-step="3" class="hidden">
-      <div class="text-center mb-8">
-        <div class="relative inline-block mb-6">
-          <div class="w-20 h-20 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary mx-auto">
-            <span class="material-symbols-outlined text-5xl active-icon">check_circle</span>
+      <div class="max-w-[46rem] mx-auto">
+        <div class="text-center mb-10">
+          <div class="flex items-center justify-center gap-5 mb-5">
+            <span class="finish-progress-dot"></span>
+            <span class="finish-progress-dot"></span>
+            <span class="finish-progress-dot"></span>
           </div>
-          <div class="absolute -top-2 -right-4 text-tertiary-container">
-            <span class="text-2xl" aria-hidden="true">&#x1F389;</span>
+          <p class="text-on-surface-variant font-label text-sm uppercase tracking-widest font-semibold mb-10">Step 4 of 4</p>
+          <div class="finish-check-shell mb-8">
+            <div class="w-12 h-12 rounded-full bg-tertiary text-white flex items-center justify-center">
+              <span class="material-symbols-outlined text-3xl active-icon">check</span>
+            </div>
+            <span class="absolute -right-3 -top-2 text-2xl" aria-hidden="true">🎉</span>
           </div>
+          <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight font-headline mb-4">You're All Set!</h2>
+          <p id="finishIntro" class="text-on-surface-variant text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">We've tailored the movie library to ensure a safe and magical experience for your family.</p>
         </div>
-        <h2 class="text-3xl font-extrabold text-on-surface mb-3 tracking-tight font-headline">You're all set!</h2>
-        <p id="finishIntro" class="text-on-surface-variant leading-relaxed">We'll tailor reviews to your family from the start.</p>
-      </div>
 
-      <div class="bg-surface-container-low p-1 rounded-full overflow-hidden mb-6">
-        <div class="bg-surface-container-lowest p-8 rounded-full border border-outline-variant/10">
-          <div class="flex flex-col md:flex-row items-center gap-8">
+        <div class="bg-white border border-outline-variant/15 rounded-[1.35rem] shadow-[0_10px_28px_rgba(45,51,54,0.08)] p-6 md:p-8 mb-10">
+          <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
             <div class="relative shrink-0">
-              <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface-container flex items-center justify-center bg-primary-container text-primary">
-                <span class="material-symbols-outlined text-5xl active-icon">family_restroom</span>
-              </div>
-              <div class="absolute bottom-0 right-0 bg-tertiary text-on-tertiary p-1.5 rounded-full border-2 border-surface-container-lowest">
-                <span class="material-symbols-outlined text-sm active-icon">verified_user</span>
+              <div id="summaryAvatar" class="w-28 h-28 rounded-2xl overflow-hidden bg-primary-container flex items-center justify-center text-primary text-4xl font-headline font-extrabold">O</div>
+              <div class="absolute -bottom-2 -right-2 bg-tertiary text-on-tertiary p-2 rounded-2xl border-4 border-white">
+                <span class="material-symbols-outlined text-base active-icon">verified_user</span>
               </div>
             </div>
-            <div class="flex-grow text-center md:text-left space-y-4">
-              <div>
-                <h3 id="summaryPrimaryChild" class="text-2xl font-bold text-on-surface tracking-tight font-headline">Your family</h3>
-                <p id="summaryChildMeta" class="text-on-surface-variant font-medium">Ready to personalize your reviews</p>
-              </div>
+            <div class="flex-grow text-center md:text-left">
+              <h3 id="summaryPrimaryChild" class="text-3xl font-bold text-on-surface tracking-tight font-headline mb-1">Your family</h3>
+              <p id="summaryChildMeta" class="text-on-surface-variant text-xl font-medium mb-5">Ready to personalize your reviews</p>
               <div class="flex flex-wrap justify-center md:justify-start gap-3" id="summaryPreferences"></div>
             </div>
+            <button type="button" class="hidden md:flex w-14 h-14 rounded-2xl border border-outline-variant/30 items-center justify-center text-primary hover:bg-surface-container-high transition-colors" aria-label="Edit setup" data-step-target="1">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
           </div>
         </div>
-      </div>
 
-      <div class="space-y-3" id="summaryChildren"></div>
-      <div id="summaryPlanNote" class="mt-6 bg-surface-container-low p-6 rounded-xl border-l-4 border-tertiary text-sm leading-relaxed text-on-surface-variant"></div>
+        <div id="finishPosters" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"></div>
+        <div id="summaryChildren" class="space-y-3"></div>
+        <div id="summaryPlanNote" class="mt-6 text-center text-sm leading-relaxed text-on-surface-variant"></div>
+      </div>
     </section>
   </div>
 </main>
@@ -257,6 +315,11 @@ const AGE_GROUPS = [
   { value: '8', range: '6-9', label: 'Elementary' },
   { value: '11', range: '10-12', label: 'Pre-teen' },
   { value: '14', range: '13+', label: 'Teen' }
+];
+const POSTER_FALLBACKS = [
+  { title: 'Inside Out 2', image: '/images/trio1-kids-laughing.webp', meta: 'Safe family pick' },
+  { title: 'The Wild Robot', image: '/images/trio2-diverse-family.webp', meta: 'Adventure preview' },
+  { title: 'Moana', image: '/images/trio3-grandparent.webp', meta: 'Gentle action pick' }
 ];
 const TOPICS = [
   { name: 'Sex & Nudity', icon: 'visibility_off', desc: 'Sexual content, nudity, or adult themes.' },
@@ -299,6 +362,7 @@ const STEP_META = [
 let authState = null;
 let currentStep = 0;
 let saveTimer = null;
+let previewPosters = [];
 const state = {
   parentName: '',
   childCount: 1,
@@ -405,26 +469,105 @@ function getAgeGroupMeta(age) {
   return AGE_GROUPS.find((group) => String(group.value) === String(age)) || null;
 }
 
+function getPrimaryChild() {
+  return state.children.find((child) => child.name.trim() || child.age) || state.children[0] || { name: '', age: '' };
+}
+
+async function ensurePreviewPosters() {
+  if (previewPosters.length) return previewPosters;
+  try {
+    const res = await fetch('/api/home/content');
+    const data = await res.json();
+    const merged = [
+      ...(Array.isArray(data?.safe_picks) ? data.safe_picks : []),
+      ...(Array.isArray(data?.popular) ? data.popular : []),
+      ...(Array.isArray(data?.trending) ? data.trending : []),
+    ];
+    const seen = new Set();
+    previewPosters = merged.filter((item) => {
+      const key = `${item.title}:${item.poster_path || ''}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map((item) => ({
+      title: item.title,
+      age_guidance: item.age_guidance || '',
+      safety_label: item.safety_label || 'Safe',
+      poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
+    }));
+  } catch {
+    previewPosters = [];
+  }
+  return previewPosters;
+}
+
+function scorePosterForAge(item, age) {
+  const label = String(item.age_guidance || '').toLowerCase();
+  if (age <= 5) {
+    if (label.includes('3+') || label.includes('4+') || label.includes('5+')) return 5;
+    if (label.includes('6+')) return 4;
+    if (label.includes('8+') || label.includes('teens')) return -4;
+  } else if (age <= 9) {
+    if (label.includes('6+') || label.includes('7+') || label.includes('8+')) return 5;
+    if (label.includes('3+') || label.includes('5+')) return 4;
+    if (label.includes('teens')) return -3;
+  } else if (age <= 12) {
+    if (label.includes('8+') || label.includes('10+') || label.includes('teens')) return 4;
+    if (label.includes('6+') || label.includes('7+')) return 3;
+  } else {
+    if (label.includes('teens')) return 5;
+    if (label.includes('8+') || label.includes('10+')) return 4;
+  }
+  return item.safety_label === 'Safe' ? 2 : 0;
+}
+
+function pickPosterPreviewSet(age) {
+  const source = previewPosters.length ? previewPosters : POSTER_FALLBACKS.map((item) => ({ ...item, age_guidance: '', safety_label: 'Safe', poster: item.image }));
+  return [...source]
+    .sort((a, b) => scorePosterForAge(b, age) - scorePosterForAge(a, age))
+    .slice(0, 3);
+}
+
+function renderFinishPosters(age) {
+  const mount = document.getElementById('finishPosters');
+  const posters = pickPosterPreviewSet(age);
+  mount.innerHTML = posters.map((item) => `
+    <article class="finish-poster-card">
+      ${item.poster
+        ? `<img src="${escapeHtml(item.poster)}" alt="${escapeHtml(item.title)} poster" loading="lazy"/>`
+        : `<div class="finish-poster-fallback">&#127916;</div>`
+      }
+      <div class="finish-poster-label">
+        <h4 class="font-headline text-lg font-bold text-on-surface leading-tight">${escapeHtml(item.title)}</h4>
+        <p class="text-xs font-semibold uppercase tracking-wide text-on-surface-variant mt-1">${escapeHtml(item.age_guidance || item.meta || item.safety_label || 'Preview pick')}</p>
+      </div>
+    </article>
+  `).join('');
+}
+
 function renderSummary() {
   const children = state.children.filter((child) => child.name.trim() || child.age);
-  const primary = children[0];
+  const primary = getPrimaryChild();
   const primaryAgeGroup = getAgeGroupMeta(primary?.age);
   document.getElementById('finishIntro').textContent = primary?.name
-    ? `We've tailored the experience around ${primary.name}.`
-    : "We'll tailor reviews to your family from the start.";
+    ? `We've tailored the movie library to ensure a safe and magical experience for ${primary.name}.`
+    : "We've tailored the movie library to ensure a safe and magical experience for your family.";
   document.getElementById('summaryPrimaryChild').textContent = primary?.name || 'Your family';
-  document.getElementById('summaryChildMeta').textContent = primaryAgeGroup ? `${primaryAgeGroup.range} · ${primaryAgeGroup.label}` : 'Ready to personalize your reviews';
+  document.getElementById('summaryChildMeta').textContent = primaryAgeGroup ? `${Number(primary.age)} Years Old` : 'Ready to personalize your reviews';
+  document.getElementById('summaryAvatar').textContent = (primary?.name || 'O').trim().charAt(0).toUpperCase();
 
   document.getElementById('summaryPreferences').innerHTML = state.preferences.active.map((name) => `
     <span class="summary-chip">${escapeHtml(name)}</span>
   `).join('');
+
+  renderFinishPosters(Number(primary?.age || 8));
 
   document.getElementById('summaryChildren').innerHTML = children.map((child) => `
     <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
       <div class="flex items-center justify-between gap-4">
         <div>
           <h3 class="font-headline text-xl font-bold text-on-surface">${escapeHtml(child.name || 'Unnamed child')}</h3>
-          <p class="text-sm text-on-surface-variant">${getAgeGroupMeta(child.age) ? `${getAgeGroupMeta(child.age).range} · ${getAgeGroupMeta(child.age).label}` : 'Age group not set'}</p>
+          <p class="text-sm text-on-surface-variant">${getAgeGroupMeta(child.age) ? `${getAgeGroupMeta(child.age).range} - ${getAgeGroupMeta(child.age).label}` : 'Age group not set'}</p>
         </div>
         <span class="material-symbols-outlined text-primary active-icon">verified_user</span>
       </div>
@@ -437,7 +580,7 @@ function renderSummary() {
     const deferred = Math.max(0, state.children.length - maxProfiles);
     planNote.textContent = deferred > 0
       ? `We'll create your first ${maxProfiles} child profiles now and keep the rest saved in your family setup draft.`
-      : "We'll create these child profiles now so your dashboard is ready when you arrive.";
+      : 'Your dashboard preview is ready, and these child profiles will be created now.';
   } else {
     planNote.textContent = 'We will save this setup to your account now. Free plans keep child details as a saved family draft until profiles are unlocked.';
   }
@@ -445,6 +588,7 @@ function renderSummary() {
 
 function render() {
   const meta = STEP_META[currentStep];
+  const isFinishStep = currentStep === STEP_META.length - 1;
   document.getElementById('progressText').textContent = `Step ${currentStep + 1} of ${STEP_META.length}`;
   document.getElementById('progressLabel').textContent = meta.progressLabel;
   document.getElementById('progressBar').style.width = `${((currentStep + 1) / STEP_META.length) * 100}%`;
@@ -452,6 +596,8 @@ function render() {
   document.getElementById('stepDescription').textContent = meta.description;
   document.getElementById('nextBtn').lastChild.textContent = meta.button;
   document.getElementById('backBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+  document.getElementById('standardProgress').classList.toggle('hidden', isFinishStep);
+  document.getElementById('standardIntro').classList.toggle('hidden', isFinishStep);
 
   renderStepChips();
   document.querySelectorAll('[data-step]').forEach((section, index) => {
@@ -461,6 +607,10 @@ function render() {
   renderChildren();
   renderPreferences();
   renderSummary();
+
+  if (isFinishStep && !previewPosters.length) {
+    ensurePreviewPosters().then(() => renderSummary()).catch(() => {});
+  }
 }
 
 function validateCurrentStep() {
