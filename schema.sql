@@ -208,6 +208,23 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON subscriptions(user_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_dodo ON subscriptions(dodo_order_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status, renews_at);
 
+-- Onboarding state (post-signup setup wizard)
+-- Stores the signed-in family setup draft so onboarding can resume across devices.
+CREATE TABLE IF NOT EXISTS onboarding_state (
+  user_id               TEXT PRIMARY KEY,
+  parent_name           TEXT,
+  child_count           INTEGER DEFAULT 0,
+  children_json         TEXT,                 -- JSON array of draft child objects [{name, age}]
+  preferences_json      TEXT,                 -- JSON object mirroring cv_prefs
+  created_profile_count INTEGER DEFAULT 0,
+  deferred_profiles     INTEGER DEFAULT 0,
+  completed_at          TEXT,
+  created_at            TEXT DEFAULT (datetime('now')),
+  updated_at            TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_onboarding_completed ON onboarding_state(completed_at);
+
 
 --  Guest search rate limit (unauthenticated visitors) 
 -- Tracks daily search counts per IP for guests (not logged in).

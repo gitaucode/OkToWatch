@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#565e74"/>
+<title>Welcome to OkToWatch</title>
+<meta name="description" content="Set up your family preferences so OkToWatch can personalize reviews from the start."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="/js/tailwind-theme.js?v=dev"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  .step-chip.active { background: #565e74; color: #fff; border-color: #565e74; }
+  .step-chip.done { background: #dae2fd; color: #373f54; border-color: #ccd4ee; }
+  .pref-card.selected { border-color: rgba(86, 94, 116, 0.35); background: linear-gradient(180deg, #f2f4fb 0%, #edf2ff 100%); box-shadow: 0 16px 32px rgba(86, 94, 116, 0.12); }
+  .pref-card.selected .pref-pill { background: #565e74; }
+  .pref-card.selected .pref-pill::after { transform: translateX(18px); }
+  .pref-pill { width: 40px; height: 22px; background: #cbd5e1; border-radius: 999px; position: relative; transition: background 160ms ease; }
+  .pref-pill::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 999px; background: #fff; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18); transition: transform 160ms ease; }
+  .child-card { border: 1px solid rgba(172, 179, 182, 0.25); background: #fff; border-radius: 1.25rem; padding: 1rem; }
+  .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%) translateY(20px); background: rgba(15,23,42,0.92); color: #fff; padding: 0.75rem 1rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none; transition: all 180ms ease; z-index: 80; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body class="bg-background text-on-surface antialiased" data-page="onboarding">
+<div id="nav-root"></div>
+
+<main class="min-h-screen pt-20 pb-14">
+  <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+    <section class="rounded-[2rem] border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-[0_30px_70px_-40px_rgba(45,51,54,0.35)] sm:p-8 lg:p-10">
+      <div class="mb-8 flex flex-col gap-4 border-b border-outline-variant/10 pb-6">
+        <span class="inline-flex w-fit items-center rounded-full bg-primary-container px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-primary">Family setup</span>
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h1 class="brand-font text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">Let&rsquo;s make OkToWatch feel like it already knows your family.</h1>
+            <p class="mt-3 max-w-2xl text-base leading-relaxed text-on-surface-variant">This setup is full-page on purpose so you can move through it comfortably. We&rsquo;ll save your progress, personalize reviews, and get you to the dashboard with less busywork.</p>
+          </div>
+          <button id="skipSetupBtn" type="button" class="inline-flex items-center justify-center rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">Skip for now</button>
+        </div>
+      </div>
+
+      <div class="mb-8 flex flex-wrap gap-3" id="stepChips">
+        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">1. About you</div>
+        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">2. Your children</div>
+        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">3. Preferences</div>
+        <div class="step-chip rounded-full border border-outline-variant/20 px-4 py-2 text-sm font-semibold">4. Finish</div>
+      </div>
+
+      <section data-step="0" class="space-y-6">
+        <div>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Tell us about your family</h2>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">We&rsquo;ll use this to personalize your dashboard and reduce setup later.</p>
+        </div>
+
+        <div class="grid gap-5 lg:grid-cols-2">
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Your first name</label>
+            <input id="parentNameInput" type="text" maxlength="40" placeholder="e.g. Jane" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">How many children are you setting up?</label>
+            <select id="childCountInput" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+              <option value="1">1 child</option>
+              <option value="2">2 children</option>
+              <option value="3">3 children</option>
+              <option value="4">4 children</option>
+              <option value="5">5 children</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
+          <p class="text-sm font-semibold text-on-surface">What happens next</p>
+          <ul class="mt-3 space-y-2 text-sm leading-relaxed text-on-surface-variant">
+            <li>We&rsquo;ll save your setup progress to your account.</li>
+            <li>Paid plans create child profiles right away.</li>
+            <li>Free plans keep the family draft ready so you don&rsquo;t have to start over later.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section data-step="1" class="hidden space-y-6">
+        <div>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">Add your children</h2>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">Name and age are enough to get helpful recommendations and safer defaults in place.</p>
+        </div>
+        <div id="childrenList" class="grid gap-4"></div>
+        <p class="text-sm leading-relaxed text-on-surface-variant" id="childLimitHint"></p>
+      </section>
+
+      <section data-step="2" class="hidden space-y-6">
+        <div>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">What should we watch out for?</h2>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">Pick the topics you want highlighted in each review.</p>
+        </div>
+        <div id="preferencesGrid" class="grid gap-4 md:grid-cols-2"></div>
+      </section>
+
+      <section data-step="3" class="hidden space-y-6">
+        <div>
+          <h2 class="brand-font text-2xl font-extrabold tracking-tight text-on-surface">You&rsquo;re almost done</h2>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-on-surface-variant">Check the setup summary below, then we&rsquo;ll save everything and take you into the app.</p>
+        </div>
+
+        <div class="grid gap-5 lg:grid-cols-2">
+          <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Family summary</p>
+            <div id="summaryChildren" class="mt-4 space-y-3"></div>
+          </div>
+          <div class="rounded-3xl border border-outline-variant/10 bg-surface-container-low p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Highlighted topics</p>
+            <div id="summaryPreferences" class="mt-4 flex flex-wrap gap-2"></div>
+            <div id="summaryPlanNote" class="mt-5 rounded-2xl bg-white p-4 text-sm leading-relaxed text-on-surface-variant"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="mt-10 flex flex-col gap-3 border-t border-outline-variant/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <button id="backBtn" type="button" class="inline-flex items-center justify-center rounded-full border border-outline-variant/20 px-5 py-3 text-sm font-semibold text-on-surface-variant transition-colors hover:bg-surface-container">Back</button>
+        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+          <p id="statusMsg" class="text-sm text-on-surface-variant"></p>
+          <button id="nextBtn" type="button" class="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-on-primary transition-colors hover:bg-primary-dim">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="rounded-[2rem] border border-outline-variant/10 bg-surface-container-low p-6 shadow-[0_24px_60px_-40px_rgba(45,51,54,0.32)] sm:p-8 lg:sticky lg:top-24 lg:h-fit">
+      <div class="rounded-[1.75rem] bg-gradient-to-br from-primary to-primary-dim p-6 text-white">
+        <span class="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em]">Why this matters</span>
+        <h3 class="brand-font mt-4 text-2xl font-extrabold tracking-tight">A calmer first session.</h3>
+        <p class="mt-3 text-sm leading-relaxed text-white/80">Instead of dropping you into a blank dashboard, we&rsquo;ll start with your family details, child setup, and the topics you care about most.</p>
+      </div>
+
+      <div class="mt-6 space-y-4">
+        <div class="rounded-3xl border border-outline-variant/10 bg-white p-5">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined rounded-2xl bg-primary-container p-2 text-primary">family_restroom</span>
+            <div>
+              <p class="font-semibold text-on-surface">Child-friendly from the start</p>
+              <p class="mt-1 text-sm leading-relaxed text-on-surface-variant">We use ages and family preferences to make recommendations feel less generic immediately.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-3xl border border-outline-variant/10 bg-white p-5">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined rounded-2xl bg-primary-container p-2 text-primary">task_alt</span>
+            <div>
+              <p class="font-semibold text-on-surface">Saved as you go</p>
+              <p class="mt-1 text-sm leading-relaxed text-on-surface-variant">If you leave and come back, your progress can resume instead of forcing you to start over.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+<div id="footer-root"></div>
+
+<script src="/js/auth.js?v=dev"></script>
+<script>
+const PREFS_KEY = 'cv_prefs';
+const LEGACY_ONBOARD_KEY = 'cv_onboarded';
+const DEFAULT_ACTIVE = ['Sex & Nudity', 'Violence & Gore', 'Language', 'Drugs & Alcohol', 'Horror & Fear', 'Self-harm'];
+const TOPICS = [
+  { name: 'Sex & Nudity', icon: '🔞', desc: 'Sexual content, nudity, or adult themes.' },
+  { name: 'Violence & Gore', icon: '⚠️', desc: 'Fighting, blood, injury, or death.' },
+  { name: 'Language', icon: '🤬', desc: 'Profanity, slurs, or strong language.' },
+  { name: 'Drugs & Alcohol', icon: '🍷', desc: 'Drug use, drinking, or substance abuse.' },
+  { name: 'Horror & Fear', icon: '👻', desc: 'Scary scenes, jump scares, or disturbing imagery.' },
+  { name: 'Self-harm', icon: '🛟', desc: 'Self-harm, suicide, or eating disorder references.' },
+  { name: 'Bullying & Cruelty', icon: '💬', desc: 'Bullying, humiliation, or emotional cruelty.' },
+  { name: 'Mature Themes', icon: '🧠', desc: 'Grief, trauma, or emotionally heavy themes.' },
+  { name: 'LGBTQ+ Themes', icon: '🏳️‍🌈', desc: 'Identity, coming out, same-sex relationships, or gender themes.' }
+];
+
+let authState = null;
+let currentStep = 0;
+let saveTimer = null;
+const state = {
+  parentName: '',
+  childCount: 1,
+  children: [{ name: '', age: '' }],
+  preferences: {
+    active: [...DEFAULT_ACTIVE],
+    order: TOPICS.map(topic => topic.name)
+  }
+};
+
+function showToast(msg, dur = 2400) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), dur);
+}
+
+function authHeaders() {
+  return window.Clerk.session.getToken().then((token) => ({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }));
+}
+
+function getMaxProfilesForTier() {
+  if (authState?.tier === 'family') return 5;
+  if (authState?.tier === 'pro') return 2;
+  return 0;
+}
+
+function syncChildrenLength() {
+  const target = Math.max(1, Math.min(5, Number(state.childCount) || 1));
+  while (state.children.length < target) state.children.push({ name: '', age: '' });
+  while (state.children.length > target) state.children.pop();
+}
+
+function renderStepChips() {
+  document.querySelectorAll('#stepChips .step-chip').forEach((chip, index) => {
+    chip.classList.remove('active', 'done');
+    if (index === currentStep) chip.classList.add('active');
+    else if (index < currentStep) chip.classList.add('done');
+  });
+}
+
+function renderChildren() {
+  const list = document.getElementById('childrenList');
+  list.innerHTML = state.children.map((child, index) => `
+    <div class="child-card">
+      <div class="mb-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Child ${index + 1}</p>
+          <p class="mt-1 text-sm font-semibold text-on-surface">${child.name || 'New child profile'}</p>
+        </div>
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-container text-xl">${index % 2 === 0 ? '🧒' : '⭐'}</span>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-2">
+          <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Name</label>
+          <input type="text" data-child-name="${index}" maxlength="20" value="${escapeHtml(child.name)}" placeholder="e.g. Maya" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">Age</label>
+          <input type="number" data-child-age="${index}" min="1" max="17" value="${escapeHtml(child.age)}" placeholder="e.g. 8" class="w-full rounded-2xl border-outline-variant/25 bg-surface-container-low px-4 py-3 text-base outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const maxProfiles = getMaxProfilesForTier();
+  const hint = document.getElementById('childLimitHint');
+  if (maxProfiles > 0) {
+    hint.textContent = `Your ${authState.tier} plan can create up to ${maxProfiles} child profile${maxProfiles === 1 ? '' : 's'} right away.`;
+  } else {
+    hint.textContent = 'Free accounts keep this family setup saved as a draft until you unlock child profiles.';
+  }
+}
+
+function renderPreferences() {
+  const grid = document.getElementById('preferencesGrid');
+  grid.innerHTML = TOPICS.map((topic) => `
+    <button type="button" class="pref-card ${state.preferences.active.includes(topic.name) ? 'selected' : ''} flex items-start gap-4 rounded-[1.25rem] border border-outline-variant/20 bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg" data-pref="${topic.name}">
+      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-container text-xl">${topic.icon}</span>
+      <span class="min-w-0 flex-1">
+        <span class="block text-base font-bold text-on-surface">${topic.name}</span>
+        <span class="mt-1 block text-sm leading-relaxed text-on-surface-variant">${topic.desc}</span>
+      </span>
+      <span class="pref-pill shrink-0"></span>
+    </button>
+  `).join('');
+}
+
+function renderSummary() {
+  document.getElementById('summaryChildren').innerHTML = state.children.map((child) => `
+    <div class="rounded-2xl bg-white px-4 py-3">
+      <p class="font-semibold text-on-surface">${escapeHtml(child.name || 'Unnamed child')}</p>
+      <p class="mt-1 text-sm text-on-surface-variant">Age ${escapeHtml(child.age || '—')}</p>
+    </div>
+  `).join('');
+
+  document.getElementById('summaryPreferences').innerHTML = state.preferences.active.map((name) => `
+    <span class="rounded-full bg-white px-3 py-2 text-sm font-semibold text-on-surface">${escapeHtml(name)}</span>
+  `).join('');
+
+  const planNote = document.getElementById('summaryPlanNote');
+  const maxProfiles = getMaxProfilesForTier();
+  if (maxProfiles > 0) {
+    const deferred = Math.max(0, state.children.length - maxProfiles);
+    planNote.textContent = deferred > 0
+      ? `We’ll create your first ${maxProfiles} child profiles now and keep the rest saved in your family setup draft.`
+      : `We’ll create these child profiles now so Settings and recommendations are ready when you arrive.`;
+  } else {
+    planNote.textContent = 'We’ll save this setup to your account now. Free plans keep child details as a saved family draft until profiles are unlocked.';
+  }
+}
+
+function render() {
+  renderStepChips();
+  document.querySelectorAll('[data-step]').forEach((section, index) => {
+    section.classList.toggle('hidden', index !== currentStep);
+  });
+
+  document.getElementById('backBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').textContent = currentStep === 3 ? 'Finish setup' : 'Next';
+
+  renderChildren();
+  renderPreferences();
+  renderSummary();
+}
+
+function validateCurrentStep() {
+  if (currentStep === 0) {
+    if (!state.parentName.trim()) {
+      showToast('Please add your first name');
+      return false;
+    }
+    if (!state.childCount || state.childCount < 1 || state.childCount > 5) {
+      showToast('Pick how many children you’re setting up');
+      return false;
+    }
+  }
+
+  if (currentStep === 1) {
+    const invalid = state.children.find((child) => !child.name.trim() || !child.age || child.age < 1 || child.age > 17);
+    if (invalid) {
+      showToast('Each child needs a name and age between 1 and 17');
+      return false;
+    }
+  }
+
+  if (currentStep === 2 && !state.preferences.active.length) {
+    showToast('Pick at least one topic to highlight');
+    return false;
+  }
+
+  return true;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+async function persistDraft(completed) {
+  if (!authState?.loggedIn) return;
+  try {
+    await fetch('/api/onboarding', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        parentName: state.parentName.trim(),
+        childCount: state.childCount,
+        children: state.children,
+        preferences: state.preferences,
+        completed: !!completed,
+        createdProfileCount: 0,
+        deferredProfiles: authState?.tier === 'free' ? state.children.length : Math.max(0, state.children.length - getMaxProfilesForTier())
+      })
+    });
+  } catch {}
+}
+
+function scheduleDraftSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => persistDraft(false), 450);
+}
+
+function savePrefsLocally() {
+  localStorage.setItem(PREFS_KEY, JSON.stringify(state.preferences));
+  localStorage.setItem(LEGACY_ONBOARD_KEY, '1');
+}
+
+async function saveDisplayName() {
+  const existingFirstName = (authState?.user?.firstName || '').trim();
+  if (!state.parentName.trim() || existingFirstName.toLowerCase() === state.parentName.trim().toLowerCase()) return;
+  await fetch('/api/settings/name', {
+    method: 'PUT',
+    headers: await authHeaders(),
+    body: JSON.stringify({ firstName: state.parentName.trim(), lastName: '' })
+  });
+}
+
+async function seedProfilesIfAllowed() {
+  const maxProfiles = getMaxProfilesForTier();
+  if (!maxProfiles) return { createdCount: 0, deferredCount: state.children.length, firstProfileId: null };
+
+  let existing = [];
+  try {
+    const res = await fetch('/api/profiles', { headers: await authHeaders() });
+    if (res.ok) existing = await res.json();
+  } catch {}
+
+  const existingKeys = new Set(existing.map((profile) => `${String(profile.name || '').trim().toLowerCase()}::${profile.age}`));
+  const availableSlots = Math.max(0, maxProfiles - existing.length);
+  const candidates = state.children.filter((child) => !existingKeys.has(`${child.name.trim().toLowerCase()}::${child.age}`));
+  const toCreate = candidates.slice(0, availableSlots);
+
+  let firstProfileId = existing[0]?.id || null;
+  let createdCount = 0;
+  for (let i = 0; i < toCreate.length; i += 1) {
+    const child = toCreate[i];
+    const emoji = ['👧', '👦', '🧒', '⭐', '🎈'][i % 5];
+    const response = await fetch('/api/profiles', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        name: child.name.trim(),
+        age: Number(child.age),
+        emoji,
+        blocked_categories: state.preferences.active
+      })
+    });
+    if (!response.ok) break;
+    const created = await response.json();
+    createdCount += 1;
+    if (!firstProfileId) firstProfileId = created.id;
+  }
+
+  return {
+    createdCount,
+    deferredCount: Math.max(0, state.children.length - Math.min(maxProfiles, existing.length + createdCount)),
+    firstProfileId
+  };
+}
+
+async function finishSetup() {
+  const button = document.getElementById('nextBtn');
+  const status = document.getElementById('statusMsg');
+  button.disabled = true;
+  button.textContent = 'Saving...';
+  status.textContent = 'Saving your family setup...';
+
+  try {
+    savePrefsLocally();
+    await saveDisplayName();
+    const profileResult = await seedProfilesIfAllowed();
+
+    await fetch('/api/onboarding', {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        parentName: state.parentName.trim(),
+        childCount: state.childCount,
+        children: state.children,
+        preferences: state.preferences,
+        completed: true,
+        createdProfileCount: profileResult.createdCount,
+        deferredProfiles: profileResult.deferredCount
+      })
+    });
+
+    if (profileResult.firstProfileId && !sessionStorage.getItem('cv_active_profile')) {
+      sessionStorage.setItem('cv_active_profile', profileResult.firstProfileId);
+    }
+    try {
+      sessionStorage.setItem('cvOnboardingState', JSON.stringify({ completed: true }));
+    } catch {}
+
+    const redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
+    window.location.replace(redirect);
+  } catch (err) {
+    console.error(err);
+    status.textContent = '';
+    button.disabled = false;
+    button.textContent = 'Finish setup';
+    showToast('We could not finish setup. Please try again.');
+  }
+}
+
+async function loadSavedState() {
+  try {
+    const res = await fetch('/api/onboarding', { headers: await authHeaders() });
+    if (!res.ok) return;
+    const saved = await res.json();
+    if (saved.parentName) state.parentName = saved.parentName;
+    if (saved.childCount) state.childCount = Math.max(1, Math.min(5, Number(saved.childCount) || 1));
+    if (Array.isArray(saved.children) && saved.children.length) state.children = saved.children.map((child) => ({ name: child.name || '', age: child.age || '' }));
+    if (saved.preferences?.active?.length) {
+      state.preferences = {
+        active: saved.preferences.active,
+        order: Array.isArray(saved.preferences.order) && saved.preferences.order.length ? saved.preferences.order : TOPICS.map((topic) => topic.name)
+      };
+    }
+  } catch {}
+
+  if (!state.parentName.trim() && authState?.user?.firstName) {
+    state.parentName = authState.user.firstName;
+  }
+  syncChildrenLength();
+  document.getElementById('parentNameInput').value = state.parentName;
+  document.getElementById('childCountInput').value = String(state.childCount);
+  render();
+}
+
+document.getElementById('parentNameInput').addEventListener('input', (event) => {
+  state.parentName = event.target.value;
+  scheduleDraftSave();
+});
+
+document.getElementById('childCountInput').addEventListener('change', (event) => {
+  state.childCount = Number(event.target.value) || 1;
+  syncChildrenLength();
+  render();
+  scheduleDraftSave();
+});
+
+document.getElementById('childrenList').addEventListener('input', (event) => {
+  const nameIndex = event.target.getAttribute('data-child-name');
+  const ageIndex = event.target.getAttribute('data-child-age');
+  if (nameIndex !== null) state.children[Number(nameIndex)].name = event.target.value;
+  if (ageIndex !== null) state.children[Number(ageIndex)].age = event.target.value;
+  renderSummary();
+  scheduleDraftSave();
+});
+
+document.getElementById('preferencesGrid').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-pref]');
+  if (!button) return;
+  const pref = button.getAttribute('data-pref');
+  const idx = state.preferences.active.indexOf(pref);
+  if (idx >= 0) state.preferences.active.splice(idx, 1);
+  else state.preferences.active.push(pref);
+  renderPreferences();
+  renderSummary();
+  scheduleDraftSave();
+});
+
+document.getElementById('backBtn').addEventListener('click', async () => {
+  if (currentStep === 0) return;
+  currentStep -= 1;
+  render();
+  await persistDraft(false);
+});
+
+document.getElementById('nextBtn').addEventListener('click', async () => {
+  if (!validateCurrentStep()) return;
+  if (currentStep === 3) {
+    await finishSetup();
+    return;
+  }
+  currentStep += 1;
+  render();
+  await persistDraft(false);
+});
+
+document.getElementById('skipSetupBtn').addEventListener('click', async () => {
+  savePrefsLocally();
+  await fetch('/api/onboarding', {
+    method: 'POST',
+    headers: await authHeaders(),
+    body: JSON.stringify({
+      parentName: state.parentName.trim(),
+      childCount: state.childCount,
+      children: state.children,
+      preferences: state.preferences,
+      completed: true,
+      createdProfileCount: 0,
+      deferredProfiles: authState?.tier === 'free' ? state.children.length : Math.max(0, state.children.length - getMaxProfilesForTier())
+    })
+  });
+  const redirect = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
+  window.location.replace(redirect);
+});
+
+document.addEventListener('cv:auth', async ({ detail }) => {
+  if (!detail.loggedIn) {
+    window.location.replace('/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
+    return;
+  }
+  authState = detail;
+  await loadSavedState();
+});
+</script>
+</body>
+</html>

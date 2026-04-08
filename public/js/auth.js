@@ -568,13 +568,40 @@
 
 
 //
-  function dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser) {
-    window.CV = { loggedIn, isPro, isFamily, tier: tier || 'free', user: clerkUser || null };
+  function dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser, onboardingComplete) {
+    window.CV = {
+      loggedIn,
+      isPro,
+      isFamily,
+      tier: tier || 'free',
+      user: clerkUser || null,
+      onboardingComplete: onboardingComplete !== false
+    };
     cacheAuthState(loggedIn, isPro, isFamily, tier, clerkUser || null);
     renderNav(loggedIn, isPro, clerkUser || null);
     document.dispatchEvent(new CustomEvent('cv:auth', {
-      detail: { loggedIn, isPro, isFamily, tier: tier || 'free', user: clerkUser || null }
+      detail: {
+        loggedIn,
+        isPro,
+        isFamily,
+        tier: tier || 'free',
+        user: clerkUser || null,
+        onboardingComplete: onboardingComplete !== false
+      }
     }));
+  }
+
+  async function fetchOnboardingStatus(token) {
+    try {
+      const res = await fetch('/api/onboarding', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) return { completed: false };
+      return await res.json();
+    } catch (err) {
+      console.warn('Error fetching onboarding status:', err.message);
+      return { completed: false };
+    }
   }
 
 //
@@ -649,11 +676,12 @@
       let isFamily = loggedIn && (meta.isFamily === true);
       let tier = 'free';
 
+      let sessionToken = null;
+
       // In production, fetch actual subscription status from API
       if (loggedIn && BILLING_ENABLED) {
         try {
-          // Get session token from Clerk's session object
-          const sessionToken = await window.Clerk?.session?.getToken?.();
+          sessionToken = await window.Clerk?.session?.getToken?.();
           if (sessionToken) {
             const subStatus = await fetchSubscriptionStatus(sessionToken);
             isPro = subStatus.isPro || false;
@@ -666,12 +694,33 @@
         }
       }
 
-      dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser);
+      if (loggedIn && !sessionToken) {
+        try { sessionToken = await window.Clerk?.session?.getToken?.(); } catch {}
+      }
+
+      let onboardingComplete = true;
+      if (loggedIn && sessionToken) {
+        const onboardingStatus = await fetchOnboardingStatus(sessionToken);
+        onboardingComplete = onboardingStatus.completed === true;
+        try { sessionStorage.setItem('cvOnboardingState', JSON.stringify(onboardingStatus)); } catch {}
+
+        const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+        const onOnboardingPage = currentPath === '/onboarding';
+        const forceOnboarding = new URLSearchParams(window.location.search).get('force') === '1';
+
+        if (onboardingComplete && onOnboardingPage && !forceOnboarding) {
+          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          window.location.replace(redirect || '/dashboard');
+          return;
+        }
+      }
+
+      dispatchAuth(loggedIn, isPro, isFamily, tier, clerkUser, onboardingComplete);
 
     } catch (err) {
       // Clerk failed to load. Treat as logged out so pages can still render.
       console.warn('OkToWatch auth: Clerk failed to initialise.', err?.message);
-      dispatchAuth(false, false, false, 'free', null);
+      dispatchAuth(false, false, false, 'free', null, true);
     }
   }
 
