@@ -89,19 +89,20 @@
 </style>
 </head>
 <body class="text-on-surface min-h-screen flex flex-col" data-page="onboarding">
-<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl transition-all">
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl transition-all">
   <div class="flex justify-between items-center px-6 py-5 max-w-7xl mx-auto">
-    <div class="text-xl font-black text-slate-900 font-headline tracking-tight">OkToWatch</div>
+    <div class="text-xl font-black text-slate-900 dark:text-white font-headline tracking-tight">OkToWatch</div>
     <div class="flex items-center gap-4">
-      <button id="skipSetupBtn" class="text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-colors">Skip</button>
+      <button id="skipSetupBtn" class="text-slate-700 dark:text-slate-300 hover:opacity-70 transition-opacity active:scale-95 p-1" aria-label="Skip setup">
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
   </div>
-  <div class="h-px bg-surface-container"></div>
 </header>
 
-<main class="flex-grow flex flex-col items-center justify-center px-6 pt-20 pb-28">
-  <div class="max-w-[54rem] w-full">
-    <section class="mb-8">
+<main class="min-h-screen pt-32 pb-40 px-6 max-w-3xl mx-auto w-full">
+  <div class="w-full">
+    <section class="mb-12">
       <div class="flex items-center justify-between mb-4">
         <span id="progressText" class="font-label text-sm font-semibold uppercase tracking-widest text-on-surface-variant">Step 1 of 4</span>
         <span id="progressLabel" class="font-label text-sm font-semibold text-primary">Family setup</span>
@@ -111,12 +112,12 @@
       </div>
     </section>
 
-    <section class="mb-8">
-      <h1 id="stepHeading" class="font-headline text-[2.4rem] md:text-[3rem] font-extrabold text-on-surface leading-[1.02] tracking-tight mb-2">Set up your family</h1>
-      <p id="stepDescription" class="text-on-surface-variant text-[1.05rem] leading-relaxed max-w-xl">A few quick steps, then you're in.</p>
+    <section class="mb-16">
+      <h1 id="stepHeading" class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-4 leading-tight">Set up your family</h1>
+      <p id="stepDescription" class="text-on-surface-variant text-lg leading-relaxed max-w-2xl">A few quick steps, then you're in. Tell us a little about your family.</p>
     </section>
 
-    <section class="mb-8">
+    <section class="hidden mb-8">
       <div class="grid grid-cols-4 gap-2.5" id="stepChips">
         <button type="button" class="stepper-pill wizard-card border border-outline-variant/20 px-2 py-2.5 flex flex-col items-center gap-1 text-on-surface-variant" data-step-target="0">
           <span class="stepper-number"><span>1</span></span>
@@ -137,15 +138,15 @@
       </div>
     </section>
 
-    <section data-step="0" class="space-y-8">
-      <div class="space-y-8">
+    <section data-step="0" class="space-y-10">
+      <div class="space-y-10">
         <div class="group">
           <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="parentNameInput">Your first name</label>
-          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-3.5 text-[1.4rem] font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
+          <input class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface placeholder:text-outline-variant transition-all outline-none" id="parentNameInput" maxlength="40" placeholder="e.g. Jane" type="text"/>
         </div>
         <div>
           <label class="block font-label text-sm font-semibold text-primary mb-3 uppercase tracking-wider" for="childCountInput">How many children?</label>
-          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-5 py-3.5 text-[1.4rem] font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
+          <select class="w-full bg-surface-container-highest border-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-xl px-6 py-5 text-2xl font-headline font-bold text-on-surface transition-all outline-none" id="childCountInput">
             <option value="1">1 child</option>
             <option value="2">2 children</option>
             <option value="3">3 children</option>
@@ -153,6 +154,15 @@
             <option value="5">5 children</option>
           </select>
         </div>
+        <section class="bg-surface-container-low p-8 rounded-xl border-l-4 border-tertiary flex gap-6 items-start">
+          <div class="bg-tertiary-container/30 p-3 rounded-full shrink-0">
+            <span class="material-symbols-outlined text-tertiary">auto_awesome</span>
+          </div>
+          <div>
+            <h4 class="font-headline font-bold text-on-surface mb-1">Why this helps</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">We’ll use this to personalize your dashboard, save setup time later, and make recommendations feel less generic from the start.</p>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -179,7 +189,7 @@
             <span class="material-symbols-outlined text-5xl active-icon">check_circle</span>
           </div>
           <div class="absolute -top-2 -right-4 text-tertiary-container">
-            <span class="text-2xl" aria-hidden="true">🎉</span>
+            <span class="text-2xl" aria-hidden="true">&#x1F389;</span>
           </div>
         </div>
         <h2 class="text-3xl font-extrabold text-on-surface mb-3 tracking-tight font-headline">You're all set!</h2>
@@ -214,17 +224,17 @@
   </div>
 </main>
 
-<footer class="fixed bottom-0 w-full bg-slate-50 z-50 border-t border-slate-200/20">
+<footer class="fixed bottom-0 w-full z-50 border-t border-slate-200/20 bg-slate-50 dark:bg-slate-950">
   <div class="w-full flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
-    <button id="backBtn" class="flex items-center justify-center text-slate-500 px-5 py-2.5 gap-2 text-sm font-semibold uppercase tracking-wider hover:opacity-70 transition-opacity">
+    <button id="backBtn" class="flex items-center justify-center text-slate-500 dark:text-slate-400 px-6 py-3 gap-2 hover:bg-slate-800 dark:hover:bg-white transition-colors">
       <span class="material-symbols-outlined">arrow_back</span>
-      Back
+      <span class="font-['Inter'] text-sm font-semibold uppercase tracking-wider">Back</span>
     </button>
     <div class="flex flex-col items-end gap-1">
       <p id="statusMsg" class="text-xs text-on-surface-variant min-h-[1rem]"></p>
-      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 text-white rounded-lg px-6 py-2.5 gap-2 transition-all hover:bg-slate-800 active:translate-y-0.5 text-sm font-semibold uppercase tracking-wider">
+      <button id="nextBtn" class="flex flex-row-reverse items-center justify-center bg-slate-700 dark:bg-slate-200 text-white dark:text-slate-900 rounded-lg px-8 py-3 gap-2 transition-all hover:bg-slate-800 dark:hover:bg-white active:translate-y-0.5">
         <span class="material-symbols-outlined">arrow_forward</span>
-        Continue
+        <span class="font-['Inter'] text-sm font-semibold uppercase tracking-wider">Continue</span>
       </button>
     </div>
   </div>
@@ -723,3 +733,4 @@ document.addEventListener('cv:auth', async ({ detail }) => {
 </script>
 </body>
 </html>
+
