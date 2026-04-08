@@ -146,6 +146,30 @@ export async function onRequestPost(context) {
     return jsonResponse({ inviteCode });
   }
 
+  if (action === 'update_name') {
+    if (currentHousehold.role !== 'owner') {
+      return jsonResponse({ error: 'Only household owners can rename the household' }, 403);
+    }
+
+    const name = String(body.name || '').trim();
+    if (!name) return jsonResponse({ error: 'Household name is required' }, 400);
+    if (name.length > 60) return jsonResponse({ error: 'Household name must be 60 characters or fewer' }, 400);
+
+    await env.DB.prepare('UPDATE households SET name = ? WHERE id = ?').bind(name, currentHousehold.householdId).run();
+    const members = await listMembers(env, currentHousehold.householdId);
+    return jsonResponse({
+      updated: true,
+      household: {
+        id: currentHousehold.householdId,
+        name,
+        inviteCode: currentHousehold.inviteCode,
+        role: currentHousehold.role,
+        ownerUserId: currentHousehold.ownerUserId
+      },
+      members
+    });
+  }
+
   if (action === 'remove_member') {
     if (currentHousehold.role !== 'owner') {
       return jsonResponse({ error: 'Only household owners can remove caregivers' }, 403);

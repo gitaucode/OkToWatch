@@ -181,6 +181,14 @@
                             </div>
                         </div>
 
+                        <div class="rounded-xl border border-outline-variant/10 bg-surface-container p-4 space-y-3">
+                            <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Household Name</p>
+                            <div class="settings-mobile-inline flex items-center gap-3">
+                                <input id="householdNameInput" class="w-full bg-white border-outline-variant/30 rounded-lg px-4 py-2.5 text-sm font-semibold outline-none focus:ring-1 focus:ring-primary focus:border-primary" maxlength="60" placeholder="The Otieno Household" type="text"/>
+                                <button id="btnSaveHouseholdName" onclick="saveHouseholdName()" class="bg-primary text-on-primary px-4 py-2.5 rounded-lg font-semibold hover:bg-primary-dim transition-colors">Save</button>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="rounded-xl border border-outline-variant/10 bg-surface-container p-4">
                                 <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Invite Code</p>
@@ -473,6 +481,9 @@
         document.getElementById('householdInviteCode').textContent = householdState.household.inviteCode || '—';
         document.getElementById('householdRoleBadge').textContent = (householdState.household.role || 'member').toUpperCase();
         document.getElementById('btnRefreshHouseholdCode').style.display = householdState.household.role === 'owner' ? 'inline-block' : 'none';
+        document.getElementById('householdNameInput').value = householdState.household.name || '';
+        document.getElementById('householdNameInput').disabled = householdState.household.role !== 'owner';
+        document.getElementById('btnSaveHouseholdName').style.display = householdState.household.role === 'owner' ? 'inline-flex' : 'none';
 
         const members = householdState.members || [];
         const membersEl = document.getElementById('householdMembers');
@@ -502,6 +513,34 @@
             showToast('Invite code copied');
         } catch {
             showToast('Could not copy code');
+        }
+    }
+
+    async function saveHouseholdName() {
+        const input = document.getElementById('householdNameInput');
+        const name = input.value.trim();
+        if (!name) return showToast('Enter a household name');
+
+        const btn = document.getElementById('btnSaveHouseholdName');
+        const old = btn.textContent;
+        btn.textContent = 'Saving...';
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/household', {
+                method: 'POST',
+                headers: await authHeaders(),
+                body: JSON.stringify({ action: 'update_name', name })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Could not save household name');
+            householdState = data;
+            renderHousehold();
+            showToast('Household name updated');
+        } catch (e) {
+            showToast(e.message || 'Could not save household name');
+        } finally {
+            btn.textContent = old;
+            btn.disabled = false;
         }
     }
 
