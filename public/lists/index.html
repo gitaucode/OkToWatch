@@ -251,26 +251,23 @@
      SKELETON LOADER
 -->
 <div id="pageLoader" class="flex min-h-screen">
-  <!-- Skeleton sidebar -->
-  <aside class="hidden lg:flex flex-col p-6 space-y-3 w-64 bg-slate-50 overflow-y-auto min-h-screen">
-    <div class="skel h-14 w-full rounded-xl mb-4"></div>
-    <div class="skel h-10 w-full rounded-lg"></div>
-    <div class="skel h-10 w-full rounded-lg"></div>
-    <div class="skel h-10 w-full rounded-lg"></div>
-    <div class="skel h-10 w-full rounded-lg"></div>
-  </aside>
-  <!-- Skeleton main -->
-  <main class="flex-1 lg:ml-64 p-4 bg-background pt-16">
-    <div class="max-w-6xl mx-auto space-y-6">
-      <div class="skel h-10 w-48 rounded-xl"></div>
-      <div class="skel h-6 w-80 rounded-lg"></div>
-      <div class="skel h-10 w-64 rounded-xl mt-8"></div>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-4">
-        <div class="skel aspect-[2/3] rounded-xl"></div>
-        <div class="skel aspect-[2/3] rounded-xl"></div>
-        <div class="skel aspect-[2/3] rounded-xl"></div>
-        <div class="skel aspect-[2/3] rounded-xl"></div>
-        <div class="skel aspect-[2/3] rounded-xl hidden xl:block"></div>
+  <main class="flex-1 p-6 md:p-8 bg-background pt-24">
+    <div class="cv-dashboard-content cv-dashboard-content--wide space-y-8">
+      <header class="space-y-3">
+        <div class="skel h-10 w-40 rounded-2xl"></div>
+        <div class="skel h-5 w-full max-w-lg rounded-xl"></div>
+      </header>
+      <div class="flex flex-wrap gap-2">
+        <div class="skel h-9 w-24 rounded-full"></div>
+        <div class="skel h-9 w-28 rounded-full"></div>
+        <div class="skel h-9 w-24 rounded-full"></div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+        <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+        <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+        <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+        <div class="space-y-3 hidden xl:block"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
       </div>
     </div>
   </main>
