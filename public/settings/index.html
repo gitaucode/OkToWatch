@@ -180,7 +180,7 @@
                                 <p id="billingCardDesc" class="text-xs text-on-surface-variant">Compare plans, upgrade, and review billing options.</p>
                             </div>
                         </div>
-                        <a id="billingCardLink" href="/plans" class="text-primary font-bold text-sm hover:underline md:ml-auto">View Plans</a>
+                        <button id="billingCardLink" type="button" onclick="handleBillingAction()" class="text-primary font-bold text-sm hover:underline md:ml-auto bg-transparent border-none p-0 cursor-pointer">View Plans</button>
                     </div>
 
                     <div id="householdCard" class="hidden bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/10 space-y-5">
@@ -419,6 +419,7 @@
     let globalUser = null;
     let householdState = null;
     let onboardingDraft = null;
+    let billingActionMode = 'plans';
 
     // ── BIND TO AUTH.JS ──
     document.addEventListener('cv:auth', async ({ detail }) => {
@@ -492,12 +493,12 @@
                     billingCardTitle.textContent = 'Explore plans and billing';
                     billingCardDesc.textContent = 'Compare plans and upgrade when you are ready.';
                     billingCardLink.textContent = 'View Plans';
-                    billingCardLink.href = '/plans';
+                    billingActionMode = 'plans';
                 } else {
-                    billingCardTitle.textContent = 'Billing support';
-                    billingCardDesc.textContent = 'Need to change payment details or cancel? Contact support while self-serve billing is being finalized.';
-                    billingCardLink.textContent = 'Contact Support';
-                    billingCardLink.href = '/contact';
+                    billingCardTitle.textContent = 'Manage billing';
+                    billingCardDesc.textContent = 'Update payment details, review billing, or cancel your subscription.';
+                    billingCardLink.textContent = 'Manage Billing';
+                    billingActionMode = 'portal';
                 }
 
                 const householdCard = document.getElementById('householdCard');
@@ -506,6 +507,36 @@
             }
         } catch(e) {} finally {
             document.getElementById('billingLoading').classList.add('hidden');
+        }
+    }
+
+    async function handleBillingAction() {
+        if (billingActionMode === 'plans') {
+            window.location.href = '/plans';
+            return;
+        }
+
+        const btn = document.getElementById('billingCardLink');
+        const previousText = btn.textContent;
+        btn.textContent = 'Opening...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/billing-portal', {
+                method: 'POST',
+                headers: await authHeaders(),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.portalUrl) {
+                throw new Error(data.error || 'Unable to open billing');
+            }
+            window.location.href = data.portalUrl;
+        } catch (e) {
+            console.error('Billing portal error', e);
+            showToast('Unable to open billing right now. Please try again.');
+        } finally {
+            btn.textContent = previousText;
+            btn.disabled = false;
         }
     }
 
