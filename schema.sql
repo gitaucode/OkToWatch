@@ -226,13 +226,26 @@ CREATE TABLE IF NOT EXISTS onboarding_state (
 CREATE INDEX IF NOT EXISTS idx_onboarding_completed ON onboarding_state(completed_at);
 
 
---  Guest search rate limit (unauthenticated visitors) 
--- Tracks daily search counts per IP for guests (not logged in).
--- window_start is a Unix ms timestamp of the first search in the current 24h window.
--- Resets automatically when now - window_start >= 86400000 ms.
+-- Analyze request limits
+-- Source of truth for title-check limits on /api/analyze.
+-- identity uses:
+--   guest:<ip> for unauthenticated visitors
+--   user:<clerk user id> for signed-in accounts
+-- endpoint is currently "analyze" and window_start is Unix ms for the current 24h window.
+CREATE TABLE IF NOT EXISTS request_limits (
+  identity     TEXT NOT NULL,
+  endpoint     TEXT NOT NULL,
+  count        INTEGER NOT NULL DEFAULT 0,
+  window_start INTEGER NOT NULL,
+  PRIMARY KEY (identity, endpoint)
+);
+CREATE INDEX IF NOT EXISTS idx_request_limits_window ON request_limits(endpoint, window_start);
+
+-- Legacy table kept for backwards compatibility with older guest-search experiments.
+-- The current production limiter uses request_limits instead.
 CREATE TABLE IF NOT EXISTS guest_searches (
   ip           TEXT PRIMARY KEY,
   count        INTEGER NOT NULL DEFAULT 0,
-  window_start INTEGER NOT NULL  -- Unix ms of first search in current window
+  window_start INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_guest_searches ON guest_searches(window_start);

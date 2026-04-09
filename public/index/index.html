@@ -128,9 +128,9 @@ tailwind.config = {
     <p class="text-[14.5px] italic text-on-surface-variant leading-relaxed max-w-4xl" id="summaryStripText"></p>
   </div>
   <div id="guestUsageBanner" class="hidden max-w-[1440px] mx-auto px-8 pt-6">
-    <div class="rounded-2xl border border-[#D5DDE8] bg-white px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div id="guestUsageBannerCard" class="rounded-2xl border border-[#D5DDE8] bg-white px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-outline mb-1">Guest Access</p>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-outline mb-1" id="guestUsageEyebrow">Guest Access</p>
         <p class="text-sm md:text-[15px] text-on-surface-variant leading-relaxed" id="guestUsageText"></p>
       </div>
       <div class="flex items-center gap-3 flex-wrap">
@@ -306,26 +306,38 @@ function hideGuestUsageBanner() {
 }
 function renderGuestUsageBanner(usage) {
   const banner = document.getElementById('guestUsageBanner');
+  const card = document.getElementById('guestUsageBannerCard');
+  const eyebrow = document.getElementById('guestUsageEyebrow');
   const text = document.getElementById('guestUsageText');
-  if (!banner || !text) return;
+  if (!banner || !text || !card || !eyebrow) return;
   if (_authState.loggedIn || !usage || typeof usage.remaining !== 'number' || typeof usage.limit !== 'number') {
     banner.classList.add('hidden');
     return;
   }
-  text.textContent = `You have ${usage.remaining} of ${usage.limit} free title checks left. Create a free account to keep your checks, history, and picks in one place.`;
+  const isWarning = usage.remaining <= 2;
+  card.className = isWarning
+    ? 'rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4'
+    : 'rounded-2xl border border-[#D5DDE8] bg-white px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4';
+  eyebrow.textContent = isWarning ? 'Almost There' : 'Guest Access';
+  eyebrow.className = isWarning
+    ? 'text-xs font-bold uppercase tracking-[0.2em] text-amber-700 mb-1'
+    : 'text-xs font-bold uppercase tracking-[0.2em] text-outline mb-1';
+  text.textContent = isWarning
+    ? `You only have ${usage.remaining} free title ${usage.remaining === 1 ? 'check' : 'checks'} left. Create a free account now so you can keep going without losing your momentum.`
+    : `You have ${usage.remaining} of ${usage.limit} free title checks left. Create a free account to keep your checks, history, and picks in one place.`;
   banner.classList.remove('hidden');
 }
 function renderGuestLimitState(resetsAt) {
   hideGuestUsageBanner();
-  document.getElementById('verdictSummaryText').textContent = 'Create a free account to keep checking titles and save your history.';
+  document.getElementById('verdictSummaryText').textContent = 'Create a free account to keep checking titles, save your history, and come back right where you left off.';
   document.getElementById('breakdownAccordion').innerHTML = `
     <div class="flex flex-col items-center gap-4 py-10 text-center">
       <span class="material-symbols-outlined text-4xl text-outline">lock</span>
-      <h3 class="text-xl font-bold text-on-surface">Free guest limit reached</h3>
-      <p class="text-on-surface-variant text-sm max-w-md leading-relaxed">You’ve used your free guest title checks for now. Create a free account to keep going, or come back in <strong class="text-on-surface">${formatResetTime(resetsAt)}</strong>.</p>
+      <h3 class="text-xl font-bold text-on-surface">Keep going with a free account</h3>
+      <p class="text-on-surface-variant text-sm max-w-md leading-relaxed">You’ve used your free guest title checks for now. Create a free account to keep checking titles, save your history, and pick up faster next time. Or come back in <strong class="text-on-surface">${formatResetTime(resetsAt)}</strong>.</p>
       <div class="flex items-center gap-3 flex-wrap justify-center">
         <a href="/signup" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98] no-underline">Create free account</a>
-        <a href="/signin" class="px-5 py-2.5 border border-slate-200 text-slate-700 font-bold rounded-xl text-sm hover:bg-slate-50 transition-colors active:scale-[0.98] no-underline">Sign in</a>
+        <a href="/signin" class="px-5 py-2.5 border border-slate-200 text-slate-700 font-bold rounded-xl text-sm hover:bg-slate-50 transition-colors active:scale-[0.98] no-underline">Already have an account?</a>
       </div>
     </div>`;
 }

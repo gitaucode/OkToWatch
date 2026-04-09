@@ -48,6 +48,8 @@ export async function onRequestPost(context) {
   if (!title) return jsonError('title is required', 400);
 
   // ── 0. Rate limiting (/analyze only) ─────────────────────
+  // Guests use identity "guest:<ip>", signed-in users use "user:<clerk user id>".
+  // Usage is stored in request_limits for a rolling 24h window.
   let auth = null;
   let identity = null;
   let limit = 10;
