@@ -577,7 +577,6 @@ async function loadLists() {
 function showLoadingShell() {
   const pageContent = document.getElementById('pageContent');
   pageContent.classList.remove('hidden');
-  pageContent.classList.add('flex');
   document.querySelectorAll('.section-skeleton').forEach(el => { el.hidden = false; });
   document.querySelectorAll('.section-loaded').forEach(el => { el.hidden = true; });
 }
@@ -597,6 +596,8 @@ function revealListsSections() {
   setTimeout(() => {
     revealSection('toolbarSkeleton', 'toolbarLoaded');
     revealSection('listSkeleton', 'listContainer', renderActiveTab);
+    const footerRoot = document.getElementById('footer-root');
+    if (footerRoot) footerRoot.classList.remove('hidden');
   }, 160);
 }
 
@@ -1001,7 +1002,7 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
-<div id="footer-root"></div>
+<div id="footer-root" class="hidden"></div>
 
 <script src="/js/dashboard-sidebar.js?v=dev"></script>
 <script src="/js/auth.js?v=dev"></script>
