@@ -103,8 +103,8 @@
     const renderDesktopLink = (link) => {
       const active = isActive(link.href);
       return `<a class="${active
-        ? "text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline"
-        : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline"}" href="${link.href}">${link.label}</a>`;
+        ? "text-[#131C35] dark:text-white border-b-2 border-[#131C35] dark:border-white pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline"
+        : "text-slate-500 dark:text-slate-400 hover:text-[#131C35] dark:hover:text-slate-200 transition-colors font-['Plus_Jakarta_Sans'] font-bold tracking-tight no-underline"}" href="${link.href}">${link.label}</a>`;
     };
 
     const renderMobileLink = (link) => {
@@ -149,16 +149,16 @@
         </div>
       </div>` : `
       <div class="hidden md:flex items-center gap-3">
-        <a href="/signin" class="px-4 py-2 rounded-full text-sm font-semibold text-slate-700 hover:text-slate-900 no-underline transition-colors">Sign in</a>
-        <a href="/signup" class="px-4 py-2 rounded-full text-sm font-semibold bg-slate-900 text-white hover:opacity-90 no-underline transition-opacity">Sign up</a>
+        <a href="/signin" class="px-4 py-2 rounded-2xl text-sm font-semibold text-slate-700 hover:text-[#131C35] no-underline transition-colors">Sign in</a>
+        <a href="/signup" class="px-5 py-2.5 rounded-2xl text-sm font-bold bg-[#131C35] text-white hover:opacity-90 no-underline transition-opacity shadow-[0_14px_28px_rgba(19,28,53,0.16)]">Sign up</a>
       </div>`;
 
     const mobileActions = loggedIn
       ? `<button class="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()">Search</button>
          <a href="/settings" class="block w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 no-underline transition-colors">Settings</a>
          <button class="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" id="mobileSignOutBtn">Sign out</button>`
-      : `<a href="/signin" class="block w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 no-underline transition-colors">Sign in</a>
-         <a href="/signup" class="block w-full rounded-xl px-4 py-3 text-left font-semibold bg-slate-900 text-white hover:opacity-90 no-underline transition-opacity">Sign up</a>`;
+      : `<a href="/signin" class="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 no-underline transition-colors">Sign in</a>
+         <a href="/signup" class="block w-full rounded-2xl px-4 py-3 text-left font-bold bg-[#131C35] text-white hover:opacity-90 no-underline transition-opacity shadow-[0_14px_28px_rgba(19,28,53,0.16)]">Sign up</a>`;
 
     root.innerHTML = `
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
@@ -235,7 +235,7 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: 6px; transition: all 0.12s;
   }
-  .cv-search-modal-close:hover { background: #f1f5f9; color: #111827; }
+  .cv-search-modal-close:hover { background: #f5f7fb; color: #131C35; }
   .cv-search-modal-body {
     max-height: 60vh; overflow-y: auto; padding: 0.5rem 0;
   }
@@ -279,11 +279,11 @@
     align-items: center; justify-content: center;
     color: #334155; transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .nav-avatar-btn:hover { transform: translateY(-1px); }
+  .nav-avatar-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(19,28,53,0.08); }
   .nav-dropdown {
     display: none; position: absolute; top: calc(100% + 10px); right: 0;
-    background: white; border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    background: white; border-radius: 16px;
+    box-shadow: 0 18px 44px rgba(19,28,53,0.14);
     border: 1px solid rgba(0,0,0,0.07);
     min-width: 220px; overflow: hidden; z-index: 1001;
   }
@@ -293,12 +293,12 @@
     padding: 0.85rem 1rem 0.7rem;
     border-bottom: 1px solid rgba(0,0,0,0.07);
   }
-  .nav-dropdown-name { display: block; font-weight: 700; font-size: 0.875rem; color: #111827; }
+  .nav-dropdown-name { display: block; font-weight: 700; font-size: 0.875rem; color: #131C35; }
   .nav-dropdown-email { display: block; font-size: 0.72rem; color: #64748b; margin-top: 0.15rem; }
   .nav-dropdown-item {
     display: block; width: 100%;
     padding: 0.7rem 1rem; font-size: 0.83rem;
-    color: #111827; text-decoration: none;
+    color: #131C35; text-decoration: none;
     background: none; border: none; text-align: left; cursor: pointer;
     font-family: 'Inter', sans-serif;
     transition: background 0.12s;
@@ -311,7 +311,7 @@
     display: inline-flex; flex-direction: column; gap: 5px; transition: all 0.2s;
   }
   .cv-nav-hamburger span {
-    display: block; width: 22px; height: 2px; background: #111827; border-radius: 2px; transition: all 0.25s;
+    display: block; width: 22px; height: 2px; background: #131C35; border-radius: 2px; transition: all 0.25s;
   }
   .cv-nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .cv-nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
