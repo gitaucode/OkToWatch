@@ -728,6 +728,14 @@ async function loadPage() {
     if (!_breakdown.summary) _breakdown.summary = '';
     const validLevels = ['none','mild','moderate','strong'];
     (_breakdown.categories || []).forEach(c => { if (!validLevels.includes(c.level)) c.level = 'none'; });
+    window.cvCurrentTitleContext = {
+      tmdb_id: String(_tmdbId),
+      media_type: _type,
+      title,
+      year,
+      analysis: _breakdown
+    };
+    document.dispatchEvent(new CustomEvent('cv:title-context', { detail: window.cvCurrentTitleContext }));
 
     // Populate the AI Summary Strip
     const summaryStripWrap = document.getElementById('movieSummaryStrip');

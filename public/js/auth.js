@@ -15,6 +15,22 @@
 
 //
   const PAGE = document.body.dataset.page || '';
+  const assistantState = {
+    open: false,
+    loading: false,
+    context: null,
+    pendingQuestion: '',
+    messages: []
+  };
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   function getCachedAuthState() {
     try {
@@ -123,6 +139,7 @@
     if (loggedIn) {
       secondaryHTML = NAV_SECONDARY.map(l => `<a href="${l.href}" class="nav-dropdown-item">${l.label}</a>`).join('');
     }
+    const showAssistant = loggedIn || currentPath === '/index' || currentPath === '/search';
 
     const initial = (user?.firstName || user?.emailAddresses?.[0]?.emailAddress || '?')[0].toUpperCase();
     const avatarContent = user?.imageUrl
@@ -161,6 +178,28 @@
          <button class="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" id="mobileSignOutBtn">Sign out</button>`
       : `<a href="/signin" class="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 no-underline transition-colors">Sign in</a>
          <a href="/signup" class="block w-full rounded-2xl px-4 py-3 text-left font-bold bg-[#131C35] text-white hover:opacity-90 no-underline transition-opacity shadow-[0_14px_28px_rgba(19,28,53,0.16)]">Sign up</a>`;
+    const assistantHTML = showAssistant ? `
+<div class="cv-assistant" id="cvAssistant">
+  <button class="cv-assistant-nudge" id="cvAssistantNudge">Ask me about a movie</button>
+  <button class="cv-assistant-fab" id="cvAssistantFab" aria-label="Open title safety assistant">
+    <span class="material-symbols-outlined">forum</span>
+  </button>
+  <div class="cv-assistant-panel" id="cvAssistantPanel">
+    <div class="cv-assistant-header">
+      <div>
+        <div class="cv-assistant-eyebrow">Title Safety Assistant</div>
+        <div class="cv-assistant-title">Quick answers from real title data</div>
+      </div>
+      <button class="cv-assistant-close" id="cvAssistantClose" aria-label="Close assistant">✕</button>
+    </div>
+    <div class="cv-assistant-messages" id="cvAssistantMessages"></div>
+    <div class="cv-assistant-suggestions" id="cvAssistantSuggestions"></div>
+    <form class="cv-assistant-form" id="cvAssistantForm">
+      <input id="cvAssistantInput" class="cv-assistant-input" type="text" placeholder="Ask about a movie or show..." autocomplete="off" />
+      <button class="cv-assistant-send" id="cvAssistantSend" type="submit">Send</button>
+    </form>
+  </div>
+</div>` : '';
 
     root.innerHTML = `
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
@@ -203,6 +242,7 @@
     <div class="cv-nav-mobile-actions">${mobileActions}</div>
   </div>
 </div>
+${assistantHTML}
 <style>
   .cv-search-modal {
     display: none; position: fixed; inset: 0; z-index: 1000;
@@ -348,6 +388,65 @@
   .cv-nav-mobile-inner { padding: 0.9rem 1rem 1.1rem; }
   .cv-nav-mobile-links { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.85rem; }
   .cv-nav-mobile-actions { display: flex; flex-direction: column; gap: 0.55rem; padding-top: 0.85rem; border-top: 1px solid rgba(0,0,0,0.07); }
+  .cv-assistant {
+    position: fixed; left: 18px; bottom: 18px; z-index: 1002;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.65rem;
+  }
+  .cv-assistant-nudge {
+    border: none; background: rgba(255,255,255,0.96); color: #131C35;
+    border-radius: 999px; padding: 0.72rem 0.95rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 16px 36px rgba(19,28,53,0.14); font-size: 0.84rem;
+  }
+  .cv-assistant-fab {
+    width: 58px; height: 58px; border-radius: 999px; border: none; cursor: pointer;
+    background: #131C35; color: white; display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 18px 42px rgba(19,28,53,0.28); transition: transform 0.16s ease, box-shadow 0.16s ease;
+  }
+  .cv-assistant-fab:hover { transform: translateY(-1px); box-shadow: 0 20px 46px rgba(19,28,53,0.32); }
+  .cv-assistant-panel {
+    width: min(92vw, 360px); max-height: min(72vh, 560px); display: none;
+    flex-direction: column; overflow: hidden; border-radius: 24px; background: rgba(255,255,255,0.98);
+    border: 1px solid rgba(19,28,53,0.08); box-shadow: 0 26px 60px rgba(19,28,53,0.22);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .cv-assistant-panel.open { display: flex; animation: dropIn 0.18s ease; }
+  .cv-assistant-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1rem 1rem 0.9rem; border-bottom: 1px solid rgba(19,28,53,0.08); }
+  .cv-assistant-eyebrow { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #7A869A; }
+  .cv-assistant-title { margin-top: 0.28rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 800; color: #131C35; }
+  .cv-assistant-close {
+    width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(19,28,53,0.06);
+    background: #F5F7FB; color: #64748b; cursor: pointer; flex-shrink: 0;
+  }
+  .cv-assistant-messages { padding: 0.9rem 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+  .cv-assistant-msg { border-radius: 18px; padding: 0.9rem 0.95rem; font-size: 0.88rem; line-height: 1.55; }
+  .cv-assistant-msg.assistant { background: #F8FAFC; border: 1px solid rgba(19,28,53,0.06); color: #334155; }
+  .cv-assistant-msg.user { background: #131C35; color: white; align-self: flex-end; max-width: 86%; }
+  .cv-assistant-msg h4 { margin: 0 0 0.35rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 800; color: #131C35; }
+  .cv-assistant-msg.user h4 { color: white; }
+  .cv-assistant-msg ul { margin: 0.45rem 0 0; padding-left: 1rem; }
+  .cv-assistant-msg li { margin: 0.18rem 0; }
+  .cv-assistant-choice-list, .cv-assistant-followups, .cv-assistant-suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .cv-assistant-chip {
+    border: 1px solid rgba(19,28,53,0.08); background: white; color: #131C35; cursor: pointer;
+    border-radius: 999px; padding: 0.52rem 0.8rem; font-size: 0.77rem; font-weight: 700;
+  }
+  .cv-assistant-chip:hover { background: #EEF2FA; }
+  .cv-assistant-suggestions { padding: 0 1rem 0.85rem; }
+  .cv-assistant-form { display: flex; gap: 0.6rem; padding: 0.95rem 1rem 1rem; border-top: 1px solid rgba(19,28,53,0.08); }
+  .cv-assistant-input {
+    flex: 1; min-width: 0; border-radius: 16px; border: 1px solid rgba(19,28,53,0.08);
+    background: #F8FAFC; color: #131C35; padding: 0.85rem 0.95rem; font-size: 0.88rem; outline: none;
+  }
+  .cv-assistant-input:focus { border-color: rgba(19,28,53,0.16); background: white; }
+  .cv-assistant-send {
+    border: none; border-radius: 16px; background: #131C35; color: white; font-weight: 800;
+    padding: 0 1rem; cursor: pointer; min-width: 76px;
+  }
+  .cv-assistant-send[disabled] { opacity: 0.6; cursor: default; }
+  @media (max-width: 767px) {
+    .cv-assistant { left: 12px; right: 12px; bottom: 12px; align-items: stretch; }
+    .cv-assistant-panel { width: 100%; }
+  }
   @media (min-width: 768px) {
     .cv-nav-mobile, .cv-nav-mobile-overlay, .cv-nav-hamburger { display: none !important; }
   }
@@ -522,6 +621,241 @@
         if (searchModal.classList.contains('open') && !searchInput.value) {
           renderSearchHistory();
         }
+      });
+    }
+
+    const assistantRoot = document.getElementById('cvAssistant');
+    const assistantPanel = document.getElementById('cvAssistantPanel');
+    const assistantFab = document.getElementById('cvAssistantFab');
+    const assistantNudge = document.getElementById('cvAssistantNudge');
+    const assistantClose = document.getElementById('cvAssistantClose');
+    const assistantMessages = document.getElementById('cvAssistantMessages');
+    const assistantSuggestions = document.getElementById('cvAssistantSuggestions');
+    const assistantForm = document.getElementById('cvAssistantForm');
+    const assistantInput = document.getElementById('cvAssistantInput');
+    const assistantSend = document.getElementById('cvAssistantSend');
+
+    function getPageAssistantContext() {
+      if (window.cvCurrentTitleContext && typeof window.cvCurrentTitleContext === 'object') {
+        return window.cvCurrentTitleContext;
+      }
+      return null;
+    }
+
+    function ensureAssistantState() {
+      const pageContext = getPageAssistantContext();
+      if (!assistantState.messages.length) {
+        assistantState.messages = [{
+          role: 'assistant',
+          kind: 'answer',
+          title: 'Ask me about a movie or show',
+          tldr: 'I only answer from OkToWatch title data. Ask for a TL;DR, main concerns, scary moments, or whether a title works for a certain age.',
+          bullets: [
+            'I use the same title search and breakdown pipeline as the full result page.',
+            'If I find multiple matches, I will ask which one you mean.',
+            'I won’t answer non-title questions or guess beyond the title data.'
+          ],
+          followUps: pageContext
+            ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
+            : ['Give me a TL;DR for a movie', 'Is it okay for a 9-year-old?', 'How scary is it?']
+        }];
+      }
+      if (pageContext) {
+        assistantState.context = pageContext;
+      }
+    }
+
+    function renderAssistantSuggestions() {
+      if (!assistantSuggestions) return;
+      const prompts = assistantState.context
+        ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
+        : ['Summarize a movie for me', 'Is it okay for a 9-year-old?', 'What are the main concerns?'];
+      assistantSuggestions.innerHTML = prompts.map((prompt) =>
+        `<button type="button" class="cv-assistant-chip" data-assistant-prompt="${escapeHtml(prompt)}">${escapeHtml(prompt)}</button>`
+      ).join('');
+    }
+
+    function renderAssistantMessages() {
+      if (!assistantMessages) return;
+      assistantMessages.innerHTML = assistantState.messages.map((message, index) => {
+        if (message.role === 'user') {
+          return `<div class="cv-assistant-msg user">${escapeHtml(message.text)}</div>`;
+        }
+        if (message.kind === 'choose_title') {
+          return `<div class="cv-assistant-msg assistant">
+            <h4>${escapeHtml(message.title || 'Pick a title')}</h4>
+            <p>${escapeHtml(message.tldr || '')}</p>
+            <div class="cv-assistant-choice-list" data-choice-index="${index}">
+              ${(message.candidates || []).map((candidate, candidateIndex) =>
+                `<button type="button" class="cv-assistant-chip" data-choice-index="${index}" data-candidate-index="${candidateIndex}">${escapeHtml(candidate.title)}${candidate.year ? ` (${escapeHtml(candidate.year)})` : ''}</button>`
+              ).join('')}
+            </div>
+          </div>`;
+        }
+        const bullets = Array.isArray(message.bullets) && message.bullets.length
+          ? `<ul>${message.bullets.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+          : '';
+        const followUps = Array.isArray(message.followUps) && message.followUps.length
+          ? `<div class="cv-assistant-followups">${message.followUps.map((item) => `<button type="button" class="cv-assistant-chip" data-followup="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div>`
+          : '';
+        return `<div class="cv-assistant-msg assistant">
+          ${message.title ? `<h4>${escapeHtml(message.title)}</h4>` : ''}
+          <p>${escapeHtml(message.tldr || '')}</p>
+          ${bullets}
+          ${followUps}
+        </div>`;
+      }).join('');
+      assistantMessages.scrollTop = assistantMessages.scrollHeight;
+    }
+
+    function setAssistantOpen(open) {
+      assistantState.open = open;
+      if (assistantPanel) assistantPanel.classList.toggle('open', open);
+      if (assistantNudge) assistantNudge.style.display = open ? 'none' : '';
+      if (open) {
+        ensureAssistantState();
+        renderAssistantMessages();
+        renderAssistantSuggestions();
+        setTimeout(() => assistantInput && assistantInput.focus(), 50);
+      }
+    }
+
+    async function submitAssistantQuestion(question, explicitContext) {
+      const q = String(question || '').trim();
+      if (!q || !assistantSend) return;
+      ensureAssistantState();
+      assistantState.messages.push({ role: 'user', text: q });
+      assistantState.loading = true;
+      assistantSend.disabled = true;
+      assistantSend.textContent = '...';
+      renderAssistantMessages();
+
+      const payload = { question: q };
+      const pageContext = explicitContext || assistantState.context || getPageAssistantContext();
+      if (pageContext?.analysis && pageContext?.title) {
+        payload.context = pageContext;
+      } else if (pageContext?.tmdb_id && pageContext?.media_type) {
+        payload.tmdb_id = pageContext.tmdb_id;
+        payload.media_type = pageContext.media_type;
+      }
+
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (window.Clerk?.session) {
+          try {
+            const token = await window.Clerk.session.getToken();
+            if (token) headers.Authorization = `Bearer ${token}`;
+          } catch {}
+        }
+        const res = await fetch('/api/title-assistant', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (data.mode === 'choose_title') {
+          assistantState.pendingQuestion = q;
+          assistantState.messages.push({
+            role: 'assistant',
+            kind: 'choose_title',
+            title: 'Which title did you mean?',
+            tldr: data.message || 'Pick the right title so I stay accurate.',
+            candidates: data.candidates || []
+          });
+        } else if (data.mode === 'answer') {
+          assistantState.context = data.context || assistantState.context;
+          assistantState.messages.push({
+            role: 'assistant',
+            kind: 'answer',
+            title: data.title,
+            tldr: data.tldr,
+            bullets: data.bullets || [],
+            followUps: data.followUps || []
+          });
+        } else if (data.mode === 'limit') {
+          assistantState.messages.push({
+            role: 'assistant',
+            kind: 'answer',
+            title: 'Free limit reached',
+            tldr: 'Create a free account to keep asking about titles and save your history.',
+            bullets: ['The assistant uses the same title safety data as the detailed result page.', 'A free account keeps your checks and lets you come back to them later.'],
+            followUps: []
+          });
+        } else {
+          assistantState.messages.push({
+            role: 'assistant',
+            kind: 'answer',
+            title: 'Need a title',
+            tldr: data.message || 'Ask me about a specific movie or show title and I’ll help from the real result data.',
+            bullets: [],
+            followUps: []
+          });
+        }
+      } catch (error) {
+        console.error('Assistant error:', error);
+        assistantState.messages.push({
+          role: 'assistant',
+          kind: 'answer',
+          title: 'Assistant unavailable',
+          tldr: 'I couldn’t load that title answer right now. Try again in a moment.',
+          bullets: [],
+          followUps: []
+        });
+      } finally {
+        assistantState.loading = false;
+        assistantSend.disabled = false;
+        assistantSend.textContent = 'Send';
+        renderAssistantMessages();
+      }
+    }
+
+    if (assistantRoot && assistantPanel && assistantFab && assistantForm && assistantInput) {
+      ensureAssistantState();
+      renderAssistantMessages();
+      renderAssistantSuggestions();
+
+      assistantFab.addEventListener('click', () => setAssistantOpen(!assistantState.open));
+      if (assistantNudge) assistantNudge.addEventListener('click', () => setAssistantOpen(true));
+      if (assistantClose) assistantClose.addEventListener('click', () => setAssistantOpen(false));
+
+      assistantForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const question = assistantInput.value.trim();
+        assistantInput.value = '';
+        await submitAssistantQuestion(question);
+      });
+
+      assistantSuggestions.addEventListener('click', async (e) => {
+        const btn = e.target.closest('[data-assistant-prompt]');
+        if (!btn) return;
+        await submitAssistantQuestion(btn.getAttribute('data-assistant-prompt') || '');
+      });
+
+      assistantMessages.addEventListener('click', async (e) => {
+        const followup = e.target.closest('[data-followup]');
+        if (followup) {
+          await submitAssistantQuestion(followup.getAttribute('data-followup') || '');
+          return;
+        }
+        const choiceBtn = e.target.closest('[data-choice-index][data-candidate-index]');
+        if (choiceBtn) {
+          const choiceIndex = Number(choiceBtn.getAttribute('data-choice-index'));
+          const candidateIndex = Number(choiceBtn.getAttribute('data-candidate-index'));
+          const message = assistantState.messages[choiceIndex];
+          const candidate = message?.candidates?.[candidateIndex];
+          if (!candidate) return;
+          await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${candidate.title}`, {
+            tmdb_id: candidate.tmdb_id,
+            media_type: candidate.media_type
+          });
+        }
+      });
+
+      document.addEventListener('cv:title-context', () => {
+        ensureAssistantState();
+        renderAssistantSuggestions();
+        if (assistantState.open) renderAssistantMessages();
       });
     }
   }
