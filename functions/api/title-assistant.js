@@ -1,7 +1,7 @@
 const CATEGORY_HINTS = [
   { key: 'horror', label: 'Scary moments', match: /(scary|scared|fear|horror|creepy|intense|nightmare|fright)/i },
   { key: 'violence', label: 'Violence', match: /(violence|violent|fight|fighting|blood|gore|weapon|kill|battle|action)/i },
-  { key: 'language', label: 'Language', match: /(language|swear|swearing|curse|cursing|profanity|bad words)/i },
+  { key: 'language', label: 'Bad language', match: /(swear|swearing|curse|cursing|profanity|bad words|foul language)/i },
   { key: 'sex', label: 'Sex and nudity', match: /(sex|sexual|nudity|nude|romance|kissing|make out)/i },
   { key: 'drugs', label: 'Drugs and alcohol', match: /(drugs|drug|alcohol|drinking|smoking|weed|substance)/i },
   { key: 'themes', label: 'Themes', match: /(theme|themes|message|messages|bullying|abuse|grief|sad|self-harm|mature)/i }
@@ -193,6 +193,9 @@ async function loadTitleContext({ request, tmdbId, mediaType, question }) {
     title,
     year,
     certRating,
+    original_language: details.original_language || '',
+    spoken_languages: Array.isArray(details.spoken_languages) ? details.spoken_languages : [],
+    original_title: details.original_title || details.original_name || title,
     analysis,
     usage: analyzeData._usage || null
   };
@@ -203,6 +206,7 @@ function buildAssistantAnswer(question, context, requestedAge) {
   const audienceKey = getAudienceKey(requestedAge);
   const verdict = analysis.verdicts?.[audienceKey] || analysis.verdicts?.young || null;
   const categories = Array.isArray(analysis.categories) ? analysis.categories : [];
+  const languageQuestion = isAudioLanguageQuestion(question);
   const categoryIntent = CATEGORY_HINTS.find((item) => item.match.test(question));
   const topConcerns = categories
     .filter((cat) => cat.level && cat.level !== 'none')
@@ -214,7 +218,12 @@ function buildAssistantAnswer(question, context, requestedAge) {
   let tldr = analysis.summary || `Here’s the quick read on ${context.title}.`;
   let bullets = [];
 
-  if (categoryIntent) {
+  if (languageQuestion) {
+    const languageInfo = describeLanguageInfo(context);
+    responseTitle = `Language in ${context.title}`;
+    tldr = languageInfo.summary;
+    bullets = languageInfo.bullets;
+  } else if (categoryIntent) {
     const matched = categories.find((cat) => normalizeTitle(cat.name).includes(categoryIntent.key)) || null;
     responseTitle = `${categoryIntent.label} in ${context.title}`;
     if (matched) {
@@ -263,9 +272,11 @@ function buildAssistantAnswer(question, context, requestedAge) {
     title: responseTitle,
     tldr,
     bullets,
-    followUps: categoryIntent
-      ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
-      : ['Give me the TL;DR', 'How scary is it?', 'Would this work for a sensitive child?']
+    followUps: languageQuestion
+      ? ['Any bad language?', 'Give me the TL;DR', 'Would this work for a sensitive child?']
+      : categoryIntent
+        ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
+        : ['Give me the TL;DR', 'How scary is it?', 'Would this work for a sensitive child?']
   };
 }
 
@@ -305,11 +316,60 @@ function extractAge(question) {
 }
 
 function isSupportedFollowUp(question) {
-  return /(tldr|summary|quick|bullet|bullets|breakdown|main concerns|scary|scared|fear|horror|intense|violence|violent|blood|gore|language|swear|curse|profanity|sex|sexual|nudity|romance|drugs|alcohol|smoking|themes|bullying|abuse|grief|self-harm|mature|safe|okay|appropriate|suitable|bad language|work for|kid|child|year old|sensitive)/i.test(String(question || ''));
+  return /(tldr|summary|quick|bullet|bullets|breakdown|main concerns|scary|scared|fear|horror|intense|violence|violent|blood|gore|language|english|spanish|dubbed|dub|subtitle|subtitles|audio|original language|swear|curse|profanity|sex|sexual|nudity|romance|drugs|alcohol|smoking|themes|bullying|abuse|grief|self-harm|mature|safe|okay|appropriate|suitable|bad language|work for|kid|child|year old|sensitive)/i.test(String(question || ''));
 }
 
 function isGenericTitlePrompt(question) {
   return /^(summarize a movie for me|summarize a movie|summarize a show|summarize something|help me with a movie|help me with a show|tell me about a movie|tell me about a show|recommend a movie|recommend a show|is it okay for a \d{1,2}-year-old|what are the main concerns|how scary is it|give me the tldr)$/i.test(String(question || '').trim());
+}
+
+function isAudioLanguageQuestion(question) {
+  return /(what language|which language|is it english|is it spanish|spanish|english|dubbed|dub|subtitles|subtitle|audio|original language|spoken language)/i.test(String(question || ''));
+}
+
+function describeLanguageInfo(context) {
+  const spokenLanguages = Array.isArray(context.spoken_languages) ? context.spoken_languages : [];
+  const spokenNames = spokenLanguages
+    .map((item) => item?.english_name || item?.name || '')
+    .filter(Boolean);
+  const primaryLanguage = spokenNames[0] || languageNameFromCode(context.original_language);
+  const originalTitle = context.original_title || context.title;
+  const isDifferentOriginalTitle = originalTitle && originalTitle !== context.title;
+
+  const bullets = [];
+  if (primaryLanguage) {
+    bullets.push(`The main spoken language listed for this title is ${primaryLanguage}.`);
+  }
+  if (spokenNames.length > 1) {
+    bullets.push(`Other listed spoken languages: ${spokenNames.slice(1, 4).join(', ')}.`);
+  }
+  if (isDifferentOriginalTitle) {
+    bullets.push(`Its original title is "${originalTitle}", which can be a clue that some releases are dubbed or localized.`);
+  }
+  bullets.push('Whether a specific streaming app has dubbed audio or subtitles can vary by platform and region.');
+
+  return {
+    summary: primaryLanguage
+      ? `${context.title} is primarily listed as ${primaryLanguage}.`
+      : `I can tell you about the title’s listed original language, but dubbing and subtitles can vary depending on where you watch it.`,
+    bullets
+  };
+}
+
+function languageNameFromCode(code) {
+  const map = {
+    en: 'English',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+    ja: 'Japanese',
+    ko: 'Korean',
+    zh: 'Chinese',
+    pt: 'Portuguese',
+    hi: 'Hindi'
+  };
+  return map[String(code || '').toLowerCase()] || '';
 }
 
 function getAudienceKey(age) {

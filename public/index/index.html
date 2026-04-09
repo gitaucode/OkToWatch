@@ -733,6 +733,9 @@ async function loadPage() {
       media_type: _type,
       title,
       year,
+      original_language: _details.original_language || '',
+      spoken_languages: Array.isArray(_details.spoken_languages) ? _details.spoken_languages : [],
+      original_title: _details.original_title || _details.original_name || title,
       analysis: _breakdown
     };
     document.dispatchEvent(new CustomEvent('cv:title-context', { detail: window.cvCurrentTitleContext }));

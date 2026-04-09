@@ -423,6 +423,17 @@
   .cv-assistant-msg { border-radius: 18px; padding: 0.9rem 0.95rem; font-size: 0.88rem; line-height: 1.55; }
   .cv-assistant-msg.assistant { background: #F8FAFC; border: 1px solid rgba(19,28,53,0.06); color: #334155; }
   .cv-assistant-msg.user { background: #131C35; color: white; align-self: flex-end; max-width: 86%; }
+  .cv-assistant-msg.typing { display: inline-flex; align-items: center; gap: 0.35rem; width: fit-content; }
+  .cv-assistant-dot {
+    width: 8px; height: 8px; border-radius: 999px; background: #94a3b8;
+    animation: cvAssistantBounce 1.1s infinite ease-in-out;
+  }
+  .cv-assistant-dot:nth-child(2) { animation-delay: 0.14s; }
+  .cv-assistant-dot:nth-child(3) { animation-delay: 0.28s; }
+  @keyframes cvAssistantBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
+    40% { transform: translateY(-3px); opacity: 1; }
+  }
   .cv-assistant-msg h4 { margin: 0 0 0.35rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 800; color: #131C35; }
   .cv-assistant-msg.user h4 { color: white; }
   .cv-assistant-msg ul { margin: 0.45rem 0 0; padding-left: 1rem; }
@@ -681,10 +692,12 @@
     function renderAssistantMessages() {
       if (!assistantMessages) return;
       if (!assistantState.messages.length) {
-        assistantMessages.innerHTML = '';
+        assistantMessages.innerHTML = assistantState.loading
+          ? `<div class="cv-assistant-msg assistant typing"><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span></div>`
+          : '';
         return;
       }
-      assistantMessages.innerHTML = assistantState.messages.map((message, index) => {
+      const renderedMessages = assistantState.messages.map((message, index) => {
         if (message.role === 'user') {
           return `<div class="cv-assistant-msg user">${escapeHtml(message.text)}</div>`;
         }
@@ -712,6 +725,10 @@
           ${followUps}
         </div>`;
       }).join('');
+      const typingMarkup = assistantState.loading
+        ? `<div class="cv-assistant-msg assistant typing"><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span></div>`
+        : '';
+      assistantMessages.innerHTML = renderedMessages + typingMarkup;
       assistantMessages.scrollTop = assistantMessages.scrollHeight;
     }
 
