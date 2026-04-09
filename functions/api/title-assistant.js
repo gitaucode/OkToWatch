@@ -21,6 +21,7 @@ export async function onRequestPost(context) {
 
   const question = String(body.question || '').trim();
   const providedContext = body.context && typeof body.context === 'object' ? body.context : null;
+  const memorySummary = String(body.memorySummary || '').trim();
   const selectedId = body.tmdb_id ? String(body.tmdb_id) : (providedContext?.tmdb_id ? String(providedContext.tmdb_id) : '');
   const selectedType = body.media_type || providedContext?.media_type || '';
 
@@ -52,7 +53,7 @@ export async function onRequestPost(context) {
     let interpreted = null;
 
     if (providedContext?.analysis && providedContext?.title) {
-      interpreted = await interpretQuestion(question, env);
+      interpreted = await interpretQuestion(question, env, memorySummary);
       if (isAmbiguousLanguageQuestion(question)) {
         return json({
           mode: 'choose_prompt',
@@ -73,7 +74,7 @@ export async function onRequestPost(context) {
       return json({ mode: 'answer', ...answer, context: providedContext });
     }
 
-    interpreted = await interpretQuestion(question, env);
+    interpreted = await interpretQuestion(question, env, memorySummary);
 
     let titleContext = null;
     if (selectedId && selectedType) {
@@ -194,9 +195,9 @@ export async function onRequestOptions() {
   });
 }
 
-async function interpretQuestion(question, env) {
+async function interpretQuestion(question, env, memorySummary = '') {
   if (!env.GROQ_API_KEY) {
-    return heuristicInterpretQuestion(question);
+    return heuristicInterpretQuestion(question, memorySummary);
   }
 
   const system = [
@@ -210,6 +211,7 @@ async function interpretQuestion(question, env) {
 
   const user = [
     'Question: ' + question,
+    memorySummary ? 'Conversation memory: ' + memorySummary : '',
     '',
     'Return this JSON shape exactly:',
     '{',
@@ -241,7 +243,7 @@ async function interpretQuestion(question, env) {
     });
 
     if (!groqRes.ok) {
-      return heuristicInterpretQuestion(question);
+      return heuristicInterpretQuestion(question, memorySummary);
     }
 
     const groqData = await groqRes.json();
@@ -250,7 +252,7 @@ async function interpretQuestion(question, env) {
     raw = String(raw).replace(/```json|```/gi, '').trim();
     const start = raw.indexOf('{');
     const end = raw.lastIndexOf('}');
-    if (start === -1 || end === -1) return heuristicInterpretQuestion(question);
+    if (start === -1 || end === -1) return heuristicInterpretQuestion(question, memorySummary);
     const parsed = JSON.parse(raw.slice(start, end + 1));
     return {
       searchTitle: String(parsed.searchTitle || '').trim(),
@@ -261,13 +263,13 @@ async function interpretQuestion(question, env) {
       clarificationPrompt: String(parsed.clarificationPrompt || '').trim()
     };
   } catch {
-    return heuristicInterpretQuestion(question);
+    return heuristicInterpretQuestion(question, memorySummary);
   }
 }
 
-function heuristicInterpretQuestion(question) {
+function heuristicInterpretQuestion(question, memorySummary = '') {
   return {
-    searchTitle: extractSearchQuery(question),
+    searchTitle: extractSearchQuery(question, memorySummary),
     alternateTitle: '',
     requestType: inferRequestType(question),
     age: extractAge(question),
@@ -527,11 +529,18 @@ function parseAnalyzePayload(analyzeData) {
   return parsed;
 }
 
-function extractSearchQuery(question) {
+function extractSearchQuery(question, memorySummary = '') {
   if (isGenericTitlePrompt(question)) return '';
 
   const quoted = question.match(/["“”']([^"“”']{2,80})["“”']/);
   if (quoted?.[1]) return quoted[1].trim();
+
+  if (memorySummary) {
+    const remembered = memorySummary.match(/Current title:\s*([^)]+(?:\(\d{4}\))?)/i);
+    if (remembered?.[1] && isSupportedFollowUp(question)) {
+      return remembered[1].replace(/\s+\(\d{4}\)\s*$/, '').trim();
+    }
+  }
 
   let query = String(question || '').trim();
   query = query.replace(/\b(is|was|are|do you think|can you tell me if|can you tell me|tell me if|tell me about|what about|is there anything about|would|how is)\b/gi, ' ');
