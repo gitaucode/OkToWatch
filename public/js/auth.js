@@ -131,10 +131,10 @@
 
     const desktopRight = loggedIn ? `
       <div class="relative group hidden lg:block">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-        <input class="pl-10 pr-4 py-1.5 bg-slate-200/70 border-none rounded-full text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all w-64 cursor-pointer text-slate-700 placeholder:text-slate-500" placeholder="Search movies..." readonly onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" type="text"/>
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+        <input class="pl-11 pr-4 py-2.5 bg-[#EEF2FA] border border-transparent rounded-2xl text-sm focus:ring-2 focus:ring-primary/15 focus:border-primary/10 focus:bg-white transition-all w-[22rem] cursor-pointer text-slate-700 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]" placeholder="Search movies, shows..." readonly onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" type="text"/>
       </div>
-      <button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-md transition-all" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" aria-label="Open search">
+      <button class="h-11 w-11 inline-flex items-center justify-center rounded-2xl text-slate-700 hover:bg-[#EEF2FA] dark:hover:bg-slate-800/50 transition-all" onclick="window.cvOpenSearchModal&&window.cvOpenSearchModal()" aria-label="Open search">
         <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">search</span>
       </button>
       <div class="relative">
@@ -206,53 +206,54 @@
 <style>
   .cv-search-modal {
     display: none; position: fixed; inset: 0; z-index: 1000;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    align-items: flex-start; justify-content: center; padding-top: 80px;
+    background: rgba(15,22,45,0.34); backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    align-items: flex-start; justify-content: center; padding: 92px 20px 24px;
     animation: fadeIn 0.15s ease;
   }
   .cv-search-modal.open { display: flex; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .cv-search-modal-content {
-    width: 90%; max-width: 500px;
-    background: white; border-radius: 16px;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+    width: min(100%, 40rem);
+    background: rgba(255,255,255,0.96); border-radius: 28px;
+    border: 1px solid rgba(19,28,53,0.08);
+    box-shadow: 0 28px 64px rgba(19,28,53,0.22);
     overflow: hidden; animation: slideDown 0.25s ease;
   }
   @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .cv-search-modal-header {
     display: flex; align-items: center; gap: 0.5rem;
-    padding: 1rem 1.25rem; border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding: 1.15rem 1.25rem; border-bottom: 1px solid rgba(19,28,53,0.08);
   }
   .cv-search-modal-input {
     flex: 1; background: transparent; border: none; outline: none;
-    font-family: 'Inter', sans-serif; font-size: 1rem;
-    color: #1f2937;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 700;
+    color: #131C35;
   }
-  .cv-search-modal-input::placeholder { color: #64748b; }
+  .cv-search-modal-input::placeholder { color: #94a3b8; font-weight: 600; }
   .cv-search-modal-close {
-    background: none; border: none; font-size: 1.4rem;
+    background: #F5F7FB; border: 1px solid rgba(19,28,53,0.06); font-size: 1.35rem;
     color: #64748b; cursor: pointer;
-    padding: 0; width: 32px; height: 32px;
+    padding: 0; width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
-    border-radius: 6px; transition: all 0.12s;
+    border-radius: 16px; transition: all 0.12s;
   }
-  .cv-search-modal-close:hover { background: #f5f7fb; color: #131C35; }
+  .cv-search-modal-close:hover { background: #EEF2FA; color: #131C35; }
   .cv-search-modal-body {
-    max-height: 60vh; overflow-y: auto; padding: 0.5rem 0;
+    max-height: min(60vh, 30rem); overflow-y: auto; padding: 0.5rem 0;
   }
   .cv-search-suggestions { display: flex; flex-direction: column; gap: 0; }
   .cv-search-item {
     display: flex; align-items: center; gap: 0.85rem;
-    padding: 0.85rem 1.25rem; cursor: pointer;
+    padding: 0.95rem 1.25rem; cursor: pointer;
     transition: background 0.12s; border: none;
     background: none; font-family: 'Inter', sans-serif;
     width: 100%; text-align: left; font-size: 0.9rem;
   }
-  .cv-search-item:hover { background: #f8fafc; }
+  .cv-search-item:hover { background: #F8FAFC; }
   .cv-search-item-poster {
-    width: 40px; min-width: 40px; height: 64px;
-    border-radius: 6px; overflow: hidden;
+    width: 46px; min-width: 46px; height: 68px;
+    border-radius: 10px; overflow: hidden;
     background: #e2e8f0; display: flex;
     align-items: center; justify-content: center; font-size: 1rem;
     flex-shrink: 0;
@@ -260,19 +261,32 @@
   .cv-search-item-poster img { width: 100%; height: 100%; object-fit: cover; }
   .cv-search-item-info { flex: 1; min-width: 0; }
   .cv-search-item-title {
-    font-size: 0.9rem; font-weight: 600;
+    font-size: 0.95rem; font-weight: 700; color: #131C35;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .cv-search-item-meta {
-    font-size: 0.77rem; color: #64748b; margin-top: 0.2rem;
+    font-size: 0.78rem; color: #64748b; margin-top: 0.22rem;
   }
   .cv-search-modal-hint {
-    padding: 0.6rem 1.25rem; font-size: 0.75rem;
-    color: #64748b; border-top: 1px solid rgba(0,0,0,0.06);
+    padding: 0.85rem 1.25rem; font-size: 0.75rem;
+    color: #64748b; border-top: 1px solid rgba(19,28,53,0.06); background: #FBFCFF;
   }
   .cv-search-modal-hint kbd {
-    background: #f1f5f9; padding: 0.15rem 0.4rem;
-    border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+    background: #EEF2FA; padding: 0.18rem 0.42rem;
+    border-radius: 8px; font-size: 0.7rem; font-weight: 700; color: #131C35;
+  }
+  .cv-search-empty, .cv-search-state {
+    padding: 1.15rem 1.25rem;
+    color: #64748b;
+    font-size: 0.92rem;
+  }
+  .cv-search-section-label {
+    padding: 0.8rem 1.25rem 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
   }
   .nav-avatar-btn {
     width: 40px; height: 40px; border-radius: 9999px;
@@ -437,20 +451,34 @@
           renderSearchHistory();
           return;
         }
-        searchSuggestions.innerHTML = '<div style="padding: 1rem; color: #64748b; font-size: 0.9rem;">Searching...</div>';
+        searchSuggestions.innerHTML = '<div class="cv-search-state">Searching...</div>';
         searchTimeout = setTimeout(() => performSearch(query), 300);
+      });
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const firstResult = searchSuggestions?.querySelector('.cv-search-item');
+          if (firstResult) {
+            firstResult.click();
+            return;
+          }
+          const query = searchInput.value.trim();
+          if (query) {
+            window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+          }
+        }
       });
       searchInput.addEventListener('click', (e) => e.stopPropagation());
     }
 
     function renderSearchHistory() {
       if (searchHistory.length === 0) {
-        searchSuggestions.innerHTML = '<div style="padding: 1rem; color: #64748b; font-size: 0.9rem;">Start typing to search...</div>';
+        searchSuggestions.innerHTML = '<div class="cv-search-empty">Start typing to search...</div>';
         return;
       }
-      searchSuggestions.innerHTML = '<div style="padding: 0.75rem 1.25rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Recent</div>' +
+      searchSuggestions.innerHTML = '<div class="cv-search-section-label">Recent</div>' +
         searchHistory.map(item => `
-          <button class="cv-search-item" onclick="cvOpenTitle('${item.id}','${item.type}')">
+          <button class="cv-search-item" onclick="cvOpenTitle('${item.id}','${item.type}', this)">
             <div class="cv-search-item-poster">${item.poster ? `<img src="${item.poster}" alt="">` : '🎬'}</div>
             <div class="cv-search-item-info">
               <div class="cv-search-item-title">${item.title}</div>
@@ -462,7 +490,7 @@
 
     async function performSearch(query) {
       try {
-        const res = await fetch(`/api/tmdb/search/multi?query=${encodeURIComponent(query)}`);
+        const res = await fetch(`/api/tmdb/search/multi?query=${encodeURIComponent(query)}&page=1&include_adult=false`);
         const data = await res.json();
         let results = data.results || [];
         results = results.filter(r => r.media_type === 'movie' || r.media_type === 'tv');
@@ -472,7 +500,7 @@
             const dateStr = r.release_date || r.first_air_date || '';
             const year = dateStr ? dateStr.substring(0, 4) : '';
             return `
-            <button class="cv-search-item" onclick="cvOpenTitle('${r.id}','${r.media_type}')">
+            <button class="cv-search-item" onclick="cvOpenTitle('${r.id}','${r.media_type}', this)">
               <div class="cv-search-item-poster">${r.poster_path ? `<img src="https://image.tmdb.org/t/p/w92${r.poster_path}" alt="">` : '🎬'}</div>
               <div class="cv-search-item-info">
                 <div class="cv-search-item-title">${title}</div>
@@ -481,11 +509,11 @@
             </button>
           `}).join('');
         } else {
-          searchSuggestions.innerHTML = '<div style="padding: 1rem; color: #64748b; font-size: 0.9rem;">No results found</div>';
+          searchSuggestions.innerHTML = '<div class="cv-search-empty">No results found. Press Enter to search the full page.</div>';
         }
       } catch (e) {
         console.error('Search error:', e);
-        searchSuggestions.innerHTML = '<div style="padding: 1rem; color: #64748b; font-size: 0.9rem;">Search failed, try again</div>';
+        searchSuggestions.innerHTML = '<div class="cv-search-empty">Search failed, try again.</div>';
       }
     }
 
@@ -503,9 +531,11 @@
   window.cvOpenSearchModal = function() {
     const modal = document.getElementById('cvSearchModal');
     const input = document.getElementById('cvSearchInput');
+    const suggestions = document.getElementById('cvSearchSuggestions');
     if (modal) {
       modal.classList.add('open');
       if (input) {
+        if (!input.value && suggestions) renderSearchHistory();
         input.focus(); // Synchronous focus
         setTimeout(() => input.focus(), 50); // Fallback after transition
       }
@@ -521,15 +551,16 @@
     }
   };
 
-  window.cvOpenTitle = function(id, type) {
+  window.cvOpenTitle = function(id, type, sourceEl) {
     // Save to search history before navigating
     try {
       let history = JSON.parse(localStorage.getItem('cvSearchHistory') || '[]');
-      const titleEl = event.target.closest('.cv-search-item').querySelector('.cv-search-item-title');
-      const metaEl  = event.target.closest('.cv-search-item').querySelector('.cv-search-item-meta');
+      const row = sourceEl && sourceEl.closest ? sourceEl.closest('.cv-search-item') : null;
+      const titleEl = row ? row.querySelector('.cv-search-item-title') : null;
+      const metaEl  = row ? row.querySelector('.cv-search-item-meta') : null;
       const title   = titleEl ? titleEl.textContent : '';
       const year    = metaEl  ? metaEl.textContent.split(' · ')[0] : '';
-      const poster  = event.target.closest('.cv-search-item').querySelector('img')?.src || null;
+      const poster  = row ? row.querySelector('img')?.src || null : null;
 
       const item = { id, type, title, year, poster };
       history = [item, ...history.filter(h => h.id !== id)].slice(0, 10);
