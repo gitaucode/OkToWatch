@@ -44,10 +44,7 @@
         const isKnownLoggedOut = cachedAuth?.loggedIn === false && (!updatedAt || isFresh);
         const isFreshLoggedIn = cachedAuth?.loggedIn === true && isFresh;
 
-        if (isKnownLoggedOut) {
-          const authUrl = '/signin?redirect=' + encodeURIComponent(redirectUrl);
-          window.location.replace(authUrl);
-        } else if (isFreshLoggedIn) {
+        if (isFreshLoggedIn) {
           window.location.replace(redirectUrl);
         }
       }
@@ -1009,6 +1006,7 @@ function saveLists(l) { try{localStorage.setItem('cv_lists',JSON.stringify(l));}
 // In-memory caches so badge checks & recently-viewed are instant after load.
 let _d1Lists   = null;  // null = not loaded yet; [] = loaded, empty
 let _d1Recent  = null;  // recent history from D1
+let _authDetail = { loggedIn: false, isPro: false, isFamily: false };
 
 // Called once after cv:auth confirms isPro. Fetches lists + recent history.
 async function syncD1Cache() {
@@ -1038,11 +1036,28 @@ function getEffectiveRecent() {
 
 // Listen for auth — kick off D1 sync as soon as we know the user is Pro.
 document.addEventListener('cv:auth', ({ detail }) => {
+  _authDetail = detail || _authDetail;
   renderRecentSearchesCarousel();
   if (detail.isPro || detail.isFamily) {
     syncD1Cache();
   }
 });
+
+function isLoggedInSearchUser() {
+  return !!(window.CV?.loggedIn || _authDetail?.loggedIn);
+}
+
+function openTitleExperience(id, type, title = '') {
+  if (title) heroInput.value = title;
+  hideSuggestions();
+  const disambig = document.getElementById('disambigCard');
+  if (disambig) disambig.style.display = 'none';
+  if (!isLoggedInSearchUser()) {
+    window.location.href = `/index?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}`;
+    return;
+  }
+  runAnalysis(id, type);
+}
 
 // ── NAV STATE (collapsed nav removed — using dashboard shell nav) ────────
 function goHome() {
@@ -1101,7 +1116,7 @@ document.addEventListener('click',e=>{ if(!e.target.closest('#heroSection .sugge
 
 function hideSuggestions() { document.getElementById('suggestions').classList.remove('visible'); }
 function hideCollapsedSuggestions() { /* no-op: collapsed nav removed */ }
-function selectSuggestion(id,type,title) { heroInput.value=title; hideSuggestions(); runAnalysis(id,type); }
+function selectSuggestion(id,type,title) { openTitleExperience(id, type, title); }
 function quickSearch(title) { heroInput.value=title; doSearch(); }
 
 // ── Recent searches carousel ───────────────────────────────────────────────
@@ -1119,7 +1134,7 @@ function renderRecentSearchesCarousel() {
         ? `<img class="rsc-poster" src="https://image.tmdb.org/t/p/w92${item.poster}" alt="">`
         : '<span style="font-size:0.8rem;flex-shrink:0;">🎬</span>';
       return `<button class="recent-search-chip"
-        onclick="runAnalysis(${item.id},'${item.media_type}')">
+        onclick="openTitleExperience(${item.id},'${item.media_type}','${String(title).replace(/'/g,"\\'")}')">
         ${poster}
         <span class="rsc-title">${title}</span>
       </button>`;
@@ -1142,7 +1157,7 @@ async function doSearchByTitle(q) {
     if(!results.length){ showResultState({showNav:true}); showSection(); hideSkeleton(); await showEmptyWithSuggestion(q); return; }
     const top=results.slice(0,4), topTitle=(top[0].title||top[0].name||'').toLowerCase();
     const hasDupes=top.length>1&&top.slice(1).some(r=>{ const t=(r.title||r.name||'').toLowerCase(); return t===topTitle||t.includes(topTitle)||topTitle.includes(t); });
-    if(hasDupes&&top.length>1) showDisambig(top); else runAnalysis(results[0].id,results[0].media_type);
+    if(hasDupes&&top.length>1) showDisambig(top); else openTitleExperience(results[0].id,results[0].media_type,results[0].title||results[0].name||'');
   } catch(e) { showResultState(); showSection(); showError('Search failed. Is the server running?'); }
 }
 
@@ -1185,7 +1200,7 @@ function showDisambig(results) {
       }).join('')}
     </div>`;
 }
-function onDisambigSelect(id,type,title) { document.getElementById('disambigCard').style.display='none'; heroInput.value=title; runAnalysis(id,type); }
+function onDisambigSelect(id,type,title) { openTitleExperience(id, type, title); }
 
 async function runAnalysis(id,type,isRetry=false) {
   lastId=id; lastType=type;
@@ -1421,7 +1436,7 @@ function renderRecentlyViewed(currentId) {
     const itemId   = r.tmdb_id   ?? r.id;
     const itemType = r.media_type ?? r.type;
     const posterHtml=r.poster?`<img src="${r.poster}" alt="${r.title}" loading="lazy">`:`<div class="recent-poster-fallback">🎬</div>`;
-    return `<div class="recent-item" onclick="runAnalysis(${itemId},'${itemType}')">
+    return `<div class="recent-item" onclick="openTitleExperience(${itemId},'${itemType}','${String(r.title || '').replace(/'/g,"\\'")}')">
       <div class="recent-poster">${posterHtml}</div>
       <div class="recent-info"><div class="recent-title">${r.title}</div><div class="recent-year">${r.year||''}</div></div>
     </div>`;

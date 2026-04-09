@@ -127,6 +127,18 @@ tailwind.config = {
   <div id="movieSummaryStrip" class="max-w-[1440px] mx-auto px-8 py-6 border-b border-surface-variant hidden">
     <p class="text-[14.5px] italic text-on-surface-variant leading-relaxed max-w-4xl" id="summaryStripText"></p>
   </div>
+  <div id="guestUsageBanner" class="hidden max-w-[1440px] mx-auto px-8 pt-6">
+    <div class="rounded-2xl border border-[#D5DDE8] bg-white px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-outline mb-1">Guest Access</p>
+        <p class="text-sm md:text-[15px] text-on-surface-variant leading-relaxed" id="guestUsageText"></p>
+      </div>
+      <div class="flex items-center gap-3 flex-wrap">
+        <a href="/signup" class="inline-flex items-center justify-center rounded-xl bg-[#0F172A] text-white px-4 py-2.5 text-sm font-bold no-underline hover:bg-slate-800 transition-colors">Create free account</a>
+        <a href="/signin" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 no-underline hover:bg-slate-50 transition-colors">Sign in</a>
+      </div>
+    </div>
+  </div>
 
   <!-- ── Content Grid ───────────────────────────────────────────────────── -->
   <div class="max-w-[1440px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 py-10 pb-24">
@@ -280,6 +292,43 @@ function catIcon(name) {
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function showToast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+function formatResetTime(resetsAt) {
+  if (!resetsAt) return 'later today';
+  const diff = Math.max(0, Number(resetsAt) - Date.now());
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+function hideGuestUsageBanner() {
+  const banner = document.getElementById('guestUsageBanner');
+  if (banner) banner.classList.add('hidden');
+}
+function renderGuestUsageBanner(usage) {
+  const banner = document.getElementById('guestUsageBanner');
+  const text = document.getElementById('guestUsageText');
+  if (!banner || !text) return;
+  if (_authState.loggedIn || !usage || typeof usage.remaining !== 'number' || typeof usage.limit !== 'number') {
+    banner.classList.add('hidden');
+    return;
+  }
+  text.textContent = `You have ${usage.remaining} of ${usage.limit} free title checks left. Create a free account to keep your checks, history, and picks in one place.`;
+  banner.classList.remove('hidden');
+}
+function renderGuestLimitState(resetsAt) {
+  hideGuestUsageBanner();
+  document.getElementById('verdictSummaryText').textContent = 'Create a free account to keep checking titles and save your history.';
+  document.getElementById('breakdownAccordion').innerHTML = `
+    <div class="flex flex-col items-center gap-4 py-10 text-center">
+      <span class="material-symbols-outlined text-4xl text-outline">lock</span>
+      <h3 class="text-xl font-bold text-on-surface">Free guest limit reached</h3>
+      <p class="text-on-surface-variant text-sm max-w-md leading-relaxed">You’ve used your free guest title checks for now. Create a free account to keep going, or come back in <strong class="text-on-surface">${formatResetTime(resetsAt)}</strong>.</p>
+      <div class="flex items-center gap-3 flex-wrap justify-center">
+        <a href="/signup" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98] no-underline">Create free account</a>
+        <a href="/signin" class="px-5 py-2.5 border border-slate-200 text-slate-700 font-bold rounded-xl text-sm hover:bg-slate-50 transition-colors active:scale-[0.98] no-underline">Sign in</a>
+      </div>
+    </div>`;
+}
 
 // ── URL params ────────────────────────────────────────────────────────────
 const _params = new URLSearchParams(window.location.search);
@@ -367,7 +416,7 @@ function renderNotesSection() {
         <h3 class="text-lg font-bold text-on-surface">Shared caregiver notes</h3>
         <p class="text-sm text-on-surface-variant leading-relaxed">Sign in with your Family plan to keep shared observations, approvals, and cautions on every title.</p>
         <div class="flex gap-3 flex-wrap">
-          <a href="/sign-in" class="inline-flex items-center justify-center rounded-xl bg-[#0F172A] text-white px-4 py-2.5 text-sm font-bold no-underline hover:bg-slate-800 transition-colors">Sign in</a>
+          <a href="/signin" class="inline-flex items-center justify-center rounded-xl bg-[#0F172A] text-white px-4 py-2.5 text-sm font-bold no-underline hover:bg-slate-800 transition-colors">Sign in</a>
           <a href="/plans" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 no-underline hover:bg-slate-50 transition-colors">See Family plan</a>
         </div>
       </div>`;
@@ -634,23 +683,27 @@ async function loadPage() {
       headers: _authHeaders,
       body: JSON.stringify({ tmdb_id: _tmdbId, media_type: _type, title, year, overview, genres, certRating, keywords, type: _type })
     });
-
-    // Handle rate limit specifically — show friendly UI, don't treat as crash
-    if (analyzeRes.status === 429) {
-      document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
-      document.getElementById('breakdownAccordion').innerHTML = `
-        <div class="flex flex-col items-center gap-4 py-10 text-center">
-          <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
-          <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit — please wait a moment and try again.</p>
-          <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
-            Try Again
-          </button>
-        </div>`;
-      return;
+    const analyzeData = await analyzeRes.json().catch(() => ({}));
+    if (analyzeRes.status === 429 || analyzeData.error) {
+      if (analyzeData.error === 'guest_limit') {
+        renderGuestLimitState(analyzeData.resetsAt);
+        return;
+      }
+      if (analyzeData.error === 'rate_limit' || analyzeRes.status === 429) {
+        hideGuestUsageBanner();
+        document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
+        document.getElementById('breakdownAccordion').innerHTML = `
+          <div class="flex flex-col items-center gap-4 py-10 text-center">
+            <span class="material-symbols-outlined text-4xl text-outline">hourglass_top</span>
+            <p class="text-on-surface-variant text-sm max-w-xs">Too many requests right now. Our analysis AI has a usage limit — please wait a moment and try again.</p>
+            <button onclick="location.reload()" class="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl text-sm hover:bg-primary-dim transition-colors active:scale-[0.98]">
+              Try Again
+            </button>
+          </div>`;
+        return;
+      }
+      throw new Error(analyzeData.error || 'Analysis failed');
     }
-
-    const analyzeData = await analyzeRes.json();
-    if (analyzeData.error) throw new Error(analyzeData.error);
 
     // Parse AI JSON from response using identical logic to previous design
     let rawContent = analyzeData.content ?? analyzeData.choices?.[0]?.message?.content ?? '';
@@ -671,6 +724,7 @@ async function loadPage() {
       summaryStripText.textContent = _breakdown.summary;
       summaryStripWrap.classList.remove('hidden');
     }
+    renderGuestUsageBanner(analyzeData._usage);
 
     renderVerdictCard(_details, _breakdown, providers.results || {});
     renderAccordion(_breakdown);
@@ -678,8 +732,10 @@ async function loadPage() {
 
   } catch (e) {
     console.error('Page load error:', e);
-    // rate_limit error in the JSON body
-    if (String(e.message).toLowerCase().includes('rate_limit') || String(e.message).toLowerCase().includes('rate limit')) {
+    if (String(e.message).toLowerCase().includes('guest_limit')) {
+      renderGuestLimitState(e.resetsAt);
+    } else if (String(e.message).toLowerCase().includes('rate_limit') || String(e.message).toLowerCase().includes('rate limit')) {
+      hideGuestUsageBanner();
       document.getElementById('heroTitle').textContent = _details?.title || _details?.name || 'Could not load';
       document.getElementById('verdictSummaryText').textContent = 'Our AI is busy right now — please try again in a moment.';
       document.getElementById('breakdownAccordion').innerHTML = `
@@ -692,6 +748,7 @@ async function loadPage() {
         </div>`;
     } else {
       document.getElementById('heroTitle').textContent = 'Could not load';
+      hideGuestUsageBanner();
       document.getElementById('verdictSummaryText').textContent = 'Failed to load content breakdown. Please try again.';
       document.getElementById('breakdownAccordion').innerHTML = '<p class="text-on-surface-variant text-sm py-4">Analysis failed. Please try again.</p>';
     }
