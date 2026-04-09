@@ -144,12 +144,7 @@
     if (loggedIn) {
       secondaryHTML = NAV_SECONDARY.map(l => `<a href="${l.href}" class="nav-dropdown-item">${l.label}</a>`).join('');
     }
-    const showAssistant = loggedIn || currentPath === '/index' || currentPath === '/search';
-
     const initial = (user?.firstName || user?.emailAddresses?.[0]?.emailAddress || '?')[0].toUpperCase();
-    const assistantGreeting = user?.firstName
-      ? `Hi, ${escapeHtml(user.firstName)} 👋`
-      : 'Hi there 👋';
     const avatarContent = user?.imageUrl
       ? `<img src="${user.imageUrl}" alt="${initial}" style="width:100%;height:100%;object-fit:cover;border-radius:9999px;">`
       : `<span class="material-symbols-outlined" style="font-size:22px;">account_circle</span>`;
@@ -186,29 +181,6 @@
          <button class="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" id="mobileSignOutBtn">Sign out</button>`
       : `<a href="/signin" class="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 no-underline transition-colors">Sign in</a>
          <a href="/signup" class="block w-full rounded-2xl px-4 py-3 text-left font-bold bg-[#131C35] text-white hover:opacity-90 no-underline transition-opacity shadow-[0_14px_28px_rgba(19,28,53,0.16)]">Sign up</a>`;
-    const assistantHTML = showAssistant ? `
-<div class="cv-assistant" id="cvAssistant">
-  <button class="cv-assistant-nudge" id="cvAssistantNudge">Ask me about a movie</button>
-  <button class="cv-assistant-fab" id="cvAssistantFab" aria-label="Open title safety assistant">
-    <span class="material-symbols-outlined">smart_toy</span>
-  </button>
-  <div class="cv-assistant-panel" id="cvAssistantPanel">
-    <div class="cv-assistant-header">
-      <div>
-        <div class="cv-assistant-eyebrow">${assistantGreeting}</div>
-        <div class="cv-assistant-title">Ask me about a movie or show</div>
-      </div>
-      <button class="cv-assistant-close" id="cvAssistantClose" aria-label="Close assistant">✕</button>
-    </div>
-    <div class="cv-assistant-messages" id="cvAssistantMessages"></div>
-    <div class="cv-assistant-suggestions" id="cvAssistantSuggestions"></div>
-    <form class="cv-assistant-form" id="cvAssistantForm">
-      <input id="cvAssistantInput" class="cv-assistant-input" type="text" placeholder="Ask about a movie or show..." autocomplete="off" />
-      <button class="cv-assistant-send" id="cvAssistantSend" type="submit">Send</button>
-    </form>
-  </div>
-</div>` : '';
-
     root.innerHTML = `
 <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
   <div class="flex justify-between items-center h-16 px-4 md:px-8 max-w-[1440px] mx-auto gap-4">
@@ -395,100 +367,13 @@
   .cv-nav-mobile-inner { padding: 0.9rem 1rem 1.1rem; }
   .cv-nav-mobile-links { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.85rem; }
   .cv-nav-mobile-actions { display: flex; flex-direction: column; gap: 0.55rem; padding-top: 0.85rem; border-top: 1px solid rgba(0,0,0,0.07); }
-  .cv-assistant {
-    position: fixed; right: 18px; bottom: 18px; z-index: 1002;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 0.65rem;
-  }
-  .cv-assistant-nudge {
-    border: none; background: rgba(255,255,255,0.96); color: #131C35;
-    border-radius: 999px; padding: 0.72rem 0.95rem; font-weight: 700; cursor: pointer;
-    box-shadow: 0 16px 36px rgba(19,28,53,0.14); font-size: 0.84rem;
-  }
-  .cv-assistant-fab {
-    width: 58px; height: 58px; border-radius: 999px; border: none; cursor: pointer;
-    background: #131C35; color: white; display: inline-flex; align-items: center; justify-content: center;
-    box-shadow: 0 18px 42px rgba(19,28,53,0.28); transition: transform 0.16s ease, box-shadow 0.16s ease;
-  }
-  .cv-assistant-fab:hover { transform: translateY(-1px); box-shadow: 0 20px 46px rgba(19,28,53,0.32); }
-  .cv-assistant-panel {
-    width: min(92vw, 360px); max-height: min(72vh, 560px); display: none;
-    flex-direction: column; overflow: hidden; border-radius: 24px; background: rgba(255,255,255,0.98);
-    border: 1px solid rgba(19,28,53,0.08); box-shadow: 0 26px 60px rgba(19,28,53,0.22);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  }
-  .cv-assistant-panel.open { display: flex; animation: dropIn 0.18s ease; }
-  .cv-assistant-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1rem 1rem 0.9rem; border-bottom: 1px solid rgba(19,28,53,0.08); }
-  .cv-assistant-eyebrow { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #7A869A; }
-  .cv-assistant-title { margin-top: 0.28rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 800; color: #131C35; }
-  .cv-assistant-close {
-    width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(19,28,53,0.06);
-    background: #F5F7FB; color: #64748b; cursor: pointer; flex-shrink: 0;
-  }
-  .cv-assistant-messages { padding: 0.9rem 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
-  .cv-assistant-msg { border-radius: 18px; padding: 0.9rem 0.95rem; font-size: 0.88rem; line-height: 1.55; }
-  .cv-assistant-msg.assistant { background: #F8FAFC; border: 1px solid rgba(19,28,53,0.06); color: #334155; }
-  .cv-assistant-msg.user { background: #131C35; color: white; align-self: flex-end; max-width: 86%; }
-  .cv-assistant-msg.typing { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; width: fit-content; }
-  .cv-assistant-typing-row { display: inline-flex; align-items: center; gap: 0.35rem; }
-  .cv-assistant-typing-label { font-size: 0.75rem; font-weight: 700; color: #64748b; }
-  .cv-assistant-dot {
-    width: 8px; height: 8px; border-radius: 999px; background: #94a3b8;
-    animation: cvAssistantBounce 1.1s infinite ease-in-out;
-  }
-  .cv-assistant-dot:nth-child(2) { animation-delay: 0.14s; }
-  .cv-assistant-dot:nth-child(3) { animation-delay: 0.28s; }
-  @keyframes cvAssistantBounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
-    40% { transform: translateY(-3px); opacity: 1; }
-  }
-  .cv-assistant-msg h4 { margin: 0 0 0.35rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 800; color: #131C35; }
-  .cv-assistant-msg.user h4 { color: white; }
-  .cv-assistant-msg ul { margin: 0.45rem 0 0; padding-left: 1rem; }
-  .cv-assistant-msg li { margin: 0.18rem 0; }
-  .cv-assistant-choice-list, .cv-assistant-followups, .cv-assistant-suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .cv-assistant-chip {
-      border: 1px solid rgba(19,28,53,0.08); background: white; color: #131C35; cursor: pointer;
-      border-radius: 999px; padding: 0.52rem 0.8rem; font-size: 0.77rem; font-weight: 700;
-    }
-  .cv-assistant-chip:hover { background: #EEF2FA; }
-  .cv-assistant-chip-hint { display: block; margin-top: 0.2rem; font-size: 0.66rem; font-weight: 600; color: #64748b; }
-  .cv-assistant-link {
-    border: none; background: transparent; padding: 0; cursor: pointer;
-    font-size: 0.76rem; font-weight: 800; color: #131C35;
-    text-decoration: underline; text-underline-offset: 0.16rem;
-  }
-  .cv-assistant-link:hover { color: #34456f; }
-  .cv-assistant-suggestions { padding: 0 1rem 0.85rem; }
-  .cv-assistant-form { display: flex; gap: 0.6rem; padding: 0.95rem 1rem 1rem; border-top: 1px solid rgba(19,28,53,0.08); }
-  .cv-assistant-input {
-    flex: 1; min-width: 0; border-radius: 16px; border: 1px solid rgba(19,28,53,0.08);
-    background: #F8FAFC; color: #131C35; padding: 0.85rem 0.95rem; font-size: 0.88rem; outline: none;
-  }
-  .cv-assistant-input:focus { border-color: rgba(19,28,53,0.16); background: white; }
-  .cv-assistant-send {
-    border: none; border-radius: 16px; background: #131C35; color: white; font-weight: 800;
-    padding: 0 1rem; cursor: pointer; min-width: 76px;
-  }
-  .cv-assistant-send[disabled] { opacity: 0.6; cursor: default; }
-  @media (max-width: 767px) {
-    .cv-assistant { left: 12px; right: 12px; bottom: 12px; align-items: stretch; }
-    .cv-assistant-panel { width: 100%; }
-  }
   @media (min-width: 768px) {
     .cv-nav-mobile, .cv-nav-mobile-overlay, .cv-nav-hamburger { display: none !important; }
   }
 </style>`;
 
     const existingAssistantHost = document.getElementById('cvAssistantHost');
-    if (showAssistant) {
-      let assistantHost = existingAssistantHost;
-      if (!assistantHost) {
-        assistantHost = document.createElement('div');
-        assistantHost.id = 'cvAssistantHost';
-        document.body.appendChild(assistantHost);
-      }
-      assistantHost.innerHTML = assistantHTML;
-    } else if (existingAssistantHost) {
+    if (existingAssistantHost) {
       existingAssistantHost.remove();
     }
 
