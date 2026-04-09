@@ -396,6 +396,7 @@ async function loadTitleContext({ request, tmdbId, mediaType, question, childAge
 
 function buildAssistantAnswer(question, context, requestedAge, interpreted) {
   const analysis = context.analysis || {};
+  const displayTitle = context.year ? `${context.title} (${context.year})` : context.title;
   const audienceKey = getAudienceKey(requestedAge);
   const verdict = analysis.verdicts?.[audienceKey] || analysis.verdicts?.young || null;
   const categories = Array.isArray(analysis.categories) ? analysis.categories : [];
@@ -407,56 +408,56 @@ function buildAssistantAnswer(question, context, requestedAge, interpreted) {
     .sort((a, b) => levelWeight(b.level) - levelWeight(a.level))
     .slice(0, 3);
 
-  let responseTitle = `${context.title}`;
-  let tldr = analysis.summary || `Here’s the quick read on ${context.title}.`;
+  let responseTitle = `About ${displayTitle}`;
+  let tldr = analysis.summary || `Here's the quick read on ${displayTitle}.`;
   let bullets = [];
 
   if (requestType === 'audio_language') {
     const languageInfo = describeLanguageInfo(context);
-    responseTitle = `Language in ${context.title}`;
+    responseTitle = `Language in ${displayTitle}`;
     tldr = languageInfo.summary;
     bullets = languageInfo.bullets;
   } else if (categoryIntent) {
     const matched = categories.find((cat) => normalizeTitle(cat.name).includes(categoryIntent.key)) || null;
-    responseTitle = `${categoryIntent.label} in ${context.title}`;
+    responseTitle = `${categoryIntent.label} in ${displayTitle}`;
     if (matched) {
-      tldr = `${context.title} has ${matched.level} concern for ${matched.name.toLowerCase()}.`;
+      tldr = `${displayTitle} has ${matched.level} concern for ${matched.name.toLowerCase()}.`;
       bullets = [
         matched.note || matched.description || `The main thing flagged here is ${matched.name.toLowerCase()}.`,
         verdict ? `Overall verdict for ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}.` : null,
         topConcerns.length > 1 ? `Other things to keep an eye on: ${topConcerns.slice(0, 3).map((item) => item.name).join(', ')}.` : null
       ].filter(Boolean);
     } else {
-      tldr = `I don’t see a major flag for ${categoryIntent.label.toLowerCase()} in the current breakdown for ${context.title}.`;
+      tldr = `I don't see a major flag for ${categoryIntent.label.toLowerCase()} in the current breakdown for ${displayTitle}.`;
       bullets = [
         verdict ? `Overall verdict for ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}.` : null,
-        topConcerns.length ? `The bigger concerns here are ${topConcerns.map((item) => item.name.toLowerCase()).join(', ')}.` : 'The breakdown doesn’t flag any major concerns.'
+        topConcerns.length ? `The bigger concerns here are ${topConcerns.map((item) => item.name.toLowerCase()).join(', ')}.` : `The breakdown doesn't flag any major concerns.`
       ].filter(Boolean);
     }
   } else if (requestType === 'sensitive_child') {
-    responseTitle = 'For a sensitive viewer';
+    responseTitle = `For a sensitive viewer: ${displayTitle}`;
     tldr = verdict
-      ? `${context.title} may feel a bit intense depending on what your child reacts to most.`
-      : `Here’s the quick read for a more sensitive viewer.`;
+      ? `${displayTitle} may feel a bit intense depending on what your child reacts to most.`
+      : `Here's the quick read for a more sensitive viewer.`;
     bullets = [
       topConcerns.find((item) => /horror|fear|violence/i.test(item.name))
         ? `The biggest likely trigger is ${topConcerns.find((item) => /horror|fear|violence/i.test(item.name)).name.toLowerCase()}.`
-        : 'I don’t see a major fear-based trigger called out in the top categories.',
+        : `I don't see a major fear-based trigger called out in the top categories.`,
       verdict ? `Overall verdict for ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}.` : null,
       analysis.summary || null
     ].filter(Boolean);
   } else if (requestType === 'summary' || requestType === 'suitability') {
-    responseTitle = `Quick take on ${context.title}`;
+    responseTitle = `Quick take on ${displayTitle}`;
     bullets = [
-      verdict ? `For ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}${verdict.sub ? ` - ${verdict.sub}.` : '.'}` : null,
+      verdict ? `For ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}${verdict.sub ? ` - ${verdict.sub}.` : `.`}` : null,
       topConcerns[0] ? `Biggest concern: ${topConcerns[0].name} (${topConcerns[0].level}).` : 'No major concerns were highlighted in the main categories.',
       topConcerns[1] ? `Also worth noting: ${topConcerns[1].name} (${topConcerns[1].level}).` : null
     ].filter(Boolean);
   } else {
-    responseTitle = `Quick answer on ${context.title}`;
+    responseTitle = `Quick answer on ${displayTitle}`;
     bullets = [
       verdict ? `For ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}.` : null,
-      topConcerns.length ? `Main things to watch: ${topConcerns.map((item) => `${item.name} (${item.level})`).join(', ')}.` : 'The breakdown doesn’t flag any major concerns.',
+      topConcerns.length ? `Main things to watch: ${topConcerns.map((item) => `${item.name} (${item.level})`).join(', ')}.` : `The breakdown doesn't flag any major concerns.`,
       analysis.summary || null
     ].filter(Boolean);
   }

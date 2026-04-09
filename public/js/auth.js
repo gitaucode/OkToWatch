@@ -838,6 +838,13 @@
       if (/(animated|cartoon|kids one)/i.test(text)) {
         const animated = candidates.filter((candidate) => candidate.is_animated || /animated/i.test(String(candidate.hint_label || '')));
         if (animated.length === 1) return animated[0];
+        if (!animated.length) {
+          return {
+            kind: 'needs_retry',
+            title: 'I need one more clue',
+            tldr: 'I could not spot a clearly animated match there. Try the year, the studio, or tap one of the titles below.'
+          };
+        }
       }
 
       if (/(disney|pixar|marvel|lucasfilm)/i.test(text)) {
@@ -846,6 +853,43 @@
           return /(disney|pixar|marvel|lucasfilm)/i.test(haystack);
         });
         if (studio.length === 1) return studio[0];
+        if (!studio.length) {
+          return {
+            kind: 'needs_retry',
+            title: 'I need one more clue',
+            tldr: 'I could not narrow that down by studio alone. Try the year or choose one of the matches.'
+          };
+        }
+      }
+
+      if (/(live action|live-action|real people)/i.test(text)) {
+        const liveAction = candidates.filter((candidate) => !candidate.is_animated && !/animated/i.test(String(candidate.hint_label || '')));
+        if (liveAction.length === 1) return liveAction[0];
+        if (!liveAction.length) {
+          return {
+            kind: 'needs_retry',
+            title: 'I need one more clue',
+            tldr: 'I could not find a clear live-action match there. Try the year or pick one of the matches below.'
+          };
+        }
+      }
+
+      if (/(sequel|part 2|part two|follow up|follow-up|next one)/i.test(text)) {
+        const sequel = candidates
+          .filter((candidate) => /\b2\b|ii|part 2|part two|chapter 2|chapter two/i.test(String(candidate.title || '')))
+          .slice()
+          .sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
+        if (sequel.length === 1) return sequel[0];
+        const newest = candidates
+          .filter((candidate) => Number(candidate.year))
+          .slice()
+          .sort((a, b) => Number(b.year) - Number(a.year));
+        if (newest.length === 1) return newest[0];
+      }
+
+      if (/(kids one|childrens one|children's one|for kids)/i.test(text)) {
+        const kidFriendly = candidates.filter((candidate) => candidate.is_animated || /disney|pixar|animated/i.test(`${candidate.studio_hint || ''} ${candidate.hint_label || ''}`));
+        if (kidFriendly.length === 1) return kidFriendly[0];
       }
 
       const byLabel = candidates.filter((candidate) => {
@@ -1032,6 +1076,18 @@
         assistantInput.value = '';
         const resolvedChoice = resolvePendingAssistantChoice(question);
         if (resolvedChoice) {
+          if (resolvedChoice.kind === 'needs_retry') {
+            assistantState.messages.push({
+              role: 'assistant',
+              kind: 'answer',
+              title: resolvedChoice.title || 'I need one more clue',
+              tldr: resolvedChoice.tldr || 'Try the year or choose one of the matches below.',
+              bullets: [],
+              followUps: []
+            });
+            renderAssistantMessages();
+            return;
+          }
           if (resolvedChoice.kind === 'decline') {
             const pending = assistantState.pendingChoice;
             if (pending?.candidates?.length) {
