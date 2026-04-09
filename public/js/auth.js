@@ -763,8 +763,8 @@
           assistantState.messages.push({
             role: 'assistant',
             kind: 'choose_title',
-            title: 'Which title did you mean?',
-            tldr: data.message || 'Pick the right title so I stay accurate.',
+            title: data.title || 'Which one did you mean?',
+            tldr: data.message || 'Pick the right title and I’ll take it from there.',
             candidates: data.candidates || []
           });
         } else if (data.mode === 'answer') {
@@ -781,9 +781,9 @@
           assistantState.messages.push({
             role: 'assistant',
             kind: 'answer',
-            title: 'Free limit reached',
-            tldr: 'Create a free account to keep asking about titles and save your history.',
-            bullets: ['The assistant uses the same title safety data as the detailed result page.', 'A free account keeps your checks and lets you come back to them later.'],
+            title: 'You’ve hit the guest limit',
+            tldr: 'Create a free account to keep checking titles and pick up right where you left off.',
+            bullets: ['Your free account keeps your checks and history in one place.', 'Once you’re signed in, it’s quicker to come back to titles you’ve already checked.'],
             followUps: []
           });
         } else {
@@ -801,8 +801,8 @@
         assistantState.messages.push({
           role: 'assistant',
           kind: 'answer',
-          title: 'Assistant unavailable',
-          tldr: 'I couldn’t load that title answer right now. Try again in a moment.',
+          title: 'I’m having trouble loading that right now',
+          tldr: 'Try again in a moment and I’ll take another look.',
           bullets: [],
           followUps: []
         });
