@@ -1646,11 +1646,19 @@
       font-size: 0.9rem;
       font-weight: 600;
     }
+    .hero-trust span {
+      display: inline-flex;
+      align-items: center;
+    }
 
     .hero-trust span::before {
-      content: "•";
-      color: var(--brand);
-      margin-right: 8px;
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--brand);
+      margin-right: 10px;
+      flex-shrink: 0;
     }
 
     .hero-visual {
@@ -2380,4 +2388,6 @@
 </body>
 
 </html>
+
+
 
