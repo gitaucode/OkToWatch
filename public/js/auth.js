@@ -242,7 +242,6 @@
     <div class="cv-nav-mobile-actions">${mobileActions}</div>
   </div>
 </div>
-${assistantHTML}
 <style>
   .cv-search-modal {
     display: none; position: fixed; inset: 0; z-index: 1000;
@@ -451,6 +450,19 @@ ${assistantHTML}
     .cv-nav-mobile, .cv-nav-mobile-overlay, .cv-nav-hamburger { display: none !important; }
   }
 </style>`;
+
+    const existingAssistantHost = document.getElementById('cvAssistantHost');
+    if (showAssistant) {
+      let assistantHost = existingAssistantHost;
+      if (!assistantHost) {
+        assistantHost = document.createElement('div');
+        assistantHost.id = 'cvAssistantHost';
+        document.body.appendChild(assistantHost);
+      }
+      assistantHost.innerHTML = assistantHTML;
+    } else if (existingAssistantHost) {
+      existingAssistantHost.remove();
+    }
 
     const hamburger = document.getElementById('cvNavHamburger');
     const mobileMenu = document.getElementById('cvNavMobile');
