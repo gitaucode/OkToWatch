@@ -165,8 +165,8 @@
       <header class="mb-10">
         <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 class="text-3xl md:text-4xl font-extrabold font-headline text-on-surface tracking-tight mb-2">Vetting Overview</h1>
-            <p class="text-on-surface-variant max-w-2xl text-base md:text-lg leading-relaxed">Welcome back. Here's your family content safety overview.</p>
+            <h1 id="dashboardGreeting" class="text-3xl md:text-4xl font-extrabold font-headline text-on-surface tracking-tight mb-2">Hi there 👋</h1>
+            <p id="dashboardGreetingSub" class="text-on-surface-variant max-w-2xl text-base md:text-lg leading-relaxed">Here's your family content safety overview.</p>
           </div>
         </div>
       </header>
@@ -510,6 +510,15 @@ setTimeout(()=>{
 
 // Load all dashboard data
 async function loadDashboard(user){
+  const firstName=(user?.firstName||'').trim();
+  const greeting=document.getElementById('dashboardGreeting');
+  const greetingSub=document.getElementById('dashboardGreetingSub');
+  if(greeting){
+    greeting.textContent=firstName?`Hi, ${firstName} 👋`:'Hi there 👋';
+  }
+  if(greetingSub){
+    greetingSub.textContent=firstName?'Here is your family content safety overview.':"Here's your family content safety overview.";
+  }
   try{[_profiles,_history,_lists]=await Promise.all([apiGet('/api/profiles'),apiGet('/api/history'),apiGet('/api/lists')]);}
   catch(e){console.error('Dashboard load error:',e);}
   if(_profiles.length && !getActive()) sessionStorage.setItem('cv_active_profile',_profiles[0].id);
