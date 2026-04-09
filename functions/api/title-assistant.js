@@ -110,20 +110,24 @@ export async function onRequestPost(context) {
 
       const selected = chooseCandidate(matches, searchTitle, interpreted);
       if (selected.mode === 'confirm') {
+        const decoratedCandidates = await decorateCandidates(request, selected.candidates || []);
+        const decoratedCandidate = decoratedCandidates.find((item) => item.tmdb_id === selected.candidate?.tmdb_id && item.media_type === selected.candidate?.media_type)
+          || selected.candidate;
         return json({
           mode: 'confirm_title',
           title: selected.title,
           message: selected.message,
-          candidate: selected.candidate,
-          candidates: selected.candidates
+          candidate: decoratedCandidate,
+          candidates: decoratedCandidates
         });
       }
       if (selected.mode === 'choose') {
+        const decoratedCandidates = await decorateCandidates(request, selected.candidates || []);
         return json({
           mode: 'choose_title',
           title: selected.title,
           message: selected.message,
-          candidates: selected.candidates
+          candidates: decoratedCandidates
         });
       }
 
@@ -648,8 +652,48 @@ function toCandidate(item) {
     media_type: item.media_type,
     title: item.title || item.name || 'Unknown title',
     year: (item.release_date || item.first_air_date || '').slice(0, 4),
-    poster_path: item.poster_path || ''
+    poster_path: item.poster_path || '',
+    genre_ids: Array.isArray(item.genre_ids) ? item.genre_ids : [],
+    is_animated: Array.isArray(item.genre_ids) ? item.genre_ids.includes(16) : false,
+    studio_hint: '',
+    hint_label: ''
   };
+}
+
+async function decorateCandidates(request, candidates) {
+  const list = Array.isArray(candidates) ? candidates.slice(0, 5) : [];
+  return Promise.all(list.map(async (candidate) => {
+    try {
+      const endpoint = candidate.media_type === 'tv' ? 'tv' : 'movie';
+      const details = await fetchLocalJson(request, `/api/tmdb/${endpoint}/${candidate.tmdb_id}`);
+      const companies = Array.isArray(details.production_companies) ? details.production_companies : [];
+      const studio = companies.find((company) => /disney|pixar|marvel|lucasfilm/i.test(String(company.name || '')))
+        || companies[0]
+        || null;
+      const isAnimated = Array.isArray(details.genres) ? details.genres.some((genre) => Number(genre.id) === 16 || /animation/i.test(String(genre.name || ''))) : candidate.is_animated;
+      const studioHint = studio?.name || '';
+      const hintParts = [
+        candidate.year ? String(candidate.year) : '',
+        isAnimated ? 'Animated' : '',
+        studioHint
+      ].filter(Boolean);
+      return {
+        ...candidate,
+        is_animated: !!isAnimated,
+        studio_hint: studioHint,
+        hint_label: hintParts.join(' • ')
+      };
+    } catch {
+      const hintParts = [
+        candidate.year ? String(candidate.year) : '',
+        candidate.is_animated ? 'Animated' : ''
+      ].filter(Boolean);
+      return {
+        ...candidate,
+        hint_label: hintParts.join(' • ')
+      };
+    }
+  }));
 }
 
 function getCertRating(mediaType, ratings) {

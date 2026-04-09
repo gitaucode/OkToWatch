@@ -21,6 +21,7 @@
     loadingStage: '',
     loadingTimer: null,
     context: null,
+    lastResolvedTitle: null,
     pendingQuestion: '',
     pendingChoice: null,
     messages: []
@@ -445,10 +446,17 @@
   .cv-assistant-msg li { margin: 0.18rem 0; }
   .cv-assistant-choice-list, .cv-assistant-followups, .cv-assistant-suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .cv-assistant-chip {
-    border: 1px solid rgba(19,28,53,0.08); background: white; color: #131C35; cursor: pointer;
-    border-radius: 999px; padding: 0.52rem 0.8rem; font-size: 0.77rem; font-weight: 700;
-  }
+      border: 1px solid rgba(19,28,53,0.08); background: white; color: #131C35; cursor: pointer;
+      border-radius: 999px; padding: 0.52rem 0.8rem; font-size: 0.77rem; font-weight: 700;
+    }
   .cv-assistant-chip:hover { background: #EEF2FA; }
+  .cv-assistant-chip-hint { display: block; margin-top: 0.2rem; font-size: 0.66rem; font-weight: 600; color: #64748b; }
+  .cv-assistant-link {
+    border: none; background: transparent; padding: 0; cursor: pointer;
+    font-size: 0.76rem; font-weight: 800; color: #131C35;
+    text-decoration: underline; text-underline-offset: 0.16rem;
+  }
+  .cv-assistant-link:hover { color: #34456f; }
   .cv-assistant-suggestions { padding: 0 1rem 0.85rem; }
   .cv-assistant-form { display: flex; gap: 0.6rem; padding: 0.95rem 1rem 1rem; border-top: 1px solid rgba(19,28,53,0.08); }
   .cv-assistant-input {
@@ -677,7 +685,18 @@
       const pageContext = getPageAssistantContext();
       if (pageContext) {
         assistantState.context = pageContext;
+        assistantState.lastResolvedTitle = {
+          tmdb_id: pageContext.tmdb_id,
+          media_type: pageContext.media_type,
+          title: pageContext.title
+        };
       }
+    }
+
+    function openAssistantBreakdown(context) {
+      const target = context || assistantState.context || assistantState.lastResolvedTitle;
+      if (!target?.tmdb_id || !target?.media_type) return;
+      window.location.href = `/index?id=${encodeURIComponent(target.tmdb_id)}&type=${encodeURIComponent(target.media_type)}`;
     }
 
     function renderAssistantSuggestions() {
@@ -722,7 +741,7 @@
             <p>${escapeHtml(message.tldr || '')}</p>
             <div class="cv-assistant-choice-list" data-choice-index="${index}">
               ${(message.candidates || []).map((candidate, candidateIndex) =>
-                `<button type="button" class="cv-assistant-chip" data-choice-index="${index}" data-candidate-index="${candidateIndex}">${escapeHtml(candidate.label || candidate.title || 'Choose')}${candidate.year ? ` (${escapeHtml(candidate.year)})` : ''}</button>`
+                `<button type="button" class="cv-assistant-chip" data-choice-index="${index}" data-candidate-index="${candidateIndex}">${escapeHtml(candidate.label || candidate.title || 'Choose')}${candidate.year ? ` (${escapeHtml(candidate.year)})` : ''}${candidate.hint_label ? `<span class="cv-assistant-chip-hint">${escapeHtml(candidate.hint_label)}</span>` : ''}</button>`
               ).join('')}
             </div>
           </div>`;
@@ -733,11 +752,15 @@
         const followUps = Array.isArray(message.followUps) && message.followUps.length
           ? `<div class="cv-assistant-followups">${message.followUps.map((item) => `<button type="button" class="cv-assistant-chip" data-followup="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div>`
           : '';
+        const breakdownLink = message.context?.tmdb_id && message.context?.media_type
+          ? `<div class="cv-assistant-followups"><button type="button" class="cv-assistant-link" data-open-breakdown="${index}">Open full breakdown</button></div>`
+          : '';
         return `<div class="cv-assistant-msg assistant">
           ${message.title ? `<h4>${escapeHtml(message.title)}</h4>` : ''}
           <p>${escapeHtml(message.tldr || '')}</p>
           ${bullets}
           ${followUps}
+          ${breakdownLink}
         </div>`;
       }).join('');
       const typingMarkup = assistantState.loading
@@ -794,6 +817,35 @@
       if (yearMatch) {
         const byYear = candidates.filter((candidate) => String(candidate.year || '') === yearMatch[0]);
         if (byYear.length === 1) return byYear[0];
+      }
+
+      if (/(older|oldest|earlier|original)/i.test(text)) {
+        const sortedByOldest = candidates
+          .filter((candidate) => Number(candidate.year))
+          .slice()
+          .sort((a, b) => Number(a.year) - Number(b.year));
+        if (sortedByOldest[0]) return sortedByOldest[0];
+      }
+
+      if (/(newer|newest|latest|recent)/i.test(text)) {
+        const sortedByNewest = candidates
+          .filter((candidate) => Number(candidate.year))
+          .slice()
+          .sort((a, b) => Number(b.year) - Number(a.year));
+        if (sortedByNewest[0]) return sortedByNewest[0];
+      }
+
+      if (/(animated|cartoon|kids one)/i.test(text)) {
+        const animated = candidates.filter((candidate) => candidate.is_animated || /animated/i.test(String(candidate.hint_label || '')));
+        if (animated.length === 1) return animated[0];
+      }
+
+      if (/(disney|pixar|marvel|lucasfilm)/i.test(text)) {
+        const studio = candidates.filter((candidate) => {
+          const haystack = `${candidate.studio_hint || ''} ${candidate.hint_label || ''}`.toLowerCase();
+          return /(disney|pixar|marvel|lucasfilm)/i.test(haystack);
+        });
+        if (studio.length === 1) return studio[0];
       }
 
       const byLabel = candidates.filter((candidate) => {
@@ -903,6 +955,13 @@
           });
         } else if (data.mode === 'answer') {
           assistantState.context = data.context || assistantState.context;
+          if (data.context?.tmdb_id && data.context?.media_type) {
+            assistantState.lastResolvedTitle = {
+              tmdb_id: data.context.tmdb_id,
+              media_type: data.context.media_type,
+              title: data.context.title || assistantState.lastResolvedTitle?.title || ''
+            };
+          }
           assistantState.pendingChoice = null;
           assistantState.messages.push({
             role: 'assistant',
@@ -910,7 +969,8 @@
             title: data.title,
             tldr: data.tldr,
             bullets: data.bullets || [],
-            followUps: data.followUps || []
+            followUps: data.followUps || [],
+            context: data.context || assistantState.context || null
           });
         } else if (data.mode === 'limit') {
           assistantState.pendingChoice = null;
@@ -1022,6 +1082,13 @@
         const followup = e.target.closest('[data-followup]');
         if (followup) {
           await submitAssistantQuestion(followup.getAttribute('data-followup') || '');
+          return;
+        }
+        const openBreakdown = e.target.closest('[data-open-breakdown]');
+        if (openBreakdown) {
+          const breakdownIndex = Number(openBreakdown.getAttribute('data-open-breakdown'));
+          const targetMessage = assistantState.messages[breakdownIndex];
+          openAssistantBreakdown(targetMessage?.context || null);
           return;
         }
         const confirmBtn = e.target.closest('[data-confirm-choice]');
