@@ -20,6 +20,7 @@
     loading: false,
     context: null,
     pendingQuestion: '',
+    pendingChoice: null,
     messages: []
   };
 
@@ -744,6 +745,53 @@
       }
     }
 
+    function resolvePendingAssistantChoice(input) {
+      const pending = assistantState.pendingChoice;
+      const text = String(input || '').trim();
+      if (!pending || !text) return null;
+
+      const normalized = text.toLowerCase();
+      const candidates = Array.isArray(pending.candidates) ? pending.candidates : [];
+      if (!candidates.length) return null;
+
+      const ordinalMap = [
+        ['first', 0], ['1st', 0], ['one', 0],
+        ['second', 1], ['2nd', 1], ['two', 1],
+        ['third', 2], ['3rd', 2], ['three', 2],
+        ['fourth', 3], ['4th', 3], ['four', 3],
+        ['fifth', 4], ['5th', 4], ['five', 4],
+        ['last', candidates.length - 1]
+      ];
+      for (const [token, index] of ordinalMap) {
+        if (normalized.includes(` ${token} `) || normalized === token || normalized.endsWith(` ${token}`) || normalized.startsWith(`${token} `)) {
+          return candidates[index] || null;
+        }
+      }
+
+      const yearMatch = normalized.match(/\b(19|20)\d{2}\b/);
+      if (yearMatch) {
+        const byYear = candidates.filter((candidate) => String(candidate.year || '') === yearMatch[0]);
+        if (byYear.length === 1) return byYear[0];
+      }
+
+      const byLabel = candidates.filter((candidate) => {
+        const label = String(candidate.label || candidate.title || '').toLowerCase();
+        return label && normalized.includes(label);
+      });
+      if (byLabel.length === 1) return byLabel[0];
+
+      if (pending.kind === 'prompt') {
+        if (/(spoken|audio|dubbed|dub|subtitle|subtitles|english|spanish)/i.test(text)) {
+          return candidates.find((candidate) => /spoken|audio|dub|subtitle/i.test(String(candidate.label || candidate.prompt || ''))) || null;
+        }
+        if (/(bad language|swearing|swear|curse|profanity)/i.test(text)) {
+          return candidates.find((candidate) => /bad language|swearing|swear/i.test(String(candidate.label || candidate.prompt || ''))) || null;
+        }
+      }
+
+      return null;
+    }
+
     async function submitAssistantQuestion(question, explicitContext) {
       const q = String(question || '').trim();
       if (!q || !assistantSend) return;
@@ -780,6 +828,12 @@
 
         if (data.mode === 'choose_title') {
           assistantState.pendingQuestion = q;
+          assistantState.pendingChoice = {
+            kind: 'title',
+            question: q,
+            candidates: data.candidates || [],
+            context: null
+          };
           assistantState.messages.push({
             role: 'assistant',
             kind: 'choose_title',
@@ -788,6 +842,12 @@
             candidates: data.candidates || []
           });
         } else if (data.mode === 'choose_prompt') {
+          assistantState.pendingChoice = {
+            kind: 'prompt',
+            question: q,
+            candidates: data.options || [],
+            context: data.context || assistantState.context || null
+          };
           assistantState.messages.push({
             role: 'assistant',
             kind: 'choose_title',
@@ -798,6 +858,7 @@
           });
         } else if (data.mode === 'answer') {
           assistantState.context = data.context || assistantState.context;
+          assistantState.pendingChoice = null;
           assistantState.messages.push({
             role: 'assistant',
             kind: 'answer',
@@ -807,6 +868,7 @@
             followUps: data.followUps || []
           });
         } else if (data.mode === 'limit') {
+          assistantState.pendingChoice = null;
           assistantState.messages.push({
             role: 'assistant',
             kind: 'answer',
@@ -816,6 +878,7 @@
             followUps: []
           });
         } else {
+          assistantState.pendingChoice = null;
           assistantState.messages.push({
             role: 'assistant',
             kind: 'answer',
@@ -827,6 +890,7 @@
         }
       } catch (error) {
         console.error('Assistant error:', error);
+        assistantState.pendingChoice = null;
         assistantState.messages.push({
           role: 'assistant',
           kind: 'answer',
@@ -856,6 +920,18 @@
         e.preventDefault();
         const question = assistantInput.value.trim();
         assistantInput.value = '';
+        const resolvedChoice = resolvePendingAssistantChoice(question);
+        if (resolvedChoice) {
+          if (resolvedChoice.prompt) {
+            await submitAssistantQuestion(resolvedChoice.prompt, assistantState.pendingChoice?.context || assistantState.context || null);
+            return;
+          }
+          await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${resolvedChoice.title}`, {
+            tmdb_id: resolvedChoice.tmdb_id,
+            media_type: resolvedChoice.media_type
+          });
+          return;
+        }
         await submitAssistantQuestion(question);
       });
 
