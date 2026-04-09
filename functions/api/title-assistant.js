@@ -7,8 +7,10 @@ const CATEGORY_HINTS = [
   { key: 'themes', label: 'Themes', match: /(theme|themes|message|messages|bullying|abuse|grief|sad|self-harm|mature)/i }
 ];
 
+const EXTRACTION_MODEL = 'llama-3.1-8b-instant';
+
 export async function onRequestPost(context) {
-  const { request } = context;
+  const { request, env } = context;
 
   let body;
   try {
@@ -39,58 +41,69 @@ export async function onRequestPost(context) {
       });
     }
 
+    let interpreted = null;
+
     if (providedContext?.analysis && providedContext?.title) {
-      const answer = buildAssistantAnswer(question, providedContext, extractAge(question));
+      interpreted = await interpretQuestion(question, env);
+      const answer = buildAssistantAnswer(question, providedContext, interpreted?.age ?? extractAge(question), interpreted);
       return json({ mode: 'answer', ...answer, context: providedContext });
     }
 
+    interpreted = await interpretQuestion(question, env);
+
     let titleContext = null;
     if (selectedId && selectedType) {
-      titleContext = await loadTitleContext({ request, tmdbId: selectedId, mediaType: selectedType, question });
+      titleContext = await loadTitleContext({
+        request,
+        tmdbId: selectedId,
+        mediaType: selectedType,
+        question,
+        childAge: interpreted?.age ?? extractAge(question)
+      });
     } else {
-      const extracted = extractSearchQuery(question);
-      if (!extracted) {
+      const searchTitle = firstNonEmpty(
+        interpreted?.searchTitle,
+        interpreted?.alternateTitle,
+        extractSearchQuery(question)
+      );
+
+      if (!searchTitle) {
         return json({
           mode: 'need_title',
           title: 'Hi there',
-          message: 'Which movie or show are you asking about?'
+          message: interpreted?.clarificationPrompt || 'Which movie or show are you asking about?'
         });
       }
 
-      const matches = await searchTitles({ request, query: extracted });
+      let matches = await searchTitles({ request, query: searchTitle });
+      if (!matches.length && interpreted?.alternateTitle && interpreted.alternateTitle !== searchTitle) {
+        matches = await searchTitles({ request, query: interpreted.alternateTitle });
+      }
+
       if (!matches.length) {
         return json({
           mode: 'need_title',
           title: 'I couldn’t find that one yet',
-          message: `I couldn’t match "${extracted}" to a movie or show. Try the exact title and I’ll take it from there.`
+          message: `I couldn’t match "${searchTitle}" to a movie or show. Try the exact title and I’ll take it from there.`
         });
       }
 
-      const exactMatches = matches.filter((item) => normalizeTitle(item.title || item.name) === normalizeTitle(extracted));
-      if (exactMatches.length > 1) {
+      const selected = chooseCandidate(matches, searchTitle, interpreted);
+      if (selected.mode === 'choose') {
         return json({
           mode: 'choose_title',
-          title: 'A few titles match',
-          message: `I found a few matches for "${extracted}". Which one did you mean?`,
-          candidates: exactMatches.slice(0, 5).map(toCandidate)
+          title: selected.title,
+          message: selected.message,
+          candidates: selected.candidates
         });
       }
 
-      if (!exactMatches.length && matches.length > 1) {
-        return json({
-          mode: 'choose_title',
-          title: 'A few titles came up',
-          message: `I found a few close matches for "${extracted}". Pick the right one and I’ll break it down.`,
-          candidates: matches.slice(0, 5).map(toCandidate)
-        });
-      }
-
-      const chosen = exactMatches[0] || matches[0];
       titleContext = await loadTitleContext({
         request,
-        tmdbId: String(chosen.id),
-        mediaType: chosen.media_type,
-        question
+        tmdbId: String(selected.item.id),
+        mediaType: selected.item.media_type,
+        question,
+        childAge: interpreted?.age ?? extractAge(question)
       });
     }
 
@@ -102,7 +115,7 @@ export async function onRequestPost(context) {
       }, 500);
     }
 
-    const answer = buildAssistantAnswer(question, titleContext, extractAge(question));
+    const answer = buildAssistantAnswer(question, titleContext, interpreted?.age ?? extractAge(question), interpreted);
     return json({ mode: 'answer', ...answer, context: titleContext, usage: titleContext.usage || null });
   } catch (error) {
     console.error('title-assistant error', error);
@@ -127,6 +140,88 @@ export async function onRequestOptions() {
   });
 }
 
+async function interpretQuestion(question, env) {
+  if (!env.GROQ_API_KEY) {
+    return heuristicInterpretQuestion(question);
+  }
+
+  const system = [
+    'You extract the likely movie or TV title and user intent from a parent safety question.',
+    'Respond with valid JSON only.',
+    'Never invent title facts.',
+    'If the user did not provide a title, leave searchTitle empty.',
+    'requestType must be one of: summary, suitability, scary, bad_language, violence, sex, drugs, themes, audio_language, sensitive_child.',
+    'clarificationPrompt should be short, friendly, and only ask for the missing title or missing distinction.'
+  ].join(' ');
+
+  const user = [
+    'Question: ' + question,
+    '',
+    'Return this JSON shape exactly:',
+    '{',
+    '  "searchTitle": "best guess title string or empty string",',
+    '  "alternateTitle": "optional alternate guess or empty string",',
+    '  "requestType": "summary|suitability|scary|bad_language|violence|sex|drugs|themes|audio_language|sensitive_child",',
+    '  "age": null,',
+    '  "needsClarification": false,',
+    '  "clarificationPrompt": "short friendly prompt or empty string"',
+    '}'
+  ].join('\n');
+
+  try {
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + env.GROQ_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: EXTRACTION_MODEL,
+        temperature: 0,
+        stream: false,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user }
+        ]
+      })
+    });
+
+    if (!groqRes.ok) {
+      return heuristicInterpretQuestion(question);
+    }
+
+    const groqData = await groqRes.json();
+    let raw = groqData.choices?.[0]?.message?.content || '';
+    if (Array.isArray(raw)) raw = raw.map((item) => item?.text || '').join('');
+    raw = String(raw).replace(/```json|```/gi, '').trim();
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    if (start === -1 || end === -1) return heuristicInterpretQuestion(question);
+    const parsed = JSON.parse(raw.slice(start, end + 1));
+    return {
+      searchTitle: String(parsed.searchTitle || '').trim(),
+      alternateTitle: String(parsed.alternateTitle || '').trim(),
+      requestType: normalizeRequestType(parsed.requestType),
+      age: normalizeAge(parsed.age),
+      needsClarification: !!parsed.needsClarification,
+      clarificationPrompt: String(parsed.clarificationPrompt || '').trim()
+    };
+  } catch {
+    return heuristicInterpretQuestion(question);
+  }
+}
+
+function heuristicInterpretQuestion(question) {
+  return {
+    searchTitle: extractSearchQuery(question),
+    alternateTitle: '',
+    requestType: inferRequestType(question),
+    age: extractAge(question),
+    needsClarification: false,
+    clarificationPrompt: 'Which movie or show are you asking about?'
+  };
+}
+
 async function searchTitles({ request, query }) {
   const url = new URL('/api/tmdb/search/multi', request.url);
   url.searchParams.set('query', query);
@@ -138,7 +233,39 @@ async function searchTitles({ request, query }) {
   return (data.results || []).filter((item) => item.media_type === 'movie' || item.media_type === 'tv');
 }
 
-async function loadTitleContext({ request, tmdbId, mediaType, question }) {
+function chooseCandidate(matches, searchTitle, interpreted) {
+  const normalizedSearch = normalizeTitle(searchTitle);
+  const exactMatches = matches.filter((item) => normalizeTitle(item.title || item.name) === normalizedSearch);
+  if (exactMatches.length === 1) {
+    return { mode: 'selected', item: exactMatches[0] };
+  }
+  if (exactMatches.length > 1) {
+    return {
+      mode: 'choose',
+      title: 'A few titles match',
+      message: `I found a few matches for "${searchTitle}". Which one did you mean?`,
+      candidates: exactMatches.slice(0, 5).map(toCandidate)
+    };
+  }
+
+  const strongPrefixMatches = matches.filter((item) => {
+    const title = normalizeTitle(item.title || item.name);
+    return title.startsWith(normalizedSearch) || normalizedSearch.startsWith(title);
+  });
+
+  if (strongPrefixMatches.length === 1 && !interpreted?.needsClarification) {
+    return { mode: 'selected', item: strongPrefixMatches[0] };
+  }
+
+  return {
+    mode: 'choose',
+    title: 'A few titles came up',
+    message: `I found a few close matches for "${searchTitle}". Pick the right one and I’ll break it down.`,
+    candidates: matches.slice(0, 5).map(toCandidate)
+  };
+}
+
+async function loadTitleContext({ request, tmdbId, mediaType, question, childAge }) {
   const endpoint = mediaType === 'tv' ? 'tv' : 'movie';
   const [details, ratings] = await Promise.all([
     fetchLocalJson(request, `/api/tmdb/${endpoint}/${tmdbId}?append_to_response=credits,keywords`),
@@ -156,7 +283,6 @@ async function loadTitleContext({ request, tmdbId, mediaType, question }) {
     .slice(0, 20)
     .join(', ');
   const certRating = getCertRating(mediaType, ratings);
-  const childAge = extractAge(question);
 
   const analyzeRes = await fetch(new URL('/api/analyze', request.url).toString(), {
     method: 'POST',
@@ -201,13 +327,13 @@ async function loadTitleContext({ request, tmdbId, mediaType, question }) {
   };
 }
 
-function buildAssistantAnswer(question, context, requestedAge) {
+function buildAssistantAnswer(question, context, requestedAge, interpreted) {
   const analysis = context.analysis || {};
   const audienceKey = getAudienceKey(requestedAge);
   const verdict = analysis.verdicts?.[audienceKey] || analysis.verdicts?.young || null;
   const categories = Array.isArray(analysis.categories) ? analysis.categories : [];
-  const languageQuestion = isAudioLanguageQuestion(question);
-  const categoryIntent = CATEGORY_HINTS.find((item) => item.match.test(question));
+  const requestType = normalizeRequestType(interpreted?.requestType) || inferRequestType(question);
+  const categoryIntent = findCategoryIntent(question, requestType);
   const topConcerns = categories
     .filter((cat) => cat.level && cat.level !== 'none')
     .slice()
@@ -218,7 +344,7 @@ function buildAssistantAnswer(question, context, requestedAge) {
   let tldr = analysis.summary || `Here’s the quick read on ${context.title}.`;
   let bullets = [];
 
-  if (languageQuestion) {
+  if (requestType === 'audio_language') {
     const languageInfo = describeLanguageInfo(context);
     responseTitle = `Language in ${context.title}`;
     tldr = languageInfo.summary;
@@ -240,17 +366,10 @@ function buildAssistantAnswer(question, context, requestedAge) {
         topConcerns.length ? `The bigger concerns here are ${topConcerns.map((item) => item.name.toLowerCase()).join(', ')}.` : 'The breakdown doesn’t flag any major concerns.'
       ].filter(Boolean);
     }
-  } else if (/(tldr|summary|quick|bullet|bullets|main concerns|break down|breakdown)/i.test(question) || !categories.length) {
-    responseTitle = `Quick take on ${context.title}`;
-    bullets = [
-      verdict ? `For ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}${verdict.sub ? ` - ${verdict.sub}.` : '.'}` : null,
-      topConcerns[0] ? `Biggest concern: ${topConcerns[0].name} (${topConcerns[0].level}).` : 'No major concerns were highlighted in the main categories.',
-      topConcerns[1] ? `Also worth noting: ${topConcerns[1].name} (${topConcerns[1].level}).` : null
-    ].filter(Boolean);
-  } else if (/(sensitive|gets scared easily|easily scared|nervous kid)/i.test(question)) {
-    responseTitle = `For a sensitive viewer`;
+  } else if (requestType === 'sensitive_child') {
+    responseTitle = 'For a sensitive viewer';
     tldr = verdict
-      ? `${context.title} may feel ${verdict.level || 'a bit'} intense depending on what your child reacts to most.`
+      ? `${context.title} may feel a bit intense depending on what your child reacts to most.`
       : `Here’s the quick read for a more sensitive viewer.`;
     bullets = [
       topConcerns.find((item) => /horror|fear|violence/i.test(item.name))
@@ -258,6 +377,13 @@ function buildAssistantAnswer(question, context, requestedAge) {
         : 'I don’t see a major fear-based trigger called out in the top categories.',
       verdict ? `Overall verdict for ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}.` : null,
       analysis.summary || null
+    ].filter(Boolean);
+  } else if (requestType === 'summary' || requestType === 'suitability') {
+    responseTitle = `Quick take on ${context.title}`;
+    bullets = [
+      verdict ? `For ${audienceLabel(audienceKey, requestedAge)}: ${verdict.text}${verdict.sub ? ` - ${verdict.sub}.` : '.'}` : null,
+      topConcerns[0] ? `Biggest concern: ${topConcerns[0].name} (${topConcerns[0].level}).` : 'No major concerns were highlighted in the main categories.',
+      topConcerns[1] ? `Also worth noting: ${topConcerns[1].name} (${topConcerns[1].level}).` : null
     ].filter(Boolean);
   } else {
     responseTitle = `Quick answer on ${context.title}`;
@@ -272,12 +398,18 @@ function buildAssistantAnswer(question, context, requestedAge) {
     title: responseTitle,
     tldr,
     bullets,
-    followUps: languageQuestion
-      ? ['Any bad language?', 'Give me the TL;DR', 'Would this work for a sensitive child?']
-      : categoryIntent
-        ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
-        : ['Give me the TL;DR', 'How scary is it?', 'Would this work for a sensitive child?']
+    followUps: getFollowUps(requestType)
   };
+}
+
+function getFollowUps(requestType) {
+  if (requestType === 'audio_language') {
+    return ['Any bad language?', 'Give me the TL;DR', 'Would this work for a sensitive child?'];
+  }
+  if (requestType === 'scary') {
+    return ['Give me the TL;DR', 'Any bad language?', 'Would this work for a sensitive child?'];
+  }
+  return ['Give me the TL;DR', 'How scary is it?', 'Any bad language?'];
 }
 
 function parseAnalyzePayload(analyzeData) {
@@ -298,8 +430,8 @@ function extractSearchQuery(question) {
   const quoted = question.match(/["“”']([^"“”']{2,80})["“”']/);
   if (quoted?.[1]) return quoted[1].trim();
 
-  let query = question.trim();
-  query = query.replace(/\b(is|was|are|do you think|can you tell me if|can you tell me|tell me if|tell me about|what about|is there anything about|would)\b/gi, ' ');
+  let query = String(question || '').trim();
+  query = query.replace(/\b(is|was|are|do you think|can you tell me if|can you tell me|tell me if|tell me about|what about|is there anything about|would|how is)\b/gi, ' ');
   query = query.replace(/\b(okay|ok|safe|appropriate|good|fine|too scary|good for|work for|right for)\b.*$/i, ' ');
   query = query.replace(/\bfor my\b.*$/i, ' ');
   query = query.replace(/\bfor a\b.*$/i, ' ');
@@ -310,21 +442,46 @@ function extractSearchQuery(question) {
 }
 
 function extractAge(question) {
-  const match = question.match(/(\d{1,2})\s*(?:year old|years old|yo\b|yr old|y\/o|age)\b/i) || question.match(/\bfor\s+(\d{1,2})\b/i);
+  const match = String(question || '').match(/(\d{1,2})\s*(?:year old|years old|yo\b|yr old|y\/o|age)\b/i) || String(question || '').match(/\bfor\s+(\d{1,2})\b/i);
   const age = Number(match?.[1] || 0);
   return age > 0 && age < 19 ? age : null;
 }
 
 function isSupportedFollowUp(question) {
-  return /(tldr|summary|quick|bullet|bullets|breakdown|main concerns|scary|scared|fear|horror|intense|violence|violent|blood|gore|language|english|spanish|dubbed|dub|subtitle|subtitles|audio|original language|swear|curse|profanity|sex|sexual|nudity|romance|drugs|alcohol|smoking|themes|bullying|abuse|grief|self-harm|mature|safe|okay|appropriate|suitable|bad language|work for|kid|child|year old|sensitive)/i.test(String(question || ''));
+  return /(tldr|summary|quick|bullet|bullets|breakdown|main concerns|scary|scared|fear|horror|intense|violence|violent|blood|gore|language|english|spanish|dubbed|dub|subtitle|subtitles|audio|original language|spoken language|swear|curse|profanity|sex|sexual|nudity|romance|drugs|alcohol|smoking|themes|bullying|abuse|grief|self-harm|mature|safe|okay|appropriate|suitable|bad language|work for|kid|child|year old|sensitive)/i.test(String(question || ''));
 }
 
 function isGenericTitlePrompt(question) {
   return /^(summarize a movie for me|summarize a movie|summarize a show|summarize something|help me with a movie|help me with a show|tell me about a movie|tell me about a show|recommend a movie|recommend a show|is it okay for a \d{1,2}-year-old|what are the main concerns|how scary is it|give me the tldr)$/i.test(String(question || '').trim());
 }
 
-function isAudioLanguageQuestion(question) {
-  return /(what language|which language|is it english|is it spanish|spanish|english|dubbed|dub|subtitles|subtitle|audio|original language|spoken language)/i.test(String(question || ''));
+function inferRequestType(question) {
+  const value = String(question || '');
+  if (/(what language|which language|is it english|is it spanish|spanish|english|dubbed|dub|subtitles|subtitle|audio|original language|spoken language)/i.test(value)) return 'audio_language';
+  if (/(sensitive|gets scared easily|easily scared|nervous kid)/i.test(value)) return 'sensitive_child';
+  if (/(scary|scared|fear|horror|creepy|intense|nightmare|fright)/i.test(value)) return 'scary';
+  if (/(swear|swearing|curse|cursing|profanity|bad words|foul language)/i.test(value)) return 'bad_language';
+  if (/(violence|violent|fight|fighting|blood|gore|weapon|kill|battle|action)/i.test(value)) return 'violence';
+  if (/(sex|sexual|nudity|nude|romance|kissing|make out)/i.test(value)) return 'sex';
+  if (/(drugs|drug|alcohol|drinking|smoking|weed|substance)/i.test(value)) return 'drugs';
+  if (/(theme|themes|message|messages|bullying|abuse|grief|sad|self-harm|mature)/i.test(value)) return 'themes';
+  if (/(okay|ok|safe|appropriate|good for|work for|right for|suitable)/i.test(value)) return 'suitability';
+  return 'summary';
+}
+
+function normalizeRequestType(value) {
+  const allowed = new Set(['summary', 'suitability', 'scary', 'bad_language', 'violence', 'sex', 'drugs', 'themes', 'audio_language', 'sensitive_child']);
+  return allowed.has(value) ? value : 'summary';
+}
+
+function findCategoryIntent(question, requestType) {
+  if (requestType === 'bad_language') return CATEGORY_HINTS.find((item) => item.key === 'language');
+  if (requestType === 'violence') return CATEGORY_HINTS.find((item) => item.key === 'violence');
+  if (requestType === 'sex') return CATEGORY_HINTS.find((item) => item.key === 'sex');
+  if (requestType === 'drugs') return CATEGORY_HINTS.find((item) => item.key === 'drugs');
+  if (requestType === 'themes') return CATEGORY_HINTS.find((item) => item.key === 'themes');
+  if (requestType === 'scary') return CATEGORY_HINTS.find((item) => item.key === 'horror');
+  return CATEGORY_HINTS.find((item) => item.match.test(question));
 }
 
 function describeLanguageInfo(context) {
@@ -431,6 +588,19 @@ function forwardedAuthHeaders(request) {
   const authHeader = request.headers.get('Authorization');
   if (authHeader) headers.Authorization = authHeader;
   return headers;
+}
+
+function firstNonEmpty(...values) {
+  for (const value of values) {
+    const stringValue = String(value || '').trim();
+    if (stringValue) return stringValue;
+  }
+  return '';
+}
+
+function normalizeAge(value) {
+  const age = Number(value);
+  return age > 0 && age < 19 ? age : null;
 }
 
 function json(data, status = 200) {
