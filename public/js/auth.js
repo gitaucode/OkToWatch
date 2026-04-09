@@ -790,7 +790,7 @@
           assistantState.messages.push({
             role: 'assistant',
             kind: 'answer',
-            title: 'Need a title',
+            title: data.title || 'Hi there',
             tldr: data.message || 'Ask me about a specific movie or show title and I’ll help from the real result data.',
             bullets: [],
             followUps: []

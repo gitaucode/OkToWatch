@@ -23,13 +23,14 @@ export async function onRequestPost(context) {
   const selectedType = body.media_type || providedContext?.media_type || '';
 
   if (!question) {
-    return json({ mode: 'need_title', message: 'Ask me about a movie or show and I’ll help break it down.' }, 400);
+    return json({ mode: 'need_title', title: 'Hi there', message: 'Which movie or show are you asking about?' }, 400);
   }
 
   try {
     if (providedContext?.analysis && providedContext?.title && !isSupportedFollowUp(question)) {
       return json({
         mode: 'need_title',
+        title: 'Hi there',
         message: 'I can only help with movie or show safety questions, summaries, and follow-ups tied to a title.'
       });
     }
@@ -47,7 +48,8 @@ export async function onRequestPost(context) {
       if (!extracted) {
         return json({
           mode: 'need_title',
-          message: 'Ask me about a specific movie or show title so I can use the real safety breakdown.'
+          title: 'Hi there',
+          message: 'Which movie or show are you asking about?'
         });
       }
 
@@ -55,6 +57,7 @@ export async function onRequestPost(context) {
       if (!matches.length) {
         return json({
           mode: 'need_title',
+          title: 'Couldn’t find that title',
           message: `I couldn’t match "${extracted}" to a movie or show yet. Try the exact title.`
         });
       }
@@ -86,7 +89,7 @@ export async function onRequestPost(context) {
     }
 
     if (!titleContext) {
-      return json({ mode: 'need_title', message: 'I couldn’t load that title yet. Try again in a moment.' }, 500);
+      return json({ mode: 'need_title', title: 'Still loading', message: 'I couldn’t load that title yet. Try again in a moment.' }, 500);
     }
 
     const answer = buildAssistantAnswer(question, titleContext, extractAge(question));
@@ -257,6 +260,8 @@ function parseAnalyzePayload(analyzeData) {
 }
 
 function extractSearchQuery(question) {
+  if (isGenericTitlePrompt(question)) return '';
+
   const quoted = question.match(/["“”']([^"“”']{2,80})["“”']/);
   if (quoted?.[1]) return quoted[1].trim();
 
@@ -279,6 +284,10 @@ function extractAge(question) {
 
 function isSupportedFollowUp(question) {
   return /(tldr|summary|quick|bullet|bullets|breakdown|main concerns|scary|scared|fear|horror|intense|violence|violent|blood|gore|language|swear|curse|profanity|sex|sexual|nudity|romance|drugs|alcohol|smoking|themes|bullying|abuse|grief|self-harm|mature|safe|okay|appropriate|suitable|bad language|work for|kid|child|year old|sensitive)/i.test(String(question || ''));
+}
+
+function isGenericTitlePrompt(question) {
+  return /^(summarize a movie for me|summarize a movie|summarize a show|summarize something|help me with a movie|help me with a show|tell me about a movie|tell me about a show|recommend a movie|recommend a show|is it okay for a \d{1,2}-year-old|what are the main concerns|how scary is it|give me the tldr)$/i.test(String(question || '').trim());
 }
 
 function getAudienceKey(age) {
