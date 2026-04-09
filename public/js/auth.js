@@ -388,8 +388,8 @@
   .cv-nav-mobile-links { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.85rem; }
   .cv-nav-mobile-actions { display: flex; flex-direction: column; gap: 0.55rem; padding-top: 0.85rem; border-top: 1px solid rgba(0,0,0,0.07); }
   .cv-assistant {
-    position: fixed; left: 18px; bottom: 18px; z-index: 1002;
-    display: flex; flex-direction: column; align-items: flex-start; gap: 0.65rem;
+    position: fixed; right: 18px; bottom: 18px; z-index: 1002;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.65rem;
   }
   .cv-assistant-nudge {
     border: none; background: rgba(255,255,255,0.96); color: #131C35;
@@ -656,22 +656,6 @@
 
     function ensureAssistantState() {
       const pageContext = getPageAssistantContext();
-      if (!assistantState.messages.length) {
-        assistantState.messages = [{
-          role: 'assistant',
-          kind: 'answer',
-          title: 'Ask me about a movie or show',
-          tldr: 'I only answer from OkToWatch title data. Ask for a TL;DR, main concerns, scary moments, or whether a title works for a certain age.',
-          bullets: [
-            'I use the same title search and breakdown pipeline as the full result page.',
-            'If I find multiple matches, I will ask which one you mean.',
-            'I won’t answer non-title questions or guess beyond the title data.'
-          ],
-          followUps: pageContext
-            ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
-            : ['Give me a TL;DR for a movie', 'Is it okay for a 9-year-old?', 'How scary is it?']
-        }];
-      }
       if (pageContext) {
         assistantState.context = pageContext;
       }
@@ -679,6 +663,10 @@
 
     function renderAssistantSuggestions() {
       if (!assistantSuggestions) return;
+      if (!assistantState.messages.length) {
+        assistantSuggestions.innerHTML = '';
+        return;
+      }
       const prompts = assistantState.context
         ? ['Give me the TL;DR', 'How scary is it?', 'Any bad language?']
         : ['Summarize a movie for me', 'Is it okay for a 9-year-old?', 'What are the main concerns?'];
@@ -689,6 +677,10 @@
 
     function renderAssistantMessages() {
       if (!assistantMessages) return;
+      if (!assistantState.messages.length) {
+        assistantMessages.innerHTML = '';
+        return;
+      }
       assistantMessages.innerHTML = assistantState.messages.map((message, index) => {
         if (message.role === 'user') {
           return `<div class="cv-assistant-msg user">${escapeHtml(message.text)}</div>`;
