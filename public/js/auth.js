@@ -22,6 +22,7 @@
     loadingTimer: null,
     context: null,
     lastResolvedTitle: null,
+    memorySummary: '',
     pendingQuestion: '',
     pendingChoice: null,
     messages: []
@@ -699,6 +700,33 @@
       window.location.href = `/index?id=${encodeURIComponent(target.tmdb_id)}&type=${encodeURIComponent(target.media_type)}`;
     }
 
+    function candidateDisplayTitle(candidate) {
+      if (!candidate) return 'that title';
+      return candidate.year ? `${candidate.title} (${candidate.year})` : (candidate.title || 'that title');
+    }
+
+    function pushAssistantNote(title, tldr) {
+      assistantState.messages.push({
+        role: 'assistant',
+        kind: 'answer',
+        title,
+        tldr,
+        bullets: [],
+        followUps: []
+      });
+      renderAssistantMessages();
+    }
+
+    function rememberResolvedTitle(candidate) {
+      if (!candidate?.tmdb_id || !candidate?.media_type) return;
+      assistantState.lastResolvedTitle = {
+        tmdb_id: candidate.tmdb_id,
+        media_type: candidate.media_type,
+        title: candidate.title || ''
+      };
+      assistantState.memorySummary = `Current title: ${candidateDisplayTitle(candidate)}`;
+    }
+
     function renderAssistantSuggestions() {
       if (!assistantSuggestions) return;
       if (!assistantState.messages.length) {
@@ -798,6 +826,7 @@
       }
       const candidates = Array.isArray(pending.candidates) ? pending.candidates : [];
       if (!candidates.length) return null;
+      let filtered = candidates.slice();
 
       const ordinalMap = [
         ['first', 0], ['1st', 0], ['one', 0],
@@ -815,12 +844,24 @@
 
       const yearMatch = normalized.match(/\b(19|20)\d{2}\b/);
       if (yearMatch) {
-        const byYear = candidates.filter((candidate) => String(candidate.year || '') === yearMatch[0]);
+        const byYear = filtered.filter((candidate) => String(candidate.year || '') === yearMatch[0]);
         if (byYear.length === 1) return byYear[0];
+        if (byYear.length) filtered = byYear;
+      }
+
+      const decadeMatch = normalized.match(/\b(19|20)\d0s\b/);
+      if (decadeMatch) {
+        const decadeStart = Number(decadeMatch[0].slice(0, 4));
+        const byDecade = filtered.filter((candidate) => {
+          const year = Number(candidate.year || 0);
+          return year >= decadeStart && year < decadeStart + 10;
+        });
+        if (byDecade.length === 1) return byDecade[0];
+        if (byDecade.length) filtered = byDecade;
       }
 
       if (/(older|oldest|earlier|original)/i.test(text)) {
-        const sortedByOldest = candidates
+        const sortedByOldest = filtered
           .filter((candidate) => Number(candidate.year))
           .slice()
           .sort((a, b) => Number(a.year) - Number(b.year));
@@ -828,7 +869,7 @@
       }
 
       if (/(newer|newest|latest|recent)/i.test(text)) {
-        const sortedByNewest = candidates
+        const sortedByNewest = filtered
           .filter((candidate) => Number(candidate.year))
           .slice()
           .sort((a, b) => Number(b.year) - Number(a.year));
@@ -836,7 +877,7 @@
       }
 
       if (/(animated|cartoon|kids one)/i.test(text)) {
-        const animated = candidates.filter((candidate) => candidate.is_animated || /animated/i.test(String(candidate.hint_label || '')));
+        const animated = filtered.filter((candidate) => candidate.is_animated || /animated/i.test(String(candidate.hint_label || '')));
         if (animated.length === 1) return animated[0];
         if (!animated.length) {
           return {
@@ -845,10 +886,11 @@
             tldr: 'I could not spot a clearly animated match there. Try the year, the studio, or tap one of the titles below.'
           };
         }
+        filtered = animated;
       }
 
       if (/(disney|pixar|marvel|lucasfilm)/i.test(text)) {
-        const studio = candidates.filter((candidate) => {
+        const studio = filtered.filter((candidate) => {
           const haystack = `${candidate.studio_hint || ''} ${candidate.hint_label || ''}`.toLowerCase();
           return /(disney|pixar|marvel|lucasfilm)/i.test(haystack);
         });
@@ -860,10 +902,11 @@
             tldr: 'I could not narrow that down by studio alone. Try the year or choose one of the matches.'
           };
         }
+        filtered = studio;
       }
 
       if (/(live action|live-action|real people)/i.test(text)) {
-        const liveAction = candidates.filter((candidate) => !candidate.is_animated && !/animated/i.test(String(candidate.hint_label || '')));
+        const liveAction = filtered.filter((candidate) => !candidate.is_animated && !/animated/i.test(String(candidate.hint_label || '')));
         if (liveAction.length === 1) return liveAction[0];
         if (!liveAction.length) {
           return {
@@ -872,15 +915,17 @@
             tldr: 'I could not find a clear live-action match there. Try the year or pick one of the matches below.'
           };
         }
+        filtered = liveAction;
       }
 
       if (/(sequel|part 2|part two|follow up|follow-up|next one)/i.test(text)) {
-        const sequel = candidates
+        const sequel = filtered
           .filter((candidate) => /\b2\b|ii|part 2|part two|chapter 2|chapter two/i.test(String(candidate.title || '')))
           .slice()
           .sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
         if (sequel.length === 1) return sequel[0];
-        const newest = candidates
+        if (sequel.length) filtered = sequel;
+        const newest = filtered
           .filter((candidate) => Number(candidate.year))
           .slice()
           .sort((a, b) => Number(b.year) - Number(a.year));
@@ -888,15 +933,25 @@
       }
 
       if (/(kids one|childrens one|children's one|for kids)/i.test(text)) {
-        const kidFriendly = candidates.filter((candidate) => candidate.is_animated || /disney|pixar|animated/i.test(`${candidate.studio_hint || ''} ${candidate.hint_label || ''}`));
+        const kidFriendly = filtered.filter((candidate) => candidate.is_animated || /disney|pixar|animated/i.test(`${candidate.studio_hint || ''} ${candidate.hint_label || ''}`));
         if (kidFriendly.length === 1) return kidFriendly[0];
+        if (kidFriendly.length) filtered = kidFriendly;
       }
 
-      const byLabel = candidates.filter((candidate) => {
+      const byLabel = filtered.filter((candidate) => {
         const label = String(candidate.label || candidate.title || '').toLowerCase();
         return label && normalized.includes(label);
       });
       if (byLabel.length === 1) return byLabel[0];
+      if (filtered.length === 1) return filtered[0];
+      if (filtered.length > 1 && filtered.length < candidates.length) {
+        return {
+          kind: 'narrowed',
+          title: 'I narrowed it down a bit',
+          tldr: 'These look like the closest matches based on what you said.',
+          candidates: filtered
+        };
+      }
 
       if (pending.kind === 'prompt') {
         if (/(spoken|audio|dubbed|dub|subtitle|subtitles|english|spanish)/i.test(text)) {
@@ -929,12 +984,15 @@
       renderAssistantMessages();
 
       const payload = { question: q };
-      const pageContext = explicitContext || assistantState.context || getPageAssistantContext();
+      const pageContext = explicitContext || assistantState.context || getPageAssistantContext() || assistantState.lastResolvedTitle;
       if (pageContext?.analysis && pageContext?.title) {
         payload.context = pageContext;
       } else if (pageContext?.tmdb_id && pageContext?.media_type) {
         payload.tmdb_id = pageContext.tmdb_id;
         payload.media_type = pageContext.media_type;
+      }
+      if (assistantState.memorySummary) {
+        payload.memorySummary = assistantState.memorySummary;
       }
 
       try {
@@ -1005,6 +1063,7 @@
               media_type: data.context.media_type,
               title: data.context.title || assistantState.lastResolvedTitle?.title || ''
             };
+            assistantState.memorySummary = `Current title: ${candidateDisplayTitle(data.context)}`;
           }
           assistantState.pendingChoice = null;
           assistantState.messages.push({
@@ -1076,6 +1135,23 @@
         assistantInput.value = '';
         const resolvedChoice = resolvePendingAssistantChoice(question);
         if (resolvedChoice) {
+          if (resolvedChoice.kind === 'narrowed') {
+            assistantState.pendingChoice = {
+              kind: 'title',
+              question: assistantState.pendingQuestion || question,
+              candidates: resolvedChoice.candidates,
+              context: null
+            };
+            assistantState.messages.push({
+              role: 'assistant',
+              kind: 'choose_title',
+              title: resolvedChoice.title || 'I narrowed it down a bit',
+              tldr: resolvedChoice.tldr || 'These look like the closest matches based on what you said.',
+              candidates: resolvedChoice.candidates
+            });
+            renderAssistantMessages();
+            return;
+          }
           if (resolvedChoice.kind === 'needs_retry') {
             assistantState.messages.push({
               role: 'assistant',
@@ -1109,6 +1185,8 @@
             return;
           }
           if (resolvedChoice.kind === 'confirm' && resolvedChoice.candidate) {
+            rememberResolvedTitle(resolvedChoice.candidate);
+            pushAssistantNote('Got it', `I'll use ${candidateDisplayTitle(resolvedChoice.candidate)}.`);
             await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${resolvedChoice.candidate.title}`, {
               tmdb_id: resolvedChoice.candidate.tmdb_id,
               media_type: resolvedChoice.candidate.media_type
@@ -1119,6 +1197,8 @@
             await submitAssistantQuestion(resolvedChoice.prompt, assistantState.pendingChoice?.context || assistantState.context || null);
             return;
           }
+          rememberResolvedTitle(resolvedChoice);
+          pushAssistantNote('Got it', `I'll use ${candidateDisplayTitle(resolvedChoice)}.`);
           await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${resolvedChoice.title}`, {
             tmdb_id: resolvedChoice.tmdb_id,
             media_type: resolvedChoice.media_type
@@ -1152,6 +1232,8 @@
           const action = confirmBtn.getAttribute('data-confirm-choice');
           if (action === 'yes' && assistantState.pendingChoice?.candidate) {
             const candidate = assistantState.pendingChoice.candidate;
+            rememberResolvedTitle(candidate);
+            pushAssistantNote('Got it', `I'll use ${candidateDisplayTitle(candidate)}.`);
             await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${candidate.title}`, {
               tmdb_id: candidate.tmdb_id,
               media_type: candidate.media_type
@@ -1188,6 +1270,8 @@
             await submitAssistantQuestion(candidate.prompt, message?.context || assistantState.context || null);
             return;
           }
+          rememberResolvedTitle(candidate);
+          pushAssistantNote('Got it', `I'll use ${candidateDisplayTitle(candidate)}.`);
           await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${candidate.title}`, {
             tmdb_id: candidate.tmdb_id,
             media_type: candidate.media_type
