@@ -707,7 +707,7 @@
             <p>${escapeHtml(message.tldr || '')}</p>
             <div class="cv-assistant-choice-list" data-choice-index="${index}">
               ${(message.candidates || []).map((candidate, candidateIndex) =>
-                `<button type="button" class="cv-assistant-chip" data-choice-index="${index}" data-candidate-index="${candidateIndex}">${escapeHtml(candidate.title)}${candidate.year ? ` (${escapeHtml(candidate.year)})` : ''}</button>`
+                `<button type="button" class="cv-assistant-chip" data-choice-index="${index}" data-candidate-index="${candidateIndex}">${escapeHtml(candidate.label || candidate.title || 'Choose')}${candidate.year ? ` (${escapeHtml(candidate.year)})` : ''}</button>`
               ).join('')}
             </div>
           </div>`;
@@ -786,6 +786,15 @@
             title: data.title || 'Which one did you mean?',
             tldr: data.message || 'Pick the right title and I’ll take it from there.',
             candidates: data.candidates || []
+          });
+        } else if (data.mode === 'choose_prompt') {
+          assistantState.messages.push({
+            role: 'assistant',
+            kind: 'choose_title',
+            title: data.title || 'Which one did you mean?',
+            tldr: data.message || 'Pick the option that fits best.',
+            candidates: data.options || [],
+            context: data.context || assistantState.context || null
           });
         } else if (data.mode === 'answer') {
           assistantState.context = data.context || assistantState.context;
@@ -869,6 +878,10 @@
           const message = assistantState.messages[choiceIndex];
           const candidate = message?.candidates?.[candidateIndex];
           if (!candidate) return;
+          if (candidate.prompt) {
+            await submitAssistantQuestion(candidate.prompt, message?.context || assistantState.context || null);
+            return;
+          }
           await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${candidate.title}`, {
             tmdb_id: candidate.tmdb_id,
             media_type: candidate.media_type

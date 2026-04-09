@@ -33,6 +33,14 @@ export async function onRequestPost(context) {
   }
 
   try {
+    if (isGreetingOnly(question)) {
+      return json({
+        mode: 'need_title',
+        title: 'Hi there',
+        message: 'Happy to help. Which movie or show are you asking about?'
+      });
+    }
+
     if (providedContext?.analysis && providedContext?.title && !isSupportedFollowUp(question)) {
       return json({
         mode: 'need_title',
@@ -45,6 +53,18 @@ export async function onRequestPost(context) {
 
     if (providedContext?.analysis && providedContext?.title) {
       interpreted = await interpretQuestion(question, env);
+      if (isAmbiguousLanguageQuestion(question)) {
+        return json({
+          mode: 'choose_prompt',
+          title: 'Which kind of language do you mean?',
+          message: `For ${providedContext.title}, are you asking about spoken language or bad language?`,
+          context: providedContext,
+          options: [
+            { label: 'Spoken language / dubbing', prompt: `What spoken language is ${providedContext.title} in?` },
+            { label: 'Bad language / swearing', prompt: `Is there bad language in ${providedContext.title}?` }
+          ]
+        });
+      }
       const answer = buildAssistantAnswer(question, providedContext, interpreted?.age ?? extractAge(question), interpreted);
       return json({ mode: 'answer', ...answer, context: providedContext });
     }
@@ -113,6 +133,19 @@ export async function onRequestPost(context) {
         title: 'Just a moment',
         message: 'I couldn’t load that title right now. Try again in a moment.'
       }, 500);
+    }
+
+    if (isAmbiguousLanguageQuestion(question)) {
+      return json({
+        mode: 'choose_prompt',
+        title: 'Which kind of language do you mean?',
+        message: `For ${titleContext.title}, are you asking about spoken language or bad language?`,
+        context: titleContext,
+        options: [
+          { label: 'Spoken language / dubbing', prompt: `What spoken language is ${titleContext.title} in?` },
+          { label: 'Bad language / swearing', prompt: `Is there bad language in ${titleContext.title}?` }
+        ]
+      });
     }
 
     const answer = buildAssistantAnswer(question, titleContext, interpreted?.age ?? extractAge(question), interpreted);
@@ -453,6 +486,16 @@ function isSupportedFollowUp(question) {
 
 function isGenericTitlePrompt(question) {
   return /^(summarize a movie for me|summarize a movie|summarize a show|summarize something|help me with a movie|help me with a show|tell me about a movie|tell me about a show|recommend a movie|recommend a show|is it okay for a \d{1,2}-year-old|what are the main concerns|how scary is it|give me the tldr)$/i.test(String(question || '').trim());
+}
+
+function isGreetingOnly(question) {
+  return /^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|hola|hi there|hello there)$/i.test(String(question || '').trim());
+}
+
+function isAmbiguousLanguageQuestion(question) {
+  const value = String(question || '').trim();
+  return /\blanguage\b/i.test(value) &&
+    !/(spoken language|original language|english|spanish|dubbed|dub|subtitle|subtitles|audio|bad language|swear|swearing|curse|cursing|profanity|foul language)/i.test(value);
 }
 
 function inferRequestType(question) {
