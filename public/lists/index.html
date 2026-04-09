@@ -115,6 +115,10 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+  .section-skeleton[hidden],
+  .section-loaded[hidden] {
+    display: none !important;
+  }
 
   .modal-overlay {
     position: fixed;
@@ -250,7 +254,7 @@
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SKELETON LOADER
 -->
-<div id="pageLoader" class="flex min-h-screen">
+<div id="pageLoader" class="hidden min-h-screen">
   <main class="flex-1 p-6 md:p-8 bg-background pt-24">
     <div class="cv-dashboard-content cv-dashboard-content--wide space-y-8">
       <header class="space-y-3">
@@ -289,16 +293,37 @@
       <!-- Header -->
       <header class="mb-10 fade-up">
         <h1 class="text-4xl font-extrabold tracking-tighter text-on-surface mb-2">My Lists</h1>
-        <p class="text-on-surface-variant max-w-2xl text-base md:text-lg leading-relaxed" id="headerSubtitle">
+        <div id="headerSubtitleSkeleton" class="section-skeleton space-y-2 max-w-2xl">
+          <div class="skel h-5 w-full rounded-xl"></div>
+          <div class="skel h-5 w-4/5 rounded-xl"></div>
+        </div>
+        <p class="section-loaded hidden text-on-surface-variant max-w-2xl text-base md:text-lg leading-relaxed" id="headerSubtitle">
           Curate and manage your household's viewing experience.
         </p>
       </header>
 
       <!-- Profile filter pills -->
-      <div class="flex flex-wrap gap-2 mb-6 fade-up" id="profileFilter" style="animation-delay:0.05s;"></div>
+      <div id="profileFilterSkeleton" class="section-skeleton flex flex-wrap gap-2 mb-6 fade-up" style="animation-delay:0.05s;">
+        <div class="skel h-10 w-28 rounded-full"></div>
+        <div class="skel h-10 w-24 rounded-full"></div>
+        <div class="skel h-10 w-32 rounded-full"></div>
+      </div>
+      <div class="section-loaded hidden flex flex-wrap gap-2 mb-6 fade-up" id="profileFilter" style="animation-delay:0.05s;"></div>
 
       <!-- Tab bar + view toggles -->
-      <div class="lists-toolbar flex items-center justify-between border-b border-outline-variant/30 mb-8 fade-up" style="animation-delay:0.1s;">
+      <div id="toolbarSkeleton" class="section-skeleton lists-toolbar flex items-center justify-between border-b border-outline-variant/30 mb-8 fade-up" style="animation-delay:0.1s;">
+        <div class="lists-tab-row flex space-x-6 pb-4">
+          <div class="skel h-5 w-28 rounded-full"></div>
+          <div class="skel h-5 w-20 rounded-full"></div>
+          <div class="skel h-5 w-20 rounded-full"></div>
+          <div class="skel h-5 w-24 rounded-full"></div>
+        </div>
+        <div class="lists-view-toggle flex items-center space-x-1 pb-4">
+          <div class="skel h-10 w-10 rounded-lg"></div>
+          <div class="skel h-10 w-10 rounded-lg"></div>
+        </div>
+      </div>
+      <div id="toolbarLoaded" class="section-loaded hidden lists-toolbar flex items-center justify-between border-b border-outline-variant/30 mb-8 fade-up" style="animation-delay:0.1s;">
         <div class="lists-tab-row flex space-x-6">
           <button class="tab-btn-v2 active" id="tabApproved" onclick="setTab('approved', this)">Approved Titles</button>
           <button class="tab-btn-v2" id="tabBlocked"   onclick="setTab('blocked', this)">Blocked</button>
@@ -319,7 +344,14 @@
 
       <!-- Movie bento grid / list -->
       <section class="fade-up" style="animation-delay:0.15s;">
-        <div id="listContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+        <div id="listSkeleton" class="section-skeleton grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+          <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+          <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+          <div class="space-y-3"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+          <div class="space-y-3 hidden xl:block"><div class="skel aspect-[2/3] rounded-xl"></div><div class="skel h-4 w-4/5 rounded-full"></div><div class="skel h-3 w-2/3 rounded-full"></div></div>
+        </div>
+        <div id="listContainer" class="section-loaded hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
           <!-- Populated by JS -->
         </div>
       </section>
@@ -529,6 +561,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
 
 // ── Load data ────────────────────────────────────────────────────────────────
 async function loadLists() {
+  showLoadingShell();
   try {
     [_lists, _profiles] = await Promise.all([
       apiGet('/api/lists'),
@@ -538,15 +571,33 @@ async function loadLists() {
     console.error('Lists load error:', e);
   }
 
-  // Show content
-  document.getElementById('pageLoader').classList.add('hidden');
-  document.getElementById('pageContent').classList.remove('hidden');
-  document.getElementById('pageContent').classList.add('flex');
+  revealListsSections();
+}
 
+function showLoadingShell() {
+  const pageContent = document.getElementById('pageContent');
+  pageContent.classList.remove('hidden');
+  pageContent.classList.add('flex');
+  document.querySelectorAll('.section-skeleton').forEach(el => { el.hidden = false; });
+  document.querySelectorAll('.section-loaded').forEach(el => { el.hidden = true; });
+}
+
+function revealSection(skeletonId, loadedId, renderFn) {
+  if (typeof renderFn === 'function') renderFn();
+  const skeleton = document.getElementById(skeletonId);
+  const loaded = document.getElementById(loadedId);
+  if (skeleton) skeleton.hidden = true;
+  if (loaded) loaded.hidden = false;
+}
+
+function revealListsSections() {
   updateSidebar();
-  updateHeaderSubtitle();
-  renderProfileFilter();
-  renderActiveTab();
+  setTimeout(() => revealSection('headerSubtitleSkeleton', 'headerSubtitle', updateHeaderSubtitle), 0);
+  setTimeout(() => revealSection('profileFilterSkeleton', 'profileFilter', renderProfileFilter), 80);
+  setTimeout(() => {
+    revealSection('toolbarSkeleton', 'toolbarLoaded');
+    revealSection('listSkeleton', 'listContainer', renderActiveTab);
+  }, 160);
 }
 
 // ── Sidebar counts + active state ────────────────────────────────────────────
