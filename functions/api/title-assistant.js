@@ -65,7 +65,11 @@ export async function onRequestPost(context) {
           ]
         });
       }
-      const answer = buildAssistantAnswer(question, providedContext, interpreted?.age ?? extractAge(question), interpreted);
+      const requestedAge = interpreted?.age ?? extractAge(question);
+      if (shouldAskAgeClarification(question, interpreted, requestedAge, providedContext)) {
+        return buildAgePromptResponse(providedContext);
+      }
+      const answer = buildAssistantAnswer(question, providedContext, requestedAge, interpreted);
       return json({ mode: 'answer', ...answer, context: providedContext });
     }
 
@@ -161,7 +165,11 @@ export async function onRequestPost(context) {
       });
     }
 
-    const answer = buildAssistantAnswer(question, titleContext, interpreted?.age ?? extractAge(question), interpreted);
+    const requestedAge = interpreted?.age ?? extractAge(question);
+    if (shouldAskAgeClarification(question, interpreted, requestedAge, titleContext)) {
+      return buildAgePromptResponse(titleContext);
+    }
+    const answer = buildAssistantAnswer(question, titleContext, requestedAge, interpreted);
     return json({ mode: 'answer', ...answer, context: titleContext, usage: titleContext.usage || null });
   } catch (error) {
     console.error('title-assistant error', error);
@@ -468,6 +476,33 @@ function buildAssistantAnswer(question, context, requestedAge, interpreted) {
     bullets,
     followUps: getFollowUps(requestType)
   };
+}
+
+function shouldAskAgeClarification(question, interpreted, requestedAge, context) {
+  if (requestedAge) return false;
+  const requestType = normalizeRequestType(interpreted?.requestType) || inferRequestType(question);
+  if (!['summary', 'suitability', 'scary', 'violence', 'bad_language'].includes(requestType)) return false;
+  const verdicts = context?.analysis?.verdicts || {};
+  const young = verdicts.young?.text || '';
+  const teens = verdicts.teens?.text || '';
+  if (!young || !teens) return false;
+  return young !== teens;
+}
+
+function buildAgePromptResponse(context) {
+  const displayTitle = context?.year ? `${context.title} (${context.year})` : context?.title || 'this title';
+  return json({
+    mode: 'choose_prompt',
+    title: 'What age are you asking about?',
+    message: `I can make this more specific for ${displayTitle}.`,
+    context,
+    options: [
+      { label: 'Age 6', prompt: `Is ${context.title} okay for a 6-year-old?` },
+      { label: 'Age 9', prompt: `Is ${context.title} okay for a 9-year-old?` },
+      { label: 'Age 13', prompt: `Is ${context.title} okay for a 13-year-old?` },
+      { label: 'Just general', prompt: `Give me the general quick take on ${context.title}` }
+    ]
+  });
 }
 
 function getFollowUps(requestType) {

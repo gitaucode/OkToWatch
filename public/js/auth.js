@@ -781,7 +781,7 @@
           ? `<div class="cv-assistant-followups">${message.followUps.map((item) => `<button type="button" class="cv-assistant-chip" data-followup="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div>`
           : '';
         const breakdownLink = message.context?.tmdb_id && message.context?.media_type
-          ? `<div class="cv-assistant-followups"><button type="button" class="cv-assistant-link" data-open-breakdown="${index}">Open full breakdown</button></div>`
+          ? `<div class="cv-assistant-followups"><button type="button" class="cv-assistant-link" data-open-breakdown="${index}">Open full breakdown</button><button type="button" class="cv-assistant-link" data-change-title="true">Change title</button></div>`
           : '';
         return `<div class="cv-assistant-msg assistant">
           ${message.title ? `<h4>${escapeHtml(message.title)}</h4>` : ''}
@@ -874,6 +874,31 @@
           .slice()
           .sort((a, b) => Number(b.year) - Number(a.year));
         if (sortedByNewest[0]) return sortedByNewest[0];
+      }
+
+      if (/(classic|old school|old-school|legacy|original one)/i.test(text)) {
+        const classic = filtered
+          .filter((candidate) => Number(candidate.year))
+          .slice()
+          .sort((a, b) => Number(a.year) - Number(b.year));
+        if (classic[0]) return classic[0];
+      }
+
+      if (/(reboot|remake|new version|new one)/i.test(text)) {
+        const reboot = filtered
+          .filter((candidate) => Number(candidate.year))
+          .slice()
+          .sort((a, b) => Number(b.year) - Number(a.year));
+        if (reboot[0]) return reboot[0];
+      }
+
+      if (/(first|part 1|part one|beginning|original movie)/i.test(text)) {
+        const firstEntry = filtered
+          .filter((candidate) => !/\b2\b|\b3\b|ii|iii|part 2|part two|chapter 2|chapter two/i.test(String(candidate.title || '')))
+          .filter((candidate) => Number(candidate.year))
+          .slice()
+          .sort((a, b) => Number(a.year) - Number(b.year));
+        if (firstEntry[0]) return firstEntry[0];
       }
 
       if (/(animated|cartoon|kids one)/i.test(text)) {
@@ -1225,6 +1250,15 @@
           const breakdownIndex = Number(openBreakdown.getAttribute('data-open-breakdown'));
           const targetMessage = assistantState.messages[breakdownIndex];
           openAssistantBreakdown(targetMessage?.context || null);
+          return;
+        }
+        const changeTitle = e.target.closest('[data-change-title]');
+        if (changeTitle) {
+          assistantState.context = null;
+          assistantState.lastResolvedTitle = null;
+          assistantState.memorySummary = '';
+          assistantState.pendingChoice = null;
+          pushAssistantNote('Sure', 'Tell me the movie or show you want to switch to.');
           return;
         }
         const confirmBtn = e.target.closest('[data-confirm-choice]');
