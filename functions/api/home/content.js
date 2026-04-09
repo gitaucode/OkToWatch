@@ -21,10 +21,12 @@ const CURATED = {
   ],
 };
 
-export async function onRequestGet({ env }) {
+import { jsonWithCors, optionsResponse } from '../../_shared/cors.js';
+
+export async function onRequestGet({ request, env }) {
   try {
     if (!env?.TMDB_TOKEN) {
-      return json(CURATED);
+      return json(CURATED, request, env);
     }
 
     const enriched = {};
@@ -32,10 +34,10 @@ export async function onRequestGet({ env }) {
       enriched[section] = await Promise.all(items.map(item => enrichItem(item, env)));
     }
 
-    return json(enriched);
+    return json(enriched, request, env);
   } catch (error) {
     console.error('Homepage content error:', error);
-    return json(CURATED);
+    return json(CURATED, request, env);
   }
 }
 
@@ -83,23 +85,19 @@ function getYear(item) {
   return value ? String(value).slice(0, 4) : null;
 }
 
-function json(data) {
-  return new Response(JSON.stringify(data), {
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=900',
-      'Access-Control-Allow-Origin': '*',
-    },
+function json(data, request, env) {
+  return jsonWithCors(data, request, env, {
+    cacheControl: 'public, max-age=900',
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }
 
-export function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+export function onRequestOptions({ request, env }) {
+  return optionsResponse(request, env, {
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }

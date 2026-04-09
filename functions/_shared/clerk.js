@@ -1,3 +1,5 @@
+import { jsonWithCors, optionsResponse } from './cors.js';
+
 /**
  * OkToWatch — functions/_shared/clerk.js
  * Shared Clerk auth helpers for all Cloudflare Pages Functions.
@@ -162,24 +164,19 @@ export async function requireFamily(request, env) {
   return { error: json403('Family subscription required') };
 }
 
-export function jsonResponse(data, status) {
-  return new Response(JSON.stringify(data), {
+export function jsonResponse(data, status, request = new Request('https://oktowatch.local'), env = {}) {
+  return jsonWithCors(data, request, env, {
     status: status || 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
+    methods: 'GET, POST, PUT, DELETE, OPTIONS',
+    headers: 'Content-Type, Authorization'
   });
 }
 
-export function handleOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
+export function handleOptions(request = new Request('https://oktowatch.local'), env = {}) {
+  return optionsResponse(request, env, {
+    methods: 'GET, POST, PUT, DELETE, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
 

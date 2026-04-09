@@ -241,6 +241,15 @@ CREATE TABLE IF NOT EXISTS request_limits (
 );
 CREATE INDEX IF NOT EXISTS idx_request_limits_window ON request_limits(endpoint, window_start);
 
+-- Webhook deliveries
+-- Stores processed webhook ids so retried payment events do not apply twice.
+CREATE TABLE IF NOT EXISTS webhook_deliveries (
+  webhook_id   TEXT PRIMARY KEY,
+  source       TEXT NOT NULL,
+  received_at  TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_source ON webhook_deliveries(source, received_at DESC);
+
 -- Legacy table kept for backwards compatibility with older guest-search experiments.
 -- The current production limiter uses request_limits instead.
 CREATE TABLE IF NOT EXISTS guest_searches (

@@ -5,33 +5,26 @@
  * Returns: { [id]: { level, summary } } for IDs with cached verdicts
  */
 
+import { jsonWithCors, optionsResponse } from '../_shared/cors.js';
+
 export async function onRequestGet(context) {
   const { request, env } = context;
 
   if (!env.DB) {
-    return new Response(JSON.stringify({}), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return jsonWithCors({}, request, env);
   }
 
   const url = new URL(request.url);
   const idsParam = url.searchParams.get('ids');
 
   if (!idsParam) {
-    return new Response(JSON.stringify({}), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return jsonWithCors({}, request, env);
   }
 
   const ids = idsParam.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
 
   if (!ids.length) {
-    return new Response(JSON.stringify({}), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return jsonWithCors({}, request, env);
   }
 
   try {
@@ -62,26 +55,17 @@ export async function onRequestGet(context) {
       }
     });
 
-    return new Response(JSON.stringify(results), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return jsonWithCors(results, request, env);
   } catch (e) {
     console.error('Verdicts endpoint error:', e);
-    return new Response(JSON.stringify({}), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return jsonWithCors({}, request, env);
   }
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
+export async function onRequestOptions(context) {
+  return optionsResponse(context.request, context.env, {
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }

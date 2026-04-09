@@ -8,7 +8,7 @@
  * - D1_DATABASE: D1 database binding for subscriptions table
  */
 
-import { getAuth } from '../../_shared/clerk.js';
+const WEBHOOK_TOLERANCE_SECONDS = 5 * 60;
 
 // Map Dodo product IDs to our tier/billing cycle
 const DODO_PRODUCTS = {
@@ -22,17 +22,88 @@ const DODO_PRODUCTS = {
  * Verify Dodo webhook signature (if provided)
  * This prevents webhook spoofing
  */
-function verifyWebhookSignature(body, signature, webhookSecret) {
-  if (!webhookSecret || !signature) {
-    console.warn('Webhook verification skipped: no secret configured');
-    return true;
+async function verifyWebhookSignature({ body, signature, webhookId, webhookTimestamp, webhookSecret }) {
+  if (!webhookSecret || !signature || !webhookId || !webhookTimestamp) {
+    return false;
   }
 
-  // If Dodo uses HMAC-SHA256 signature verification, implement here
-  // Example: const hash = crypto.subtle.sign(...); const expected = Buffer.from(hash).toString('hex');
-  // For now, this is a stub for when Dodo provides signature details
-  
-  return true;
+  const timestamp = Number(webhookTimestamp);
+  if (!Number.isFinite(timestamp)) return false;
+
+  const age = Math.abs(Math.floor(Date.now() / 1000) - timestamp);
+  if (age > WEBHOOK_TOLERANCE_SECONDS) {
+    return false;
+  }
+
+  const payload = `${webhookId}.${webhookTimestamp}.${body}`;
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(webhookSecret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const digest = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  const expectedBase64 = uint8ArrayToBase64(new Uint8Array(digest));
+  const candidates = parseSignatureCandidates(signature);
+
+  return candidates.some((candidate) => timingSafeEqual(candidate, expectedBase64));
+}
+
+function parseSignatureCandidates(signatureHeader) {
+  return String(signatureHeader || '')
+    .split(/\s+/)
+    .flatMap((part) => part.split(','))
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const eq = part.indexOf('=');
+      if (eq !== -1) return part.slice(eq + 1).trim();
+      const semi = part.indexOf(';');
+      if (semi !== -1) return part.slice(semi + 1).trim();
+      return part;
+    })
+    .filter(Boolean);
+}
+
+function uint8ArrayToBase64(bytes) {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+function timingSafeEqual(a, b) {
+  const left = String(a || '');
+  const right = String(b || '');
+  const max = Math.max(left.length, right.length);
+  let diff = left.length ^ right.length;
+  for (let i = 0; i < max; i += 1) {
+    diff |= (left.charCodeAt(i) || 0) ^ (right.charCodeAt(i) || 0);
+  }
+  return diff === 0;
+}
+
+async function ensureWebhookDeliveriesTable(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS webhook_deliveries (
+      webhook_id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      received_at TEXT DEFAULT (datetime('now'))
+    )
+  `).run();
+}
+
+async function markWebhookReceived(db, webhookId) {
+  try {
+    await db.prepare(
+      'INSERT INTO webhook_deliveries (webhook_id, source) VALUES (?, ?)'
+    ).bind(webhookId, 'dodo').run();
+    return true;
+  } catch (error) {
+    const message = String(error?.message || error);
+    if (/UNIQUE|primary key/i.test(message)) return false;
+    throw error;
+  }
 }
 
 /**
@@ -290,12 +361,21 @@ export async function onRequest(context) {
   }
 
   try {
-    const body = await request.json();
-    const signature = request.headers.get('X-Dodo-Signature');
+    const rawBody = await request.text();
+    const body = JSON.parse(rawBody);
+    const signature = request.headers.get('webhook-signature') || request.headers.get('X-Dodo-Signature');
+    const webhookId = request.headers.get('webhook-id');
+    const webhookTimestamp = request.headers.get('webhook-timestamp');
     const eventType = body.type;
 
     // Verify webhook signature
-    if (!verifyWebhookSignature(JSON.stringify(body), signature, WEBHOOK_SECRET)) {
+    if (!await verifyWebhookSignature({
+      body: rawBody,
+      signature,
+      webhookId,
+      webhookTimestamp,
+      webhookSecret: WEBHOOK_SECRET
+    })) {
       console.error('Invalid webhook signature');
       return new Response('Invalid signature', { status: 401 });
     }
@@ -305,6 +385,17 @@ export async function onRequest(context) {
     if (!db) {
       console.error('D1 database not bound');
       return new Response('Database error', { status: 500 });
+    }
+
+    await ensureWebhookDeliveriesTable(db);
+    if (webhookId) {
+      const isFirstDelivery = await markWebhookReceived(db, webhookId);
+      if (!isFirstDelivery) {
+        return new Response(
+          JSON.stringify({ success: true, duplicate: true, type: eventType }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // Get Clerk client (optional, for metadata updates)

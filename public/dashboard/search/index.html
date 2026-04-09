@@ -244,6 +244,15 @@ const API = '';
 
 let dashboardSearchRecent = [];
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Get recently viewed from main index
 function loadRecentlyViewed() {
   try {
@@ -252,13 +261,13 @@ function loadRecentlyViewed() {
       document.getElementById('dashRecentSection').style.display = 'block';
       const list = document.getElementById('dashRecentList');
       list.innerHTML = dashboardSearchRecent.slice(0, 5).map(item => `
-        <div class="search-recent-item" onclick="dashboardCheck(${item.id}, '${item.media_type}', '${item.title.replace(/'/g, "\\'")}')">
+        <div class="search-recent-item" data-tmdb-id="${Number(item.id) || 0}" data-media-type="${escapeHtml(item.media_type || '')}">
           <div class="search-recent-thumb">
             ${item.poster ? `<img src="${TMDB_W300}${item.poster}" alt="">` : '🎬'}
           </div>
           <div class="search-recent-info">
-            <div class="search-recent-title">${item.title}</div>
-            <div class="search-recent-meta">${item.year} · ${item.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+            <div class="search-recent-title">${escapeHtml(item.title)}</div>
+            <div class="search-recent-meta">${escapeHtml(item.year || '')} · ${escapeHtml(item.media_type === 'tv' ? 'TV' : 'Movie')}</div>
           </div>
         </div>
       `).join('');
@@ -286,11 +295,11 @@ async function dashboardSearch() {
       const poster = r.poster_path ? `<img src="${TMDB_W300}${r.poster_path}" alt="">` : '🎬';
       const year = (r.release_date || r.first_air_date || '').slice(0, 4);
       return `
-        <div class="search-recent-item" onclick="dashboardCheck(${r.id}, '${r.media_type}', '${title.replace(/'/g, "\\'")}')" style="margin-bottom:0.5rem;">
+        <div class="search-recent-item" data-tmdb-id="${Number(r.id) || 0}" data-media-type="${escapeHtml(r.media_type || '')}" style="margin-bottom:0.5rem;">
           <div class="search-recent-thumb">${poster}</div>
           <div class="search-recent-info">
-            <div class="search-recent-title">${title}</div>
-            <div class="search-recent-meta">${year} · ${r.media_type === 'tv' ? 'TV' : 'Movie'}</div>
+            <div class="search-recent-title">${escapeHtml(title)}</div>
+            <div class="search-recent-meta">${escapeHtml(year)} · ${escapeHtml(r.media_type === 'tv' ? 'TV' : 'Movie')}</div>
           </div>
         </div>
       `;
@@ -301,7 +310,7 @@ async function dashboardSearch() {
   }
 }
 
-function dashboardCheck(tmdbId, type, title) {
+function dashboardCheck(tmdbId, type) {
   window.location.href = `/index?id=${tmdbId}&type=${type}`;
 }
 
@@ -312,6 +321,11 @@ loadRecentlyViewed();
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('dashSearchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') dashboardSearch();
+  });
+  document.body.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-recent-item[data-tmdb-id][data-media-type]');
+    if (!item) return;
+    dashboardCheck(item.dataset.tmdbId, item.dataset.mediaType);
   });
 });
 

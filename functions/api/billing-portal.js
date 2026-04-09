@@ -1,16 +1,16 @@
 import { getAuth } from '../_shared/clerk.js';
+import { jsonWithCors, optionsResponse } from '../_shared/cors.js';
 
 function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
+  return jsonWithCors(data, requestContext.request, requestContext.env, {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+    methods: 'POST, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
+
+let requestContext = { request: new Request('https://oktowatch.local'), env: {} };
 
 async function getCurrentSubscription(userId, db) {
   if (!db) return null;
@@ -58,9 +58,14 @@ async function createPortalLink(customerId, env) {
 
 export async function onRequest(context) {
   const { request, env } = context;
+  requestContext = { request, env };
 
   if (request.method === 'OPTIONS') {
-    return json({}, 204);
+    return optionsResponse(request, env, {
+      methods: 'POST, OPTIONS',
+      headers: 'Content-Type, Authorization',
+      maxAge: 86400
+    });
   }
 
   if (request.method !== 'POST') {

@@ -1,3 +1,5 @@
+import { jsonWithCors, optionsResponse } from '../_shared/cors.js';
+
 const CATEGORY_HINTS = [
   { key: 'horror', label: 'Scary moments', match: /(scary|scared|fear|horror|creepy|intense|nightmare|fright)/i },
   { key: 'violence', label: 'Violence', match: /(violence|violent|fight|fighting|blood|gore|weapon|kill|battle|action)/i },
@@ -11,6 +13,7 @@ const EXTRACTION_MODEL = 'llama-3.1-8b-instant';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
+  requestContext = { request, env };
 
   let body;
   try {
@@ -184,14 +187,11 @@ export async function onRequestPost(context) {
   }
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
+export async function onRequestOptions(context) {
+  return optionsResponse(context.request, context.env, {
+    methods: 'POST, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
 
@@ -781,11 +781,12 @@ function normalizeAge(value) {
 }
 
 function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
+  return jsonWithCors(data, requestContext.request, requestContext.env, {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
+    methods: 'POST, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
+
+let requestContext = { request: new Request('https://oktowatch.local'), env: {} };

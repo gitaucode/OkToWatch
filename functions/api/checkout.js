@@ -9,6 +9,7 @@
  */
 
 import { getAuth } from '../_shared/clerk.js';
+import { jsonWithCors, optionsResponse } from '../_shared/cors.js';
 
 // We'll dynamically determine the Dodo API base URL based on the API key prefix
 // Checkouts will use either test.dodopayments.com or live.dodopayments.com
@@ -107,13 +108,10 @@ export async function onRequest(context) {
 
   // CORS preflight
   if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+    return optionsResponse(request, env, {
+      methods: 'POST, OPTIONS',
+      headers: 'Content-Type, Authorization',
+      maxAge: 86400
     });
   }
 
@@ -137,24 +135,15 @@ export async function onRequest(context) {
 
     // Validate inputs
     if (!plan || !billingCycle) {
-      return new Response(
-        JSON.stringify({ error: 'Missing plan or billingCycle' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return jsonWithCors({ error: 'Missing plan or billingCycle' }, request, env, { status: 400 });
     }
 
     if (!['pro', 'family'].includes(plan)) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid plan. Must be "pro" or "family".' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return jsonWithCors({ error: 'Invalid plan. Must be "pro" or "family".' }, request, env, { status: 400 });
     }
 
     if (!['monthly', 'yearly'].includes(billingCycle)) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid billingCycle. Must be "monthly" or "yearly".' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return jsonWithCors({ error: 'Invalid billingCycle. Must be "monthly" or "yearly".' }, request, env, { status: 400 });
     }
 
     // Build an absolute return URL
@@ -186,27 +175,9 @@ export async function onRequest(context) {
       auth.userId
     );
 
-    return new Response(
-      JSON.stringify({ checkoutUrl }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    return jsonWithCors({ checkoutUrl }, request, env);
   } catch (err) {
     console.error('Checkout error:', err);
-    return new Response(
-      JSON.stringify({ error: err.message }),
-      {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    return jsonWithCors({ error: err.message }, request, env, { status: 500 });
   }
 }

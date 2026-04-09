@@ -567,6 +567,15 @@ function showExpired() {
   document.getElementById('contentSection').style.display = 'none';
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 async function fetchTmdbData() {
   try {
     const endpoint = shareData.media_type === 'tv'
@@ -595,7 +604,7 @@ function renderContent() {
     day: 'numeric',
   });
   document.getElementById('shareInfo').innerHTML =
-    `<strong>Shared on ${shareDate}</strong>`;
+    `<strong>Shared on ${escapeHtml(shareDate)}</strong>`;
 
   // Poster & meta
   const posterFallback = document.getElementById('posterFallback');
@@ -616,9 +625,9 @@ function renderContent() {
   const yearText = analysisData.year ? ` (${analysisData.year})` : '';
 
   document.getElementById('posterMeta').innerHTML = `
-    <div class="poster-title">${analysisData.title}${seasonLabel}</div>
+    <div class="poster-title">${escapeHtml(analysisData.title)}${escapeHtml(seasonLabel)}</div>
     <div class="poster-meta-text">
-      <span>${mediaTypeLabel}${yearText}</span>
+      <span>${escapeHtml(mediaTypeLabel)}${escapeHtml(yearText)}</span>
     </div>
   `;
 
@@ -636,7 +645,7 @@ function renderContent() {
       glanceStrip.innerHTML += `
         <div class="glance-item">
           <div class="glance-dot ${dotClass}"></div>
-          <div class="glance-label">${cat.name.split(' ')[0]}</div>
+          <div class="glance-label">${escapeHtml(cat.name.split(' ')[0])}</div>
         </div>
       `;
     });
@@ -686,8 +695,8 @@ function renderVerdict() {
   document.getElementById('verdictPill').innerHTML = `
     <div class="verdict-icon" style="background: ${color}; color: white;">${icon}</div>
     <div>
-      <div class="verdict-text">${verdict.text}</div>
-      <div class="verdict-sub">${verdict.sub}</div>
+      <div class="verdict-text">${escapeHtml(verdict.text)}</div>
+      <div class="verdict-sub">${escapeHtml(verdict.sub)}</div>
     </div>
   `;
   document.getElementById('verdictPill').className = `verdict-pill ${verdictClass}`;
@@ -704,13 +713,13 @@ function renderBreakdown() {
     breakdown.innerHTML += `
       <div class="cat-item">
         <div class="cat-header">
-          <div class="cat-name">${cat.name}</div>
+          <div class="cat-name">${escapeHtml(cat.name)}</div>
           <div class="level-tag" style="background: ${levelColor.bg}; color: ${levelColor.color};">
             <div class="level-dot" style="background: ${levelColor.color};"></div>
-            ${cat.level.charAt(0).toUpperCase() + cat.level.slice(1)}
+            ${escapeHtml(cat.level.charAt(0).toUpperCase() + cat.level.slice(1))}
           </div>
         </div>
-        <div class="cat-desc">${cat.note}</div>
+        <div class="cat-desc">${escapeHtml(cat.note)}</div>
       </div>
     `;
   });

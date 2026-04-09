@@ -21,14 +21,20 @@
  */
 
 import { getAuth } from '../../_shared/clerk.js';
+import { withCors, optionsResponse } from '../../_shared/cors.js';
 
 export async function onRequest(context) {
   const { request, env, params } = context;
+  requestContext = { request, env };
   const method = request.method;
 
   // ── CORS preflight ────────────────────────────────────────────────────────
   if (method === 'OPTIONS') {
-    return cors(new Response(null, { status: 204 }));
+    return optionsResponse(request, env, {
+      methods: 'GET,POST,PATCH,DELETE,OPTIONS',
+      headers: 'Content-Type, Authorization',
+      maxAge: 86400
+    });
   }
 
   // ── Auth: must be logged in AND isAdmin ───────────────────────────────────
@@ -398,9 +404,11 @@ function jsonError(msg, status = 400) {
   return json({ error: msg }, status);
 }
 function cors(response) {
-  const r = new Response(response.body, response);
-  r.headers.set('Access-Control-Allow-Origin', '*');
-  r.headers.set('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
-  r.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  return r;
+  return withCors(response, requestContext.request, requestContext.env, {
+    methods: 'GET,POST,PATCH,DELETE,OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
+  });
 }
+
+let requestContext = { request: new Request('https://oktowatch.local'), env: {} };

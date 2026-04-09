@@ -1,3 +1,5 @@
+import { jsonWithCors, optionsResponse } from '../../_shared/cors.js';
+
 /**
  * GET /api/share/:token
  * Public endpoint — returns cached analysis for a shared token.
@@ -6,6 +8,7 @@
 
 export async function onRequestGet(context) {
   const { request, env, params } = context;
+  requestContext = { request, env };
 
   const token = params.token ? (Array.isArray(params.token) ? params.token[0] : params.token) : null;
   if (!token) return jsonError('Token is required', 400);
@@ -62,14 +65,11 @@ export async function onRequestGet(context) {
   }
 }
 
-export function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin':  '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+export function onRequestOptions(context) {
+  return optionsResponse(context.request, context.env, {
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }
 
@@ -80,21 +80,11 @@ function buildCacheKey(tmdb_id, media_type, season) {
 }
 
 function jsonOk(data) {
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-  });
+  return jsonWithCors(data, requestContext.request, requestContext.env);
 }
 
 function jsonError(message, status = 400) {
-  return new Response(JSON.stringify({ error: message }), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-  });
+  return jsonWithCors({ error: message }, requestContext.request, requestContext.env, { status });
 }
+
+let requestContext = { request: new Request('https://oktowatch.local'), env: {} };

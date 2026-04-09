@@ -1,4 +1,5 @@
 import { getAuth } from '../_shared/clerk.js';
+import { jsonWithCors, optionsResponse } from '../_shared/cors.js';
 
 /**
  * POST /api/analyze
@@ -24,6 +25,7 @@ const MODEL = 'llama-3.3-70b-versatile';
 export async function onRequestPost(context) {
   const request = context.request;
   const env = context.env;
+  requestContext = { request, env };
 
   let body;
   try {
@@ -113,17 +115,11 @@ export async function onRequestPost(context) {
 
     if (row && row.window_start > (now - WINDOW)) {
       if (row.count >= limit) {
-        return new Response(JSON.stringify({
+        return jsonWithCors({
           error: errorCode,
           resetsAt: row.window_start + WINDOW,
           limit: limit
-        }), {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        });
+        }, request, env, { status: 429, methods: 'POST, OPTIONS', headers: 'Content-Type, Authorization' });
       }
 
       await env.DB.prepare(
@@ -231,14 +227,11 @@ export async function onRequestPost(context) {
   return jsonOk(withUsage);
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
+export async function onRequestOptions(context) {
+  return optionsResponse(context.request, context.env, {
+    methods: 'POST, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
 
@@ -258,23 +251,24 @@ function mergeCachedFlag(data, cached) {
 }
 
 function jsonOk(data) {
-  return new Response(JSON.stringify(data), {
+  return jsonWithCors(data, requestContext.request, requestContext.env, {
     status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
+    methods: 'POST, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
 
 function jsonError(message, status) {
-  return new Response(JSON.stringify({ error: message }), {
+  return jsonWithCors({ error: message }, requestContext.request, requestContext.env, {
     status: status || 400,
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    methods: 'POST, OPTIONS',
+    headers: 'Content-Type, Authorization',
+    maxAge: 86400
   });
 }
+
+let requestContext = { request: new Request('https://oktowatch.local'), env: {} };
 
 function buildMessages(input) {
   const title = input.title;

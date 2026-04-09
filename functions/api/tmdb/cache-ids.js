@@ -4,6 +4,8 @@
  * Used by the dashboard trending section to badge already-analysed titles.
  * Public endpoint — no auth needed (IDs are not sensitive).
  */
+import { jsonWithCors } from '../../_shared/cors.js';
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   const url  = new URL(request.url);
@@ -15,16 +17,8 @@ export async function onRequestGet(context) {
     ).bind(type).all();
 
     const ids = rows.results.map(r => r.tmdb_id);
-    return new Response(JSON.stringify(ids), {
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=120',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return jsonWithCors(ids, request, env, { cacheControl: 'public, max-age=120' });
   } catch {
-    return new Response('[]', {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return jsonWithCors([], request, env);
   }
 }

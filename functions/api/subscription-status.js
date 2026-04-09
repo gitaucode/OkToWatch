@@ -7,6 +7,7 @@
  */
 
 import { getAuth } from '../_shared/clerk.js';
+import { jsonWithCors } from '../_shared/cors.js';
 
 /**
  * Get subscription status for user
@@ -107,35 +108,17 @@ export async function onRequest(context) {
     }
 
     // Return subscription info
-    return new Response(
-      JSON.stringify({
-        tier,
-        status,
-        renewsAt,
-        trialEndsAt,
-        isPro: tier === 'pro',
-        isFamily: tier === 'family',
-        isActive: tier !== 'free' && status !== 'expired' && status !== 'cancelled',
-      }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    return jsonWithCors({
+      tier,
+      status,
+      renewsAt,
+      trialEndsAt,
+      isPro: tier === 'pro',
+      isFamily: tier === 'family',
+      isActive: tier !== 'free' && status !== 'expired' && status !== 'cancelled',
+    }, request, env);
   } catch (err) {
     console.error('Subscription status error:', err);
-    return new Response(
-      JSON.stringify({ error: err.message, tier: 'free', status: 'error' }),
-      {
-        status: 200, // Return 200 to avoid breaking client code
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    return jsonWithCors({ error: err.message, tier: 'free', status: 'error' }, request, env, { status: 200 });
   }
 }

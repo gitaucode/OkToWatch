@@ -416,6 +416,15 @@
         return { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' };
     }
 
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     let globalUser = null;
     let householdState = null;
     let onboardingDraft = null;
@@ -592,7 +601,7 @@
         document.getElementById('onboardingDraftChildren').innerHTML = children.length
             ? children.map((child) => `
                 <span class="inline-flex items-center rounded-full bg-surface-container px-3 py-1.5 text-sm font-semibold text-on-surface">
-                    ${child.name || 'Unnamed child'} · ${formatOnboardingAge(child.age)}
+                    ${escapeHtml(child.name || 'Unnamed child')} · ${escapeHtml(formatOnboardingAge(child.age))}
                 </span>
             `).join('')
             : '<span class="text-sm text-on-surface-variant">No child details saved yet.</span>';
@@ -600,7 +609,7 @@
         document.getElementById('onboardingDraftPrefs').innerHTML = prefs.length
             ? prefs.map((pref) => `
                 <span class="inline-flex items-center rounded-full border border-outline-variant/15 bg-white px-3 py-1.5 text-xs font-bold text-on-surface-variant">
-                    ${pref}
+                    ${escapeHtml(pref)}
                 </span>
             `).join('')
             : '<span class="text-sm text-on-surface-variant">No content preferences saved yet.</span>';
@@ -659,13 +668,13 @@
             ? members.map(member => `
                 <div class="flex items-center justify-between rounded-lg border border-outline-variant/10 bg-white px-4 py-3">
                     <div class="min-w-0">
-                        <p class="text-sm font-semibold text-on-surface">${member.user_id === globalUser?.id ? 'You' : (member.display_name || member.user_id)}</p>
-                        <p class="text-xs text-on-surface-variant truncate">${member.email || (member.user_id === householdState.household.ownerUserId ? 'Household owner' : 'Caregiver')}</p>
+                        <p class="text-sm font-semibold text-on-surface">${member.user_id === globalUser?.id ? 'You' : escapeHtml(member.display_name || member.user_id)}</p>
+                        <p class="text-xs text-on-surface-variant truncate">${escapeHtml(member.email || (member.user_id === householdState.household.ownerUserId ? 'Household owner' : 'Caregiver'))}</p>
                     </div>
                     <div class="flex items-center gap-3 shrink-0">
-                        <span class="text-[10px] font-bold uppercase tracking-widest ${member.role === 'owner' ? 'text-primary' : 'text-on-surface-variant'}">${member.role}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest ${member.role === 'owner' ? 'text-primary' : 'text-on-surface-variant'}">${escapeHtml(member.role)}</span>
                         ${(householdState.household.role === 'owner' && member.role !== 'owner')
-                            ? `<button onclick="removeHouseholdMember('${member.user_id}')" class="text-xs font-bold text-error hover:underline">Remove</button>`
+                            ? `<button onclick='removeHouseholdMember(${JSON.stringify(String(member.user_id || ''))})' class="text-xs font-bold text-error hover:underline">Remove</button>`
                             : ''}
                     </div>
                 </div>
@@ -925,7 +934,7 @@
                         <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
                     </div>` : ''}
                 </div>
-                <span class="font-headline font-bold text-sm tracking-wide text-on-surface">${p.name}</span>
+                <span class="font-headline font-bold text-sm tracking-wide text-on-surface">${escapeHtml(p.name)}</span>
             </div>`;
         });
 

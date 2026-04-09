@@ -13,10 +13,12 @@ const HERO_TITLES = [
   { title: 'Blue Beetle', type: 'Movie' },
 ];
 
-export async function onRequestGet({ env }) {
+import { jsonWithCors, optionsResponse } from '../../_shared/cors.js';
+
+export async function onRequestGet({ request, env }) {
   try {
     if (!env?.TMDB_TOKEN) {
-      return json([]);
+      return json([], request, env);
     }
 
     const posters = [];
@@ -32,10 +34,10 @@ export async function onRequestGet({ env }) {
       });
     }
 
-    return json(posters);
+    return json(posters, request, env);
   } catch (error) {
     console.error('Hero posters error:', error);
-    return json([]);
+    return json([], request, env);
   }
 }
 
@@ -63,23 +65,19 @@ async function searchTmdb(title, mediaTypeHint, token) {
   return results.find(item => ['movie', 'tv'].includes(item.media_type) && item.poster_path) || null;
 }
 
-function json(data) {
-  return new Response(JSON.stringify(data), {
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=900',
-      'Access-Control-Allow-Origin': '*',
-    },
+function json(data, request, env) {
+  return jsonWithCors(data, request, env, {
+    cacheControl: 'public, max-age=900',
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }
 
-export function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+export function onRequestOptions({ request, env }) {
+  return optionsResponse(request, env, {
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }

@@ -1,3 +1,5 @@
+import { jsonWithCors, optionsResponse } from '../../_shared/cors.js';
+
 export async function onRequestGet(context) {
   const { request, env, params } = context;
 
@@ -25,7 +27,7 @@ export async function onRequestGet(context) {
         .first();
 
       if (cached && cached.expires_at > Date.now()) {
-        return jsonResponse(JSON.parse(cached.data), true);
+        return jsonResponse(JSON.parse(cached.data), true, request, env);
       }
     }
 
@@ -39,9 +41,16 @@ export async function onRequestGet(context) {
     });
 
     if (!res.ok) {
-      return new Response(
-        JSON.stringify({ error: 'TMDB request failed' }),
-        { status: res.status }
+      return jsonWithCors(
+        { error: 'TMDB request failed' },
+        request,
+        env,
+        {
+          status: res.status,
+          methods: 'GET, OPTIONS',
+          headers: 'Content-Type',
+          maxAge: 86400
+        }
       );
     }
 
@@ -65,13 +74,20 @@ export async function onRequestGet(context) {
         .run();
     }
 
-    return jsonResponse(data, false);
+    return jsonResponse(data, false, request, env);
 
   } catch (err) {
     console.error('TMDB proxy error:', err);
-    return new Response(
-      JSON.stringify({ error: 'Internal error' }),
-      { status: 500 }
+    return jsonWithCors(
+      { error: 'Internal error' },
+      request,
+      env,
+      {
+        status: 500,
+        methods: 'GET, OPTIONS',
+        headers: 'Content-Type',
+        maxAge: 86400
+      }
     );
   }
 }
@@ -98,29 +114,22 @@ function getCacheKey(path) {
   return null;
 }
 
-function jsonResponse(data, cached = false) {
-  return new Response(
-    JSON.stringify({
-      ...data,
-      _cached: cached,
-    }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-store',
-      },
-    }
-  );
+function jsonResponse(data, cached = false, request, env) {
+  return jsonWithCors({
+    ...data,
+    _cached: cached,
+  }, request, env, {
+    cacheControl: 'no-store',
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
+  });
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+export async function onRequestOptions(context) {
+  return optionsResponse(context.request, context.env, {
+    methods: 'GET, OPTIONS',
+    headers: 'Content-Type',
+    maxAge: 86400
   });
 }
