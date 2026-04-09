@@ -142,6 +142,9 @@
     const showAssistant = loggedIn || currentPath === '/index' || currentPath === '/search';
 
     const initial = (user?.firstName || user?.emailAddresses?.[0]?.emailAddress || '?')[0].toUpperCase();
+    const assistantGreeting = user?.firstName
+      ? `Hi, ${escapeHtml(user.firstName)} 👋`
+      : 'Hi there 👋';
     const avatarContent = user?.imageUrl
       ? `<img src="${user.imageUrl}" alt="${initial}" style="width:100%;height:100%;object-fit:cover;border-radius:9999px;">`
       : `<span class="material-symbols-outlined" style="font-size:22px;">account_circle</span>`;
@@ -187,8 +190,8 @@
   <div class="cv-assistant-panel" id="cvAssistantPanel">
     <div class="cv-assistant-header">
       <div>
-        <div class="cv-assistant-eyebrow">Title Safety Assistant</div>
-        <div class="cv-assistant-title">Quick answers from real title data</div>
+        <div class="cv-assistant-eyebrow">${assistantGreeting}</div>
+        <div class="cv-assistant-title">Ask me about a movie or show</div>
       </div>
       <button class="cv-assistant-close" id="cvAssistantClose" aria-label="Close assistant">✕</button>
     </div>
