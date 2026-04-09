@@ -176,11 +176,11 @@
                                 <span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="credit_card">payments</span>
                             </div>
                             <div>
-                                <p class="font-bold text-on-surface text-sm">Payment handled securely via Dodo</p>
-                                <p class="text-xs text-on-surface-variant">Access portal to edit payment method</p>
+                                <p id="billingCardTitle" class="font-bold text-on-surface text-sm">Explore plans and billing</p>
+                                <p id="billingCardDesc" class="text-xs text-on-surface-variant">Compare plans, upgrade, and review billing options.</p>
                             </div>
                         </div>
-                        <a href="/plans" class="text-primary font-bold text-sm hover:underline md:ml-auto">Manage Plan</a>
+                        <a id="billingCardLink" href="/plans" class="text-primary font-bold text-sm hover:underline md:ml-auto">View Plans</a>
                     </div>
 
                     <div id="householdCard" class="hidden bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/10 space-y-5">
@@ -482,6 +482,22 @@
                     document.getElementById('billRenewalText').textContent = new Date(sub.renewsAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
                 } else if (sub.trialEndsAt) {
                     document.getElementById('billRenewalText').textContent = new Date(sub.trialEndsAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' }) + " (Trial)";
+                }
+
+                const billingCardTitle = document.getElementById('billingCardTitle');
+                const billingCardDesc = document.getElementById('billingCardDesc');
+                const billingCardLink = document.getElementById('billingCardLink');
+
+                if (sub.tier === 'free') {
+                    billingCardTitle.textContent = 'Explore plans and billing';
+                    billingCardDesc.textContent = 'Compare plans and upgrade when you are ready.';
+                    billingCardLink.textContent = 'View Plans';
+                    billingCardLink.href = '/plans';
+                } else {
+                    billingCardTitle.textContent = 'Billing support';
+                    billingCardDesc.textContent = 'Need to change payment details or cancel? Contact support while self-serve billing is being finalized.';
+                    billingCardLink.textContent = 'Contact Support';
+                    billingCardLink.href = '/contact';
                 }
 
                 const householdCard = document.getElementById('householdCard');
