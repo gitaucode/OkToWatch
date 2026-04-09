@@ -18,6 +18,8 @@
   const assistantState = {
     open: false,
     loading: false,
+    loadingStage: '',
+    loadingTimer: null,
     context: null,
     pendingQuestion: '',
     pendingChoice: null,
@@ -424,7 +426,9 @@
   .cv-assistant-msg { border-radius: 18px; padding: 0.9rem 0.95rem; font-size: 0.88rem; line-height: 1.55; }
   .cv-assistant-msg.assistant { background: #F8FAFC; border: 1px solid rgba(19,28,53,0.06); color: #334155; }
   .cv-assistant-msg.user { background: #131C35; color: white; align-self: flex-end; max-width: 86%; }
-  .cv-assistant-msg.typing { display: inline-flex; align-items: center; gap: 0.35rem; width: fit-content; }
+  .cv-assistant-msg.typing { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; width: fit-content; }
+  .cv-assistant-typing-row { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .cv-assistant-typing-label { font-size: 0.75rem; font-weight: 700; color: #64748b; }
   .cv-assistant-dot {
     width: 8px; height: 8px; border-radius: 999px; background: #94a3b8;
     animation: cvAssistantBounce 1.1s infinite ease-in-out;
@@ -694,13 +698,23 @@
       if (!assistantMessages) return;
       if (!assistantState.messages.length) {
         assistantMessages.innerHTML = assistantState.loading
-          ? `<div class="cv-assistant-msg assistant typing"><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span></div>`
+          ? `<div class="cv-assistant-msg assistant typing"><div class="cv-assistant-typing-row"><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span></div>${assistantState.loadingStage ? `<div class="cv-assistant-typing-label">${escapeHtml(assistantState.loadingStage)}</div>` : ''}</div>`
           : '';
         return;
       }
       const renderedMessages = assistantState.messages.map((message, index) => {
         if (message.role === 'user') {
           return `<div class="cv-assistant-msg user">${escapeHtml(message.text)}</div>`;
+        }
+        if (message.kind === 'confirm_title') {
+          return `<div class="cv-assistant-msg assistant">
+            <h4>${escapeHtml(message.title || 'Did you mean this one?')}</h4>
+            <p>${escapeHtml(message.tldr || '')}</p>
+            <div class="cv-assistant-followups">
+              <button type="button" class="cv-assistant-chip" data-confirm-choice="yes">Yes, that one</button>
+              <button type="button" class="cv-assistant-chip" data-confirm-choice="no">No, show options</button>
+            </div>
+          </div>`;
         }
         if (message.kind === 'choose_title') {
           return `<div class="cv-assistant-msg assistant">
@@ -727,7 +741,7 @@
         </div>`;
       }).join('');
       const typingMarkup = assistantState.loading
-        ? `<div class="cv-assistant-msg assistant typing"><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span></div>`
+        ? `<div class="cv-assistant-msg assistant typing"><div class="cv-assistant-typing-row"><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span><span class="cv-assistant-dot"></span></div>${assistantState.loadingStage ? `<div class="cv-assistant-typing-label">${escapeHtml(assistantState.loadingStage)}</div>` : ''}</div>`
         : '';
       assistantMessages.innerHTML = renderedMessages + typingMarkup;
       assistantMessages.scrollTop = assistantMessages.scrollHeight;
@@ -751,6 +765,14 @@
       if (!pending || !text) return null;
 
       const normalized = text.toLowerCase();
+      if (pending.kind === 'confirm') {
+        if (/^(yes|yeah|yep|sure|that one|the one|correct|right)$/i.test(text)) {
+          return { kind: 'confirm', candidate: pending.candidate };
+        }
+        if (/^(no|nope|not that one|show options|another one)$/i.test(text)) {
+          return { kind: 'decline' };
+        }
+      }
       const candidates = Array.isArray(pending.candidates) ? pending.candidates : [];
       if (!candidates.length) return null;
 
@@ -798,6 +820,14 @@
       ensureAssistantState();
       assistantState.messages.push({ role: 'user', text: q });
       assistantState.loading = true;
+      assistantState.loadingStage = explicitContext?.analysis || assistantState.context?.analysis
+        ? 'Checking the breakdown...'
+        : 'Looking up the title...';
+      if (assistantState.loadingTimer) clearTimeout(assistantState.loadingTimer);
+      assistantState.loadingTimer = setTimeout(() => {
+        assistantState.loadingStage = 'Checking the breakdown...';
+        renderAssistantMessages();
+      }, 900);
       assistantSend.disabled = true;
       assistantSend.textContent = '...';
       renderAssistantMessages();
@@ -826,7 +856,22 @@
         });
         const data = await res.json().catch(() => ({}));
 
-        if (data.mode === 'choose_title') {
+        if (data.mode === 'confirm_title') {
+          assistantState.pendingQuestion = q;
+          assistantState.pendingChoice = {
+            kind: 'confirm',
+            question: q,
+            candidate: data.candidate || null,
+            candidates: data.candidates || [],
+            context: null
+          };
+          assistantState.messages.push({
+            role: 'assistant',
+            kind: 'confirm_title',
+            title: data.title || 'Did you mean this one?',
+            tldr: data.message || 'I found a strong match for that title.'
+          });
+        } else if (data.mode === 'choose_title') {
           assistantState.pendingQuestion = q;
           assistantState.pendingChoice = {
             kind: 'title',
@@ -901,6 +946,11 @@
         });
       } finally {
         assistantState.loading = false;
+        assistantState.loadingStage = '';
+        if (assistantState.loadingTimer) {
+          clearTimeout(assistantState.loadingTimer);
+          assistantState.loadingTimer = null;
+        }
         assistantSend.disabled = false;
         assistantSend.textContent = 'Send';
         renderAssistantMessages();
@@ -922,6 +972,33 @@
         assistantInput.value = '';
         const resolvedChoice = resolvePendingAssistantChoice(question);
         if (resolvedChoice) {
+          if (resolvedChoice.kind === 'decline') {
+            const pending = assistantState.pendingChoice;
+            if (pending?.candidates?.length) {
+              assistantState.pendingChoice = {
+                kind: 'title',
+                question: pending.question || assistantState.pendingQuestion || question,
+                candidates: pending.candidates,
+                context: null
+              };
+              assistantState.messages.push({
+                role: 'assistant',
+                kind: 'choose_title',
+                title: 'No problem',
+                tldr: 'Here are the closest matches I found.',
+                candidates: pending.candidates
+              });
+              renderAssistantMessages();
+            }
+            return;
+          }
+          if (resolvedChoice.kind === 'confirm' && resolvedChoice.candidate) {
+            await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${resolvedChoice.candidate.title}`, {
+              tmdb_id: resolvedChoice.candidate.tmdb_id,
+              media_type: resolvedChoice.candidate.media_type
+            });
+            return;
+          }
           if (resolvedChoice.prompt) {
             await submitAssistantQuestion(resolvedChoice.prompt, assistantState.pendingChoice?.context || assistantState.context || null);
             return;
@@ -946,6 +1023,36 @@
         if (followup) {
           await submitAssistantQuestion(followup.getAttribute('data-followup') || '');
           return;
+        }
+        const confirmBtn = e.target.closest('[data-confirm-choice]');
+        if (confirmBtn) {
+          const action = confirmBtn.getAttribute('data-confirm-choice');
+          if (action === 'yes' && assistantState.pendingChoice?.candidate) {
+            const candidate = assistantState.pendingChoice.candidate;
+            await submitAssistantQuestion(assistantState.pendingQuestion || `Tell me about ${candidate.title}`, {
+              tmdb_id: candidate.tmdb_id,
+              media_type: candidate.media_type
+            });
+            return;
+          }
+          if (action === 'no' && assistantState.pendingChoice?.candidates?.length) {
+            const pending = assistantState.pendingChoice;
+            assistantState.pendingChoice = {
+              kind: 'title',
+              question: pending.question || assistantState.pendingQuestion,
+              candidates: pending.candidates,
+              context: null
+            };
+            assistantState.messages.push({
+              role: 'assistant',
+              kind: 'choose_title',
+              title: 'No problem',
+              tldr: 'Here are the closest matches I found.',
+              candidates: pending.candidates
+            });
+            renderAssistantMessages();
+            return;
+          }
         }
         const choiceBtn = e.target.closest('[data-choice-index][data-candidate-index]');
         if (choiceBtn) {

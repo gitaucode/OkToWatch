@@ -109,6 +109,15 @@ export async function onRequestPost(context) {
       }
 
       const selected = chooseCandidate(matches, searchTitle, interpreted);
+      if (selected.mode === 'confirm') {
+        return json({
+          mode: 'confirm_title',
+          title: selected.title,
+          message: selected.message,
+          candidate: selected.candidate,
+          candidates: selected.candidates
+        });
+      }
       if (selected.mode === 'choose') {
         return json({
           mode: 'choose_title',
@@ -290,10 +299,31 @@ function chooseCandidate(matches, searchTitle, interpreted) {
     return { mode: 'selected', item: strongPrefixMatches[0] };
   }
 
+  const scoredMatches = matches
+    .map((item) => ({ item, score: scoreCandidate(item, searchTitle) }))
+    .sort((a, b) => b.score - a.score);
+
+  const topMatch = scoredMatches[0];
+  const secondMatch = scoredMatches[1];
+  if (
+    topMatch &&
+    !interpreted?.needsClarification &&
+    topMatch.score >= 0.88 &&
+    (!secondMatch || topMatch.score - secondMatch.score >= 0.12)
+  ) {
+    return {
+      mode: 'confirm',
+      title: 'Did you mean this one?',
+      message: `I found a strong match for "${searchTitle}".`,
+      candidate: toCandidate(topMatch.item),
+      candidates: scoredMatches.slice(0, 5).map((entry) => toCandidate(entry.item))
+    };
+  }
+
   return {
     mode: 'choose',
     title: 'A few titles came up',
-    message: `I found a few close matches for "${searchTitle}". Pick the right one and I’ll break it down.`,
+    message: `I found a few close matches for "${searchTitle}". Pick the right one and I'll break it down.`,
     candidates: matches.slice(0, 5).map(toCandidate)
   };
 }
@@ -595,6 +625,21 @@ function normalizeTitle(value) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
+}
+
+function scoreCandidate(item, searchTitle) {
+  const normalizedSearch = normalizeTitle(searchTitle);
+  const normalizedTitle = normalizeTitle(item.title || item.name);
+  if (!normalizedSearch || !normalizedTitle) return 0;
+  if (normalizedTitle === normalizedSearch) return 1;
+  if (normalizedTitle.startsWith(normalizedSearch) || normalizedSearch.startsWith(normalizedTitle)) return 0.94;
+
+  const searchTokens = normalizedSearch.split(' ').filter(Boolean);
+  const titleTokens = normalizedTitle.split(' ').filter(Boolean);
+  const overlap = searchTokens.filter((token) => titleTokens.includes(token)).length;
+  const coverage = searchTokens.length ? overlap / searchTokens.length : 0;
+  const density = titleTokens.length ? overlap / titleTokens.length : 0;
+  return Number((coverage * 0.7 + density * 0.3).toFixed(2));
 }
 
 function toCandidate(item) {
