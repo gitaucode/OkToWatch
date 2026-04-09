@@ -186,7 +186,7 @@
 <div class="cv-assistant" id="cvAssistant">
   <button class="cv-assistant-nudge" id="cvAssistantNudge">Ask me about a movie</button>
   <button class="cv-assistant-fab" id="cvAssistantFab" aria-label="Open title safety assistant">
-    <span class="material-symbols-outlined">forum</span>
+    <span class="material-symbols-outlined">smart_toy</span>
   </button>
   <div class="cv-assistant-panel" id="cvAssistantPanel">
     <div class="cv-assistant-header">
