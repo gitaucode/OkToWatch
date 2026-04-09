@@ -17,7 +17,9 @@
 <title>Search — OkToWatch</title>
 <meta name="description" content="Instant content breakdowns for any movie or TV show. Six categories rated clearly — violence, language, sex, drugs, horror, and more. Built for parents.">
 <script>
-    // Redirect standalone search deep links to the unified dashboard experience
+    // Redirect standalone search deep links to the unified dashboard experience.
+    // Only trust a fresh logged-in cache so we don't bounce through /dashboard
+    // and then immediately to /signin when the cached session is stale.
     const params = new URLSearchParams(window.location.search);
     if (params.get('embed') !== 'true') {
       const q = params.get('q');
@@ -37,9 +39,17 @@
           cachedAuth = JSON.parse(sessionStorage.getItem('cvAuthCache') || 'null');
         } catch {}
 
-        const isKnownLoggedIn = cachedAuth?.loggedIn === true;
-        const authUrl = '/signin?redirect=' + encodeURIComponent(redirectUrl);
-        window.location.replace(isKnownLoggedIn ? redirectUrl : authUrl);
+        const updatedAt = Number(cachedAuth?.updatedAt || 0);
+        const isFresh = updatedAt > 0 && (Date.now() - updatedAt) < 5 * 60 * 1000;
+        const isKnownLoggedOut = cachedAuth?.loggedIn === false && (!updatedAt || isFresh);
+        const isFreshLoggedIn = cachedAuth?.loggedIn === true && isFresh;
+
+        if (isKnownLoggedOut) {
+          const authUrl = '/signin?redirect=' + encodeURIComponent(redirectUrl);
+          window.location.replace(authUrl);
+        } else if (isFreshLoggedIn) {
+          window.location.replace(redirectUrl);
+        }
       }
     }
   </script>

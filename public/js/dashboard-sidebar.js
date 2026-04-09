@@ -2,7 +2,9 @@
   try {
     const raw = sessionStorage.getItem('cvAuthCache');
     const cached = raw ? JSON.parse(raw) : null;
-    if (cached && cached.loggedIn === false) {
+    const updatedAt = Number(cached?.updatedAt || 0);
+    const isFresh = updatedAt > 0 && (Date.now() - updatedAt) < 5 * 60 * 1000;
+    if (cached && cached.loggedIn === false && (!updatedAt || isFresh)) {
       const redirect = encodeURIComponent(window.location.pathname + window.location.search);
       window.location.replace('/signin?redirect=' + redirect);
       return;

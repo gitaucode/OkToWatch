@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png"/>
 <link rel="shortcut icon" href="/favicon.ico"/>
 <title>Family Profiles | OkToWatch</title>
+<script src="/js/protected-route.js?v=dev"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -329,7 +330,7 @@ async function apiDelete(url) { const r = await fetch(url, { method: 'DELETE', h
 
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
-    window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.replace('/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
     return;
   }
   loadProfiles();

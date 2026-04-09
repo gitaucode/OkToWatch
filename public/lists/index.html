@@ -18,6 +18,7 @@
 <meta property="og:image" content="https://oktowatch.com/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://oktowatch.com/og-image.png"/>
+<script src="/js/protected-route.js?v=dev"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -517,7 +518,7 @@ async function apiDelete(url) {
 // ── Auth guard ───────────────────────────────────────────────────────────────
 document.addEventListener('cv:auth', ({ detail }) => {
   if (!detail.loggedIn) {
-    window.location.href = '/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.replace('/signin?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
     return;
   }
   // Respect ?tab= URL param

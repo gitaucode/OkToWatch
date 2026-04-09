@@ -19,7 +19,7 @@
   function getCachedAuthState() {
     try {
       const raw = sessionStorage.getItem('cvAuthCache');
-      if (!raw) return { loggedIn: false, isPro: false, isFamily: false, tier: 'free', user: null };
+      if (!raw) return { loggedIn: false, isPro: false, isFamily: false, tier: 'free', user: null, updatedAt: 0 };
       const parsed = JSON.parse(raw);
       return {
         loggedIn: !!parsed.loggedIn,
@@ -27,9 +27,10 @@
         isFamily: !!parsed.isFamily,
         tier: parsed.tier || 'free',
         user: parsed.user || null,
+        updatedAt: Number(parsed.updatedAt || 0),
       };
     } catch {
-      return { loggedIn: false, isPro: false, isFamily: false, tier: 'free', user: null };
+      return { loggedIn: false, isPro: false, isFamily: false, tier: 'free', user: null, updatedAt: 0 };
     }
   }
 
@@ -47,7 +48,8 @@
         isPro: !!isPro,
         isFamily: !!isFamily,
         tier: tier || 'free',
-        user
+        user,
+        updatedAt: Date.now()
       }));
     } catch {}
   }
