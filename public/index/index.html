@@ -291,6 +291,7 @@ function catIcon(name) {
 }
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function enc(v){ return encodeURIComponent(String(v ?? '')); }
 function showToast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function formatResetTime(resetsAt) {
   if (!resetsAt) return 'later today';
@@ -364,7 +365,7 @@ document.addEventListener('cv:auth', ({ detail }) => {
   // Update icon
   if (detail.user?.imageUrl) {
     const ic = document.getElementById('navAccountIcon');
-    if (ic) ic.closest('button').innerHTML = `<img src="${detail.user.imageUrl}" class="w-8 h-8 rounded-full object-cover" alt="">`;
+    if (ic) ic.closest('button').innerHTML = `<img src="${esc(detail.user.imageUrl)}" class="w-8 h-8 rounded-full object-cover" alt="">`;
   }
   // Fetch user lists to check watchlist state
   if (detail.loggedIn) {
@@ -471,8 +472,8 @@ function renderNotesSection() {
                 <p class="mt-3 text-sm leading-relaxed text-on-surface">${esc(note.message)}</p>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <button type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors" onclick="toggleNotePin('${esc(note.id)}', ${note.is_pinned ? 'true' : 'false'})">${note.is_pinned ? 'Unpin' : 'Pin'}</button>
-                <button type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors" onclick="deleteNote('${esc(note.id)}')">Delete</button>
+                <button type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors" onclick="toggleNotePin(decodeURIComponent('${enc(note.id)}'), ${note.is_pinned ? 'true' : 'false'})">${note.is_pinned ? 'Unpin' : 'Pin'}</button>
+                <button type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors" onclick="deleteNote(decodeURIComponent('${enc(note.id)}'))">Delete</button>
               </div>
             </div>
           </article>
@@ -811,10 +812,10 @@ function renderHero(d, certRating = '') {
 
   // Meta row — year · runtime · rating (· cert if available)
   const metaParts = [
-    year ? `<span>${year}</span>` : '',
-    runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${runtime}</span>` : '',
-    rating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">star</span> ${rating}</span>` : '',
-    certRating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${certRating}</span>` : '',
+    year ? `<span>${esc(year)}</span>` : '',
+    runtime ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${esc(runtime)}</span>` : '',
+    rating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">star</span> ${esc(rating)}</span>` : '',
+    certRating ? `<span class="w-1 h-1 bg-outline-variant rounded-full"></span><span>${esc(certRating)}</span>` : '',
   ].filter(Boolean).join('');
   document.getElementById('heroMeta').innerHTML = metaParts;
 }

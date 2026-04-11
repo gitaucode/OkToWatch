@@ -664,11 +664,11 @@ async function loadUsers(page = 1) {
         <td style="font-size:0.75rem;color:var(--text2);">${fmtDate(u.createdAt)}</td>
         <td style="font-size:0.75rem;color:var(--text2);">${u.lastSignIn ? fmtDate(u.lastSignIn) : '—'}</td>
         <td><div class="actions-cell">
-          <button class="btn btn-green" onclick="openPlanModal('${u.id}','${esc(u.email)}','${u.isPro?'pro':u.isFamily?'family':''}')">Plan</button>
+          <button class="btn btn-green" onclick="openPlanModal(decodeURIComponent('${enc(u.id)}'),decodeURIComponent('${enc(u.email)}'),'${u.isPro?'pro':u.isFamily?'family':''}')">Plan</button>
           ${u.isBanned
             ? `<button class="btn btn-yellow" onclick="doUnban('${u.id}')">Unban</button>`
-            : `<button class="btn btn-yellow" onclick="openBanModal('${u.id}','${esc(u.email)}')">Ban</button>`}
-          <button class="btn btn-red" onclick="openDeleteUserModal('${u.id}','${esc(u.email)}')">Delete</button>
+            : `<button class="btn btn-yellow" onclick="openBanModal(decodeURIComponent('${enc(u.id)}'),decodeURIComponent('${enc(u.email)}'))">Ban</button>`}
+          <button class="btn btn-red" onclick="openDeleteUserModal(decodeURIComponent('${enc(u.id)}'),decodeURIComponent('${enc(u.email)}'))">Delete</button>
         </div></td>
       </tr>`).join('');
 
@@ -725,7 +725,7 @@ async function loadCache(page = 1) {
         <td style="font-size:0.75rem;">${e.season ?? '—'}</td>
         <td><span class="cache-size">${fmtBytes(e.size)}</span></td>
         <td style="font-size:0.72rem;color:var(--text2);">${fmtDate(e.cached_at)}</td>
-        <td><button class="btn btn-red" onclick="doDeleteCache('${esc(e.id)}')">Delete</button></td>
+        <td><button class="btn btn-red" onclick="doDeleteCache(decodeURIComponent('${enc(e.id)}'))">Delete</button></td>
       </tr>`).join('');
 
     renderPagination('cachePagination', 'cachePageInfo', 'cachePageBtns', page, d.pages, loadCache);
@@ -774,8 +774,8 @@ async function loadAnnouncements() {
         <td style="font-size:0.72rem;color:var(--text2);">${a.expires_at?fmtDate(a.expires_at):'Never'}</td>
         <td style="font-size:0.72rem;color:var(--text2);">${fmtDate(a.created_at)}</td>
         <td><div class="actions-cell">
-          <button class="btn" onclick="toggleAnn('${a.id}',${a.active?0:1})">${a.active?'Deactivate':'Activate'}</button>
-          <button class="btn btn-red" onclick="deleteAnn('${a.id}')">Delete</button>
+          <button class="btn" onclick="toggleAnn(decodeURIComponent('${enc(a.id)}'),${a.active?0:1})">${a.active?'Deactivate':'Activate'}</button>
+          <button class="btn btn-red" onclick="deleteAnn(decodeURIComponent('${enc(a.id)}'))">Delete</button>
         </div></td>
       </tr>`;
     }).join('');
@@ -939,7 +939,10 @@ function fmtBytes(n) {
   return (n/1024).toFixed(1) + ' KB';
 }
 function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function enc(value) {
+  return encodeURIComponent(String(value ?? ''));
 }
 
 let toastTimer;
