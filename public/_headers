@@ -51,6 +51,9 @@
 /how-it-works/
   Cache-Control: no-cache, must-revalidate
 
+/admin/
+  Cache-Control: no-cache, must-revalidate
+
 /cv-admin/
   Cache-Control: no-cache, must-revalidate
 
