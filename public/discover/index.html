@@ -214,6 +214,15 @@
   let _isFamilyUser = false;
   const genreMap = { '28':'Action', '12':'Adventure', '35':'Comedy', '878':'Sci-Fi' };
 
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function familyBadge(summary) {
     if (!summary || !summary.count) return '';
     const caution = summary.primary_type === 'caution';
@@ -401,7 +410,7 @@
       const verdictText = safe ? 'Safe' : 'Review';
       const noteBadge = familyBadge(_familyNotes[String(item.id)]);
       const poster = item.poster_path
-        ? `<img alt="${title}" class="discover-poster w-full h-full object-cover transition-transform duration-500" src="https://image.tmdb.org/t/p/w500${item.poster_path}"/>`
+        ? `<img alt="${escapeHtml(title)}" class="discover-poster w-full h-full object-cover transition-transform duration-500" src="https://image.tmdb.org/t/p/w500${item.poster_path}"/>`
         : `<div class="discover-poster w-full h-full bg-surface-container-highest flex items-center justify-center text-5xl text-on-surface-variant transition-transform duration-500">🎬</div>`;
       return `
         <a class="discover-card group flex flex-col" href="/index?id=${item.id}&type=movie">
@@ -411,13 +420,13 @@
             <div class="absolute top-4 right-4"><span class="${badgeClass} px-2 py-1 rounded-lg text-xs font-bold">${badgeText}</span></div>
             <div class="discover-overlay absolute inset-0 bg-primary/0 transition-colors duration-300"></div>
           </div>
-          <h5 class="text-lg font-bold text-on-background mb-1 line-clamp-1">${title}</h5>
+          <h5 class="text-lg font-bold text-on-background mb-1 line-clamp-1">${escapeHtml(title)}</h5>
           <p class="text-sm text-on-surface-variant flex flex-wrap items-center gap-2">
-            <span>${year}</span>
+            <span>${escapeHtml(year)}</span>
             <span>•</span>
-            <span>${genreLabel}</span>
+            <span>${escapeHtml(genreLabel)}</span>
             <span>•</span>
-            <span class="${safe ? 'text-tertiary' : 'text-amber-600'} font-bold">${verdictText}</span>
+            <span class="${safe ? 'text-tertiary' : 'text-amber-600'} font-bold">${escapeHtml(verdictText)}</span>
           </p>
         </a>`;
     }).join('');

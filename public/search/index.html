@@ -1068,13 +1068,22 @@ function getChildAge() { return null; }
 function setAudience(btn,aud) { document.querySelectorAll('.aud-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentAudience=aud; if(currentBreakdown) renderVerdict(); }
 
 // ── DROPDOWN ──────────────────────────────────────────────────────────────
+function escHtml(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
 function renderDropdown(boxId,history) {
   const box=document.getElementById(boxId);
   if(!history.length){box.classList.remove('visible');return;}
   box.innerHTML=`<div class="drop-section-label">Recent searches<span class="drop-clear-all" onclick="onClearAll('${boxId}')">Clear all</span></div>
     ${history.map(t=>`<div class="suggestion-item" onclick="onHistoryClick('${t.replace(/'/g,"\\'")}')">
       <div class="sug-icon history-icon">🕐</div>
-      <div style="flex:1;min-width:0"><div class="sug-title">${t}</div></div>
+      <div style="flex:1;min-width:0"><div class="sug-title">${escHtml(t)}</div></div>
       <span class="sug-remove" onclick="event.stopPropagation();onRemoveHistory('${t.replace(/'/g,"\\'")}','${boxId}')">✕</span>
     </div>`).join('')}`;
   box.classList.add('visible');
@@ -1136,7 +1145,7 @@ function renderRecentSearchesCarousel() {
       return `<button class="recent-search-chip"
         onclick="openTitleExperience(${item.id},'${item.media_type}','${String(title).replace(/'/g,"\\'")}')">
         ${poster}
-        <span class="rsc-title">${title}</span>
+        <span class="rsc-title">${escHtml(title)}</span>
       </button>`;
     }).join('');
 
@@ -1176,7 +1185,7 @@ async function showEmptyWithSuggestion(q) {
       const dym=document.getElementById('didYouMean');
       dym.innerHTML=`<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">Did you mean:</div>
         <button class="did-you-mean-btn" onclick="selectSuggestion(${suggestion.id},'${suggestion.media_type}','${sugTitle.replace(/'/g,"\\'")}')">
-          ${sugTitle}${sugYear?` (${sugYear})`:''}
+          ${escHtml(sugTitle)}${sugYear?` (${escHtml(sugYear)})`:''}
         </button>`;
       dym.style.display='block';
     }
@@ -1401,15 +1410,15 @@ function renderCard({title,year,certRating,genres,backdrop,poster,breakdown,flat
   else { fallbackEl.style.display='flex'; }
   document.getElementById('movieTitle').textContent=title;
   const tags=[year,certRating||'NR',genres.split(',')[0]].filter(Boolean);
-  document.getElementById('posterTags').innerHTML=tags.map((t,i)=>{ const tooltip=i===1?(RATING_INFO[t]||null):null; return `<span class="poster-tag"${tooltip?` data-tooltip="${tooltip}"`:''}>${t}</span>`; }).join('');
+  document.getElementById('posterTags').innerHTML=tags.map((t,i)=>{ const tooltip=i===1?(RATING_INFO[t]||null):null; return `<span class="poster-tag"${tooltip?` data-tooltip="${escHtml(tooltip)}"`:''}>${escHtml(t)}</span>`; }).join('');
   const ss=document.getElementById('movieSummaryStrip');
   if(breakdown.summary){ss.textContent=breakdown.summary;ss.style.display='block';}else ss.style.display='none';
   const watchSection=document.getElementById('watchSection'), watchGroups=document.getElementById('watchGroups');
   if(flatrate.length||rent.length||buy.length) {
     let html='';
-    if(flatrate.length) html+=`<div><div class="watch-group-label">Streaming</div><div class="watch-chips">${flatrate.slice(0,6).map(s=>`<span class="watch-chip stream">${s.logo_path?`<img src="${TMDB_LOGO}${s.logo_path}" alt="">`:''}${s.provider_name}</span>`).join('')}</div></div>`;
-    if(rent.length){ const f=rent.filter(r=>!flatrate.find(x=>x.provider_id===r.provider_id)); if(f.length) html+=`<div><div class="watch-group-label">Rent</div><div class="watch-chips">${f.slice(0,5).map(s=>`<span class="watch-chip rent">${s.logo_path?`<img src="${TMDB_LOGO}${s.logo_path}" alt="">`:''}${s.provider_name}</span>`).join('')}</div></div>`; }
-    if(buy.length){ const f=buy.filter(b=>!flatrate.find(x=>x.provider_id===b.provider_id)); if(f.length) html+=`<div><div class="watch-group-label">Buy</div><div class="watch-chips">${f.slice(0,5).map(s=>`<span class="watch-chip buy">${s.logo_path?`<img src="${TMDB_LOGO}${s.logo_path}" alt="">`:''}${s.provider_name}</span>`).join('')}</div></div>`; }
+    if(flatrate.length) html+=`<div><div class="watch-group-label">Streaming</div><div class="watch-chips">${flatrate.slice(0,6).map(s=>`<span class="watch-chip stream">${s.logo_path?`<img src="${TMDB_LOGO}${s.logo_path}" alt="">`:''}${escHtml(s.provider_name)}</span>`).join('')}</div></div>`;
+    if(rent.length){ const f=rent.filter(r=>!flatrate.find(x=>x.provider_id===r.provider_id)); if(f.length) html+=`<div><div class="watch-group-label">Rent</div><div class="watch-chips">${f.slice(0,5).map(s=>`<span class="watch-chip rent">${s.logo_path?`<img src="${TMDB_LOGO}${s.logo_path}" alt="">`:''}${escHtml(s.provider_name)}</span>`).join('')}</div></div>`; }
+    if(buy.length){ const f=buy.filter(b=>!flatrate.find(x=>x.provider_id===b.provider_id)); if(f.length) html+=`<div><div class="watch-group-label">Buy</div><div class="watch-chips">${f.slice(0,5).map(s=>`<span class="watch-chip buy">${s.logo_path?`<img src="${TMDB_LOGO}${s.logo_path}" alt="">`:''}${escHtml(s.provider_name)}</span>`).join('')}</div></div>`; }
     watchGroups.innerHTML=html; watchSection.style.display='block';
   } else { watchSection.style.display='none'; }
   renderGlanceWithPrefs(breakdown.categories); renderCategoriesWithPrefs(breakdown.categories); renderVerdict(); updateListBadge();
@@ -1435,10 +1444,10 @@ function renderRecentlyViewed(currentId) {
     // Normalise field names between D1 (tmdb_id/media_type) and localStorage (id/type)
     const itemId   = r.tmdb_id   ?? r.id;
     const itemType = r.media_type ?? r.type;
-    const posterHtml=r.poster?`<img src="${r.poster}" alt="${r.title}" loading="lazy">`:`<div class="recent-poster-fallback">🎬</div>`;
+    const posterHtml=r.poster?`<img src="${r.poster}" alt="${escHtml(r.title)}" loading="lazy">`:`<div class="recent-poster-fallback">🎬</div>`;
     return `<div class="recent-item" onclick="openTitleExperience(${itemId},'${itemType}','${String(r.title || '').replace(/'/g,"\\'")}')">
       <div class="recent-poster">${posterHtml}</div>
-      <div class="recent-info"><div class="recent-title">${r.title}</div><div class="recent-year">${r.year||''}</div></div>
+      <div class="recent-info"><div class="recent-title">${escHtml(r.title)}</div><div class="recent-year">${escHtml(r.year||'')}</div></div>
     </div>`;
   }).join('');
   wrap.style.display='block';
@@ -1557,22 +1566,22 @@ function renderCompareResult() {
   const prefs=getPrefs(), {active,inactive}=getSortedCategories(breakdown.categories);
   const heroImg=backdrop||poster, heroHtml=heroImg?`<img src="${heroImg}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0.85;">`:`<div class="poster-hero-fallback">🎬</div>`;
   const tags=[year,certRating||'NR',genres.split(',')[0]].filter(Boolean);
-  const tagsHtml=tags.map((t,i)=>{ const tooltip=i===1?(RATING_INFO[t]||null):null; return `<span class="poster-tag"${tooltip?` data-tooltip="${tooltip}"`:''}>${t}</span>`; }).join('');
-  const glanceHtml=active.map(c=>`<div class="glance-item"><div class="glance-dot ${dotClass[c.level]}"></div><div class="glance-label">${shortNames[c.name]||c.name}</div></div>`).join('');
+  const tagsHtml=tags.map((t,i)=>{ const tooltip=i===1?(RATING_INFO[t]||null):null; return `<span class="poster-tag"${tooltip?` data-tooltip="${escHtml(tooltip)}"`:''}>${escHtml(t)}</span>`; }).join('');
+  const glanceHtml=active.map(c=>`<div class="glance-item"><div class="glance-dot ${dotClass[c.level]}"></div><div class="glance-label">${escHtml(shortNames[c.name]||c.name)}</div></div>`).join('');
   const v=breakdown.verdicts[currentAudience]||breakdown.verdicts['young'];
-  const verdictHtml=v?`<div class="verdict-pill verdict-${v.tier}" style="margin:0"><div class="verdict-icon">${v.tier==='safe'?'✓':v.tier==='warn'?'!':'✕'}</div><div><div class="verdict-text">${v.text}</div><div class="verdict-sub">${v.sub}</div></div></div>`:'';
-  let catsHtml=active.map(c=>{ let dc=''; if(currentBreakdown){ const p=currentBreakdown.categories.find(x=>x.name===c.name); if(p){const ls=['none','mild','moderate','strong'],pi=ls.indexOf(p.level),ci=ls.indexOf(c.level); if(ci>pi) dc=' compare-worse'; else if(ci<pi) dc=' compare-better'; } } return `<div class="cat-item${dc}"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`; }).join('');
-  if(inactive.length) catsHtml+=`<div class="hidden-cats-toggle" onclick="toggleHiddenCats(this)"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>${inactive.length} more</div><div class="hidden-cats-section">${inactive.map(c=>`<div class="cat-item deprioritised"><div class="cat-header"><div class="cat-name">${c.name}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${levelLabel[c.level]}</div></div><div class="cat-desc">${c.note || c.desc || c.detail || ''}</div></div>`).join('')}</div>`;
-  const summaryHtml=breakdown.summary?`<div class="movie-summary-strip">${breakdown.summary}</div>`:'';
+  const verdictHtml=v?`<div class="verdict-pill verdict-${v.tier}" style="margin:0"><div class="verdict-icon">${v.tier==='safe'?'✓':v.tier==='warn'?'!':'✕'}</div><div><div class="verdict-text">${escHtml(v.text)}</div><div class="verdict-sub">${escHtml(v.sub)}</div></div></div>`:'';
+  let catsHtml=active.map(c=>{ let dc=''; if(currentBreakdown){ const p=currentBreakdown.categories.find(x=>x.name===c.name); if(p){const ls=['none','mild','moderate','strong'],pi=ls.indexOf(p.level),ci=ls.indexOf(c.level); if(ci>pi) dc=' compare-worse'; else if(ci<pi) dc=' compare-better'; } } return `<div class="cat-item${dc}"><div class="cat-header"><div class="cat-name">${escHtml(c.name)}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${escHtml(levelLabel[c.level])}</div></div><div class="cat-desc">${escHtml(c.note || c.desc || c.detail || '')}</div></div>`; }).join('');
+  if(inactive.length) catsHtml+=`<div class="hidden-cats-toggle" onclick="toggleHiddenCats(this)"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>${inactive.length} more</div><div class="hidden-cats-section">${inactive.map(c=>`<div class="cat-item deprioritised"><div class="cat-header"><div class="cat-name">${escHtml(c.name)}</div><div class="level-tag ${levelClass[c.level]}"><div class="level-dot"></div>${escHtml(levelLabel[c.level])}</div></div><div class="cat-desc">${escHtml(c.note || c.desc || c.detail || '')}</div></div>`).join('')}</div>`;
+  const summaryHtml=breakdown.summary?`<div class="movie-summary-strip">${escHtml(breakdown.summary)}</div>`:'';
   document.getElementById('compareResultWrap').style.display='block';
-  document.getElementById('compareResultWrap').innerHTML=`<div class="compare-card-label"><span>${title}</span></div><div class="compare-card-wrap"><div class="result-card"><div class="poster-hero" style="height:220px">${heroHtml}<div class="poster-overlay"></div><div class="poster-meta"><div class="poster-title">${title}</div><div class="poster-tags">${tagsHtml}</div></div></div>${summaryHtml}<div class="glance-strip">${glanceHtml}</div><div class="verdict-block" style="padding:0.85rem 1.25rem">${verdictHtml}</div><div class="breakdown" style="padding:0.85rem 1.25rem 1.25rem"><div class="breakdown-label">Content Breakdown</div><div>${catsHtml}</div></div></div></div>`;
+  document.getElementById('compareResultWrap').innerHTML=`<div class="compare-card-label"><span>${escHtml(title)}</span></div><div class="compare-card-wrap"><div class="result-card"><div class="poster-hero" style="height:220px">${heroHtml}<div class="poster-overlay"></div><div class="poster-meta"><div class="poster-title">${escHtml(title)}</div><div class="poster-tags">${tagsHtml}</div></div></div>${summaryHtml}<div class="glance-strip">${glanceHtml}</div><div class="verdict-block" style="padding:0.85rem 1.25rem">${verdictHtml}</div><div class="breakdown" style="padding:0.85rem 1.25rem 1.25rem"><div class="breakdown-label">Content Breakdown</div><div>${catsHtml}</div></div></div></div>`;
 }
 function renderCompareHeader() {
   if(!compareData||!currentBreakdown) return;
   const header=document.getElementById('compareHeader'), card=document.getElementById('compareSearchCard');
   const v1=currentBreakdown.verdicts[currentAudience]||currentBreakdown.verdicts['young'], v2=compareData.breakdown.verdicts[currentAudience]||compareData.breakdown.verdicts['young'];
   const ts={safe:2,warn:1,danger:0}, s1=ts[v1?.tier]??0, s2=ts[v2?.tier]??0, winner=s1>s2?1:s2>s1?2:0;
-  header.innerHTML=`<div class="compare-header"><div class="compare-header-label">Comparing</div><div class="compare-header-row"><div class="compare-title-chip ${winner===1?'winner':''}">${winner===1?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${currentMovieTitle}</div>${v1?`<span class="compare-chip-verdict ${v1.tier}">${v1.text}</span>`:''}</div><div class="compare-vs">VS</div><div class="compare-title-chip ${winner===2?'winner':''}">${winner===2?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${compareData.title}</div>${v2?`<span class="compare-chip-verdict ${v2.tier}">${v2.text}</span>`:''}</div></div><button class="compare-close-btn" onclick="closeCompare()">✕ Close comparison</button></div>`;
+  header.innerHTML=`<div class="compare-header"><div class="compare-header-label">Comparing</div><div class="compare-header-row"><div class="compare-title-chip ${winner===1?'winner':''}">${winner===1?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${escHtml(currentMovieTitle)}</div>${v1?`<span class="compare-chip-verdict ${v1.tier}">${escHtml(v1.text)}</span>`:''}</div><div class="compare-vs">VS</div><div class="compare-title-chip ${winner===2?'winner':''}">${winner===2?'<div class="compare-winner-badge">Better pick</div>':''}<div class="compare-chip-name">${escHtml(compareData.title)}</div>${v2?`<span class="compare-chip-verdict ${v2.tier}">${escHtml(v2.text)}</span>`:''}</div></div><button class="compare-close-btn" onclick="closeCompare()">✕ Close comparison</button></div>`;
   header.style.display='block'; card.style.display='none';
 }
 document.addEventListener('click',e=>{ if(!e.target.closest('#compareSection')) document.getElementById('compareDrop')?.classList.remove('visible'); });
