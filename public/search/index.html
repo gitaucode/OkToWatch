@@ -1076,6 +1076,9 @@ function escHtml(value){
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 }
+function encJs(value){
+  return encodeURIComponent(String(value ?? ''));
+}
 
 function renderDropdown(boxId,history) {
   const box=document.getElementById(boxId);
@@ -1614,6 +1617,126 @@ async function saveToList(listType) {
 }
 function updateListBadge() { const badge=document.getElementById('listBadge'); if(!badge||!lastId) return; const inList=getEffectiveLists().some(l=>l.tmdb_id===lastId); badge.classList.toggle('visible',inList); }
 document.getElementById('listModal').addEventListener('click',e=>{ if(e.target===document.getElementById('listModal')) closeListModal(); });
+
+// Safer overrides for legacy dynamic search/disambiguation renderers.
+function renderDropdown(boxId,history) {
+  const box=document.getElementById(boxId);
+  if(!history.length){box.classList.remove('visible');return;}
+  box.innerHTML=`<div class="drop-section-label">Recent searches<span class="drop-clear-all" onclick="onClearAll('${boxId}')">Clear all</span></div>
+    ${history.map(t=>`<div class="suggestion-item" onclick="onHistoryClick(decodeURIComponent('${encJs(t)}'))">
+      <div class="sug-icon history-icon">ðŸ•</div>
+      <div style="flex:1;min-width:0"><div class="sug-title">${escHtml(t)}</div></div>
+      <span class="sug-remove" onclick="event.stopPropagation();onRemoveHistory(decodeURIComponent('${encJs(t)}'),'${boxId}')">âœ•</span>
+    </div>`).join('')}`;
+  box.classList.add('visible');
+}
+
+async function fetchSuggestions(q,boxId) {
+  try {
+    const res=await fetch(`${API}/api/tmdb/search/multi?query=${encodeURIComponent(q)}&page=1`);
+    const data=await res.json();
+    const results=(data.results||[]).filter(r=>r.media_type==='movie'||r.media_type==='tv').slice(0,5);
+    const box=document.getElementById(boxId);
+    if(!results.length){box.classList.remove('visible');return;}
+    box.innerHTML=`<div class="drop-section-label">Results</div>
+      ${results.map(r=>{
+        const title=r.title||r.name||'';
+        const year=(r.release_date||r.first_air_date||'').slice(0,4);
+        const type=r.media_type==='tv'?'TV Series':'Movie';
+        const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" alt="">`:'ðŸŽ¬';
+        return `<div class="suggestion-item" onclick="selectSuggestion(${r.id},'${r.media_type}',decodeURIComponent('${encJs(title)}'))">
+          <div class="sug-icon">${poster}</div>
+          <div><div class="sug-title">${escHtml(title)}</div><div class="sug-meta">${escHtml([year,type].filter(Boolean).join(' · '))}</div></div>
+        </div>`;
+      }).join('')}`;
+    box.classList.add('visible');
+  } catch(e) {}
+}
+
+function renderRecentSearchesCarousel() {
+  const recent = getEffectiveRecent().slice(0, 4);
+  const row    = document.getElementById('recentSearchesRow');
+  const quick  = document.getElementById('quickRow');
+  if (!row) return;
+  if (!recent.length) { row.classList.remove('visible'); quick.style.display=''; return; }
+
+  row.innerHTML = '<span class="recent-searches-label">Recent:</span>' +
+    recent.map(item => {
+      const title  = item.title || item.name || '';
+      const poster = item.poster
+        ? `<img class="rsc-poster" src="https://image.tmdb.org/t/p/w92${item.poster}" alt="">`
+        : '<span style="font-size:0.8rem;flex-shrink:0;">ðŸŽ¬</span>';
+      return `<button class="recent-search-chip"
+        onclick="openTitleExperience(${item.id},'${item.media_type}',decodeURIComponent('${encJs(title)}'))">
+        ${poster}
+        <span class="rsc-title">${escHtml(title)}</span>
+      </button>`;
+    }).join('');
+
+  row.classList.add('visible');
+  quick.style.display = 'none';
+}
+
+async function showEmptyWithSuggestion(q) {
+  document.getElementById('emptyCard').style.display='block';
+  document.getElementById('emptyTitle').textContent='No results found';
+  document.getElementById('emptyMsg').textContent=`We couldn't find "${q}".`;
+  document.getElementById('didYouMean').style.display='none';
+  try {
+    const fuzzy=q.length>4?q.slice(0,-1):q;
+    const res=await fetch(`${API}/api/tmdb/search/multi?query=${encodeURIComponent(fuzzy)}&page=1`);
+    const data=await res.json();
+    const suggestion=(data.results||[]).find(r=>r.media_type==='movie'||r.media_type==='tv');
+    if(suggestion) {
+      const sugTitle=suggestion.title||suggestion.name||'';
+      const sugYear=(suggestion.release_date||suggestion.first_air_date||'').slice(0,4);
+      const dym=document.getElementById('didYouMean');
+      dym.innerHTML=`<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">Did you mean:</div>
+        <button class="did-you-mean-btn" onclick="selectSuggestion(${suggestion.id},'${suggestion.media_type}',decodeURIComponent('${encJs(sugTitle)}'))">
+          ${escHtml(sugTitle)}${sugYear?` (${escHtml(sugYear)})`:''}
+        </button>`;
+      dym.style.display='block';
+    }
+  } catch(e) {}
+}
+
+function showDisambig(results) {
+  showResultState({showNav:true}); showSection(); hideSkeleton();
+  document.getElementById('disambigCard').style.display='block';
+  document.getElementById('disambigCard').innerHTML=`
+    <div class="disambig-card">
+      <div class="disambig-header"><h3>Multiple matches found</h3><p>Which one did you mean?</p></div>
+      ${results.map(r=>{
+        const title=r.title||r.name||'';
+        const year=(r.release_date||r.first_air_date||'').slice(0,4);
+        const type=r.media_type==='tv'?'TV Series':'Movie';
+        const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" alt="">`:'ðŸŽ¬';
+        return `<div class="disambig-item" onclick="onDisambigSelect(${r.id},'${r.media_type}',decodeURIComponent('${encJs(title)}'))">
+          <div class="disambig-poster">${poster}</div>
+          <div><div class="disambig-title">${escHtml(title)}</div><div class="disambig-meta">${escHtml([year,type].filter(Boolean).join(' · '))}</div></div>
+          <div class="disambig-arrow">â€º</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+async function fetchCompareSuggestions(q) {
+  try {
+    const res=await fetch(`${API}/api/tmdb/search/multi?query=${encodeURIComponent(q)}&page=1`);
+    const data=await res.json();
+    const results=(data.results||[]).filter(r=>r.media_type==='movie'||r.media_type==='tv').slice(0,5);
+    const drop=document.getElementById('compareDrop');
+    if(!results.length){drop.classList.remove('visible');return;}
+    drop.innerHTML=results.map(r=>{
+      const title=r.title||r.name||'';
+      const year=(r.release_date||r.first_air_date||'').slice(0,4);
+      const type=r.media_type==='tv'?'TV':'Movie';
+      const poster=r.poster_path?`<img src="${TMDB_W300}${r.poster_path}" style="width:32px;min-width:32px;height:44px;border-radius:5px;object-fit:cover;" alt="">`:'<div style="width:32px;min-width:32px;height:44px;border-radius:5px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">ðŸŽ¬</div>';
+      return `<div class="suggestion-item" onclick="selectCompareTitle(${r.id},'${r.media_type}',decodeURIComponent('${encJs(title)}'))"><div class="sug-icon">${poster}</div><div><div class="sug-title">${escHtml(title)}</div><div class="sug-meta">${escHtml([year,type].filter(Boolean).join(' · '))}</div></div></div>`;
+    }).join('');
+    drop.classList.add('visible');
+  } catch(e){}
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{

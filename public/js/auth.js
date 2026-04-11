@@ -1476,7 +1476,15 @@
       list.forEach(ann => {
         const bar = document.createElement('div');
         bar.style.cssText = `background:${bgs[ann.type]||bgs.info};color:${colors[ann.type]||colors.info};padding:0.6rem 1.25rem;font-size:0.82rem;font-weight:500;text-align:center;position:relative;z-index:300;border-bottom:1px solid ${colors[ann.type]||colors.info}33;`;
-        bar.innerHTML = `<span>${ann.message}</span><button onclick="this.parentNode.remove()" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;color:inherit;opacity:0.6;">✕</button>`;
+        const text = document.createElement('span');
+        text.textContent = ann.message || '';
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.textContent = '✕';
+        close.style.cssText = 'position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;color:inherit;opacity:0.6;';
+        close.addEventListener('click', () => bar.remove());
+        bar.appendChild(text);
+        bar.appendChild(close);
         const nav = document.getElementById('nav-root');
         if (nav && nav.nextSibling) nav.parentNode.insertBefore(bar, nav.nextSibling);
         else document.body.prepend(bar);
