@@ -269,6 +269,16 @@ tbody td { padding: 0.7rem 1rem; font-size: 0.82rem; vertical-align: middle; }
 }
 #authGate h2 { font-size: 1.1rem; font-weight: 700; }
 #authGate p  { font-size: 0.82rem; color: var(--text2); }
+.auth-gate-actions { display:flex; gap:0.75rem; margin-top:0.35rem; flex-wrap:wrap; justify-content:center; }
+.auth-gate-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:0.7rem 1rem; border-radius:12px; font-weight:700; font-size:0.82rem;
+  text-decoration:none; border:1px solid var(--border); transition:all 0.15s;
+}
+.auth-gate-btn.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+.auth-gate-btn.primary:hover { opacity:0.92; }
+.auth-gate-btn.secondary { color:var(--text2); }
+.auth-gate-btn.secondary:hover { background:var(--surface2); color:var(--text); }
 
 @media (max-width: 900px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -291,6 +301,10 @@ tbody td { padding: 0.7rem 1rem; font-size: 0.82rem; vertical-align: middle; }
   </div>
   <h2>Verifying access…</h2>
   <p>Admin access is required to view this page.</p>
+  <div class="auth-gate-actions">
+    <a id="authGatePrimary" class="auth-gate-btn primary" href="/signin?redirect=%2Fadmin%2F">Sign in</a>
+    <a class="auth-gate-btn secondary" href="/">Back home</a>
+  </div>
 </div>
 
 <!-- Top bar -->
@@ -559,40 +573,65 @@ let pendingUserId = null, pendingAnnId = null;
 
 // ── Boot ──────────────────────────────────────────────────────────────────
 (async () => {
-  const s = document.createElement('script');
-  s.src = CLERK_SCRIPT;
-  s.setAttribute('data-clerk-publishable-key', CLERK_PK);
-  document.head.appendChild(s);
-  await new Promise((res, rej) => { s.onload = res; s.onerror = rej; });
-  await window.Clerk.load();
+  try {
+    const s = document.createElement('script');
+    s.src = CLERK_SCRIPT;
+    s.setAttribute('data-clerk-publishable-key', CLERK_PK);
+    document.head.appendChild(s);
+    await new Promise((res, rej) => { s.onload = res; s.onerror = rej; });
+    await window.Clerk.load();
 
-  const user = window.Clerk.user;
-  if (!user) { showGate('Please sign in to continue.'); return; }
-  if (!user.publicMetadata?.isAdmin) { showGate('This area is only available to admins.'); return; }
+    const user = window.Clerk.user;
+    if (!user) {
+      const target = `/signin?redirect=${encodeURIComponent('/admin/')}`;
+      showGate('Please sign in to continue.', 'signin', target);
+      setTimeout(() => { window.location.href = target; }, 900);
+      return;
+    }
+    if (!user.publicMetadata?.isAdmin) {
+      showGate('This area is only available to admins.', 'home', '/');
+      return;
+    }
 
-  // Show app
-  document.getElementById('authGate').style.display = 'none';
-  document.getElementById('appShell').style.display = 'flex';
-  document.getElementById('appLayout').style.display = 'flex';
-  document.getElementById('topbarEmail').textContent = user.emailAddresses?.[0]?.emailAddress || user.firstName || 'Admin';
+    // Show app
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('appShell').style.display = 'flex';
+    document.getElementById('appLayout').style.display = 'flex';
+    document.getElementById('topbarEmail').textContent = user.emailAddresses?.[0]?.emailAddress || user.firstName || 'Admin';
 
-  // Sign out
-  document.getElementById('topbarSignOut').onclick = async () => {
-    await window.Clerk.signOut();
-    window.location.href = '/';
-  };
+    // Sign out
+    document.getElementById('topbarSignOut').onclick = async () => {
+      await window.Clerk.signOut();
+      window.location.href = '/';
+    };
 
-  // Nav
-  document.querySelectorAll('.nav-item[data-panel]').forEach(btn => {
-    btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
-  });
+    // Nav
+    document.querySelectorAll('.nav-item[data-panel]').forEach(btn => {
+      btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
+    });
 
-  // Load initial panel
-  loadStats();
+    // Load initial panel
+    loadStats();
+  } catch (err) {
+    console.error('Admin auth failed:', err);
+    showGate('We could not verify admin access right now.', 'retry');
+  }
 })();
 
-function showGate(msg) {
+function showGate(msg, mode = 'signin', href = '/signin?redirect=%2Fadmin%2F') {
   document.querySelector('#authGate p').textContent = msg;
+  const primary = document.getElementById('authGatePrimary');
+  if (!primary) return;
+  if (mode === 'home') {
+    primary.textContent = 'Back home';
+    primary.href = href || '/';
+  } else if (mode === 'retry') {
+    primary.textContent = 'Try again';
+    primary.href = '/admin/';
+  } else {
+    primary.textContent = 'Sign in';
+    primary.href = href || '/signin?redirect=%2Fadmin%2F';
+  }
 }
 
 // ── Auth header ───────────────────────────────────────────────────────────
@@ -962,4 +1001,5 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 </script>
 </body>
 </html>
+
 
