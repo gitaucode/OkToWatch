@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard - OkToWatch</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -29,6 +30,12 @@
 }
 html, body { height: 100%; overflow: hidden; }
 body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; display: flex; flex-direction: column; }
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle;
+}
 
 /* ── Top bar ── */
 .topbar {
@@ -93,7 +100,17 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
   font-weight: 700;
   box-shadow: var(--shadow-sm);
 }
-.nav-item .ni-icon { font-size: 1.15rem; width: 22px; text-align: center; flex-shrink: 0; }
+.nav-item .ni-icon {
+  font-size: 1.25rem;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+  color: #64748b;
+}
+.nav-item.active .ni-icon {
+  color: var(--accent);
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
 .nav-badge {
   margin-left: auto; font-family: var(--mono); font-size: 0.6rem;
   background: #e9eef8; color: #55637a; padding: 0.15rem 0.45rem;
@@ -352,31 +369,31 @@ tbody td { padding: 0.9rem 1.15rem; font-size: 0.92rem; vertical-align: middle; 
   <nav class="sidebar">
     <div class="sidebar-section">Overview</div>
     <button class="nav-item active" data-panel="stats">
-      <span class="ni-icon">📊</span> Stats
+      <span class="ni-icon material-symbols-outlined">monitoring</span> Stats
     </button>
 
     <div class="sidebar-section">Users</div>
     <button class="nav-item" data-panel="users">
-      <span class="ni-icon">👥</span> All Users
+      <span class="ni-icon material-symbols-outlined">group</span> All Users
       <span class="nav-badge" id="nbUsers">—</span>
     </button>
     <button class="nav-item" data-panel="banned">
-      <span class="ni-icon">🚫</span> Banned
+      <span class="ni-icon material-symbols-outlined">block</span> Banned
       <span class="nav-badge" id="nbBanned">—</span>
     </button>
 
     <div class="sidebar-section">Content</div>
     <button class="nav-item" data-panel="cache">
-      <span class="ni-icon">⚡</span> Cache
+      <span class="ni-icon material-symbols-outlined">bolt</span> Cache
       <span class="nav-badge" id="nbCache">—</span>
     </button>
     <button class="nav-item" data-panel="announcements">
-      <span class="ni-icon">📢</span> Banners
+      <span class="ni-icon material-symbols-outlined">campaign</span> Banners
     </button>
 
     <div class="sidebar-section">System</div>
     <button class="nav-item" data-panel="log">
-      <span class="ni-icon">📋</span> Audit Log
+      <span class="ni-icon material-symbols-outlined">receipt_long</span> Audit Log
     </button>
   </nav>
 
@@ -387,7 +404,7 @@ tbody td { padding: 0.9rem 1.15rem; font-size: 0.92rem; vertical-align: middle; 
     <div class="panel active" id="panel-stats">
       <div class="panel-header">
         <div><div class="panel-title">Overview</div><div class="panel-sub">Live app stats</div></div>
-        <button class="btn" onclick="loadStats()">↻ Refresh</button>
+        <button class="btn" onclick="loadStats()"><span class="material-symbols-outlined">refresh</span>Refresh</button>
       </div>
       <div class="stats-grid" id="statsGrid">
         <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="s-users">—</div><div class="stat-sub">All time signups</div></div>
@@ -439,7 +456,7 @@ tbody td { padding: 0.9rem 1.15rem; font-size: 0.92rem; vertical-align: middle; 
     <div class="panel" id="panel-cache">
       <div class="panel-header">
         <div><div class="panel-title">Analysis Cache</div><div class="panel-sub">Cached Groq results</div></div>
-        <button class="btn btn-red" onclick="confirmFlushCache()">🗑 Flush all</button>
+        <button class="btn btn-red" onclick="confirmFlushCache()"><span class="material-symbols-outlined">delete_sweep</span>Flush all</button>
       </div>
       <div class="table-wrap">
         <div class="table-toolbar">
@@ -475,7 +492,7 @@ tbody td { padding: 0.9rem 1.15rem; font-size: 0.92rem; vertical-align: middle; 
     <div class="panel" id="panel-log">
       <div class="panel-header">
         <div><div class="panel-title">Audit Log</div><div class="panel-sub">Admin actions</div></div>
-        <button class="btn" onclick="loadLog(1)">↻ Refresh</button>
+        <button class="btn" onclick="loadLog(1)"><span class="material-symbols-outlined">refresh</span>Refresh</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -1023,5 +1040,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 </script>
 </body>
 </html>
+
+
 
 
